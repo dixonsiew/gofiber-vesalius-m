@@ -1,0 +1,110 @@
+package main
+
+import (
+    "errors"
+    "fmt"
+    "html/template"
+    "os"
+    "vesaliusm/config"
+    "vesaliusm/database"
+    _ "vesaliusm/docs"
+    "vesaliusm/router"
+    "vesaliusm/utils"
+
+    "github.com/gofiber/contrib/fiberzerolog"
+    // jwtware "github.com/gofiber/contrib/jwt"
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v2/middleware/compress"
+    "github.com/gofiber/fiber/v2/middleware/monitor"
+    "github.com/gofiber/fiber/v2/middleware/recover"
+    "github.com/gofiber/swagger"
+    redoc "github.com/natebwangsut/fiber-redoc"
+)
+
+// @title (IHP-UAT) Vesalius-m Backend API
+// @version 1.0
+// @description Vesalius-m Backend API Docs (IHP-UAT Version).
+// @BasePath /ih/mobile_central_2_0_0
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
+func main() {
+    defer utils.CatchPanic("main")
+    runLogFile, _ := os.OpenFile(
+        "app.log",
+        os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+        0664,
+    )
+    defer runLogFile.Close()
+    utils.SetClient()
+    utils.SetValidator()
+    utils.SetLogger(runLogFile)
+    port := config.Config("port")
+    app := fiber.New(fiber.Config{
+        Prefork: false,
+        ErrorHandler: func(c *fiber.Ctx, err error) error {
+            code := fiber.StatusInternalServerError
+            var e *fiber.Error
+            if errors.As(err, &e) {
+                code = e.Code
+            }
+
+            return c.Status(code).JSON(fiber.Map{
+                "statusCode": code,
+                "message":    err.Error(),
+            })
+        },
+    })
+    app.Use(recover.New())
+    app.Use(compress.New())
+    app.Use(fiberzerolog.New(fiberzerolog.Config{
+        Logger: &utils.Logger,
+    }))
+    // app.Use(jwtware.New(jwtware.Config{
+    //     SigningKey: jwtware.SigningKey{Key: []byte(utils.JWT_SECRET)},
+    // }))
+    database.ConnectDB()
+    database.ConnectDBRs()
+    defer database.CloseDB()
+    defer database.CloseDBRs()
+
+    basePath := "ih/mobile_central_2_0_0"
+    initSwagger(app, basePath)
+    app.Get("/ih/mobile_central_2_0_0/metrics", monitor.New())
+    router.SetupRoutes(app, basePath)
+
+    // if !fiber.IsChild() {
+    //     cron.Setup()
+    //     defer cron.Shutdown()
+    // }
+
+    err := app.Listen(fmt.Sprintf(":%s", port))
+
+    if err != nil {
+        utils.Logger.Fatal().Err(err).Msg("Fiber app error")
+    }
+}
+
+func initSwagger(app *fiber.App, basePath string) {
+    b, _ := os.ReadFile("./public/css/theme-flattop.css")
+    css := string(b)
+
+    cfg := swagger.Config{
+        URL:          "doc.json",
+        DeepLinking:  true,
+        DocExpansion: "list",
+        Title:        "(IHP-UAT) Vesalius-m Backend API",
+        SyntaxHighlight: &swagger.SyntaxHighlightConfig{
+            Activate: true,
+            Theme:    "arta",
+        },
+        CustomStyle:          template.CSS(css),
+        PersistAuthorization: true,
+    }
+
+    app.Get(fmt.Sprintf("/%s/docs/*", basePath), swagger.New(cfg))
+    app.Get(fmt.Sprintf("/%s/redocs/*", basePath), redoc.Handler)
+
+    app.Static(fmt.Sprintf("/%s/static", basePath), "./public")
+}

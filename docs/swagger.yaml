@@ -1,0 +1,111 @@
+basePath: /ih/mobile_central_2_0_0
+definitions:
+  dto.LoginDto:
+    properties:
+      fromAdmin:
+        default: false
+        type: boolean
+      fromBiometric:
+        default: 0
+        type: integer
+      machineId:
+        type: string
+      password:
+        type: string
+      playerId:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.Country:
+    properties:
+      countryCode:
+        type: string
+      countryName:
+        type: string
+      telCode:
+        type: string
+    type: object
+  model.CountryTelCode:
+    properties:
+      countryName:
+        type: string
+      telCode:
+        type: string
+    type: object
+  model.Nationality:
+    properties:
+      nationality:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Vesalius-m Backend API Docs (IHP-UAT Version).
+  title: (IHP-UAT) Vesalius-m Backend API
+  version: "1.0"
+paths:
+  /common/country/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Country'
+            type: array
+      tags:
+      - Common
+  /common/nationality/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Nationality'
+            type: array
+      tags:
+      - Common
+  /common/telcode/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CountryTelCode'
+            type: array
+      tags:
+      - Common
+  /login:
+    post:
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
