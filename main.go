@@ -42,7 +42,7 @@ func main() {
     utils.SetLogger(runLogFile)
     port := config.Config("port")
     app := fiber.New(fiber.Config{
-        Prefork: false,
+        Prefork: true,
         ErrorHandler: func(c *fiber.Ctx, err error) error {
             code := fiber.StatusInternalServerError
             var e *fiber.Error
