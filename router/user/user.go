@@ -11,4 +11,5 @@ func SetupRoutes(router fiber.Router) {
     api := router.Group("/user")
     api.Use(middleware.JWTProtected)
     api.Get("/all", user.GetAllUsers)
+    api.Get("/all/active", user.GetAllActiveUsers)
 }

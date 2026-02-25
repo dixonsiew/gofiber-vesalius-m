@@ -10,8 +10,7 @@ import (
 func FindAllCountryTelCode() ([]model.CountryTelCode, error) {
     lx := make([]model.CountryTelCode, 0)
     db := database.GetDb()
-    q := `SELECT COUNTRY_NAME, TEL_CODE FROM NOVA_COUNTRY WHERE TEL_CODE IS NOT NULL ORDER BY COUNTRY_NAME`
-    rows, err := db.Queryx(q)
+    rows, err := db.Queryx(`SELECT COUNTRY_NAME, TEL_CODE FROM NOVA_COUNTRY WHERE TEL_CODE IS NOT NULL ORDER BY COUNTRY_NAME`)
     if err != nil {
         utils.LogError(err)
         return lx, err
@@ -39,8 +38,7 @@ func FindAllCountryTelCode() ([]model.CountryTelCode, error) {
 func FindCountryCodeByNationality(nationality string) (string, error) {
     s := ""
     db := database.GetDb()
-    q := `SELECT COUNTRY_CODE FROM NOVA_COUNTRY WHERE NATIONALITY = :nationality`
-    rows, err := db.Queryx(q, nationality)
+    rows, err := db.Queryx(`SELECT COUNTRY_CODE FROM NOVA_COUNTRY WHERE NATIONALITY = :nationality`, nationality)
     if err != nil {
         utils.LogError(err)
         return s, err
@@ -66,8 +64,7 @@ func FindCountryCodeByNationality(nationality string) (string, error) {
 func FindAllCountries() ([]model.Country, error) {
     lx := make([]model.Country, 0)
     db := database.GetDb()
-    q := `SELECT COUNTRY_NAME, TEL_CODE, COUNTRY_CODE FROM NOVA_COUNTRY WHERE COUNTRY_NAME IS NOT NULL ORDER BY COUNTRY_NAME`
-    rows, err := db.Queryx(q)
+    rows, err := db.Queryx(`SELECT COUNTRY_NAME, TEL_CODE, COUNTRY_CODE FROM NOVA_COUNTRY WHERE COUNTRY_NAME IS NOT NULL ORDER BY COUNTRY_NAME`)
     if err != nil {
         utils.LogError(err)
         return lx, err
@@ -95,8 +92,7 @@ func FindAllCountries() ([]model.Country, error) {
 func FindAllNationalities() ([]model.Nationality, error) {
     lx := make([]model.Nationality, 0)
     db := database.GetDb()
-    q := `SELECT NATIONALITY FROM NOVA_COUNTRY WHERE NATIONALITY IS NOT NULL ORDER BY NATIONALITY`
-    rows, err := db.Queryx(q)
+    rows, err := db.Queryx(`SELECT NATIONALITY FROM NOVA_COUNTRY WHERE NATIONALITY IS NOT NULL ORDER BY NATIONALITY`)
     if err != nil {
         utils.LogError(err)
         return lx, err

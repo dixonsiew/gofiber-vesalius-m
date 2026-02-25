@@ -235,6 +235,32 @@ paths:
             items:
               $ref: '#/definitions/model.ApplicationUser'
             type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/all/active:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUser'
+            type: array
+      security:
+      - BearerAuth: []
       tags:
       - User
 securityDefinitions:

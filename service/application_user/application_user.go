@@ -15,8 +15,7 @@ import (
 func FindAll(offset int, limit int) ([]model.ApplicationUser, error) {
     lx := make([]model.ApplicationUser, 0)
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    rows, err := db.Queryx(q, offset, limit)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`, offset, limit)
     if err != nil {
         utils.LogError(err)
         return lx, err
@@ -65,8 +64,7 @@ func List(page string, limit string) (model.PagedList, error) {
 func Count() (int, error) {
     n := 0
     db := database.GetDb()
-    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`
-    err := db.QueryRowx(q).Scan(&n)
+    err := db.QueryRowx(`SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`).Scan(&n)
     if err != nil {
         utils.LogError(err)
         return n, err
@@ -78,8 +76,7 @@ func Count() (int, error) {
 func FindAllActive(offset int, limit int) ([]model.ApplicationUser, error) {
     lx := make([]model.ApplicationUser, 0)
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    rows, err := db.Queryx(q, offset, limit)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`, offset, limit)
     if err != nil {
         utils.LogError(err)
         return lx, err
@@ -128,8 +125,7 @@ func ListActive(page string, limit string) (model.PagedList, error) {
 func CountActive() (int, error) {
     n := 0
     db := database.GetDb()
-    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`
-    err := db.QueryRowx(q).Scan(&n)
+    err := db.QueryRowx(`SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`).Scan(&n)
     if err != nil {
         utils.LogError(err)
         return n, err
@@ -216,8 +212,7 @@ func FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUs
     k := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
-    rows, err := db.Queryx(q, userId, sessionId)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`, userId, sessionId)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -244,8 +239,7 @@ func FindByUserId(userId int64) (*model.ApplicationUser, error) {
     k := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId`
-    rows, err := db.Queryx(q, userId)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId`, userId)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -272,8 +266,7 @@ func FindByUsername(username string) (*model.ApplicationUser, error) {
     k := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
-    rows, err := db.Queryx(q, username)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`, username)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -300,8 +293,7 @@ func FindByEmail(email string) (*model.ApplicationUser, error) {
     k := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
-    rows, err := db.Queryx(q, email)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`, email)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -333,8 +325,7 @@ func FindByPRN(prn string) (*model.ApplicationUser, error) {
         return x, nil
     }
 
-    q := `SELECT * FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
-    rows, err := db.Queryx(q, prn)
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE MASTER_PRN = :prn`, prn)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -489,8 +480,7 @@ func FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch
     k := model.AssignBranch{}
     var x *model.AssignBranch
     db := database.GetDb()
-    q := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`
-    err := db.QueryRowx(q, branchId, userId).StructScan(&o)
+    err := db.QueryRowx(`SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`, branchId, userId).StructScan(&o)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -507,8 +497,7 @@ func FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch,
     k := model.AssignBranch{}
     var x *model.AssignBranch
     db := database.GetDb()
-    q := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`
-    err := db.QueryRowx(q, branchId, email).StructScan(&o)
+    err := db.QueryRowx(`SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`, branchId, email).StructScan(&o)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -525,8 +514,7 @@ func FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
     k := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
-    q := `SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`
-    err := db.QueryRowx(q, prn, userId).StructScan(&o)
+    err := db.QueryRowx(`SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`, prn, userId).StructScan(&o)
     if err != nil {
         utils.LogError(err)
         return x, err
@@ -541,8 +529,7 @@ func FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
 func ExistsByEmail(email string) (bool, error) {
     b := false
     db := database.GetDb()
-    q := `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email))`
-    rows, err := db.Queryx(q, email)
+    rows, err := db.Queryx(`SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email))`, email)
     if err != nil {
         utils.LogError(err)
         return b, err
@@ -568,8 +555,7 @@ func ExistsByEmail(email string) (bool, error) {
 func ExistsByPRN(prn string) (bool, error) {
     b := false
     db := database.GetDb()
-    q := `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE MASTER_PRN = :prn)`
-    rows, err := db.Queryx(q, prn)
+    rows, err := db.Queryx(`SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE MASTER_PRN = :prn)`, prn)
     if err != nil {
         utils.LogError(err)
         return b, err
@@ -595,8 +581,7 @@ func ExistsByPRN(prn string) (bool, error) {
 func ExistsByMobileNo(mobileNo string) (bool, error) {
     b := false
     db := database.GetDb()
-    q := `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE USERNAME = :mobileNo)`
-    rows, err := db.Queryx(q, mobileNo)
+    rows, err := db.Queryx(`SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE USERNAME = :mobileNo)`, mobileNo)
     if err != nil {
         utils.LogError(err)
         return b, err
@@ -705,7 +690,8 @@ func UpdateVerificationCode(code string, userId int64) error {
 
 func UpdateMachineId(id string, userId int64) error {
     mid := []byte(id)
-    machine_id, err := bcrypt.GenerateFromPassword(mid, bcrypt.DefaultCost)
+    machine_id_byte, err := bcrypt.GenerateFromPassword(mid, bcrypt.DefaultCost)
+    machine_id := string(machine_id_byte)
     if err != nil {
         utils.LogError(err)
         return err
@@ -742,8 +728,7 @@ func SaveSessionId(userId int64) (string, error) {
     sid := ""
     sessionId := uuid.New().String()
     db := database.GetDb()
-    q := `UPDATE APPLICATION_USER SET SESSION_ID = :sessionId WHERE USER_ID = :userId`
-    _, err := db.Exec(q, sessionId, userId)
+    _, err := db.Exec(`UPDATE APPLICATION_USER SET SESSION_ID = :sessionId WHERE USER_ID = :userId`, sessionId, userId)
     if err != nil {
         utils.LogError(err)
         return sid, err
@@ -755,6 +740,40 @@ func SaveSessionId(userId int64) (string, error) {
 
 func DeleteUserAccount() {
 
+}
+
+func InsertDownloadApp(playerId string) error {
+    db := database.GetDb()
+    q := `MERGE INTO APP_DOWNLOADED_USER apu
+        USING (SELECT :playerId AS PLAYER_ID FROM DUAL) src
+        ON (apu.PLAYER_ID = src.PLAYER_ID)
+        WHEN NOT MATCHED THEN
+        INSERT (PLAYER_ID) VALUES (src.PLAYER_ID)`
+    _, err := db.Exec(q, playerId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func InsertDownloadAppV2(machineId string, playerId string) error {
+    db := database.GetDb()
+    q := `MERGE INTO APP_DOWNLOADED_USER apu
+        USING (SELECT :machineId AS MACHINE_ID, :playerId AS PLAYER_ID FROM DUAL) src
+        ON (apu.MACHINE_ID = src.MACHINE_ID)
+         WHEN MATCHED THEN
+          UPDATE SET apu.PLAYER_ID = src.PLAYER_ID, DATE_UPDATE = CURRENT_TIMESTAMP
+         WHEN NOT MATCHED THEN
+          INSERT (MACHINE_ID, PLAYER_ID, DATE_UPDATE) VALUES (src.MACHINE_ID, src.PLAYER_ID, CURRENT_TIMESTAMP)`
+    _, err := db.Exec(q, machineId, playerId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
 }
 
 func DisableFirstTimeBiometricUser(userId int64) error {

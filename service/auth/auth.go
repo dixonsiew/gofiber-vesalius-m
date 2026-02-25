@@ -32,6 +32,11 @@ func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
         if err != nil {
             return user, err
         }
+
+        err = applicationuserService.InsertDownloadAppV2(data.MachineId, data.PlayerId)
+        if err != nil {
+            return user, err
+        }
     }
 
     if data.MachineId != "" {
@@ -50,5 +55,6 @@ func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
         return nil, err
     }
 
+    user.SessionID = sessionId
     return user, nil
 }
