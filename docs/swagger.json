@@ -96,6 +96,41 @@
                     }
                 }
             }
+        },
+        "/user/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUser"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -124,6 +159,177 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ApplicationUser": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "address1": {
+                    "type": "string"
+                },
+                "address2": {
+                    "type": "string"
+                },
+                "address3": {
+                    "type": "string"
+                },
+                "branch": {
+                    "type": "string"
+                },
+                "cityState": {
+                    "type": "string"
+                },
+                "contactNumber": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "dateLoggedIn": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "docNoSignUp": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "firstTimeBiometric": {
+                    "type": "boolean"
+                },
+                "firstTimeLogin": {
+                    "type": "boolean"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "fullNameSignUp": {
+                    "type": "string"
+                },
+                "inactive": {
+                    "type": "string"
+                },
+                "isGoldenPearl": {
+                    "type": "string"
+                },
+                "isKidsExplorer": {
+                    "type": "string"
+                },
+                "isLoggedIn": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "machineId": {
+                    "type": "string"
+                },
+                "masterPrn": {
+                    "type": "string"
+                },
+                "middleName": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "passport": {
+                    "type": "string"
+                },
+                "playerId": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "race": {
+                    "type": "string"
+                },
+                "registration_date_time": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "sessionId": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "signInType": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userBranches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.AssignBranch"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "verificationCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AssignBranch": {
+            "type": "object",
+            "properties": {
+                "adminId": {
+                    "type": "integer"
+                },
+                "assignBranchId": {
+                    "type": "integer"
+                },
+                "branch": {
+                    "$ref": "#/definitions/model.Branch"
+                },
+                "branchId": {
+                    "type": "integer"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Branch": {
+            "type": "object",
+            "properties": {
+                "branchId": {
+                    "type": "integer"
+                },
+                "branchName": {
+                    "type": "string"
+                },
+                "passcode": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }

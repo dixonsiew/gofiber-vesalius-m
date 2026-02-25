@@ -2,95 +2,155 @@ package model
 
 import (
     "database/sql"
+    "math"
     "strconv"
 )
 
+type PagedList struct {
+    List       any `json:"list"`
+    Total      int `json:"total"`
+    TotalPages int `json:"totalPages"`
+}
+
+type Pager struct {
+    Total    int
+    PageNum  int
+    PageSize int
+}
+
+func (o *Pager) SetPageSize(pageSize int) {
+    if (o.Total < pageSize || pageSize < 1) && o.Total > 0 {
+        o.PageSize = o.Total
+    } else {
+        o.PageSize = pageSize
+    }
+
+    if o.GetTotalPages() < o.PageNum {
+        o.PageNum = o.GetTotalPages()
+    }
+
+    if o.PageNum < 1 {
+        o.PageNum = 1
+    }
+}
+
+func (o *Pager) GetLowerBound() int {
+    return (o.PageNum - 1) * o.PageSize
+}
+
+func (o *Pager) GetUpperBound() int {
+    x := o.PageNum * o.PageSize
+    if o.Total < x {
+        x = o.Total
+    }
+
+    return x
+}
+
+func (o *Pager) GetTotalPages() int {
+    v := float64(o.Total) / float64(o.PageSize)
+    x := math.Ceil(v)
+    return int(x)
+}
+
+func GetPager(total int, page string, limit string) Pager {
+    pageNum, _ := strconv.Atoi(page)
+    pageSize, _ := strconv.Atoi(limit)
+    pg := Pager{
+        Total:    total,
+        PageNum:  pageNum,
+        PageSize: pageSize,
+    }
+    pg.SetPageSize(pageSize)
+    return pg
+}
+
 type DbApplicationUser struct {
     UserID               sql.NullInt64  `db:"USER_ID"`
-    Address              sql.NullString `db:"ADDRESS"`
-    ContactNumber        sql.NullString `db:"CONTACT_NUMBER"`
-    Dob                  sql.NullString `db:"DOB"`
-    Email                sql.NullString `db:"EMAIL"`
-    FirstTimeLogin       sql.NullInt64  `db:"FIRST_TIME_LOGIN"`
-    FirstName            sql.NullString `db:"FIRST_NAME"`
-    LastName             sql.NullString `db:"LAST_NAME"`
-    MasterPrn            sql.NullString `db:"MASTER_PRN"`
-    MiddleName           sql.NullString `db:"MIDDLE_NAME"`
-    Nationality          sql.NullString `db:"NATIONALITY"`
-    Passport             sql.NullString `db:"PASSPORT"`
-    Password             sql.NullString `db:"PASSWORD"`
-    Resident             sql.NullString `db:"RESIDENT"`
-    Role                 sql.NullString `db:"ROLE"`
-    Sex                  sql.NullString `db:"SEX"`
-    Title                sql.NullString `db:"TITLE"`
     Username             sql.NullString `db:"USERNAME"`
-    VerificationCode     sql.NullString `db:"VERIFICATION_CODE"`
-    Branch               sql.NullString `db:"BRANCH"`
-    PlayerID             sql.NullString `db:"PLAYER_ID"`
-    RegistrationDateTime sql.NullString `db:"REGISTRATION_DATE_TIME"`
-    InactiveFlag         sql.NullString `db:"INACTIVE_FLAG"`
-    MachineID            sql.NullString `db:"MACHINE_ID"`
-    Race                 sql.NullString `db:"RACE"`
-    FirstTimeBiometric   sql.NullInt64  `db:"FIRST_TIME_BIOMETRIC"`
-    IsLoggedIn           sql.NullInt64  `db:"IS_LOGGED_IN"`
-    DateLoggedIn         sql.NullString `db:"DATE_LOGGED_IN"`
-    SessionID            sql.NullString `db:"SESSION_ID"`
-    IsGoldenPearl        sql.NullString `db:"IS_GOLDEN_PEARL"`
+    Email                sql.NullString `db:"EMAIL"`
     IsKidsExplorer       sql.NullString `db:"IS_KIDS_EXPLORER"`
+    IsGoldenPearl        sql.NullString `db:"IS_GOLDEN_PEARL"`
+    Password             sql.NullString `db:"PASSWORD"`
+    Title                sql.NullString `db:"TITLE"`
+    FirstName            sql.NullString `db:"FIRST_NAME"`
+    MiddleName           sql.NullString `db:"MIDDLE_NAME"`
+    LastName             sql.NullString `db:"LAST_NAME"`
+    Resident             sql.NullString `db:"RESIDENT"`
+    Dob                  sql.NullString `db:"DOB"`
+    Sex                  sql.NullString `db:"SEX"`
+    Race                 sql.NullString `db:"RACE"`
+    Address              sql.NullString `db:"ADDRESS"`
     Address1             sql.NullString `db:"ADDRESS_1"`
     Address2             sql.NullString `db:"ADDRESS_2"`
     Address3             sql.NullString `db:"ADDRESS_3"`
-    Country              sql.NullString `db:"COUNTRY"`
-    Postcode             sql.NullString `db:"POSTCODE"`
     Citystate            sql.NullString `db:"CITYSTATE"`
+    Postcode             sql.NullString `db:"POSTCODE"`
+    Country              sql.NullString `db:"COUNTRY"`
+    ContactNumber        sql.NullString `db:"CONTACT_NUMBER"`
+    Passport             sql.NullString `db:"PASSPORT"`
+    Nationality          sql.NullString `db:"NATIONALITY"`
+    VerificationCode     sql.NullString `db:"VERIFICATION_CODE"`
+    FirstTimeLogin       sql.NullInt64  `db:"FIRST_TIME_LOGIN"`
+    FirstTimeBiometric   sql.NullInt64  `db:"FIRST_TIME_BIOMETRIC"`
+    Role                 sql.NullString `db:"ROLE"`
+    MasterPrn            sql.NullString `db:"MASTER_PRN"`
+    PlayerID             sql.NullString `db:"PLAYER_ID"`
+    MachineID            sql.NullString `db:"MACHINE_ID"`
+    RegistrationDateTime sql.NullString `db:"REGISTRATION_DATE_TIME"`
+    InactiveFlag         sql.NullString `db:"INACTIVE_FLAG"`
+    IsLoggedIn           sql.NullInt64  `db:"IS_LOGGED_IN"`
+    DateLoggedIn         sql.NullString `db:"DATE_LOGGED_IN"`
     SignInType           sql.NullInt32  `db:"SIGN_IN_TYPE"`
     DocNoSignup          sql.NullString `db:"DOC_NO_SIGNUP"`
     FullnameSignup       sql.NullString `db:"FULLNAME_SIGNUP"`
+    SessionID            sql.NullString `db:"SESSION_ID"`
+    Branch               sql.NullString `db:"BRANCH"`
 }
 
 type ApplicationUser struct {
     UserID               int64          `json:"user_id"`
-    Address              string         `json:"address"`
-    ContactNumber        string         `json:"contactNumber"`
-    Dob                  string         `json:"dob"`
+    Username             string         `json:"username"`
     Email                string         `json:"email"`
-    FirstTimeLogin       bool           `json:"firstTimeLogin"`
+    IsKidsExplorer       string         `json:"isKidsExplorer"`
+    IsGoldenPearl        string         `json:"isGoldenPearl"`
+    Password             string         `json:"-"`
+    Title                string         `json:"title"`
     FirstName            string         `json:"firstName"`
+    MiddleName           string         `json:"middleName"`
     LastName             string         `json:"lastName"`
     FullName             string         `json:"fullName"`
-    MasterPrn            string         `json:"masterPrn"`
-    MiddleName           string         `json:"middleName"`
-    Nationality          string         `json:"nationality"`
-    Passport             string         `json:"passport"`
-    Password             string         `json:"password"`
     Resident             string         `json:"resident"`
-    Role                 string         `json:"role"`
+    Dob                  string         `json:"dob"`
     Sex                  string         `json:"sex"`
-    Title                string         `json:"title"`
-    Username             string         `json:"username"`
-    VerificationCode     string         `json:"verificationCode"`
-    Branch               string         `json:"branch"`
-    PlayerID             string         `json:"playerId"`
-    RegistrationDateTime string         `json:"registration_date_time"`
-    InactiveFlag         string         `json:"inactive"`
-    MachineID            string         `json:"machineId"`
     Race                 string         `json:"race"`
-    FirstTimeBiometric   bool           `json:"firstTimeBiometric"`
-    IsLoggedIn           int64          `json:"isLoggedIn"`
-    DateLoggedIn         string         `json:"dateLoggedIn"`
-    UserBranches         []AssignBranch `json:"userBranches"`
-    SessionID            string         `json:"sessionId"`
-    IsGoldenPearl        string         `json:"isGoldenPearl"`
-    IsKidsExplorer       string         `json:"isKidsExplorer"`
+    Address              string         `json:"address"`
     Address1             string         `json:"address1"`
     Address2             string         `json:"address2"`
     Address3             string         `json:"address3"`
-    Country              string         `json:"country"`
-    Postcode             string         `json:"postalCode"`
     Citystate            string         `json:"cityState"`
+    Postcode             string         `json:"postalCode"`
+    Country              string         `json:"country"`
+    ContactNumber        string         `json:"contactNumber"`
+    Passport             string         `json:"passport"`
+    Nationality          string         `json:"nationality"`
+    VerificationCode     string         `json:"verificationCode"`
+    FirstTimeLogin       bool           `json:"firstTimeLogin"`
+    FirstTimeBiometric   bool           `json:"firstTimeBiometric"`
+    Role                 string         `json:"role"`
+    MasterPrn            string         `json:"masterPrn"`
+    PlayerID             string         `json:"playerId"`
+    MachineID            string         `json:"machineId"`
+    RegistrationDateTime string         `json:"registration_date_time"`
+    InactiveFlag         string         `json:"inactive"`
+    IsLoggedIn           int64          `json:"isLoggedIn"`
+    DateLoggedIn         string         `json:"dateLoggedIn"`
     SignInType           int32          `json:"signInType"`
     DocNoSignup          string         `json:"docNoSignUp"`
     FullnameSignup       string         `json:"fullNameSignUp"`
+    UserBranches         []AssignBranch `json:"userBranches"`
+    SessionID            string         `json:"sessionId"`
+    Branch               string         `json:"branch"`
 }
 
 func (o *ApplicationUserFamily) FromRsFamilyMember(m DbApplicationUser) {
@@ -177,6 +237,60 @@ func (o *ApplicationUser) FromDbModel(m DbApplicationUser) {
     o.InactiveFlag = m.InactiveFlag.String
     o.SessionID = m.SessionID.String
     o.SignInType = m.SignInType.Int32
+}
+
+type DbDoctorPatientAppointment struct {
+    DoctorPatientApptId sql.NullInt64  `db:"DOCTOR_PATIENT_APPT_ID"`
+    DoctorID            sql.NullInt64  `db:"DOCTOR_ID"`
+    DoctorName          sql.NullString `db:"DOCTOR_NAME"`
+    DoctorSpecialty     sql.NullString `db:"DOCTOR_SPECIALTY"`
+    ApptStatus          sql.NullString `db:"APPT_STATUS"`
+    ApptNo              sql.NullString `db:"APPT_NO"`
+    ApptDay             sql.NullString `db:"APPT_DAY"`
+    ApptSessionType     sql.NullString `db:"APPT_SESSIONTYPE"`
+    ApptClinic          sql.NullString `db:"APPT_CLINIC"`
+    ApptRoom            sql.NullString `db:"APPT_ROOM"`
+    ApptCasetype        sql.NullString `db:"APPT_CASETYPE"`
+    DateAppt            sql.NullString `db:"DATE_APPT"`
+    PatientID           sql.NullInt64  `db:"PATIENT_ID"`
+    PatientPrn          sql.NullString `db:"PATIENT_PRN"`
+    PatientName         sql.NullString `db:"PATIENT_NAME"`
+}
+
+type DoctorPatientAppointment struct {
+    DoctorPatientApptId int64  `json:"doctor_patient_appt_id"`
+    DoctorID            int64  `json:"doctor_id"`
+    DoctorName          string `json:"doctorName"`
+    DoctorSpecialty     string `json:"doctorSpecialty"`
+    ApptStatus          string `json:"apptStatus"`
+    ApptNo              string `json:"apptNo"`
+    ApptDay             string `json:"apptDay"`
+    ApptSessionType     string `json:"apptSessionType"`
+    ApptClinic          string `json:"apptClinic"`
+    ApptRoom            string `json:"apptRoom"`
+    ApptCasetype        string `json:"apptCasetype"`
+    DateAppt            string `json:"dateAppt"`
+    PatientID           int64  `json:"patientId"`
+    PatientPrn          string `json:"patientPrn"`
+    PatientName         string `json:"patientName"`
+}
+
+func (o *DoctorPatientAppointment) FromDbModel(m DbDoctorPatientAppointment) {
+    o.DoctorPatientApptId = m.DoctorPatientApptId.Int64
+    o.DoctorID = m.DoctorID.Int64
+    o.DoctorName = m.DoctorName.String
+    o.DoctorSpecialty = m.DoctorSpecialty.String
+    o.ApptStatus = m.ApptStatus.String
+    o.ApptNo = m.ApptNo.String
+    o.ApptDay = m.ApptDay.String
+    o.ApptSessionType = m.ApptSessionType.String
+    o.ApptClinic = m.ApptClinic.String
+    o.ApptRoom = m.ApptRoom.String
+    o.ApptCasetype = m.ApptCasetype.String
+    o.DateAppt = m.DateAppt.String
+    o.PatientID = m.PatientID.Int64
+    o.PatientPrn = m.PatientPrn.String
+    o.PatientName = m.PatientName.String
 }
 
 type DbAppVersion struct {

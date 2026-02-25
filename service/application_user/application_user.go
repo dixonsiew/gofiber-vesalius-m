@@ -2,13 +2,242 @@ package applicationuser
 
 import (
 	"database/sql"
+	"math/rand/v2"
+	"strings"
 	"vesaliusm/database"
 	"vesaliusm/model"
 	"vesaliusm/utils"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-    "github.com/google/uuid"
 )
+
+func FindAll(offset int, limit int) ([]model.ApplicationUser, error) {
+    lx := make([]model.ApplicationUser, 0)
+    db := database.GetDb()
+    q := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    rows, err := db.Queryx(q, offset, limit)
+    if err != nil {
+        utils.LogError(err)
+        return lx, err
+    }
+
+    defer rows.Close()
+
+    for rows.Next() {
+        o := model.DbApplicationUser{}
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return lx, err
+        }
+
+        k := model.ApplicationUser{}
+        k.FromDbModel(o)
+        lx = append(lx, k)
+    }
+
+    return lx, nil
+}
+
+func List(page string, limit string) (model.PagedList, error) {
+    m := model.PagedList{}
+    total, err := Count()
+    if err != nil {
+        return m, err
+    }
+
+    pg := model.GetPager(total, page, limit)
+    lx, err := FindAll(pg.GetLowerBound(), pg.PageSize)
+    if err != nil {
+        return m, err
+    }
+
+    m = model.PagedList{
+        List: lx,
+        Total: total,
+        TotalPages: pg.GetTotalPages(),
+    }
+
+    return m, nil
+}
+
+func Count() (int, error) {
+    n := 0
+    db := database.GetDb()
+    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`
+    err := db.QueryRowx(q).Scan(&n)
+    if err != nil {
+        utils.LogError(err)
+        return n, err
+    }
+
+    return n, nil
+}
+
+func FindAllActive(offset int, limit int) ([]model.ApplicationUser, error) {
+    lx := make([]model.ApplicationUser, 0)
+    db := database.GetDb()
+    q := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    rows, err := db.Queryx(q, offset, limit)
+    if err != nil {
+        utils.LogError(err)
+        return lx, err
+    }
+
+    defer rows.Close()
+
+    for rows.Next() {
+        o := model.DbApplicationUser{}
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return lx, err
+        }
+
+        k := model.ApplicationUser{}
+        k.FromDbModel(o)
+        lx = append(lx, k)
+    }
+
+    return lx, nil
+}
+
+func ListActive(page string, limit string) (model.PagedList, error) {
+    m := model.PagedList{}
+    total, err := Count()
+    if err != nil {
+        return m, err
+    }
+
+    pg := model.GetPager(total, page, limit)
+    lx, err := FindAllActive(pg.GetLowerBound(), pg.PageSize)
+    if err != nil {
+        return m, err
+    }
+
+    m = model.PagedList{
+        List: lx,
+        Total: total,
+        TotalPages: pg.GetTotalPages(),
+    }
+
+    return m, nil
+}
+
+func CountActive() (int, error) {
+    n := 0
+    db := database.GetDb()
+    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`
+    err := db.QueryRowx(q).Scan(&n)
+    if err != nil {
+        utils.LogError(err)
+        return n, err
+    }
+
+    return n, nil
+}
+
+func FindByKeyword(keyword string, offset int, limit int) ([]model.ApplicationUser, error) {
+    lx := make([]model.ApplicationUser, 0)
+    db := database.GetDb()
+    q := `
+        SELECT * FROM APPLICATION_USER au
+        WHERE (LOWER(au.FIRST_NAME) LIKE :keyword OR LOWER(au.MIDDLE_NAME) LIKE :keyword OR LOWER(au.LAST_NAME) LIKE :keyword
+        OR au.MASTER_PRN LIKE :keyword OR LOWER(au.EMAIL) LIKE :keyword)
+        AND INACTIVE_FLAG = 'N'
+        ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+    `
+    rows, err := db.Queryx(q, keyword, offset, limit)
+    if err != nil {
+        utils.LogError(err)
+        return lx, err
+    }
+
+    defer rows.Close()
+
+    for rows.Next() {
+        o := model.DbApplicationUser{}
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return lx, err
+        }
+
+        k := model.ApplicationUser{}
+        k.FromDbModel(o)
+        lx = append(lx, k)
+    }
+
+    return lx, nil
+}
+
+func ListByKeyword(keyword string, page string, limit string) (model.PagedList, error) {
+    m := model.PagedList{}
+    total, err := CountByKeyword(keyword)
+    if err != nil {
+        return m, err
+    }
+
+    pg := model.GetPager(total, page, limit)
+    lx, err := FindByKeyword(keyword, pg.GetLowerBound(), pg.PageSize)
+    if err != nil {
+        return m, err
+    }
+
+    m = model.PagedList{
+        List: lx,
+        Total: total,
+        TotalPages: pg.GetTotalPages(),
+    }
+
+    return m, nil
+}
+
+func CountByKeyword(keyword string) (int, error) {
+    n := 0
+    db := database.GetDb()
+    q := `
+        SELECT COUNT(au.USER_ID) AS COUNT FROM APPLICATION_USER au
+        WHERE (LOWER(au.FIRST_NAME) LIKE :keyword OR LOWER(au.MIDDLE_NAME) LIKE :keyword OR LOWER(au.LAST_NAME) LIKE :keyword
+        OR au.MASTER_PRN LIKE :keyword OR LOWER(au.EMAIL) LIKE :keyword) AND INACTIVE_FLAG = 'N'
+    `
+    err := db.QueryRowx(q, keyword).Scan(&n)
+    if err != nil {
+        utils.LogError(err)
+        return n, err
+    }
+
+    return n, nil
+}
+
+func FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
+    o := model.DbApplicationUser{}
+    k := model.ApplicationUser{}
+    var x *model.ApplicationUser
+    db := database.GetDb()
+    q := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
+    rows, err := db.Queryx(q, userId, sessionId)
+    if err != nil {
+        utils.LogError(err)
+        return x, err
+    }
+
+    defer rows.Close()
+
+    if rows.Next() {
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return x, err
+        }
+
+        k.FromDbModel(o)
+        x = &k
+    }
+
+    return x, nil
+}
 
 func FindByUserId(userId int64) (*model.ApplicationUser, error) {
     o := model.DbApplicationUser{}
@@ -390,6 +619,90 @@ func ExistsByMobileNo(mobileNo string) (bool, error) {
     return  b, nil
 }
 
+func SaveUserBranch(branchId int64, o model.ApplicationUser) error {
+    db := database.GetDb()
+    tx, err := db.Begin()
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    q := `UPDATE APPLICATION_USER
+        SET ADDRESS = :address, CONTACT_NUMBER = :contact_number, DOB = :dob, FIRST_NAME = :first_name, LAST_NAME = :last_name, 
+        MASTER_PRN = :master_prn, MIDDLE_NAME = :middle_name, NATIONALITY = :nationality, PASSPORT = :passport, RESIDENT = :resident, 
+        SEX = :sex, TITLE = :title
+        WHERE USER_ID = :user_id`
+    stmt, err := tx.Prepare(q)
+    if err != nil {
+        tx.Rollback()
+        utils.LogError(err)
+        return err
+    }
+
+    defer stmt.Close()
+
+    _, err = stmt.Exec(
+        sql.Named("address", o.Address), 
+        sql.Named("contact_number", o.ContactNumber), 
+        sql.Named("dob", o.Dob), 
+        sql.Named("first_name", o.FirstName), 
+        sql.Named("last_name", o.LastName), 
+        sql.Named("master_prn", o.MasterPrn), 
+        sql.Named("middle_name", o.MiddleName), 
+        sql.Named("nationality", o.Nationality), 
+        sql.Named("passport", o.Passport), 
+        sql.Named("resident", o.Resident), 
+        sql.Named("sex", o.Sex), 
+        sql.Named("title", o.Title), 
+        sql.Named("user_id", o.UserID),
+    )
+    if err != nil {
+        tx.Rollback()
+        utils.LogError(err)
+        return err
+    }
+
+    q = `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :user_id, :branchId)`
+    stmti, err := tx.Prepare(q)
+    if err != nil {
+        tx.Rollback()
+        utils.LogError(err)
+        return err
+    }
+
+    defer stmti.Close()
+
+    _, err = stmti.Exec(
+        sql.Named("prn", o.MasterPrn), 
+        sql.Named("user_id", o.UserID), 
+        sql.Named("branchId", branchId),
+    )
+    if err != nil {
+        tx.Rollback()
+        utils.LogError(err)
+        return err
+    }
+
+    err = tx.Commit()
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func UpdateVerificationCode(code string, userId int64) error {
+    db := database.GetDb()
+    _, err := db.Exec(`UPDATE APPLICATION_USER SET VERIFICATION_CODE = :code WHERE USER_ID = :userId`, code, userId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
 func UpdateMachineId(id string, userId int64) error {
     mid := []byte(id)
     machine_id, err := bcrypt.GenerateFromPassword(mid, bcrypt.DefaultCost)
@@ -399,7 +712,7 @@ func UpdateMachineId(id string, userId int64) error {
     }
 
     db := database.GetDb()
-    _, err = db.Exec(`UPDATE APPLICATION_USER SET MACHINE_ID = :mid WHERE USER_ID = :userId`, machine_id, userId)
+    _, err = db.Exec(`UPDATE APPLICATION_USER SET MACHINE_ID = :machine_id WHERE USER_ID = :userId`, machine_id, userId)
     if err != nil {
         utils.LogError(err)
         return err
@@ -438,6 +751,72 @@ func SaveSessionId(userId int64) (string, error) {
 
     sid = sessionId
     return sid, nil
+}
+
+func DeleteUserAccount() {
+
+}
+
+func DisableFirstTimeBiometricUser(userId int64) error {
+    db := database.GetDb()
+    _, err := db.Exec(`UPDATE APPLICATION_USER SET FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :userId`, userId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func ResetUserSignup(userId int64, prn string) error {
+    db := database.GetDb()
+    _, err := db.Exec(`DELETE FROM ASSIGN_BRANCH WHERE USER_ID = :userId AND PRN = :prn`, userId, prn)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    _, err = db.Exec(`DELETE FROM APPLICATION_USER WHERE USER_ID = :userId AND MASTER_PRN = :prn`, userId, prn)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func setLogin(userId int64) error {
+    db := database.GetDb()
+    _, err := db.Exec(`UPDATE APPLICATION_USER SET IS_LOGGED_IN = 1, DATE_LOGGED_IN = CURRENT_TIMESTAMP WHERE USER_ID = :userId`, userId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func SetLogout(userId int64) error {
+    db := database.GetDb()
+    _, err := db.Exec(`UPDATE APPLICATION_USER SET IS_LOGGED_IN = 0 WHERE USER_ID = :userId`, userId)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+
+    return nil
+}
+
+func GetRandomStr(length int) string {
+    ls := make([]string, 0)
+    characters := "0123456789"
+    for i := 0; i < length; i++ {
+        i := rand.IntN(len(characters))
+        j := i + 1
+        ls = append(ls, characters[i:j])
+    }
+    
+    return strings.Join(ls, "")
 }
 
 func ValidateCredentials(user model.ApplicationUser, password string) bool {
