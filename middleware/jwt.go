@@ -68,12 +68,12 @@ func ValidateToken(c *fiber.Ctx) (int, *model.ApplicationUser, error) {
 func ValidateAppUser(c *fiber.Ctx) error {
     _, id, types, sessionId, err := DecodeToken(c)
     if err != nil || types != "1" {
-        return Unauthorized(c)
+        return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
     user, err := applicationuserService.FindByUserId(int64(id))
     if err != nil || user == nil {
-        return Unauthorized(c)
+        return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
     if user.SessionID == "" {
