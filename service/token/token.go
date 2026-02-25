@@ -2,45 +2,23 @@ package token
 
 import (
     "fmt"
-	"vesaliusm/model"
-	userService "vesaliusm/service/application_user"
-	"vesaliusm/utils"
-	"strconv"
-	"strings"
-	"time"
+    "strconv"
+    "time"
+    "vesaliusm/model"
+    userService "vesaliusm/service/application_user"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+    "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v5"
 )
-
-func DecodeToken(c *fiber.Ctx) (string, int, error) {
-    tokenStr := c.Get("Authorization")
-    tokenStr = strings.ReplaceAll(tokenStr, "Bearer ", "")
-    token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
-        return []byte(utils.JWT_SECRET), nil
-    })
-
-    if err != nil {
-        utils.LogError(err)
-        return "", 0, err
-    }
-
-    claims, ok := token.Claims.(*jwt.MapClaims)
-    if !ok {
-        return "", 0, fmt.Errorf("could not parse claims")
-    }
-
-    sub := (*claims)["subject"].(string)
-    username := (*claims)["username"].(string)
-    id, _ := strconv.Atoi(sub)
-    return username, id, nil
-}
 
 func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
-        "username": user.Username,
-        "subject":  fmt.Sprintf("%d", user.UserID),
-        "exp":      time.Now().Add(time.Hour * 720).Unix(),
+        "username":  user.Email,
+        "sessionId": user.SessionID,
+        "type":      "1",
+        "subject":   fmt.Sprintf("%d", user.UserID),
+        "exp":       time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     t, err := token.SignedString([]byte(utils.JWT_SECRET))
@@ -54,7 +32,9 @@ func GenerateAccessToken(user model.ApplicationUser) (string, error) {
 
 func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
-        "username": user.Username,
+        "username":  user.Username,
+        "sessionId": user.SessionID,
+        "type":      "1",
         "subject":  fmt.Sprintf("%d", user.UserID),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }

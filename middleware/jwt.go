@@ -1,13 +1,16 @@
 package middleware
 
 import (
+    "fmt"
+    "strconv"
+    "strings"
     "vesaliusm/model"
-    userService "vesaliusm/service/application_user"
-    tokenService "vesaliusm/service/token"
+    applicationuserService "vesaliusm/service/application_user"
     "vesaliusm/utils"
 
     jwtware "github.com/gofiber/contrib/jwt"
     "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v5"
 )
 
 func JWTProtected(c *fiber.Ctx) error {
@@ -23,18 +26,68 @@ func JWTProtected(c *fiber.Ctx) error {
     })(c)
 }
 
+func DecodeToken(c *fiber.Ctx) (string, int, string, string, error) {
+    tokenStr := c.Get("Authorization")
+    tokenStr = strings.ReplaceAll(tokenStr, "Bearer ", "")
+    token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+        return []byte(utils.JWT_SECRET), nil
+    })
+
+    if err != nil {
+        utils.LogError(err)
+        return "", 0, "", "", err
+    }
+
+    claims, ok := token.Claims.(*jwt.MapClaims)
+    if !ok {
+        return "", 0, "", "", fmt.Errorf("could not parse claims")
+    }
+
+    sub := (*claims)["subject"].(string)
+    username := (*claims)["username"].(string)
+    sessionId := (*claims)["sessionId"].(string)
+    types := (*claims)["type"].(string)
+    id, _ := strconv.Atoi(sub)
+    return username, id, types, sessionId, nil
+}
+
 func ValidateToken(c *fiber.Ctx) (int, *model.ApplicationUser, error) {
-    _, id, err := tokenService.DecodeToken(c)
+    _, id, _, _, err := DecodeToken(c)
     if err != nil {
         return id, nil, err
     }
 
-    user, err := userService.FindByUserId(int64(id))
+    user, err := applicationuserService.FindByUserId(int64(id))
     if err != nil || user == nil {
         return id, user, err
     }
 
     return id, user, nil
+}
+
+func ValidateAppUser(c *fiber.Ctx) error {
+    _, id, types, sessionId, err := DecodeToken(c)
+    if err != nil || types != "1" {
+        return Unauthorized(c)
+    }
+
+    user, err := applicationuserService.FindByUserId(int64(id))
+    if err != nil || user == nil {
+        return Unauthorized(c)
+    }
+
+    if user.SessionID == "" {
+        return fiber.NewError(fiber.StatusUnauthorized, "The system has detected your account is no longer valid. Please sign in again.")
+    }
+
+    if sessionId != "" {
+        userSession, err := applicationuserService.FindByUserIdSessionId(user.UserID, sessionId)
+        if err != nil || userSession == nil {
+            return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
+        }
+    }
+
+    return c.Next()
 }
 
 func NoContent(c *fiber.Ctx) error {

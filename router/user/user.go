@@ -9,7 +9,7 @@ import (
 
 func SetupRoutes(router fiber.Router) {
     api := router.Group("/user")
-    api.Use(middleware.JWTProtected)
+    api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
     api.Get("/all", user.GetAllUsers)
     api.Get("/all/active", user.GetAllActiveUsers)
 }
