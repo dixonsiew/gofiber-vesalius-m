@@ -437,44 +437,46 @@ func (o *AssignBranch) FromDbModel(m DbAssignBranch) {
 
 type DbAdminUser struct {
     AdminID       sql.NullInt64  `db:"ADMIN_ID"`
+    Username      sql.NullString `db:"USERNAME"`
+    Email         sql.NullString `db:"EMAIL"`
+    Password      sql.NullString `db:"PASSWORD"`
+    Title         sql.NullString `db:"TITLE"`
+    FirstName     sql.NullString `db:"FIRST_NAME"`
+    MiddleName    sql.NullString `db:"MIDDLE_NAME"`
+    LastName      sql.NullString `db:"LAST_NAME"`
+    Resident      sql.NullString `db:"RESIDENT"`
+    Dob           sql.NullString `db:"DOB"`
+    Sex           sql.NullString `db:"SEX"`
     Address       sql.NullString `db:"ADDRESS"`
     ContactNumber sql.NullString `db:"CONTACT_NUMBER"`
-    Dob           sql.NullString `db:"DOB"`
-    Email         sql.NullString `db:"EMAIL"`
-    FirstName     sql.NullString `db:"FIRST_NAME"`
-    LastName      sql.NullString `db:"LAST_NAME"`
-    MiddleName    sql.NullString `db:"MIDDLE_NAME"`
-    Nationality   sql.NullString `db:"NATIONALITY"`
     Passport      sql.NullString `db:"PASSPORT"`
-    Password      sql.NullString `db:"PASSWORD"`
-    Resident      sql.NullString `db:"RESIDENT"`
+    Nationality   sql.NullString `db:"NATIONALITY"`
     Role          sql.NullString `db:"ROLE"`
-    Sex           sql.NullString `db:"SEX"`
-    Title         sql.NullString `db:"TITLE"`
     UserGroupID   sql.NullInt64  `db:"USER_GROUP_ID"`
     UserGroupName sql.NullString `db:"USER_GROUP_NAME"`
-    Username      sql.NullString `db:"USERNAME"`
+    
 }
 
 type AdminUser struct {
     AdminID       int64  `json:"admin_id"`
+    Username      string `json:"username"`
+    Email         string `json:"email"`
+    Password      string `json:"-"`
+    Title         string `json:"title"`
+    FirstName     string `json:"firstName"`
+    MiddleName    string `json:"middleName"`
+    LastName      string `json:"lastName"`
+    Resident      string `json:"resident"`
+    Dob           string `json:"dob"`
+    Sex           string `json:"sex"`
     Address       string `json:"address"`
     ContactNumber string `json:"contactNumber"`
-    Dob           string `json:"dob"`
-    Email         string `json:"email"`
-    FirstName     string `json:"firstName"`
-    LastName      string `json:"lastName"`
-    MiddleName    string `json:"middleName"`
-    Nationality   string `json:"nationality"`
     Passport      string `json:"passport"`
-    Password      string `json:"password"`
-    Resident      string `json:"resident"`
+    Nationality   string `json:"nationality"`
     Role          string `json:"role"`
-    Sex           string `json:"sex"`
-    Title         string `json:"title"`
     UserGroupID   int64  `json:"userGroupId"`
     UserGroupName string `json:"userGroupName"`
-    Username      string `json:"username"`
+    AdminBranches []AssignBranch `json:"adminBranches"`
 }
 
 func (o *AdminUser) FromDbModel(m DbAdminUser) {

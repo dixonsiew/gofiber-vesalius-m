@@ -6,6 +6,7 @@ import (
     "strings"
     "vesaliusm/model"
     applicationuserService "vesaliusm/service/application_user"
+    adminUserService "vesaliusm/service/admin_user"
     "vesaliusm/utils"
 
     jwtware "github.com/gofiber/contrib/jwt"
@@ -65,6 +66,20 @@ func ValidateToken(c *fiber.Ctx) (int, *model.ApplicationUser, error) {
     return id, user, nil
 }
 
+func ValidateAdminToken(c *fiber.Ctx) (int, *model.AdminUser, error) {
+    _, id, _, _, err := DecodeToken(c)
+    if err != nil {
+        return id, nil, err
+    }
+
+    user, err := adminUserService.FindByAdminId(int64(id))
+    if err != nil || user == nil {
+        return id, user, err
+    }
+
+    return id, user, nil
+}
+
 func ValidateAppUser(c *fiber.Ctx) error {
     _, id, types, sessionId, err := DecodeToken(c)
     if err != nil || types != "1" {
@@ -85,6 +100,15 @@ func ValidateAppUser(c *fiber.Ctx) error {
         if err != nil || userSession == nil {
             return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
         }
+    }
+
+    return c.Next()
+}
+
+func ValidateAdminUser(c *fiber.Ctx) error {
+    _, _, types, _, err := DecodeToken(c)
+    if err != nil || types != "0" {
+        return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
     return c.Next()

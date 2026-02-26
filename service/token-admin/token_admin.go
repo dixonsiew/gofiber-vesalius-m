@@ -1,23 +1,22 @@
-package token
+package tokenadmin
 
 import (
     "fmt"
     "strconv"
     "time"
     "vesaliusm/model"
-    userService "vesaliusm/service/application_user"
+    adminUserService "vesaliusm/service/admin_user"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v2"
     "github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateAccessToken(user model.ApplicationUser) (string, error) {
+func GenerateAccessToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email,
-        "sessionId": user.SessionID,
-        "type":      "1",
-        "subject":   fmt.Sprintf("%d", user.UserID),
+        "type":      "0",
+        "subject":   fmt.Sprintf("%d", user.AdminID),
         "exp":       time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -30,12 +29,11 @@ func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     return t, nil
 }
 
-func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
+func GenerateRefreshToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email,
-        "sessionId": user.SessionID,
-        "type":      "1",
-        "subject":  fmt.Sprintf("%d", user.UserID),
+        "type":      "0",
+        "subject":  fmt.Sprintf("%d", user.AdminID),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -48,7 +46,7 @@ func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     return t, nil
 }
 
-func ResolveRefreshToken(encoded string) (*model.ApplicationUser, error) {
+func ResolveRefreshToken(encoded string) (*model.AdminUser, error) {
     _, id, err := decodeRefreshToken(encoded)
     if id == 0 || err != nil {
         return nil, fmt.Errorf("refresh token not found")
@@ -100,6 +98,6 @@ func decodeRefreshToken(tokenStr string) (string, int, error) {
     return username, id, nil
 }
 
-func getUserFromRefreshTokenPayload(id int) (*model.ApplicationUser, error) {
-    return userService.FindByUserId(int64(id))
+func getUserFromRefreshTokenPayload(id int) (*model.AdminUser, error) {
+    return adminUserService.FindByAdminId(int64(id))
 }
