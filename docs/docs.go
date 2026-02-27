@@ -205,13 +205,15 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Abcd1234"
                 },
                 "playerId": {
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "eugene.lim@nova-hub.com"
                 }
             }
         },

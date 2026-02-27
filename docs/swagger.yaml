@@ -11,10 +11,12 @@ definitions:
       machineId:
         type: string
       password:
+        default: Abcd1234
         type: string
       playerId:
         type: string
       username:
+        default: eugene.lim@nova-hub.com
         type: string
     required:
     - password

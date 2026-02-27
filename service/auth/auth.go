@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"vesaliusm/dto"
-	"vesaliusm/model"
-	applicationuserService "vesaliusm/service/application_user"
+    "vesaliusm/dto"
+    "vesaliusm/model"
+    applicationuserService "vesaliusm/service/application_user"
 
-	"github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v2"
 )
 
 func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
