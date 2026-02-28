@@ -2,10 +2,10 @@ package user
 
 import (
 	"fmt"
-	applicationuserService "vesaliusm/service/application_user"
+	applicationuserService "vesaliusm/service/applicationUser"
 	"vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 // GetAllUsers
@@ -13,11 +13,11 @@ import (
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"
-// @Param        _limit             query      string  false  "_limit"
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all [get]
-func GetAllUsers(c *fiber.Ctx) error {
+func GetAllUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
 	limit := c.Query("_limit", "10")
     m, err := applicationuserService.List(page, limit)
@@ -35,11 +35,11 @@ func GetAllUsers(c *fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"
-// @Param        _limit             query      string  false  "_limit"
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all/active [get]
-func GetAllActiveUsers(c *fiber.Ctx) error {
+func GetAllActiveUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
     m, err := applicationuserService.ListActive(page, limit)

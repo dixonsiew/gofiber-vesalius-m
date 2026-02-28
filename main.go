@@ -11,14 +11,17 @@ import (
     "vesaliusm/router"
     "vesaliusm/utils"
 
-    "github.com/gofiber/contrib/fiberzerolog"
+    "github.com/go-playground/validator/v10"
     // jwtware "github.com/gofiber/contrib/jwt"
-    "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/fiber/v2/middleware/compress"
-    "github.com/gofiber/fiber/v2/middleware/monitor"
-    "github.com/gofiber/fiber/v2/middleware/recover"
-    "github.com/gofiber/swagger"
-    redoc "github.com/natebwangsut/fiber-redoc"
+    swaggo "github.com/gofiber/contrib/v3/swaggo"
+    fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
+    "github.com/gofiber/fiber/v3"
+    "github.com/gofiber/fiber/v3/middleware/compress"
+    "github.com/gofiber/fiber/v3/middleware/cors"
+    "github.com/gofiber/fiber/v3/middleware/healthcheck"
+    "github.com/gofiber/fiber/v3/middleware/recover"
+    "github.com/gofiber/fiber/v3/middleware/static"
+    // redoc "github.com/natebwangsut/fiber-redoc"
 )
 
 // @title (IHP-UAT) Vesalius-m Backend API
@@ -38,12 +41,11 @@ func main() {
     )
     defer runLogFile.Close()
     utils.SetClient()
-    utils.SetValidator()
     utils.SetLogger(runLogFile)
     port := config.Config("port")
     app := fiber.New(fiber.Config{
-        Prefork: true,
-        ErrorHandler: func(c *fiber.Ctx, err error) error {
+        StructValidator: &utils.StructValidator{Xvalidate: validator.New()},
+        ErrorHandler: func(c fiber.Ctx, err error) error {
             code := fiber.StatusInternalServerError
             var e *fiber.Error
             if errors.As(err, &e) {
@@ -58,9 +60,14 @@ func main() {
     })
     app.Use(recover.New())
     app.Use(compress.New())
+    app.Use(cors.New(cors.Config{
+        AllowOrigins:  []string{"*"},
+        ExposeHeaders: []string{"Authorization", "filename", utils.X_TOTAL_COUNT, utils.X_TOTAL_PAGE},
+    }))
     app.Use(fiberzerolog.New(fiberzerolog.Config{
         Logger: &utils.Logger,
     }))
+
     // app.Use(jwtware.New(jwtware.Config{
     //     SigningKey: jwtware.SigningKey{Key: []byte(utils.JWT_SECRET)},
     // }))
@@ -71,7 +78,8 @@ func main() {
 
     basePath := "ih/mobile_central_2_0_0"
     initSwagger(app, basePath)
-    app.Get("/ih/mobile_central_2_0_0/metrics", monitor.New())
+    app.Get(healthcheck.StartupEndpoint, healthcheck.New())
+    app.Get("/ih/mobile_central_2_0_0/healthz", healthcheck.New())
     router.SetupRoutes(app, basePath)
 
     // if !fiber.IsChild() {
@@ -79,7 +87,9 @@ func main() {
     //     defer cron.Shutdown()
     // }
 
-    err := app.Listen(fmt.Sprintf(":%s", port))
+    err := app.Listen(fmt.Sprintf(":%s", port), fiber.ListenConfig{
+        EnablePrefork: true,
+    })
 
     if err != nil {
         utils.Logger.Fatal().Err(err).Msg("Fiber app error")
@@ -90,12 +100,12 @@ func initSwagger(app *fiber.App, basePath string) {
     b, _ := os.ReadFile("./public/css/theme-flattop.css")
     css := string(b)
 
-    cfg := swagger.Config{
+    cfg := swaggo.Config{
         URL:          "doc.json",
         DeepLinking:  true,
         DocExpansion: "list",
         Title:        "(IHP-UAT) Vesalius-m Backend API",
-        SyntaxHighlight: &swagger.SyntaxHighlightConfig{
+        SyntaxHighlight: &swaggo.SyntaxHighlightConfig{
             Activate: true,
             Theme:    "arta",
         },
@@ -103,8 +113,8 @@ func initSwagger(app *fiber.App, basePath string) {
         PersistAuthorization: true,
     }
 
-    app.Get(fmt.Sprintf("/%s/docs/*", basePath), swagger.New(cfg))
-    app.Get(fmt.Sprintf("/%s/redocs/*", basePath), redoc.Handler)
+    app.Get(fmt.Sprintf("/%s/docs/*", basePath), swaggo.New(cfg))
+    // app.Get(fmt.Sprintf("/%s/redocs/*", basePath), redoc.Handler)
 
-    app.Static(fmt.Sprintf("/%s/static", basePath), "./public")
+    app.Get(fmt.Sprintf("/%s/static", basePath), static.New("./public"))
 }

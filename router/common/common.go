@@ -3,7 +3,7 @@ package common
 import (
     "vesaliusm/controller/common"
 
-    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {

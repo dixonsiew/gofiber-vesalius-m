@@ -5,7 +5,7 @@ import (
     "strconv"
     "time"
     "vesaliusm/model"
-    userService "vesaliusm/service/application_user"
+    userService "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v2"

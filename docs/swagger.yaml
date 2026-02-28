@@ -151,6 +151,21 @@ definitions:
       telCode:
         type: string
     type: object
+  model.FutureOrder:
+    properties:
+      description:
+        type: string
+      orderDoctor:
+        type: string
+      patientName:
+        type: string
+      performDate:
+        type: string
+      planType:
+        type: string
+      prn:
+        type: string
+    type: object
   model.Nationality:
     properties:
       nationality:
@@ -201,6 +216,35 @@ paths:
             type: array
       tags:
       - Common
+  /future-order/all/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.FutureOrder'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Future Order
   /login:
     post:
       parameters:

@@ -1,14 +1,15 @@
 package auth
 
 import (
-	"vesaliusm/dto"
-	authService "vesaliusm/service/auth"
-    adminUserService "vesaliusm/service/admin_user"
-	tokenService "vesaliusm/service/token"
-    tokenAdminService "vesaliusm/service/token-admin"
-	"vesaliusm/utils"
+    "vesaliusm/dto"
+    adminUserService "vesaliusm/service/adminUser"
+    authService "vesaliusm/service/auth"
+    tokenService "vesaliusm/service/token"
+    tokenAdminService "vesaliusm/service/tokenAdmin"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v2"
+    "github.com/go-playground/validator/v10"
+    "github.com/gofiber/fiber/v3"
 )
 
 // Login
@@ -18,19 +19,19 @@ import (
 // @Param request body dto.LoginDto true "Login Request"
 // @Success 200
 // @Router /login [post]
-func Login(c *fiber.Ctx) error {
-    data := dto.LoginDto{}
+func Login(c fiber.Ctx) error {
+    data := new(dto.LoginDto)
     mx := fiber.Map{
         "statusCode": fiber.StatusUnauthorized,
         "message":    "Invalid Credentials",
     }
-    if err := c.BodyParser(&data); err != nil {
-        return c.Status(fiber.StatusUnauthorized).JSON(mx)
-    }
-
-    errs := utils.ValidatePayload(data, c)
-    if errs != nil {
-        return c.Status(fiber.StatusUnauthorized).JSON(mx)
+    if err := c.Bind().Body(data); err != nil {
+        if validationErrors, ok := err.(validator.ValidationErrors); ok {
+            errs := utils.GetValidationErrors(validationErrors)
+            if errs != nil {
+                return c.Status(fiber.StatusUnauthorized).JSON(mx)
+            }
+        }
     }
 
     if data.FromAdmin {
@@ -67,7 +68,7 @@ func Login(c *fiber.Ctx) error {
             "role": user.Role,
         })
     } else {
-        user, err := authService.AuthenticateUser(data)
+        user, err := authService.AuthenticateUser(*data)
         if err != nil {
             return err
         }

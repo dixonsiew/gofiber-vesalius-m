@@ -1,37 +1,29 @@
 package utils
 
 import (
-    "fmt"
-    "os"
-    "strings"
-    "time"
+	"fmt"
+	"os"
+	"strings"
+	"time"
 
-    "github.com/go-playground/validator/v10"
-    "github.com/go-resty/resty/v2"
-    "github.com/gofiber/fiber/v2"
+	"github.com/go-playground/validator/v10"
+	"github.com/go-resty/resty/v2"
+	"github.com/gofiber/fiber/v3"
     "github.com/rs/zerolog"
-    "github.com/ztrue/tracerr"
+	"github.com/ztrue/tracerr"
 )
 
-type (
-    ErrorResponse struct {
-        Error       bool
-        FailedField string
-        Tag         string
-        Value       any
-        Param       string
-    }
+type StructValidator struct {
+    Xvalidate *validator.Validate
+}
 
-    XValidator struct {
-        validator *validator.Validate
-    }
-)
+func (v *StructValidator) Validate(out any) error {
+    return v.Xvalidate.Struct(out)
+}
 
 var (
-    validate = validator.New()
     Logger zerolog.Logger
     iLogger zerolog.Logger
-    appValidator *XValidator
     client       *resty.Client
 )
 
@@ -47,40 +39,28 @@ func SetLogger(runLogFile *os.File) {
     iLogger = zerolog.New(os.Stdout).Level(zerolog.DebugLevel).With().Timestamp().Logger()
 }
 
-func SetValidator() {
-    v := &XValidator{
-        validator: validate,
-    }
-    appValidator = v
-}
-
-func GetValidator() *XValidator {
-    return appValidator
-}
-
-func ValidatePayload(data any, c *fiber.Ctx) error {
-    errs := GetValidator().Validate(data)
-    if len(errs) > 0 && errs[0].Error {
+func GetValidationErrors(errs validator.ValidationErrors) error {
+    if len(errs) > 0 {
         errMsgs := make([]string, 0)
         for _, err := range errs {
-            switch err.Tag {
-            case "required":
-                ex := fmt.Sprintf("[%s] is %s", err.FailedField, err.Tag)
-                errMsgs = append(errMsgs, ex)
-            case "max":
-                ex := fmt.Sprintf("[%s] max length is %s", err.FailedField, err.Param)
-                errMsgs = append(errMsgs, ex)
-            case "min":
-                ex := fmt.Sprintf("[%s] min length is %s", err.FailedField, err.Param)
-                errMsgs = append(errMsgs, ex)
-            default:
-                errMsgs = append(errMsgs, fmt.Sprintf(
-                    "[%s]: '%v' | Needs to implement '%s' '%s'",
-                    err.FailedField,
-                    err.Value,
-                    err.Tag,
-                    err.Param,
-                ))
+            switch err.Tag() {
+                case "required":
+                    ex := fmt.Sprintf("[%s] is %s", err.Field(), err.Tag())
+                    errMsgs = append(errMsgs, ex)
+                case "max":
+                    ex := fmt.Sprintf("[%s] max length is %s", err.Field(), err.Param())
+                    errMsgs = append(errMsgs, ex)
+                case "min":
+                    ex := fmt.Sprintf("[%s] min length is %s", err.Field(), err.Param())
+                    errMsgs = append(errMsgs, ex)
+                default:
+                    errMsgs = append(errMsgs, fmt.Sprintf(
+                        "[%s]: '%v' | Needs to implement '%s' '%s'",
+                        err.Field(),
+                        err.Value(),
+                        err.Tag(),
+                        err.Param(),
+                    ))
             }
         }
 
@@ -91,28 +71,6 @@ func ValidatePayload(data any, c *fiber.Ctx) error {
     }
 
     return nil
-}
-
-func (v XValidator) Validate(data any) []ErrorResponse {
-    validationErrors := []ErrorResponse{}
-
-    errs := validate.Struct(data)
-    if errs != nil {
-        for _, err := range errs.(validator.ValidationErrors) {
-            // In this case data object is actually holding the User struct
-            var elem ErrorResponse
-
-            elem.FailedField = err.Field() // Export struct field name
-            elem.Tag = err.Tag()           // Export struct tag
-            elem.Value = err.Value()       // Export field value
-            elem.Error = true
-            elem.Param = err.Param()
-
-            validationErrors = append(validationErrors, elem)
-        }
-    }
-
-    return validationErrors
 }
 
 func GetErrors(errs []error) string {
@@ -126,6 +84,7 @@ func GetErrors(errs []error) string {
 
 func CatchPanic(funcName string) {
     if err := recover(); err != nil {
+        //LogInfo(fmt.Sprintf("recovered from panic -%s:%v", funcName, err))
         LogError(fmt.Errorf("recovered from panic -%s:%v", funcName, err))
     }
 }

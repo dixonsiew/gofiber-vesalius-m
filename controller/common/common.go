@@ -3,7 +3,7 @@ package common
 import (
 	novaCountryService "vesaliusm/service/country"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 // GetCountriesTelCode
@@ -12,7 +12,7 @@ import (
 // @Produce json
 // @Success 200 {array} model.CountryTelCode
 // @Router /common/telcode/list [get]
-func GetCountriesTelCode(c *fiber.Ctx) error {
+func GetCountriesTelCode(c fiber.Ctx) error {
     lx, err := novaCountryService.FindAllCountryTelCode()
     if err != nil {
         return err
@@ -27,7 +27,7 @@ func GetCountriesTelCode(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {array} model.Country
 // @Router /common/country/list [get]
-func GetCountries(c *fiber.Ctx) error {
+func GetCountries(c fiber.Ctx) error {
     lx, err := novaCountryService.FindAllCountries()
     if err != nil {
         return err
@@ -42,7 +42,7 @@ func GetCountries(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {array} model.Nationality
 // @Router /common/nationality/list [get]
-func GetNationalities(c *fiber.Ctx) error {
+func GetNationalities(c fiber.Ctx) error {
     lx, err := novaCountryService.FindAllNationalities()
     if err != nil {
         return err

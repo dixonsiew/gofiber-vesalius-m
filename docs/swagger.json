@@ -71,6 +71,53 @@
                 }
             }
         },
+        "/future-order/all/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Future Order"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.FutureOrder"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "produces": [
@@ -402,6 +449,29 @@
                     "type": "string"
                 },
                 "telCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FutureOrder": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "orderDoctor": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "performDate": {
+                    "type": "string"
+                },
+                "planType": {
+                    "type": "string"
+                },
+                "prn": {
                     "type": "string"
                 }
             }

@@ -3,7 +3,7 @@ package auth
 import (
     "vesaliusm/dto"
     "vesaliusm/model"
-    applicationuserService "vesaliusm/service/application_user"
+    applicationuserService "vesaliusm/service/applicationUser"
 
     "github.com/gofiber/fiber/v2"
 )
