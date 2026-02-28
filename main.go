@@ -116,5 +116,5 @@ func initSwagger(app *fiber.App, basePath string) {
     app.Get(fmt.Sprintf("/%s/docs/*", basePath), swaggo.New(cfg))
     // app.Get(fmt.Sprintf("/%s/redocs/*", basePath), redoc.Handler)
 
-    app.Get(fmt.Sprintf("/%s/static", basePath), static.New("./public"))
+    app.Get(fmt.Sprintf("/%s/static*", basePath), static.New("./public"))
 }
