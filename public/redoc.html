@@ -1,15 +1,14 @@
 <!doctype html> <!-- Important: must specify -->
 <html>
 <head>
-  <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 characters -->
+  <title>ReDoc - (IHP-UAT) Vesalius-m Backend API</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
   <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
 </head>
 <body>
-  <rapi-doc
-    spec-url="http://localhost:7085/ih/mobile_central_2_0_0/docs/doc.json"
-    theme = "dark"
-  > </rapi-doc>
+  <redoc spec-url="http://localhost:7085/ih/mobile_central_2_0_0/docs/doc.json"></redoc>
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 </body>
 </html>

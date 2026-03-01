@@ -15,6 +15,69 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminUser"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AdminUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/common/country/list": {
             "get": {
                 "produces": [
@@ -261,6 +324,68 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
+        "model.AdminUser": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adminBranches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.AssignBranch"
+                    }
+                },
+                "admin_id": {
+                    "type": "integer"
+                },
+                "contactNumber": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "middleName": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "passport": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "userGroupName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

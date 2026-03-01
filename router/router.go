@@ -1,8 +1,9 @@
 package router
 
 import (
-    "vesaliusm/router/common"
+    "vesaliusm/router/admin"
     "vesaliusm/router/auth"
+    "vesaliusm/router/common"
     "vesaliusm/router/futureOrder"
     "vesaliusm/router/user"
 
@@ -15,4 +16,5 @@ func SetupRoutes(app *fiber.App, basePath string) {
     auth.SetupRoutes(api)
     futureOrder.SetupRoutes(api)
     user.SetupRoutes(api)
+    admin.SetupRoutes(api)
 }

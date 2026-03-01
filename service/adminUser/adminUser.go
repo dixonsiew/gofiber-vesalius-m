@@ -8,6 +8,67 @@ import (
     "golang.org/x/crypto/bcrypt"
 )
 
+func FindAll(offset int, limit int) ([]model.AdminUser, error) {
+    lx := make([]model.AdminUser, 0)
+    db := database.GetDb()
+    rows, err := db.Queryx(`SELECT * FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`, offset, limit)
+    if err != nil {
+        utils.LogError(err)
+        return lx, err
+    }
+
+    defer rows.Close()
+
+    for rows.Next() {
+        o := model.DbAdminUser{}
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return lx, err
+        }
+
+        k := model.AdminUser{}
+        k.FromDbModel(o)
+        lx = append(lx, k)
+    }
+
+    return lx, nil
+}
+
+func List(page string, limit string) (model.PagedList, error) {
+    m := model.PagedList{}
+    total, err := Count()
+    if err != nil {
+        return m, err
+    }
+
+    pg := model.GetPager(total, page, limit)
+    lx, err := FindAll(pg.GetLowerBound(), pg.PageSize)
+    if err != nil {
+        return m, err
+    }
+
+    m = model.PagedList{
+        List: lx,
+        Total: total,
+        TotalPages: pg.GetTotalPages(),
+    }
+
+    return m, nil
+}
+
+func Count() (int, error) {
+    n := 0
+    db := database.GetDb()
+    err := db.QueryRowx(`SELECT COUNT(ADMIN_ID) AS COUNT FROM ADMIN_USER`).Scan(&n)
+    if err != nil {
+        utils.LogError(err)
+        return n, err
+    }
+
+    return n, nil
+}
+
 func FindByAdminId(adminId int64) (*model.AdminUser, error) {
     o := model.DbAdminUser{}
     k := model.AdminUser{}

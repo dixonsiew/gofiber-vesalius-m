@@ -21,7 +21,6 @@ import (
     "github.com/gofiber/fiber/v3/middleware/healthcheck"
     "github.com/gofiber/fiber/v3/middleware/recover"
     "github.com/gofiber/fiber/v3/middleware/static"
-    // redoc "github.com/natebwangsut/fiber-redoc"
 )
 
 // @title (IHP-UAT) Vesalius-m Backend API
@@ -79,7 +78,7 @@ func main() {
     basePath := "ih/mobile_central_2_0_0"
     initSwagger(app, basePath)
     app.Get(healthcheck.StartupEndpoint, healthcheck.New())
-    app.Get("/ih/mobile_central_2_0_0/healthz", healthcheck.New())
+    app.Get(fmt.Sprintf("/%s/healthz", basePath), healthcheck.New())
     router.SetupRoutes(app, basePath)
 
     // if !fiber.IsChild() {
@@ -114,7 +113,5 @@ func initSwagger(app *fiber.App, basePath string) {
     }
 
     app.Get(fmt.Sprintf("/%s/docs/*", basePath), swaggo.New(cfg))
-    // app.Get(fmt.Sprintf("/%s/redocs/*", basePath), redoc.Handler)
-
     app.Get(fmt.Sprintf("/%s/static*", basePath), static.New("./public"))
 }

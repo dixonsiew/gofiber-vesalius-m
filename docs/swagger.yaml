@@ -22,6 +22,47 @@ definitions:
     - password
     - username
     type: object
+  model.AdminUser:
+    properties:
+      address:
+        type: string
+      admin_id:
+        type: integer
+      adminBranches:
+        items:
+          $ref: '#/definitions/model.AssignBranch'
+        type: array
+      contactNumber:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      middleName:
+        type: string
+      nationality:
+        type: string
+      passport:
+        type: string
+      resident:
+        type: string
+      role:
+        type: string
+      sex:
+        type: string
+      title:
+        type: string
+      userGroupId:
+        type: integer
+      userGroupName:
+        type: string
+      username:
+        type: string
+    type: object
   model.ApplicationUser:
     properties:
       address:
@@ -177,6 +218,43 @@ info:
   title: (IHP-UAT) Vesalius-m Backend API
   version: "1.0"
 paths:
+  /admin:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AdminUser'
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AdminUser'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /common/country/list:
     get:
       produces:
