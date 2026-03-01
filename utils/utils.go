@@ -1,16 +1,16 @@
 package utils
 
 import (
-	"fmt"
-	"os"
-	"strings"
-	"time"
+    "fmt"
+    "os"
+    "strings"
+    "time"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/go-resty/resty/v2"
-	"github.com/gofiber/fiber/v3"
+    "github.com/go-playground/validator/v10"
+    "github.com/go-resty/resty/v2"
+    "github.com/gofiber/fiber/v3"
     "github.com/rs/zerolog"
-	"github.com/ztrue/tracerr"
+    "github.com/ztrue/tracerr"
 )
 
 type StructValidator struct {
