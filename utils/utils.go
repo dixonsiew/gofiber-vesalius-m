@@ -22,9 +22,9 @@ func (v *StructValidator) Validate(out any) error {
 }
 
 var (
-    Logger zerolog.Logger
+    Logger  zerolog.Logger
     iLogger zerolog.Logger
-    client       *resty.Client
+    client  *resty.Client
 )
 
 func SetClient() {
@@ -44,23 +44,23 @@ func GetValidationErrors(errs validator.ValidationErrors) error {
         errMsgs := make([]string, 0)
         for _, err := range errs {
             switch err.Tag() {
-                case "required":
-                    ex := fmt.Sprintf("[%s] is %s", err.Field(), err.Tag())
-                    errMsgs = append(errMsgs, ex)
-                case "max":
-                    ex := fmt.Sprintf("[%s] max length is %s", err.Field(), err.Param())
-                    errMsgs = append(errMsgs, ex)
-                case "min":
-                    ex := fmt.Sprintf("[%s] min length is %s", err.Field(), err.Param())
-                    errMsgs = append(errMsgs, ex)
-                default:
-                    errMsgs = append(errMsgs, fmt.Sprintf(
-                        "[%s]: '%v' | Needs to implement '%s' '%s'",
-                        err.Field(),
-                        err.Value(),
-                        err.Tag(),
-                        err.Param(),
-                    ))
+            case "required":
+                ex := fmt.Sprintf("[%s] is %s", err.Field(), err.Tag())
+                errMsgs = append(errMsgs, ex)
+            case "max":
+                ex := fmt.Sprintf("[%s] max length is %s", err.Field(), err.Param())
+                errMsgs = append(errMsgs, ex)
+            case "min":
+                ex := fmt.Sprintf("[%s] min length is %s", err.Field(), err.Param())
+                errMsgs = append(errMsgs, ex)
+            default:
+                errMsgs = append(errMsgs, fmt.Sprintf(
+                    "[%s]: '%v' | Needs to implement '%s' '%s'",
+                    err.Field(),
+                    err.Value(),
+                    err.Tag(),
+                    err.Param(),
+                ))
             }
         }
 
