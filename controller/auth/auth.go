@@ -32,6 +32,8 @@ func Login(c fiber.Ctx) error {
                 return c.Status(fiber.StatusUnauthorized).JSON(mx)
             }
         }
+
+        return c.Status(fiber.StatusUnauthorized).JSON(mx)
     }
 
     if data.FromAdmin {
