@@ -22,6 +22,13 @@ definitions:
     - password
     - username
     type: object
+  dto.PostMachineInfo:
+    properties:
+      machineId:
+        type: string
+    required:
+    - machineId
+    type: object
   model.AdminUser:
     properties:
       address:
@@ -339,6 +346,24 @@ paths:
           description: OK
       tags:
       - Auth
+  /user/add-machine-id:
+    post:
+      parameters:
+      - description: AddMachineId Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostMachineInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
   /user/all:
     get:
       parameters:
@@ -383,6 +408,23 @@ paths:
             items:
               $ref: '#/definitions/model.ApplicationUser'
             type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/update-playerid/{playerId}:
+    post:
+      parameters:
+      - description: PlayerId
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       security:
       - BearerAuth: []
       tags:

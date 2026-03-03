@@ -12,4 +12,6 @@ func SetupRoutes(router fiber.Router) {
     api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
     api.Get("/all", user.GetAllUsers)
     api.Get("/all/active", user.GetAllActiveUsers)
+    api.Post("/update-playerid/:playerId", user.UpdatePlayerId)
+    api.Post("/add-machine-id", user.AddMachineId)
 }

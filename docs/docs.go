@@ -214,6 +214,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/add-machine-id": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "AddMachineId Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostMachineInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user/all": {
             "get": {
                 "security": [
@@ -293,6 +324,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/update-playerid/{playerId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PlayerId",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -324,6 +384,17 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
+        "dto.PostMachineInfo": {
+            "type": "object",
+            "required": [
+                "machineId"
+            ],
+            "properties": {
+                "machineId": {
+                    "type": "string"
                 }
             }
         },
