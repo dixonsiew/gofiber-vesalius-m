@@ -214,6 +214,21 @@ definitions:
       prn:
         type: string
     type: object
+  model.GoldenPearlAboutUs:
+    properties:
+      golden_club_id:
+        type: integer
+      goldenClubDesc:
+        type: string
+      goldenClubExtLink:
+        type: string
+      goldenClubImage:
+        type: string
+      goldenClubTitle:
+        type: string
+      goldenClubTnc:
+        type: string
+    type: object
   model.Nationality:
     properties:
       nationality:
@@ -262,6 +277,19 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /clubs/goldenpearl/about-us:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GoldenPearlAboutUs'
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
   /common/country/list:
     get:
       produces:

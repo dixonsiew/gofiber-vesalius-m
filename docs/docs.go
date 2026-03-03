@@ -78,6 +78,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/clubs/goldenpearl/about-us": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GoldenPearlAboutUs"
+                        }
+                    }
+                }
+            }
+        },
         "/common/country/list": {
             "get": {
                 "produces": [
@@ -676,6 +699,29 @@ const docTemplate = `{
                 },
                 "prn": {
                     "type": "string"
+                }
+            }
+        },
+        "model.GoldenPearlAboutUs": {
+            "type": "object",
+            "properties": {
+                "goldenClubDesc": {
+                    "type": "string"
+                },
+                "goldenClubExtLink": {
+                    "type": "string"
+                },
+                "goldenClubImage": {
+                    "type": "string"
+                },
+                "goldenClubTitle": {
+                    "type": "string"
+                },
+                "goldenClubTnc": {
+                    "type": "string"
+                },
+                "golden_club_id": {
+                    "type": "integer"
                 }
             }
         },
