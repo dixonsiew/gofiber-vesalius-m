@@ -289,6 +289,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/notification/general/master/{notificationMasterId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notification MasterId",
+                        "name": "notificationMasterId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GeneralNotification"
+                        }
+                    }
+                }
+            }
+        },
         "/notification/unseen/count": {
             "get": {
                 "security": [
@@ -307,6 +339,38 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/notification/{notificationId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notification Id",
+                        "name": "notificationId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.OneSignalNotification"
                         }
                     }
                 }

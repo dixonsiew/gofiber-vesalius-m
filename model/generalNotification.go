@@ -1,7 +1,8 @@
 package model
 
 import (
-    "github.com/guregu/null/v6"
+	"github.com/guregu/null/v6"
+	"github.com/nleeper/goment"
 )
 
 type GeneralNotification struct {
@@ -21,4 +22,16 @@ type GeneralNotification struct {
     DateCreate           null.String `json:"-" db:"DATE_CREATE" swaggertype:"string"`
     UserUpdate           null.Int64  `json:"-" db:"USER_UPDATE" swaggertype:"integer"`
     DateUpdate           null.String `json:"-" db:"DATE_UPDATE" swaggertype:"string"`
+}
+
+func (o *GeneralNotification) Set() {
+    if o.StartDate.Valid {
+        g, _ := goment.New(o.StartDate.String, "YYYY-MM-DD[T]HH:mm:ss")
+        o.StartDate.String = g.Format("DD/MM/YYYY")
+    }
+
+    if o.EndDate.Valid {
+        g, _ := goment.New(o.EndDate.String, "YYYY-MM-DD[T]HH:mm:ss")
+        o.EndDate.String = g.Format("DD/MM/YYYY")
+    }
 }

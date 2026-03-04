@@ -29,7 +29,7 @@ func JWTProtected(c fiber.Ctx) error {
     })(c)
 }
 
-func DecodeToken(c fiber.Ctx) (string, int, string, string, error) {
+func DecodeToken(c fiber.Ctx) (string, int64, string, string, error) {
     tokenStr := c.Get("Authorization")
     tokenStr = strings.ReplaceAll(tokenStr, "Bearer ", "")
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -50,17 +50,17 @@ func DecodeToken(c fiber.Ctx) (string, int, string, string, error) {
     username := (*claims)["username"].(string)
     sessionId := (*claims)["sessionId"].(string)
     types := (*claims)["type"].(string)
-    id, _ := strconv.Atoi(sub)
+    id, _ := strconv.ParseInt(sub, 10, 64)
     return username, id, types, sessionId, nil
 }
 
-func ValidateToken(c fiber.Ctx) (int, *model.ApplicationUser, error) {
+func ValidateToken(c fiber.Ctx) (int64, *model.ApplicationUser, error) {
     _, id, _, _, err := DecodeToken(c)
     if err != nil {
         return id, nil, err
     }
 
-    user, err := applicationuserService.FindByUserId(int64(id))
+    user, err := applicationuserService.FindByUserId(id)
     if err != nil || user == nil {
         return id, user, err
     }
@@ -68,13 +68,13 @@ func ValidateToken(c fiber.Ctx) (int, *model.ApplicationUser, error) {
     return id, user, nil
 }
 
-func ValidateAdminToken(c fiber.Ctx) (int, *model.AdminUser, error) {
+func ValidateAdminToken(c fiber.Ctx) (int64, *model.AdminUser, error) {
     _, id, _, _, err := DecodeToken(c)
     if err != nil {
         return id, nil, err
     }
 
-    user, err := adminUserService.FindByAdminId(int64(id))
+    user, err := adminUserService.FindByAdminId(id)
     if err != nil || user == nil {
         return id, user, err
     }

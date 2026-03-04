@@ -9,8 +9,7 @@ import (
 func CountUnseenByUserId(userId int64) (int, error) {
     n := 0
     db := database.GetDb()
-    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL AND IS_SEEN = 'N'`
-    err := db.QueryRowx(q, userId).Scan(&n)
+    err := db.QueryRowx(`SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL AND IS_SEEN = 'N'`, userId).Scan(&n)
     if err != nil {
         utils.LogError(err)
         return n, err
@@ -74,12 +73,37 @@ func ListByUserId(userId int64, page string, limit string) (model.PagedList, err
 func CountByUserId(userId int64) (int, error) {
     n := 0
     db := database.GetDb()
-    q := `SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL`
-    err := db.QueryRowx(q, userId).Scan(&n)
+    err := db.QueryRowx(`SELECT COUNT(USER_ID) AS COUNT FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL`, userId).Scan(&n)
     if err != nil {
         utils.LogError(err)
         return n, err
     }
 
     return n, nil
+}
+
+func FindByNotificationId(notificationId int64) (*model.OneSignalNotification, error) {
+    o := model.OneSignalNotification{}
+    var x *model.OneSignalNotification
+    db := database.GetDb()
+    rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`, notificationId)
+    if err != nil {
+        utils.LogError(err)
+        return x, err
+    }
+
+    defer rows.Close()
+
+    if rows.Next() {
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return x, err
+        }
+
+        o.Set()
+        x = &o
+    }
+
+    return x, nil
 }

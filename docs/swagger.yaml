@@ -430,6 +430,25 @@ paths:
           description: OK
       tags:
       - Auth
+  /notification/{notificationId}:
+    get:
+      parameters:
+      - description: Notification Id
+        in: path
+        name: notificationId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.OneSignalNotification'
+      security:
+      - BearerAuth: []
+      tags:
+      - Notification
   /notification/all:
     get:
       produces:
@@ -441,6 +460,25 @@ paths:
             items:
               $ref: '#/definitions/model.OneSignalNotification'
             type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Notification
+  /notification/general/master/{notificationMasterId}:
+    get:
+      parameters:
+      - description: Notification MasterId
+        in: path
+        name: notificationMasterId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GeneralNotification'
       security:
       - BearerAuth: []
       tags:

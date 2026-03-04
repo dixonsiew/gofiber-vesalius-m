@@ -77,7 +77,7 @@ func CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
     }, nil
 }
 
-func decodeRefreshToken(tokenStr string) (string, int, error) {
+func decodeRefreshToken(tokenStr string) (string, int64, error) {
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
         return []byte(utils.JWT_SECRET), nil
     })
@@ -94,10 +94,10 @@ func decodeRefreshToken(tokenStr string) (string, int, error) {
 
     sub := (*claims)["subject"].(string)
     username := (*claims)["username"].(string)
-    id, _ := strconv.Atoi(sub)
+    id, _ := strconv.ParseInt(sub, 10, 64)
     return username, id, nil
 }
 
-func getUserFromRefreshTokenPayload(id int) (*model.AdminUser, error) {
-    return adminUserService.FindByAdminId(int64(id))
+func getUserFromRefreshTokenPayload(id int64) (*model.AdminUser, error) {
+    return adminUserService.FindByAdminId(id)
 }

@@ -84,3 +84,41 @@ func GetGeneralNotificationList(c fiber.Ctx) error {
     c.Set(utils.X_TOTAL_PAGE, fmt.Sprintf("%d", m.TotalPages))
     return c.JSON(m.List)
 }
+
+// GetByNotificationMasterId
+//
+// @Tags Notification
+// @Produce json
+// @Security BearerAuth
+// @Param        notificationMasterId              path      string  true  "Notification MasterId"
+// @Success 200 {object} model.GeneralNotification
+// @Router /notification/general/master/{notificationMasterId} [get]
+func GetByNotificationMasterId(c fiber.Ctx) error {
+    notificationMasterId := c.Params("notificationMasterId")
+    id, _ := strconv.ParseInt(notificationMasterId, 10, 64)
+    o, err := generalNotificationMasterService.FindByNotificationMasterId(id)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// GetNotificationById
+//
+// @Tags Notification
+// @Produce json
+// @Security BearerAuth
+// @Param        notificationId              path      string  true  "Notification Id"
+// @Success 200 {object} model.OneSignalNotification
+// @Router /notification/{notificationId} [get]
+func GetNotificationById(c fiber.Ctx) error {
+    notificationId := c.Params("notificationId")
+    id, _ := strconv.ParseInt(notificationId, 10, 64)
+    o, err := applicationUserNotificationService.FindByNotificationId(id)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}

@@ -4,17 +4,42 @@ import (
     "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
-
-    "github.com/nleeper/goment"
 )
+
+func FindByNotificationMasterId(notificationMasterId int64) (*model.GeneralNotification, error) {
+    o := model.GeneralNotification{}
+    var x *model.GeneralNotification
+    db := database.GetDb()
+    rows, err := db.Queryx(`SELECT * FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notificationMasterId`, notificationMasterId)
+    if err != nil {
+        utils.LogError(err)
+        return x, err
+    }
+
+    defer rows.Close()
+
+    if rows.Next() {
+        err := rows.StructScan(&o)
+        if err != nil {
+            utils.LogError(err)
+            return x, err
+        }
+
+        o.Set()
+        x = &o
+    }
+
+    return x, nil
+}
 
 func FindAll(offset int, limit int) ([]model.GeneralNotification, error) {
     lx := make([]model.GeneralNotification, 0)
     db := database.GetDb()
-    rows, err := db.Queryx(
-        `
+    q := `
         SELECT * FROM GENERAL_NOTIFICATION_MASTER
-        ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`, offset, limit)
+        ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+    `
+    rows, err := db.Queryx(q, offset, limit)
     if err != nil {
         utils.LogError(err)
         return lx, err
@@ -30,16 +55,7 @@ func FindAll(offset int, limit int) ([]model.GeneralNotification, error) {
             return lx, err
         }
 
-        if o.StartDate.Valid {
-            g, _ := goment.New(o.StartDate.String, "YYYY-MM-DD[T]HH:mm:ss")
-            o.StartDate.String = g.Format("DD/MM/YYYY")
-        }
-
-        if o.EndDate.Valid {
-            g, _ := goment.New(o.EndDate.String, "YYYY-MM-DD[T]HH:mm:ss")
-            o.EndDate.String = g.Format("DD/MM/YYYY")
-        }
-
+        o.Set()
         lx = append(lx, o)
     }
 
@@ -71,8 +87,7 @@ func List(page string, limit string) (model.PagedList, error) {
 func Count() (int, error) {
     n := 0
     db := database.GetDb()
-    q := `SELECT COUNT(NOTIFICATION_MASTER_ID) AS COUNT FROM GENERAL_NOTIFICATION_MASTER`
-    err := db.QueryRowx(q).Scan(&n)
+    err := db.QueryRowx(`SELECT COUNT(NOTIFICATION_MASTER_ID) AS COUNT FROM GENERAL_NOTIFICATION_MASTER`).Scan(&n)
     if err != nil {
         utils.LogError(err)
         return n, err
