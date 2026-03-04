@@ -14,9 +14,9 @@ import (
 
 func GenerateAccessToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email,
+        "username":  user.Email.String,
         "type":      "0",
-        "subject":   fmt.Sprintf("%d", user.AdminID),
+        "subject":   fmt.Sprintf("%d", user.AdminID.Int64),
         "exp":       time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -31,9 +31,9 @@ func GenerateAccessToken(user model.AdminUser) (string, error) {
 
 func GenerateRefreshToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email,
+        "username":  user.Email.String,
         "type":      "0",
-        "subject":  fmt.Sprintf("%d", user.AdminID),
+        "subject":  fmt.Sprintf("%d", user.AdminID.Int64),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

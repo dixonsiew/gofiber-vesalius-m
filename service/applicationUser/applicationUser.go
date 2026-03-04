@@ -608,17 +608,17 @@ func SaveUserBranch(branchId int64, o model.ApplicationUser) error {
     _, err = stmt.Exec(
         sql.Named("address", o.Address), 
         sql.Named("contact_number", o.ContactNumber), 
-        sql.Named("dob", o.Dob), 
-        sql.Named("first_name", o.FirstName), 
-        sql.Named("last_name", o.LastName), 
-        sql.Named("master_prn", o.MasterPrn), 
-        sql.Named("middle_name", o.MiddleName), 
-        sql.Named("nationality", o.Nationality), 
-        sql.Named("passport", o.Passport), 
-        sql.Named("resident", o.Resident), 
-        sql.Named("sex", o.Sex), 
-        sql.Named("title", o.Title), 
-        sql.Named("user_id", o.UserID),
+        sql.Named("dob", o.Dob.String), 
+        sql.Named("first_name", o.FirstName.String), 
+        sql.Named("last_name", o.LastName.String), 
+        sql.Named("master_prn", o.MasterPrn.String), 
+        sql.Named("middle_name", o.MiddleName.String), 
+        sql.Named("nationality", o.Nationality.String), 
+        sql.Named("passport", o.Passport.String), 
+        sql.Named("resident", o.Resident.String), 
+        sql.Named("sex", o.Sex.String), 
+        sql.Named("title", o.Title.String), 
+        sql.Named("user_id", o.UserID.Int64),
     )
     if err != nil {
         tx.Rollback()
@@ -637,8 +637,8 @@ func SaveUserBranch(branchId int64, o model.ApplicationUser) error {
     defer stmti.Close()
 
     _, err = stmti.Exec(
-        sql.Named("prn", o.MasterPrn), 
-        sql.Named("user_id", o.UserID), 
+        sql.Named("prn", o.MasterPrn.String), 
+        sql.Named("user_id", o.UserID.Int64), 
         sql.Named("branchId", branchId),
     )
     if err != nil {

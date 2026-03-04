@@ -5,8 +5,8 @@ import (
 )
 
 type Branch struct {
-    BranchId   null.Int64  `json:"branchId" db:"BRANCH_ID"`
-    Url        null.String `json:"url" db:"URL"`
-    Passcode   null.String `json:"passcode" db:"PASSCODE"`
-    BranchName null.String `json:"branchName" db:"BRANCH_NAME"`
+    BranchId   null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
+    Url        null.String `json:"url" db:"URL" swaggertype:"string"`
+    Passcode   null.String `json:"passcode" db:"PASSCODE" swaggertype:"string"`
+    BranchName null.String `json:"branchName" db:"BRANCH_NAME" swaggertype:"string"`
 }

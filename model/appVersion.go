@@ -5,7 +5,7 @@ import (
 )
 
 type AppVersion struct {
-    LatestVersion null.String `json:"latestVersion" db:"LATEST_VERSION"`
-    OSPlatform    null.String `json:"osPlatform" db:"OS_PLATFORM"`
-    Status        null.Int64  `json:"status" db:"STATUS"`
+    LatestVersion null.String `json:"latestVersion" db:"LATEST_VERSION" swaggertype:"string"`
+    OSPlatform    null.String `json:"osPlatform" db:"OS_PLATFORM" swaggertype:"string"`
+    Status        null.Int64  `json:"status" db:"STATUS" swaggertype:"integer"`
 }

@@ -5,5 +5,5 @@ import (
 )
 
 type Nationality struct {
-    Nationality null.String `json:"nationality" db:"NATIONALITY"`
+    Nationality null.String `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
 }

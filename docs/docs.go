@@ -237,6 +237,81 @@ const docTemplate = `{
                 }
             }
         },
+        "/notification/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.OneSignalNotification"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/notification/general/master/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.GeneralNotification"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/notification/unseen/count": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
         "/user/add-machine-id": {
             "post": {
                 "security": [
@@ -702,6 +777,47 @@ const docTemplate = `{
                 }
             }
         },
+        "model.GeneralNotification": {
+            "type": "object",
+            "properties": {
+                "endDate": {
+                    "type": "string"
+                },
+                "fullMessage": {
+                    "type": "string"
+                },
+                "notificationTitle": {
+                    "type": "string"
+                },
+                "notification_master_id": {
+                    "type": "integer"
+                },
+                "shortMessage": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "targetAgeFrom": {
+                    "type": "integer"
+                },
+                "targetAgeTo": {
+                    "type": "integer"
+                },
+                "targetCity": {
+                    "type": "string"
+                },
+                "targetGender": {
+                    "type": "string"
+                },
+                "targetNationality": {
+                    "type": "string"
+                },
+                "targetState": {
+                    "type": "string"
+                }
+            }
+        },
         "model.GoldenPearlAboutUs": {
             "type": "object",
             "properties": {
@@ -729,6 +845,50 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "nationality": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.OneSignalNotification": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "dateCreate": {
+                    "type": "string"
+                },
+                "dateSent": {
+                    "type": "string"
+                },
+                "fullMessage": {
+                    "type": "string"
+                },
+                "guestPlayerId": {
+                    "type": "string"
+                },
+                "isSeen": {
+                    "type": "boolean"
+                },
+                "master_id": {
+                    "type": "integer"
+                },
+                "msgType": {
+                    "type": "string"
+                },
+                "notificationTitle": {
+                    "type": "string"
+                },
+                "notification_id": {
+                    "type": "integer"
+                },
+                "shortMessage": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "visitType": {
                     "type": "string"
                 }
             }

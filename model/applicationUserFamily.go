@@ -6,33 +6,33 @@ import (
 )
 
 type ApplicationUserFamily struct {
-    AufID           null.Int64  `json:"auf_id" db:"AUF_ID"`
-    UserID          null.Int64  `json:"user_id" db:"USER_ID"`
-    PatientPrn      null.String `json:"patientPrn" db:"PATIENT_PRN"`
-    NokRefNumberV   null.String `json:"-" db:"NOK_REF_NUMBER"`
-    IsPatientV      null.String `json:"-" db:"IS_PATIENT"`
-    NokRefNumber    int64       `json:"nokRefNumber"`
+    AufID           null.Int64  `json:"auf_id" db:"AUF_ID" swaggertype:"integer"`
+    UserID          null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
+    PatientPrn      null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
+    NokRefNumberV   null.String `json:"-" db:"NOK_REF_NUMBER" swaggertype:"string"`
+    IsPatientV      null.String `json:"-" db:"IS_PATIENT" swaggertype:"string"`
+    NokRefNumber    int64       `json:"nokRefNumber" swaggertype:"integer"`
     IsPatient       bool        `json:"isPatient"`
-    Fullname        null.String `json:"fullName" db:"FULLNAME"`
-    Relationship    null.String `json:"relationship" db:"RELATIONSHIP"`
-    NokPrn          null.String `json:"prn" db:"NOK_PRN"`
-    DocNumber       null.String `json:"docNumber" db:"DOC_NUMBER"`
-    NricPassport    null.String `json:"nricPassport" db:"NRIC_PASSPORT"`
-    Dob             null.String `json:"dob" db:"DOB"`
-    Gender          null.String `json:"gender" db:"GENDER"`
-    Nationality     null.String `json:"nationality" db:"NATIONALITY"`
-    ContactNumber   null.String `json:"contactNumber" db:"CONTACT_NUMBER"`
-    Address         null.String `json:"address" db:"ADDRESS"`
-    MaritalStatus   null.String `json:"maritalStatus" db:"MARITAL_STATUS"`
-    Email           null.String `json:"email" db:"EMAIL"`
-    IsActiveV       null.String `json:"-" db:"IS_ACTIVE"`
-    IsGoldenPearlV  null.String `json:"-" db:"IS_GOLDEN_PEARL"`
-    IsKidsExplorerV null.String `json:"-" db:"IS_KIDS_EXPLORER"`
+    Fullname        null.String `json:"fullName" db:"FULLNAME" swaggertype:"string"`
+    Relationship    null.String `json:"relationship" db:"RELATIONSHIP" swaggertype:"string"`
+    NokPrn          null.String `json:"prn" db:"NOK_PRN" swaggertype:"string"`
+    DocNumber       null.String `json:"docNumber" db:"DOC_NUMBER" swaggertype:"string"`
+    NricPassport    null.String `json:"nricPassport" db:"NRIC_PASSPORT" swaggertype:"string"`
+    Dob             null.String `json:"dob" db:"DOB" swaggertype:"string"`
+    Gender          null.String `json:"gender" db:"GENDER" swaggertype:"string"`
+    Nationality     null.String `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
+    ContactNumber   null.String `json:"contactNumber" db:"CONTACT_NUMBER" swaggertype:"string"`
+    Address         null.String `json:"address" db:"ADDRESS" swaggertype:"string"`
+    MaritalStatus   null.String `json:"maritalStatus" db:"MARITAL_STATUS" swaggertype:"string"`
+    Email           null.String `json:"email" db:"EMAIL" swaggertype:"string"`
+    IsActiveV       null.String `json:"-" db:"IS_ACTIVE" swaggertype:"string"`
+    IsGoldenPearlV  null.String `json:"-" db:"IS_GOLDEN_PEARL" swaggertype:"string"`
+    IsKidsExplorerV null.String `json:"-" db:"IS_KIDS_EXPLORER" swaggertype:"string"`
     IsActive        bool        `json:"isActive"`
     IsGoldenPearl   bool        `json:"isGoldenPearl"`
     IsKidsExplorer  bool        `json:"isKidsExplorer"`
-    DateCreate      null.String `json:"dateCreate" db:"DATE_CREATE"`
-    DateLastSync    null.String `json:"dateLastSync" db:"DATE_LAST_SYNC"`
+    DateCreate      null.String `json:"dateCreate" db:"DATE_CREATE" swaggertype:"string"`
+    DateLastSync    null.String `json:"dateLastSync" db:"DATE_LAST_SYNC" swaggertype:"string"`
 }
 
 func (o *ApplicationUserFamily) Set() {

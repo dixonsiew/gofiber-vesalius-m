@@ -7,6 +7,7 @@ import (
     "vesaliusm/router/clubs"
     "vesaliusm/router/futureOrder"
     "vesaliusm/router/user"
+    "vesaliusm/router/userNotification"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -19,4 +20,5 @@ func SetupRoutes(app *fiber.App, basePath string) {
     futureOrder.SetupRoutes(api)
     user.SetupRoutes(api)
     admin.SetupRoutes(api)
+    userNotification.SetupRoutes(api)
 }

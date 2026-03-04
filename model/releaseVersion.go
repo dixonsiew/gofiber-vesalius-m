@@ -5,7 +5,7 @@ import (
 )
 
 type ReleaseVersion struct {
-    LatestVersion null.String `json:"latestVersion" db:"LATEST_VERSION"`
-    StackPlatform null.String `json:"stackPlatform" db:"STACK_PLATFORM"`
-    DateUpdate    null.String `json:"dateUpdate" db:"DATE_UPDATE"`
+    LatestVersion null.String `json:"latestVersion" db:"LATEST_VERSION" swaggertype:"string"`
+    StackPlatform null.String `json:"stackPlatform" db:"STACK_PLATFORM" swaggertype:"string"`
+    DateUpdate    null.String `json:"dateUpdate" db:"DATE_UPDATE" swaggertype:"string"`
 }

@@ -5,6 +5,6 @@ import (
 )
 
 type CountryTelCode struct {
-    CountryName null.String `json:"countryName" db:"COUNTRY_NAME"`
-    TelCode     null.String `json:"telCode" db:"TEL_CODE"`
+    CountryName null.String `json:"countryName" db:"COUNTRY_NAME" swaggertype:"string"`
+    TelCode     null.String `json:"telCode" db:"TEL_CODE" swaggertype:"string"`
 }

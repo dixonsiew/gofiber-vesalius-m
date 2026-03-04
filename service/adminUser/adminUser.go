@@ -169,7 +169,6 @@ func FindByUserGroupId(userGroupId int64) ([]model.AdminUser, error) {
 
 func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
     o := model.AdminUser{}
-    k := model.AdminUser{}
     var x *model.AdminUser
     db := database.GetDb()
     q := `SELECT * FROM ADMIN_USER au 
@@ -220,8 +219,8 @@ func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
         i++
     }
 
-    k.AdminBranches = lx
-    x = &k
+    o.AdminBranches = lx
+    x = &o
 
     return x, nil
 }
