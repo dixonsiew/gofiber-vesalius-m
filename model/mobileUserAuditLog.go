@@ -1,41 +1,17 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
 )
 
-type DbMobileUserAuditLog struct {
-    AuditID     sql.NullInt64  `db:"AUDIT_ID"`
-    Prn         sql.NullString `db:"PRN"`
-    Username    sql.NullString `db:"USERNAME"`
-    PatientName sql.NullString `db:"PATIENT_NAME"`
-    Action      sql.NullString `db:"ACTION"`
-    ActionDesc  sql.NullString `db:"ACTION_DESC"`
-    Remarks     sql.NullString `db:"REMARKS"`
-    UserCreate  sql.NullString `db:"USER_CREATE"`
-    DateCreate  sql.NullString `db:"DATE_CREATE"`
-}
-
 type MobileUserAuditLog struct {
-    AuditID     int64  `json:"audit_id"`
-    Prn         string `json:"prn"`
-    Username    string `json:"username"`
-    PatientName string `json:"patientName"`
-    Action      string `json:"action"`
-    ActionDesc  string `json:"actionDesc"`
-    Remarks     string `json:"remarks"`
-    UserCreate  string `json:"userCreate"`
-    DateCreate  string `json:"dateCreate"`
-}
-
-func (o *MobileUserAuditLog) FromDbModel(m DbMobileUserAuditLog) {
-    o.AuditID = m.AuditID.Int64
-    o.Prn = m.Prn.String
-    o.Username = m.Username.String
-    o.PatientName = m.PatientName.String
-    o.Action = m.Action.String
-    o.ActionDesc = m.ActionDesc.String
-    o.Remarks = m.Remarks.String
-    o.UserCreate = m.UserCreate.String
-    o.DateCreate = m.DateCreate.String
+    AuditID     null.Int64  `json:"audit_id" db:"AUDIT_ID"`
+    Prn         null.String `json:"prn" db:"PRN"`
+    Username    null.String `json:"username" db:"USERNAME"`
+    PatientName null.String `json:"patientName" db:"PATIENT_NAME"`
+    Action      null.String `json:"action" db:"ACTION"`
+    ActionDesc  null.String `json:"actionDesc" db:"ACTION_DESC"`
+    Remarks     null.String `json:"remarks" db:"REMARKS"`
+    UserCreate  null.String `json:"userCreate" db:"USER_CREATE"`
+    DateCreate  null.String `json:"dateCreate" db:"DATE_CREATE"`
 }

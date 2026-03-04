@@ -93,12 +93,12 @@ func ValidateAppUser(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
-    if user.SessionID == "" {
+    if user.SessionID.String == "" {
         return fiber.NewError(fiber.StatusUnauthorized, "The system has detected your account is no longer valid. Please sign in again.")
     }
 
     if sessionId != "" {
-        userSession, err := applicationuserService.FindByUserIdSessionId(user.UserID, sessionId)
+        userSession, err := applicationuserService.FindByUserIdSessionId(user.UserID.Int64, sessionId)
         if err != nil || userSession == nil {
             return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
         }

@@ -18,7 +18,7 @@ func FindGoldenPearlAboutUs() (*model.GoldenPearlAboutUs, error) {
     defer rows.Close()
 
     if rows.Next() {
-        o := model.DbGoldenPearlAboutUs{}
+        o := model.GoldenPearlAboutUs{}
         err := rows.StructScan(&o)
 
         if err != nil {
@@ -26,9 +26,7 @@ func FindGoldenPearlAboutUs() (*model.GoldenPearlAboutUs, error) {
             return x, err
         }
 
-        k := model.GoldenPearlAboutUs{}
-        k.FromDbModel(o)
-        x = &k
+        x = &o
     }
 
     return x, nil

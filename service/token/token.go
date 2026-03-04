@@ -14,10 +14,10 @@ import (
 
 func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email,
-        "sessionId": user.SessionID,
+        "username":  user.Email.String,
+        "sessionId": user.SessionID.String,
         "type":      "1",
-        "subject":   fmt.Sprintf("%d", user.UserID),
+        "subject":   fmt.Sprintf("%d", user.UserID.Int64),
         "exp":       time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -32,10 +32,10 @@ func GenerateAccessToken(user model.ApplicationUser) (string, error) {
 
 func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email,
-        "sessionId": user.SessionID,
+        "username":  user.Email.String,
+        "sessionId": user.SessionID.String,
         "type":      "1",
-        "subject":  fmt.Sprintf("%d", user.UserID),
+        "subject":  fmt.Sprintf("%d", user.UserID.Int64),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

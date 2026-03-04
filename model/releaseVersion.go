@@ -1,23 +1,11 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
 )
 
-type DbReleaseVersion struct {
-    LatestVersion sql.NullString `db:"LATEST_VERSION"`
-    StackPlatform sql.NullString `db:"STACK_PLATFORM"`
-    DateUpdate    sql.NullString `db:"DATE_UPDATE"`
-}
-
 type ReleaseVersion struct {
-    LatestVersion string `json:"latestVersion"`
-    StackPlatform string `json:"stackPlatform"`
-    DateUpdate    string `json:"dateUpdate"`
-}
-
-func (o *ReleaseVersion) FromDbModel(m DbReleaseVersion) {
-    o.LatestVersion = m.LatestVersion.String
-    o.StackPlatform = m.StackPlatform.String
-    o.DateUpdate = m.DateUpdate.String
+    LatestVersion null.String `json:"latestVersion" db:"LATEST_VERSION"`
+    StackPlatform null.String `json:"stackPlatform" db:"STACK_PLATFORM"`
+    DateUpdate    null.String `json:"dateUpdate" db:"DATE_UPDATE"`
 }

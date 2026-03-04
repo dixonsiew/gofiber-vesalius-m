@@ -1,23 +1,11 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
 )
 
-type DbCountry struct {
-    CountryName sql.NullString `db:"COUNTRY_NAME"`
-    TelCode     sql.NullString `db:"TEL_CODE"`
-    CountryCode sql.NullString `db:"COUNTRY_CODE"`
-}
-
 type Country struct {
-    CountryName string `json:"countryName"`
-    TelCode     string `json:"telCode"`
-    CountryCode string `json:"countryCode"`
-}
-
-func (o *Country) FromDbModel(m DbCountry) {
-    o.CountryName = m.CountryName.String
-    o.TelCode = m.TelCode.String
-    o.CountryCode = m.CountryCode.String
+    CountryName null.String `json:"countryName" db:"COUNTRY_NAME"`
+    TelCode     null.String `json:"telCode" db:"TEL_CODE"`
+    CountryCode null.String `json:"countryCode" db:"COUNTRY_CODE"`
 }

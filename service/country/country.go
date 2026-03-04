@@ -19,7 +19,7 @@ func FindAllCountryTelCode() ([]model.CountryTelCode, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbCountryTelCode{}
+        o := model.CountryTelCode{}
         err := rows.StructScan(&o)
 
         if err != nil {
@@ -27,9 +27,7 @@ func FindAllCountryTelCode() ([]model.CountryTelCode, error) {
             return lx, err
         }
 
-        k := model.CountryTelCode{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -73,7 +71,7 @@ func FindAllCountries() ([]model.Country, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbCountry{}
+        o := model.Country{}
         err := rows.StructScan(&o)
 
         if err != nil {
@@ -81,9 +79,7 @@ func FindAllCountries() ([]model.Country, error) {
             return lx, err
         }
 
-        k := model.Country{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -101,7 +97,7 @@ func FindAllNationalities() ([]model.Nationality, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbNationality{}
+        o := model.Nationality{}
         err := rows.StructScan(&o)
 
         if err != nil {
@@ -109,9 +105,7 @@ func FindAllNationalities() ([]model.Nationality, error) {
             return lx, err
         }
 
-        k := model.Nationality{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        lx = append(lx, o)
     }
 
     return lx, nil

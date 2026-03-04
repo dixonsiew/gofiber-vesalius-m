@@ -20,16 +20,14 @@ func FindAll(offset int, limit int) ([]model.AdminUser, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbAdminUser{}
+        o := model.AdminUser{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.AdminUser{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -70,8 +68,7 @@ func Count() (int, error) {
 }
 
 func FindByAdminId(adminId int64) (*model.AdminUser, error) {
-    o := model.DbAdminUser{}
-    k := model.AdminUser{}
+    o := model.AdminUser{}
     var x *model.AdminUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM ADMIN_USER WHERE ADMIN_ID = :adminId`, adminId)
@@ -89,16 +86,14 @@ func FindByAdminId(adminId int64) (*model.AdminUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByEmail(email string) (*model.AdminUser, error) {
-    o := model.DbAdminUser{}
-    k := model.AdminUser{}
+    o := model.AdminUser{}
     var x *model.AdminUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM ADMIN_USER WHERE EMAIL = :email`, email)
@@ -116,16 +111,14 @@ func FindByEmail(email string) (*model.AdminUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByUsername(email string) (*model.AdminUser, error) {
-    o := model.DbAdminUser{}
-    k := model.AdminUser{}
+    o := model.AdminUser{}
     var x *model.AdminUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM ADMIN_USER WHERE USERNAME = :email`, email)
@@ -143,8 +136,7 @@ func FindByUsername(email string) (*model.AdminUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        x = &o
     }
 
     return x, nil
@@ -162,23 +154,21 @@ func FindByUserGroupId(userGroupId int64) ([]model.AdminUser, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbAdminUser{}
+        o := model.AdminUser{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.AdminUser{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        lx = append(lx, o)
     }
 
     return lx, nil
 }
 
 func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
-    o := model.DbAdminUser{}
+    o := model.AdminUser{}
     k := model.AdminUser{}
     var x *model.AdminUser
     db := database.GetDb()
@@ -204,15 +194,12 @@ func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
                 return x, err
             }
 
-            k.FromDbModel(o)
-            k.Password = ""
-            x = &k
+            o.Password.String = ""
+            x = &o
         }
 
-        ab := model.DbAssignBranch{}
-        mab := model.AssignBranch{}
-        b := model.DbBranch{}
-        mb := model.Branch{}
+        ab := model.AssignBranch{}
+        b := model.Branch{}
         err := rows.StructScan(&ab)
         if err != nil {
             utils.LogError(err)
@@ -225,12 +212,10 @@ func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
             return x, err
         }
 
-        mab.FromDbModel(ab)
-        mb.FromDbModel(b)
-        mb.Passcode = ""
-        mb.Url = ""
-        mab.Branch = mb
-        lx = append(lx, mab)
+        b.Passcode.String = ""
+        b.Url.String = ""
+        ab.Branch = b
+        lx = append(lx, ab)
 
         i++
     }
@@ -242,8 +227,7 @@ func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
 }
 
 func FindAssignBranchByAdminId(adminId int64, branchId int64) (*model.AssignBranch, error) {
-    o := model.DbAssignBranch{}
-    k := model.AssignBranch{}
+    o := model.AssignBranch{}
     var x *model.AssignBranch
     db := database.GetDb()
     err := db.QueryRowx(`SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE ADMIN_ID = :adminId)`, branchId, adminId).StructScan(&o)
@@ -252,13 +236,12 @@ func FindAssignBranchByAdminId(adminId int64, branchId int64) (*model.AssignBran
         return x, err
     }
 
-    k.FromDbModel(o)
-    x = &k
+    x = &o
 
     return x, nil
 }
 
 func ValidateCredentials(user model.AdminUser, password string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+    err := bcrypt.CompareHashAndPassword([]byte(user.Password.String), []byte(password))
     return err == nil
 }

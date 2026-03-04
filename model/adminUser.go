@@ -2,69 +2,28 @@ package model
 
 import (
     "database/sql"
+
+    "github.com/guregu/null/v6"
 )
 
-type DbAdminUser struct {
-    AdminID       sql.NullInt64  `db:"ADMIN_ID"`
-    Username      sql.NullString `db:"USERNAME"`
-    Email         sql.NullString `db:"EMAIL"`
-    Password      sql.NullString `db:"PASSWORD"`
-    Title         sql.NullString `db:"TITLE"`
-    FirstName     sql.NullString `db:"FIRST_NAME"`
-    MiddleName    sql.NullString `db:"MIDDLE_NAME"`
-    LastName      sql.NullString `db:"LAST_NAME"`
-    Resident      sql.NullString `db:"RESIDENT"`
-    Dob           sql.NullString `db:"DOB"`
-    Sex           sql.NullString `db:"SEX"`
-    Address       sql.NullString `db:"ADDRESS"`
-    ContactNumber sql.NullString `db:"CONTACT_NUMBER"`
-    Passport      sql.NullString `db:"PASSPORT"`
-    Nationality   sql.NullString `db:"NATIONALITY"`
-    Role          sql.NullString `db:"ROLE"`
-    UserGroupID   sql.NullInt64  `db:"USER_GROUP_ID"`
-    UserGroupName sql.NullString `db:"USER_GROUP_NAME"`
-    
-}
-
 type AdminUser struct {
-    AdminID       int64  `json:"admin_id"`
-    Username      string `json:"username"`
-    Email         string `json:"email"`
-    Password      string `json:"-"`
-    Title         string `json:"title"`
-    FirstName     string `json:"firstName"`
-    MiddleName    string `json:"middleName"`
-    LastName      string `json:"lastName"`
-    Resident      string `json:"resident"`
-    Dob           string `json:"dob"`
-    Sex           string `json:"sex"`
-    Address       string `json:"address"`
-    ContactNumber string `json:"contactNumber"`
-    Passport      string `json:"passport"`
-    Nationality   string `json:"nationality"`
-    Role          string `json:"role"`
-    UserGroupID   int64  `json:"userGroupId"`
-    UserGroupName string `json:"userGroupName"`
+    AdminID       null.Int64     `json:"admin_id" db:"ADMIN_ID"`
+    Username      sql.NullString `json:"username" db:"USERNAME"`
+    Email         null.String    `json:"email" db:"EMAIL"`
+    Password      null.String    `json:"-" db:"PASSWORD"`
+    Title         null.String    `json:"title" db:"TITLE"`
+    FirstName     null.String    `json:"firstName" db:"FIRST_NAME"`
+    MiddleName    null.String    `json:"middleName" db:"MIDDLE_NAME"`
+    LastName      null.String    `json:"lastName" db:"LAST_NAME"`
+    Resident      null.String    `json:"resident" db:"RESIDENT"`
+    Dob           null.String    `json:"dob" db:"DOB"`
+    Sex           null.String    `json:"sex" db:"SEX"`
+    Address       null.String    `json:"address" db:"ADDRESS"`
+    ContactNumber null.String    `json:"contactNumber" db:"CONTACT_NUMBER"`
+    Passport      null.String    `json:"passport" db:"PASSPORT"`
+    Nationality   null.String    `json:"nationality" db:"NATIONALITY"`
+    Role          null.String    `json:"role" db:"ROLE"`
+    UserGroupID   null.Int64     `json:"userGroupId" db:"USER_GROUP_ID"`
+    UserGroupName null.String    `json:"userGroupName"`
     AdminBranches []AssignBranch `json:"adminBranches"`
-}
-
-func (o *AdminUser) FromDbModel(m DbAdminUser) {
-    o.AdminID = m.AdminID.Int64
-    o.Username = m.Username.String
-    o.Email = m.Email.String
-    o.Password = m.Password.String
-    o.Title = m.Title.String
-    o.FirstName = m.FirstName.String
-    o.MiddleName = m.MiddleName.String
-    o.LastName = m.LastName.String
-    o.Resident = m.Resident.String
-    o.Dob = m.Dob.String
-    o.Sex = m.Sex.String
-    o.Address = m.Address.String
-    o.ContactNumber = m.ContactNumber.String
-    o.Passport = m.Passport.String
-    o.Nationality = m.Nationality.String
-    o.Role = m.Role.String
-    o.UserGroupID = m.UserGroupID.Int64
-    o.UserGroupName = m.UserGroupName.String
 }

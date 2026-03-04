@@ -1,20 +1,10 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
 )
 
-type DbAppServices struct {
-    ServiceName  sql.NullString `db:"SERVICE_NAME"`
-    ServiceImage sql.NullString `db:"SERVICE_IMAGE"`
-}
-
 type AppServices struct {
-    ServiceName  string `json:"serviceName"`
-    ServiceImage string `json:"serviceImage"`
-}
-
-func (o *AppServices) FromDbModel(m DbAppServices) {
-    o.ServiceName = m.ServiceName.String
-    o.ServiceImage = m.ServiceImage.String
+    ServiceName  null.String `json:"serviceName" db:"SERVICE_NAME"`
+    ServiceImage null.String `json:"serviceImage" db:"SERVICE_IMAGE"`
 }

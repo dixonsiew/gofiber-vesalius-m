@@ -1,130 +1,86 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
     "strconv"
 )
 
-type DbApplicationUserFamily struct {
-    AufID          sql.NullInt64  `db:"AUF_ID"`
-    UserID         sql.NullInt64  `db:"USER_ID"`
-    PatientPrn     sql.NullString `db:"PATIENT_PRN"`
-    NokRefNumber   sql.NullString `db:"NOK_REF_NUMBER"`
-    IsPatient      sql.NullString `db:"IS_PATIENT"`
-    Fullname       sql.NullString `db:"FULLNAME"`
-    Relationship   sql.NullString `db:"RELATIONSHIP"`
-    NokPrn         sql.NullString `db:"NOK_PRN"`
-    DocNumber      sql.NullString `db:"DOC_NUMBER"`
-    NricPassport   sql.NullString `db:"NRIC_PASSPORT"`
-    Dob            sql.NullString `db:"DOB"`
-    Gender         sql.NullString `db:"GENDER"`
-    Nationality    sql.NullString `db:"NATIONALITY"`
-    ContactNumber  sql.NullString `db:"CONTACT_NUMBER"`
-    Address        sql.NullString `db:"ADDRESS"`
-    MaritalStatus  sql.NullString `db:"MARITAL_STATUS"`
-    Email          sql.NullString `db:"EMAIL"`
-    IsActive       sql.NullString `db:"IS_ACTIVE"`
-    IsGoldenPearl  sql.NullString `db:"IS_GOLDEN_PEARL"`
-    IsKidsExplorer sql.NullString `db:"IS_KIDS_EXPLORER"`
-    DateCreate     sql.NullString `db:"DATE_CREATE"`
-    DateLastSync   sql.NullString `db:"DATE_LAST_SYNC"`
-}
-
 type ApplicationUserFamily struct {
-    AufID          int64  `json:"auf_id"`
-    UserID         int64  `json:"user_id"`
-    PatientPrn     string `json:"patientPrn"`
-    NokRefNumber   int64  `json:"nokRefNumber"`
-    IsPatient      bool   `json:"isPatient"`
-    Fullname       string `json:"fullName"`
-    Relationship   string `json:"relationship"`
-    NokPrn         string `json:"prn"`
-    DocNumber      string `json:"docNumber"`
-    NricPassport   string `json:"nricPassport"`
-    Dob            string `json:"dob"`
-    Gender         string `json:"gender"`
-    Nationality    string `json:"nationality"`
-    ContactNumber  string `json:"contactNumber"`
-    Address        string `json:"address"`
-    MaritalStatus  string `json:"maritalStatus"`
-    Email          string `json:"email"`
-    IsActive       bool   `json:"isActive"`
-    IsGoldenPearl  bool   `json:"isGoldenPearl"`
-    IsKidsExplorer bool   `json:"isKidsExplorer"`
-    DateCreate     string `json:"dateCreate"`
-    DateLastSync   string `json:"dateLastSync"`
+    AufID           null.Int64  `json:"auf_id" db:"AUF_ID"`
+    UserID          null.Int64  `json:"user_id" db:"USER_ID"`
+    PatientPrn      null.String `json:"patientPrn" db:"PATIENT_PRN"`
+    NokRefNumberV   null.String `json:"-" db:"NOK_REF_NUMBER"`
+    IsPatientV      null.String `json:"-" db:"IS_PATIENT"`
+    NokRefNumber    int64       `json:"nokRefNumber"`
+    IsPatient       bool        `json:"isPatient"`
+    Fullname        null.String `json:"fullName" db:"FULLNAME"`
+    Relationship    null.String `json:"relationship" db:"RELATIONSHIP"`
+    NokPrn          null.String `json:"prn" db:"NOK_PRN"`
+    DocNumber       null.String `json:"docNumber" db:"DOC_NUMBER"`
+    NricPassport    null.String `json:"nricPassport" db:"NRIC_PASSPORT"`
+    Dob             null.String `json:"dob" db:"DOB"`
+    Gender          null.String `json:"gender" db:"GENDER"`
+    Nationality     null.String `json:"nationality" db:"NATIONALITY"`
+    ContactNumber   null.String `json:"contactNumber" db:"CONTACT_NUMBER"`
+    Address         null.String `json:"address" db:"ADDRESS"`
+    MaritalStatus   null.String `json:"maritalStatus" db:"MARITAL_STATUS"`
+    Email           null.String `json:"email" db:"EMAIL"`
+    IsActiveV       null.String `json:"-" db:"IS_ACTIVE"`
+    IsGoldenPearlV  null.String `json:"-" db:"IS_GOLDEN_PEARL"`
+    IsKidsExplorerV null.String `json:"-" db:"IS_KIDS_EXPLORER"`
+    IsActive        bool        `json:"isActive"`
+    IsGoldenPearl   bool        `json:"isGoldenPearl"`
+    IsKidsExplorer  bool        `json:"isKidsExplorer"`
+    DateCreate      null.String `json:"dateCreate" db:"DATE_CREATE"`
+    DateLastSync    null.String `json:"dateLastSync" db:"DATE_LAST_SYNC"`
 }
 
-func (o *ApplicationUserFamily) FromDbModel(m DbApplicationUserFamily) {
-    i, _ := strconv.ParseInt(m.NokRefNumber.String, 10, 64)
-    o.AufID = m.AufID.Int64
-    o.UserID = m.UserID.Int64
-    o.PatientPrn = m.PatientPrn.String
+func (o *ApplicationUserFamily) Set() {
+    i, _ := strconv.ParseInt(o.NokRefNumberV.String, 10, 64)
     o.NokRefNumber = i
-    if m.IsPatient.String == "Y" {
+    if o.IsPatientV.String == "Y" {
         o.IsPatient = true
     } else {
         o.IsPatient = false
     }
-    o.Fullname = m.Fullname.String
-    if m.Relationship.Valid {
-        o.Relationship = m.Relationship.String
-    } else {
-        o.Relationship = "-"
+    if !o.Relationship.Valid {
+        o.Relationship.String = "-"
     }
-    if m.NokPrn.Valid {
-        o.NokPrn = m.NokPrn.String
-    } else {
-        o.NokPrn = "-"
+    if !o.NokPrn.Valid {
+        o.NokPrn.String = "-"
     }
-    if m.NricPassport.Valid {
-        o.NricPassport = m.NricPassport.String
-    } else {
-        o.NricPassport = "-"
+    if !o.NricPassport.Valid {
+        o.NricPassport.String = "-"
     }
-    o.DocNumber = m.DocNumber.String
-    if m.Dob.Valid {
-        o.Dob = m.Dob.String
-    } else {
-        o.Dob = "-"
+    if !o.Dob.Valid {
+        o.Dob.String = "-"
     }
-    o.Gender = m.Gender.String
-    if m.Nationality.Valid {
-        o.Nationality = m.Nationality.String
-    } else {
-        o.Nationality = "-"
+    if !o.Nationality.Valid {
+        o.Nationality.String = "-"
     }
-    if m.ContactNumber.Valid {
-        o.ContactNumber = m.ContactNumber.String
-    } else {
-        o.ContactNumber = "-"
+    if !o.ContactNumber.Valid {
+        o.ContactNumber.String = "-"
     }
-    if m.Address.Valid {
-        o.Address = m.Address.String
-    } else {
-        o.Address = "-"
+    if !o.Address.Valid {
+        o.Address.String = "-"
     }
-    if m.IsActive.String == "Y" {
+    if o.IsActiveV.String == "Y" {
         o.IsActive = true
     } else {
         o.IsActive = false
     }
-    if m.MaritalStatus.Valid {
-        o.MaritalStatus = m.MaritalStatus.String
-    } else {
-        o.MaritalStatus = "-"
+    if !o.MaritalStatus.Valid {
+        o.MaritalStatus.String = "-"
     }
-    if m.Email.Valid {
-        o.Email = m.Email.String
-    } else {
-        o.Email = "-"
+    if !o.Email.Valid {
+        o.Email.String = "-"
     }
-    if m.IsKidsExplorer.String == "Y" {
+    if o.IsKidsExplorerV.String == "Y" {
         o.IsKidsExplorer = true
     } else {
         o.IsKidsExplorer = false
     }
-    if m.IsGoldenPearl.String == "Y" {
+    if o.IsGoldenPearlV.String == "Y" {
         o.IsGoldenPearl = true
     } else {
         o.IsGoldenPearl = false

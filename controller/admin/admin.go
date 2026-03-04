@@ -22,7 +22,7 @@ func GetAdmin(c fiber.Ctx) error {
         return err
     }
 
-    admin, err := adminUserService.FindWithAssignBranchByAdminId(user.AdminID)
+    admin, err := adminUserService.FindWithAssignBranchByAdminId(user.AdminID.Int64)
     if err != nil {
         return err
     }

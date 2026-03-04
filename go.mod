@@ -52,6 +52,7 @@ require (
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/gofiber/contrib/v3/jwt v1.0.0
 	github.com/google/uuid v1.6.0
+	github.com/guregu/null/v6 v6.0.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/klauspost/compress v1.18.4 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect

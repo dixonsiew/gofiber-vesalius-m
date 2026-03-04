@@ -1,15 +1,15 @@
 package applicationuser
 
 import (
-    "database/sql"
-    "math/rand/v2"
-    "strings"
-    "vesaliusm/database"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"database/sql"
+	"math/rand/v2"
+	"strings"
+	"vesaliusm/database"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/google/uuid"
-    "golang.org/x/crypto/bcrypt"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func FindAll(offset int, limit int) ([]model.ApplicationUser, error) {
@@ -24,16 +24,15 @@ func FindAll(offset int, limit int) ([]model.ApplicationUser, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbApplicationUser{}
+        o := model.ApplicationUser{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.ApplicationUser{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        o.Set()
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -85,16 +84,15 @@ func FindAllActive(offset int, limit int) ([]model.ApplicationUser, error) {
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbApplicationUser{}
+        o := model.ApplicationUser{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.ApplicationUser{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        o.Set()
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -153,16 +151,15 @@ func FindByKeyword(keyword string, offset int, limit int) ([]model.ApplicationUs
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbApplicationUser{}
+        o := model.ApplicationUser{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.ApplicationUser{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        o.Set()
+        lx = append(lx, o)
     }
 
     return lx, nil
@@ -208,8 +205,7 @@ func CountByKeyword(keyword string) (int, error) {
 }
 
 func FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`, userId, sessionId)
@@ -227,16 +223,15 @@ func FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUs
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        o.Set()
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByUserId(userId int64) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId`, userId)
@@ -254,16 +249,15 @@ func FindByUserId(userId int64) (*model.ApplicationUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        o.Set()
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByUsername(username string) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`, username)
@@ -281,16 +275,15 @@ func FindByUsername(username string) (*model.ApplicationUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        o.Set()
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByEmail(email string) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     rows, err := db.Queryx(`SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`, email)
@@ -308,16 +301,15 @@ func FindByEmail(email string) (*model.ApplicationUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        o.Set()
+        x = &o
     }
 
     return x, nil
 }
 
 func FindByPRN(prn string) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     if db == nil {
@@ -340,16 +332,15 @@ func FindByPRN(prn string) (*model.ApplicationUser, error) {
             return x, err
         }
 
-        k.FromDbModel(o)
-        x = &k
+        o.Set()
+        x = &o
     }
 
     return x, nil
 }
 
 func FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     q := `SELECT * FROM APPLICATION_USER au 
@@ -374,15 +365,13 @@ func FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) 
                 return x, err
             }
 
-            k.FromDbModel(o)
-            k.Password = ""
-            x = &k
+            o.Set()
+            o.Password.String = ""
+            x = &o
         }
 
-        ab := model.DbAssignBranch{}
-        mab := model.AssignBranch{}
-        b := model.DbBranch{}
-        mb := model.Branch{}
+        ab := model.AssignBranch{}
+        b := model.Branch{}
         err := rows.StructScan(&ab)
         if err != nil {
             utils.LogError(err)
@@ -395,25 +384,23 @@ func FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) 
             return x, err
         }
 
-        mab.FromDbModel(ab)
-        mb.FromDbModel(b)
-        mb.Passcode = ""
-        mb.Url = ""
-        mab.Branch = mb
-        lx = append(lx, mab)
+        b.Passcode.String = ""
+        b.Url.String = ""
+        ab.Branch = b
+        lx = append(lx, ab)
 
         i++
     }
 
-    k.UserBranches = lx
-    x = &k
+    o.Set()
+    o.UserBranches = lx
+    x = &o
 
     return x, nil
 }
 
 func FindWithAssignBranchByEmail(email string) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     q := `SELECT * FROM APPLICATION_USER au 
@@ -438,15 +425,13 @@ func FindWithAssignBranchByEmail(email string) (*model.ApplicationUser, error) {
                 return x, err
             }
 
-            k.FromDbModel(o)
-            k.Password = ""
-            x = &k
+            o.Set()
+            o.Password.String = ""
+            x = &o
         }
 
-        ab := model.DbAssignBranch{}
-        mab := model.AssignBranch{}
-        b := model.DbBranch{}
-        mb := model.Branch{}
+        ab := model.AssignBranch{}
+        b := model.Branch{}
         err := rows.StructScan(&ab)
         if err != nil {
             utils.LogError(err)
@@ -459,25 +444,23 @@ func FindWithAssignBranchByEmail(email string) (*model.ApplicationUser, error) {
             return x, err
         }
 
-        mab.FromDbModel(ab)
-        mb.FromDbModel(b)
-        mb.Passcode = ""
-        mb.Url = ""
-        mab.Branch = mb
-        lx = append(lx, mab)
+        b.Passcode.String = ""
+        b.Url.String = ""
+        ab.Branch = b
+        lx = append(lx, ab)
 
         i++
     }
 
-    k.UserBranches = lx
-    x = &k
+    o.Set()
+    o.UserBranches = lx
+    x = &o
 
     return x, nil
 }
 
 func FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
-    o := model.DbAssignBranch{}
-    k := model.AssignBranch{}
+    o := model.AssignBranch{}
     var x *model.AssignBranch
     db := database.GetDb()
     err := db.QueryRowx(`SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`, branchId, userId).StructScan(&o)
@@ -486,15 +469,13 @@ func FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch
         return x, err
     }
 
-    k.FromDbModel(o)
-    x = &k
+    x = &o
 
     return x, nil
 }
 
 func FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
-    o := model.DbAssignBranch{}
-    k := model.AssignBranch{}
+    o := model.AssignBranch{}
     var x *model.AssignBranch
     db := database.GetDb()
     err := db.QueryRowx(`SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`, branchId, email).StructScan(&o)
@@ -503,15 +484,13 @@ func FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch,
         return x, err
     }
 
-    k.FromDbModel(o)
-    x = &k
+    x = &o
 
     return x, nil
 }
 
 func FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
-    o := model.DbApplicationUser{}
-    k := model.ApplicationUser{}
+    o := model.ApplicationUser{}
     var x *model.ApplicationUser
     db := database.GetDb()
     err := db.QueryRowx(`SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`, prn, userId).StructScan(&o)
@@ -520,8 +499,8 @@ func FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
         return x, err
     }
 
-    k.FromDbModel(o)
-    x = &k
+    o.Set()
+    x = &o
 
     return x, nil
 }
@@ -839,11 +818,11 @@ func GetRandomStr(length int) string {
 }
 
 func ValidateCredentials(user model.ApplicationUser, password string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+    err := bcrypt.CompareHashAndPassword([]byte(user.Password.String), []byte(password))
     return err == nil
 }
 
 func ValidateCredentials2(user model.ApplicationUser, password string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(user.MachineID), []byte(password))
+    err := bcrypt.CompareHashAndPassword([]byte(user.MachineID.String), []byte(password))
     return err == nil
 }

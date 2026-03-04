@@ -1,17 +1,9 @@
 package model
 
 import (
-    "database/sql"
+    "github.com/guregu/null/v6"
 )
 
-type DbNationality struct {
-    Nationality sql.NullString `db:"NATIONALITY"`
-}
-
 type Nationality struct {
-    Nationality string `json:"nationality"`
-}
-
-func (o *Nationality) FromDbModel(m DbNationality) {
-    o.Nationality = m.Nationality.String
+    Nationality null.String `json:"nationality" db:"NATIONALITY"`
 }

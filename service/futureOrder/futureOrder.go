@@ -44,16 +44,15 @@ func FindAll(patientPrn string, offset int, limit int) ([]model.FutureOrder, err
     defer rows.Close()
 
     for rows.Next() {
-        o := model.DbFutureOrder{}
+        o := model.FutureOrder{}
         err := rows.StructScan(&o)
         if err != nil {
             utils.LogError(err)
             return lx, err
         }
 
-        k := model.FutureOrder{}
-        k.FromDbModel(o)
-        lx = append(lx, k)
+        o.Set()
+        lx = append(lx, o)
     }
 
     return lx, nil
