@@ -22,7 +22,7 @@ type OneSignalNotification struct {
     DateCreate2             null.String `json:"-" db:"DATE_CREATE" swaggertype:"string"`
     DateSeen                null.String `json:"-" db:"DATE_SEEN" swaggertype:"string"`
     OneSignalMsg            null.String `json:"-" db:"ONESIGNAL_MSG" swaggertype:"string"`
-    OneSignalNotificationID null.String  `json:"-" db:"ONESIGNAL_NOTIFICATION_ID" swaggertype:"string"`
+    OneSignalNotificationID null.String `json:"-" db:"ONESIGNAL_NOTIFICATION_ID" swaggertype:"string"`
 }
 
 func (o *OneSignalNotification) Set() {
