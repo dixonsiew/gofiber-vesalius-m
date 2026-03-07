@@ -26,7 +26,7 @@ type WayFindingFloors struct {
     FloorID           null.Int64  `json:"floorId" db:"FLOOR_DISPLAY_ORDER" swaggertype:"integer"`
     FloorDisplayOrder null.Int32  `json:"floorDisplayOrder" db:"FLOOR_DISPLAY_ORDER" swaggertype:"integer"`
     FloorCode         null.String `json:"floorCode" db:"FLOOR_CODE" swaggertype:"string"`
-    FloorName         null.String `json:"floorName" db:"FLOOR_NAME" db:"FLOOR_NAME" swaggertype:"string"`
+    FloorName         null.String `json:"floorName" db:"FLOOR_NAME" swaggertype:"string"`
     FloorImageRaw     null.String `json:"floorImageRaw" db:"FLOOR_IMAGE_RAW" swaggertype:"string"`
 }
 
