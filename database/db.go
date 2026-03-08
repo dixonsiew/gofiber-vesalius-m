@@ -1,6 +1,7 @@
 package database
 
 import (
+    "context"
     "fmt"
     "time"
     "vesaliusm/config"
@@ -10,7 +11,10 @@ import (
     _ "github.com/sijms/go-ora/v2"
 )
 
-var dbVar *sqlx.DB
+var (
+    dbVar *sqlx.DB
+    ctx = context.Background()
+)
 
 func SetDb(db *sqlx.DB) {
     dbVar = db
@@ -22,6 +26,10 @@ func GetDb() *sqlx.DB {
     }
 
     return dbVar
+}
+
+func GetCtx() context.Context {
+    return ctx
 }
 
 func ConnectDB() {

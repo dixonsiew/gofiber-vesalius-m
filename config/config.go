@@ -16,3 +16,7 @@ func Config(key string) string {
     // Return the value of the variable
     return os.Getenv(key)
 }
+
+func GetIpayTestEnv() string {
+    return Config("payment.ipay.testenv")
+}

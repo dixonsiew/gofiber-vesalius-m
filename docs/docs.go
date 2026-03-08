@@ -256,7 +256,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.OneSignalNotification"
+                                "$ref": "#/definitions/model.OnesignalNotification"
                             }
                         }
                     }
@@ -370,7 +370,28 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.OneSignalNotification"
+                            "$ref": "#/definitions/model.OnesignalNotification"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/branch/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Branch"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Branch"
+                            }
                         }
                     }
                 }
@@ -913,7 +934,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.OneSignalNotification": {
+        "model.OnesignalNotification": {
             "type": "object",
             "properties": {
                 "accountNo": {

@@ -4,6 +4,7 @@ import (
     "fmt"
     "strconv"
     "strings"
+    "vesaliusm/database"
     "vesaliusm/model"
     applicationuserService "vesaliusm/service/applicationUser"
     adminUserService "vesaliusm/service/adminUser"
@@ -14,6 +15,8 @@ import (
     "github.com/gofiber/fiber/v3/extractors"
     "github.com/golang-jwt/jwt/v5"
 )
+
+var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func JWTProtected(c fiber.Ctx) error {
     return jwtware.New(jwtware.Config{
@@ -60,7 +63,7 @@ func ValidateToken(c fiber.Ctx) (int64, *model.ApplicationUser, error) {
         return id, nil, err
     }
 
-    user, err := applicationuserService.FindByUserId(id)
+    user, err := applicationUserSvc.FindByUserId(id, nil)
     if err != nil || user == nil {
         return id, user, err
     }
@@ -88,7 +91,7 @@ func ValidateAppUser(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
-    user, err := applicationuserService.FindByUserId(int64(id))
+    user, err := applicationUserSvc.FindByUserId(id, nil)
     if err != nil || user == nil {
         return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
@@ -98,7 +101,7 @@ func ValidateAppUser(c fiber.Ctx) error {
     }
 
     if sessionId != "" {
-        userSession, err := applicationuserService.FindByUserIdSessionId(user.UserID.Int64, sessionId)
+        userSession, err := applicationUserSvc.FindByUserIdSessionId(user.UserID.Int64, sessionId)
         if err != nil || userSession == nil {
             return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
         }

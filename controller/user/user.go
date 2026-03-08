@@ -2,6 +2,7 @@ package user
 
 import (
     "fmt"
+    "vesaliusm/database"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     applicationuserService "vesaliusm/service/applicationUser"
@@ -10,6 +11,8 @@ import (
     "github.com/go-playground/validator/v10"
     "github.com/gofiber/fiber/v3"
 )
+
+var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 // GetAllUsers
 //
@@ -23,7 +26,7 @@ import (
 func GetAllUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := applicationuserService.List(page, limit)
+    m, err := applicationUserSvc.List(page, limit)
     if err != nil {
         return err
     }
@@ -45,7 +48,7 @@ func GetAllUsers(c fiber.Ctx) error {
 func GetAllActiveUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := applicationuserService.ListActive(page, limit)
+    m, err := applicationUserSvc.ListActive(page, limit)
     if err != nil {
         return err
     }
@@ -70,7 +73,7 @@ func UpdatePlayerId(c fiber.Ctx) error {
     }
 
     playerId := c.Params("playerId")
-    err = applicationuserService.UpdatePlayerId(playerId, int64(id))
+    err = applicationUserSvc.UpdatePlayerId(playerId, id, nil)
     if err != nil {
         return err
     }
@@ -106,7 +109,7 @@ func AddMachineId(c fiber.Ctx) error {
         return err
     }
 
-    err = applicationuserService.UpdateMachineId(data.MachineId, int64(id))
+    err = applicationUserSvc.UpdateMachineId(data.MachineId, id, nil)
     if err != nil {
         return err
     }

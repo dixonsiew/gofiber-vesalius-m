@@ -2,24 +2,27 @@ package auth
 
 import (
 	"vesaliusm/dto"
+    "vesaliusm/database"
 	"vesaliusm/model"
 	applicationuserService "vesaliusm/service/applicationUser"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
+
+var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
     valid := false
-    user, err := applicationuserService.FindByUsername(data.Username)
+    user, err := applicationUserSvc.FindByUsername(data.Username, nil)
     if err != nil {
         return user, err
     }
 
     if user != nil {
         if data.FromBiometric == 1 {
-            valid = applicationuserService.ValidateCredentials2(*user, data.Password)
+            valid, _ = applicationUserSvc.ValidateCredentials2(user, data.Password)
         } else {
-            valid = applicationuserService.ValidateCredentials(*user, data.Password)
+            valid, _ = applicationUserSvc.ValidateCredentials(user, data.Password)
         }
     }
 
@@ -28,19 +31,19 @@ func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
     }
 
     if data.PlayerId != "" {
-        err := applicationuserService.UpdatePlayerId(data.PlayerId, user.UserID.Int64)
+        err := applicationUserSvc.UpdatePlayerId(data.PlayerId, user.UserID.Int64, nil)
         if err != nil {
             return user, err
         }
 
-        err = applicationuserService.InsertDownloadAppV2(data.MachineId, data.PlayerId)
+        err = applicationUserSvc.InsertDownloadAppV2(data.MachineId, data.PlayerId, nil)
         if err != nil {
             return user, err
         }
     }
 
     if data.MachineId != "" {
-        err := applicationuserService.UpdateMachineId(data.MachineId, user.UserID.Int64)
+        err := applicationUserSvc.UpdateMachineId(data.MachineId, user.UserID.Int64, nil)
         if err != nil {
             return user, err
         }
@@ -50,7 +53,7 @@ func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
         return user, fiber.NewError(fiber.StatusBadRequest, "Your account is not activated")
     }
 
-    sessionId, err := applicationuserService.SaveSessionId(user.UserID.Int64)
+    sessionId, err := applicationUserSvc.SaveSessionId(user.UserID.Int64, nil)
     if sessionId == "" {
         return nil, err
     }

@@ -261,7 +261,7 @@ definitions:
       nationality:
         type: string
     type: object
-  model.OneSignalNotification:
+  model.OnesignalNotification:
     properties:
       accountNo:
         type: string
@@ -444,7 +444,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.OneSignalNotification'
+            $ref: '#/definitions/model.OnesignalNotification'
       security:
       - BearerAuth: []
       tags:
@@ -458,7 +458,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.OneSignalNotification'
+              $ref: '#/definitions/model.OnesignalNotification'
             type: array
       security:
       - BearerAuth: []
@@ -511,6 +511,19 @@ paths:
       - BearerAuth: []
       tags:
       - Notification
+  /public/branch/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Branch'
+            type: array
+      tags:
+      - Public Branch
   /user/add-machine-id:
     post:
       parameters:

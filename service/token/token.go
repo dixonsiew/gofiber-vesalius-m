@@ -4,13 +4,16 @@ import (
     "fmt"
     "strconv"
     "time"
+    "vesaliusm/database"
     "vesaliusm/model"
-    userService "vesaliusm/service/applicationUser"
+    applicationuserService "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v2"
     "github.com/golang-jwt/jwt/v5"
 )
+
+var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
@@ -101,5 +104,5 @@ func decodeRefreshToken(tokenStr string) (string, int64, error) {
 }
 
 func getUserFromRefreshTokenPayload(id int64) (*model.ApplicationUser, error) {
-    return userService.FindByUserId(id)
+    return applicationUserSvc.FindByUserId(id, nil)
 }

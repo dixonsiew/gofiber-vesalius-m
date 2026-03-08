@@ -23,6 +23,8 @@ import (
     "github.com/gofiber/fiber/v3/middleware/static"
 )
 
+// convert this to go using go-ora with github.com/jmoiron/sqlx
+
 // @title (IHP-UAT) Vesalius-m Backend API
 // @version 1.0
 // @description Vesalius-m Backend API Docs (IHP-UAT Version).

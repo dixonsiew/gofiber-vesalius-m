@@ -318,15 +318,15 @@ type ApplicationUser struct {
     Address1             null.String    `json:"address1" db:"ADDRESS_1" swaggertype:"string"`
     Address2             null.String    `json:"address2" db:"ADDRESS_2" swaggertype:"string"`
     Address3             null.String    `json:"address3" db:"ADDRESS_3" swaggertype:"string"`
-    Citystate            null.String    `json:"cityState" db:"CITYSTATE" swaggertype:"string"`
+    CityState            null.String    `json:"cityState" db:"CITYSTATE" swaggertype:"string"`
     Postcode             null.String    `json:"postalCode" db:"POSTCODE" swaggertype:"string"`
     Country              null.String    `json:"country" db:"COUNTRY" swaggertype:"string"`
     ContactNumber        null.String    `json:"contactNumber" db:"CONTACT_NUMBER" swaggertype:"string"`
     Passport             null.String    `json:"passport" db:"PASSPORT" swaggertype:"string"`
     Nationality          null.String    `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
     VerificationCode     null.String    `json:"verificationCode" db:"VERIFICATION_CODE" swaggertype:"string"`
-    FirstTimeLoginV      null.Int64     `json:"-" db:"FIRST_TIME_LOGIN" swaggertype:"integer"`
-    FirstTimeBiometricV  null.Int64     `json:"-" db:"FIRST_TIME_BIOMETRIC" swaggertype:"integer"`
+    FirstTimeLoginV      null.Int32     `json:"-" db:"FIRST_TIME_LOGIN" swaggertype:"integer"`
+    FirstTimeBiometricV  null.Int32     `json:"-" db:"FIRST_TIME_BIOMETRIC" swaggertype:"integer"`
     FirstTimeLogin       bool           `json:"firstTimeLogin"`
     FirstTimeBiometric   bool           `json:"firstTimeBiometric"`
     Role                 null.String    `json:"role" db:"ROLE" swaggertype:"string"`
@@ -385,12 +385,12 @@ func (o *ApplicationUser) Set() {
     if !o.ContactNumber.Valid {
         o.ContactNumber.String = "-"
     }
-    if o.FirstTimeLoginV.Int64 == 1 {
+    if o.FirstTimeLoginV.Int32 == 1 {
         o.FirstTimeLogin = true
     } else {
         o.FirstTimeLogin = false
     }
-    if o.FirstTimeBiometricV.Int64 == 1 {
+    if o.FirstTimeBiometricV.Int32 == 1 {
         o.FirstTimeBiometric = true
     } else {
         o.FirstTimeBiometric = false
@@ -654,7 +654,7 @@ type ColumnMap struct {
     Text  string `json:"text"`
 }
 
-type OneSignalNotification struct {
+type OnesignalNotification struct {
     NotificationID          null.Int64  `json:"notification_id" db:"NOTIFICATION_ID" swaggertype:"integer"`
     UserID                  null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
     VisitType               null.String `json:"visitType" db:"VISIT_TYPE" swaggertype:"string"`
@@ -675,7 +675,7 @@ type OneSignalNotification struct {
     OneSignalNotificationID null.String `json:"-" db:"ONESIGNAL_NOTIFICATION_ID" swaggertype:"string"`
 }
 
-func (o *OneSignalNotification) Set() {
+func (o *OnesignalNotification) Set() {
     if o.IsSeenV.String == "Y" {
         o.IsSeen = true
     } else {
