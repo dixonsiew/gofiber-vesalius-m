@@ -104,7 +104,7 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
 }
 
 func (s *GeneralNotificationMasterService) FindByNotificationMasterId(notificationMasterId int64) (*model.GeneralNotification, error) {
-    query := `SELECT * FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :1`
+    query := `SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :1`
     var o model.GeneralNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationMasterId)
     if err != nil {
@@ -157,7 +157,7 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         db = conn
     }
     query := `
-        SELECT * FROM GENERAL_NOTIFICATION_MASTER
+        SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER
         ORDER BY DATE_CREATE DESC OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
     `
     var lx []model.GeneralNotification
@@ -180,4 +180,21 @@ func nullStringIfDash(s null.String) interface{} {
         return nil
     }
     return s.String
+}
+
+func getGeneralNotificationMasterCols() string {
+    return `
+        NOTIFICATION_MASTER_ID,
+        NOTIFICATION_TITLE,
+        SHORT_MESSAGE,
+        FULL_MESSAGE,
+        START_DATE_TIME,
+        END_DATE_TIME,
+        TARGET_AGE_FROM,
+        TARGET_AGE_TO,
+        TARGET_GENDER,
+        TARGET_NATIONALITY,
+        TARGET_CITY,
+        TARGET_STATE
+    `
 }

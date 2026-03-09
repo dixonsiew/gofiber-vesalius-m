@@ -5,22 +5,22 @@ import (
 )
 
 type UserPackagePaymentEmail struct {
-    PatientName       null.String  `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
-    PaymentRequestNo  null.String  `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`
-    PurchasedDateTime null.String  `json:"purchasedDateTime" db:"PURCHASED_DATETIME" swaggertype:"string"`
-    ExpiredDateTime   null.String  `json:"expiredDateTime" db:"EXPIRED_DATETIME" swaggertype:"string"`
-    PackageName       null.String  `json:"packageName" db:"PACKAGE_NAME" swaggertype:"string"`
-    PackageQuantity   null.Int32   `json:"packageQuantity" db:"PACKAGE_QUANTITY" swaggertype:"integer"`
-    PackagePrice      null.Float   `json:"packagePrice" db:"PACKAGE_PRICE" swaggertype:"number"`
-    PaymentGatewayV   null.String  `json:"-" db:"PAYMENT_GATEWAY" swaggertype:"string"`
-    PaymentGateway    string       `json:"paymentGateway" swaggertype:"string"`
-    BillingAddress1   *null.String `json:"billingAddress1" db:"BILLING_ADDRESS1" swaggertype:"string"`
-    BillingAddress2   *null.String `json:"billingAddress2" db:"BILLING_ADDRESS2" swaggertype:"string"`
-    BillingAddress3   *null.String `json:"billingAddress3" db:"BILLING_ADDRESS3" swaggertype:"string"`
-    BillingTowncity   *null.String `json:"billingTowncity" db:"BILLING_TOWNCITY" swaggertype:"string"`
-    BillingState      *null.String `json:"billingState" db:"BILLING_STATE" swaggertype:"string"`
-    BillingPostcode   *null.String `json:"billingPostcode" db:"BILLING_POSTCODE" swaggertype:"string"`
-    BillingEmail      *null.String `json:"billingEmail" db:"BILLING_EMAIL" swaggertype:"string"`
+    PatientName       null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
+    PaymentRequestNo  null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`
+    PurchasedDateTime null.String `json:"purchasedDateTime" db:"PURCHASED_DATETIME" swaggertype:"string"`
+    ExpiredDateTime   null.String `json:"expiredDateTime" db:"EXPIRED_DATETIME" swaggertype:"string"`
+    PackageName       null.String `json:"packageName" db:"PACKAGE_NAME" swaggertype:"string"`
+    PackageQuantity   null.Int32  `json:"packageQuantity" db:"PACKAGE_QUANTITY" swaggertype:"integer"`
+    PackagePrice      null.Float  `json:"packagePrice" db:"PACKAGE_PRICE" swaggertype:"number"`
+    PaymentGatewayV   null.String `json:"-" db:"PAYMENT_GATEWAY" swaggertype:"string"`
+    PaymentGateway    string      `json:"paymentGateway"`
+    BillingAddress1   null.String `json:"billingAddress1" db:"BILLING_ADDRESS1" swaggertype:"string"`
+    BillingAddress2   null.String `json:"billingAddress2" db:"BILLING_ADDRESS2" swaggertype:"string"`
+    BillingAddress3   null.String `json:"billingAddress3" db:"BILLING_ADDRESS3" swaggertype:"string"`
+    BillingTowncity   null.String `json:"billingTowncity" db:"BILLING_TOWNCITY" swaggertype:"string"`
+    BillingState      null.String `json:"billingState" db:"BILLING_STATE" swaggertype:"string"`
+    BillingPostcode   null.String `json:"billingPostcode" db:"BILLING_POSTCODE" swaggertype:"string"`
+    BillingEmail      null.String `json:"billingEmail" db:"BILLING_EMAIL" swaggertype:"string"`
 }
 
 func (o *UserPackagePaymentEmail) Set() {
@@ -224,4 +224,15 @@ type PackagePaymentDetails struct {
     BillingEmail           null.String `json:"billingEmail" db:"BILLING_EMAIL"`
     PaymentUrl             string      `json:"paymentUrl"`
     DateCreate             string      `json:"dateCreate"`
+}
+
+type ApptDetails struct {
+    PatientPrn        null.String `json:"patientPrn" db:"PATIENT_PRN"`
+    PackagePurchaseNo null.String `json:"packagePurchaseNo" db:"PACKAGE_PURCHASE_NO"`
+    ApptNo            null.String `json:"apptNo" db:"APPT_NO"`
+}
+
+type PackageExceedPurchaseStatus struct {
+    PurchaseStatus      string `db:"PURCHASE_STATUS"`
+    RecommendedQuantity int    `db:"RECOMMENDED_QUANTITY"`
 }

@@ -172,7 +172,7 @@ type AssignBranch struct {
     UserID         null.Int64  `json:"userId" db:"USER_ID" swaggertype:"integer"`
     AdminID        null.Int64  `json:"adminId" db:"ADMIN_ID" swaggertype:"integer"`
     BranchID       null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
-    Branch         Branch      `json:"branch"`
+    Branch         *Branch     `json:"branch"`
 }
 
 type AdminUser struct {
@@ -242,8 +242,6 @@ type ApplicationUserFamily struct {
     IsActive        bool        `json:"isActive"`
     IsGoldenPearl   bool        `json:"isGoldenPearl"`
     IsKidsExplorer  bool        `json:"isKidsExplorer"`
-    DateCreate      null.String `json:"dateCreate" db:"DATE_CREATE" swaggertype:"string"`
-    DateLastSync    null.String `json:"dateLastSync" db:"DATE_LAST_SYNC" swaggertype:"string"`
 }
 
 func (o *ApplicationUserFamily) Set() {
@@ -345,7 +343,7 @@ type ApplicationUser struct {
     Branch               null.String    `json:"branch" db:"BRANCH" swaggertype:"string"`
 }
 
-func (o *ApplicationUserFamily) FromRsFamilyMember(m ApplicationUser) {
+func (o *ApplicationUserFamily) SetFromFamilyMember(m ApplicationUser) {
     o.AufID.Int64 = 0
     o.UserID.Int64 = m.UserID.Int64
     o.NokRefNumber = 0
@@ -637,7 +635,7 @@ type NovaDoctor struct {
     Qualifications            null.String                `json:"qualifications" db:"QUALIFICATIONS_SHORT" swaggertype:"string"`
     RegistrationNum           null.String                `json:"registrationNum" db:"REGISTRATION_NO" swaggertype:"string"`
     Image                     null.String                `json:"image" db:"IMAGE" swaggertype:"string"`
-    ResizeImage               null.String                `json:"resizeImage" swaggertype:"string"`
+    ResizeImage               string                     `json:"resizeImage"`
     ShowMakeAppointmentButton string                     `json:"showMakeAppointmentButton"`
     DoctorSpokenLanguage      []NovaDoctorSpokenLanguage `json:"doctorSpokenLanguage"`
     DoctorQualifications      []NovaDoctorQualifications `json:"doctorQualifications"`
@@ -667,8 +665,8 @@ type OnesignalNotification struct {
     IsSeenV                 null.String `json:"-" db:"IS_SEEN" swaggertype:"string"`
     IsSeen                  bool        `json:"isSeen"`
     DateCreate              null.String `json:"dateCreate" db:"DATE_SENT" swaggertype:"string"`
-    DateSent                null.String `json:"dateSent" swaggertype:"string"`
-    GuestPlayerID           null.String `json:"guestPlayerId" db:"GUEST_PLAYER_ID" swaggertype:"string"`
+    DateSent                string      `json:"dateSent"`
+    GuestPlayerID           string      `json:"guestPlayerId"`
     DateCreate2             null.String `json:"-" db:"DATE_CREATE" swaggertype:"string"`
     DateSeen                null.String `json:"-" db:"DATE_SEEN" swaggertype:"string"`
     OneSignalMsg            null.String `json:"-" db:"ONESIGNAL_MSG" swaggertype:"string"`
@@ -696,10 +694,6 @@ type GeneralNotification struct {
     TargetNationality    null.String `json:"targetNationality" db:"TARGET_NATIONALITY" swaggertype:"string"`
     TargetCity           null.String `json:"targetCity" db:"TARGET_CITY" swaggertype:"string"`
     TargetState          null.String `json:"targetState" db:"TARGET_STATE" swaggertype:"string"`
-    UserCreate           null.Int64  `json:"-" db:"USER_CREATE" swaggertype:"integer"`
-    DateCreate           null.String `json:"-" db:"DATE_CREATE" swaggertype:"string"`
-    UserUpdate           null.Int64  `json:"-" db:"USER_UPDATE" swaggertype:"integer"`
-    DateUpdate           null.String `json:"-" db:"DATE_UPDATE" swaggertype:"string"`
 }
 
 func (o *GeneralNotification) Set() {

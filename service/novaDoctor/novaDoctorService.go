@@ -51,7 +51,7 @@ func (s *NovaDoctorService) Save(doctor *model.NovaDoctor) error {
         doctor.DoctorID.Int64,
         doctor.Gender.String,
         doctor.Image.String,
-        doctor.ResizeImage.String,
+        doctor.ResizeImage,
         doctor.MCR.String,
         doctor.Name.String,
         doctor.Nationality.String,
@@ -143,7 +143,7 @@ func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
         `,
         doctor.Gender.String,
         doctor.Image.String,
-        doctor.ResizeImage.String,
+        doctor.ResizeImage,
         doctor.MCR.String,
         doctor.Name.String,
         doctor.Nationality.String,
@@ -284,7 +284,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
     var query string
     if isWebadmin {
         query = `
-            SELECT * FROM NOVA_DOCTOR
+            SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR
             ORDER BY DISPLAY_SEQUENCE, UPPER(NAME)
             OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
         `
@@ -460,7 +460,7 @@ func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
 
 func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]model.NovaDoctor, error) {
     query := `
-        SELECT * FROM NOVA_DOCTOR nd
+        SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR nd
         WHERE nd.IS_FOR_PACKAGE = 'N'
           AND (
             nd.DOCTOR_ID IN (
@@ -572,7 +572,7 @@ func (s *NovaDoctorService) GuestFindByKeyword(keyword string, offset, limit int
 func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, error) {
     var count int
     err := s.db.GetContext(s.ctx, &count,
-        `SELECT COUNT(*) FROM NOVA_DOCTOR WHERE MCR = :1 AND DOCTOR_ID <> :2`,
+        `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1 AND DOCTOR_ID <> :2`,
         mcr, doctorID,
     )
     if err != nil {
@@ -585,7 +585,7 @@ func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, er
 func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
     var count int
     err := s.db.GetContext(s.ctx, &count,
-        `SELECT COUNT(*) FROM NOVA_DOCTOR WHERE MCR = :1`,
+        `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1`,
         mcr,
     )
     if err != nil {
@@ -597,7 +597,7 @@ func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
 
 func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor, error) {
     var doctor model.NovaDoctor
-    err := s.db.GetContext(s.ctx, &doctor, `SELECT * FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
+    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -687,7 +687,7 @@ func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
 func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, error) {
     var doctor model.NovaDoctor
     err := s.db.GetContext(s.ctx, &doctor,
-        `SELECT * FROM NOVA_DOCTOR WHERE MCR = :1`,
+        `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`,
         mcr,
     )
     if err != nil {
@@ -703,7 +703,7 @@ func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, erro
 func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error) {
     var doctors []model.NovaDoctor
     err := s.db.SelectContext(s.ctx, &doctors,
-        `SELECT * FROM NOVA_DOCTOR WHERE MCR = :1`,
+        `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`,
         mcr,
     )
     if err != nil {
@@ -777,7 +777,7 @@ func (s *NovaDoctorService) findAllNovaDoctorSpokenLanguage(db *sqlx.DB, ids []i
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_SPOKEN_LANGUAGE WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorSpokenLanguageCols() + ` FROM NOVA_DOCTOR_SPOKEN_LANGUAGE WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -806,7 +806,7 @@ func (s *NovaDoctorService) findAllNovaDoctorQualifications(db *sqlx.DB, ids []i
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_QUALIFICATIONS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorQualificationsCols() + ` FROM NOVA_DOCTOR_QUALIFICATIONS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -835,7 +835,7 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialities(db *sqlx.DB, ids []int
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_SPECIALITIES WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorSpecialitiesCols() + ` FROM NOVA_DOCTOR_SPECIALITIES WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -864,7 +864,7 @@ func (s *NovaDoctorService) findAllNovaDoctorClinicLocation(db *sqlx.DB, ids []i
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_CLINIC_LOCATION WHERE DOCTOR_ID IN (?)`, ids)
+    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorClinicLocationCols() + ` FROM NOVA_DOCTOR_CLINIC_LOCATION WHERE DOCTOR_ID IN (?)`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -893,7 +893,7 @@ func (s *NovaDoctorService) findAllNovaDoctorClinicHours(db *sqlx.DB, ids []int6
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_CLINIC_HOURS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorClinicHoursCols() + ` FROM NOVA_DOCTOR_CLINIC_HOURS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -922,7 +922,7 @@ func (s *NovaDoctorService) findAllNovaDoctorContact(db *sqlx.DB, ids []int64) (
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_CONTACT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT `+getNovaDoctorContactCols()+` FROM NOVA_DOCTOR_CONTACT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -951,7 +951,7 @@ func (s *NovaDoctorService) findAllNovaDoctorAppointments(db *sqlx.DB, ids []int
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
+    query, args, err := sqlx.In(`SELECT `+getNovaDoctorAppointmentCols()+` FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -980,7 +980,7 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialty(db *sqlx.DB, ids []int64,
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?)`, ids)
+    query, args, err := sqlx.In(`SELECT `+getNovaDoctorSpecialtyCols()+` FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?)`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -1012,7 +1012,7 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialtyPrimary(db *sqlx.DB, ids [
     if len(ids) == 0 {
         return nil, nil
     }
-    query, args, err := sqlx.In(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?) AND PRIMARY_SPECIALTY = 1`, ids)
+    query, args, err := sqlx.In(`SELECT `+getNovaDoctorSpecialtyCols()+` FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?) AND PRIMARY_SPECIALTY = 1`, ids)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -1041,7 +1041,7 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialtyPrimary(db *sqlx.DB, ids [
 }
 
 func (s *NovaDoctorService) findAllNovaSpecialtyMap(q *sqlx.DB) (map[int64]model.NovaSpecialty, error) {
-    const query = `SELECT * FROM NOVA_SPECIALTY`
+    query := `SELECT ` + getNovaSpecialtyCols() + ` FROM NOVA_SPECIALTY`
     rows, err := q.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -1259,4 +1259,111 @@ func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.N
         }
     }
     return nil
+}
+
+func getNovaDoctorSpokenLanguageCols() string {
+    return `
+        SPOKEN_LANGUAGE_ID,
+        DOCTOR_ID,
+        DISPLAY_SEQUENCE,
+        SPOKEN_LANGUAGE
+    `
+}
+
+func getNovaDoctorQualificationsCols() string {
+    return `
+        QUALIFICATION_ID,
+        DOCTOR_ID,
+        DISPLAY_SEQUENCE,
+        QUALIFICATION
+    `
+}
+
+func getNovaDoctorSpecialitiesCols() string {
+    return `
+        SPECIALITIES_ID,
+        DOCTOR_ID,
+        DISPLAY_SEQUENCE,
+        SPECIALITIES,
+        SUBSPECIALTY
+    `
+}
+
+func getNovaDoctorClinicLocationCols() string {
+    return `
+        CLINIC_LOCATION_ID,
+        DOCTOR_ID,
+        LOCATION,
+        BUILDING
+    `
+}
+
+func getNovaDoctorClinicHoursCols() string {
+    return `
+        CLINIC_HOUR_ID,
+        DOCTOR_ID,
+        DISPLAY_SEQUENCE,
+        DAY_OF_THE_WEEK,
+        DAY_START_TIME,
+        DAY_END_TIME,
+        BY_APPOINTMENT_ONLY
+    `
+}
+
+func getNovaDoctorAppointmentCols() string {
+    return `
+        DOCTOR_APPT_SLOT_ID,
+        DOCTOR_ID,
+        DAY_OF_WEEK,
+        SLOT_TYPE,
+        SESSION_TYPE,
+        START_TIME,
+        END_TIME,
+        MAX_SLOTS,
+        DISPLAY_SEQUENCE
+    `
+}
+
+func getNovaDoctorContactCols() string {
+    return `
+        CONTACT_ID,
+        DOCTOR_ID,
+        DISPLAY_SEQUENCE,
+        CONTACT_TYPE,
+        CONTACT_VALUE
+    `
+}
+
+func getNovaSpecialtyCols() string {
+    return `
+        SPECIALTY_ID,
+        SPECIALTY_CODE,
+        SPECIALTY_DESC
+    `
+}
+
+func getNovaDoctorSpecialtyCols() string {
+    return `
+        DOCTOR_SPECIALTY_ID,
+        DOCTOR_ID,
+        SPECIALTY_ID,
+        PRIMARY_SPECIALTY
+    `
+}
+
+func getNovaDoctorCols() string {
+    return `
+        DOCTOR_ID,
+        MCR,
+        NAME,
+        GENDER,
+        NATIONALITY,
+        IMAGE,
+        DISPLAY_SEQUENCE,
+        ALLOW_APPOINTMENT,
+        CONSULTANT_TYPE,
+        IS_FOR_PACKAGE,
+        QUALIFICATIONS_SHORT,
+        REGISTRATION_NO
+    `
 }

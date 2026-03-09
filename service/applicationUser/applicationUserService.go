@@ -53,7 +53,7 @@ func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    query := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY`
     var users []model.ApplicationUser
     err := db.SelectContext(s.ctx, &users, query, offset, limit)
     if err != nil {
@@ -133,7 +133,7 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
     }
     kw := "%" + strings.ToLower(keyword) + "%"
     query := `
-        SELECT * FROM APPLICATION_USER au
+        SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :1 OR LOWER(au.MIDDLE_NAME) LIKE :1 OR LOWER(au.LAST_NAME) LIKE :1
         OR au.MASTER_PRN LIKE :1 OR LOWER(au.EMAIL) LIKE :1)
         AND INACTIVE_FLAG = 'N'
@@ -186,7 +186,7 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
 }
 
 func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
-    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :1 AND SESSION_ID = :2`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :1 AND SESSION_ID = :2`
     var u model.ApplicationUser
     err := s.db.GetContext(s.ctx, &u, query, userId, sessionId)
     if err != nil {
@@ -205,7 +205,7 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
     if db == nil {
         db = s.db
     }
-    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :1`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :1`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, userId)
     if err != nil {
@@ -224,7 +224,7 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
     if db == nil {
         db = s.db
     }
-    query := `SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:1) ORDER BY REGISTRATION_DATE_TIME DESC`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:1) ORDER BY REGISTRATION_DATE_TIME DESC`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, username)
     if err != nil {
@@ -243,7 +243,7 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
     if db == nil {
         db = s.db
     }
-    query := `SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:1)`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:1)`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, email)
     if err != nil {
@@ -262,7 +262,7 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
     if db == nil {
         db = s.db
     }
-    query := `SELECT * FROM APPLICATION_USER WHERE MASTER_PRN = :1`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE MASTER_PRN = :1`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, prn)
     if err != nil {
@@ -278,7 +278,8 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
 
 func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) {
     query := `
-        SELECT * FROM APPLICATION_USER au 
+        SELECT ` + getApplicationUserCols() + `, ` + getAssignBranchCols() + `, ` + getBranchCols() + ` 
+        FROM APPLICATION_USER au 
         LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
         INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
         WHERE au.USER_ID = :1
@@ -322,7 +323,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
             return nil, err
         }
 
-        ab.Branch = b
+        ab.Branch = &b
         branches = append(branches, ab)
     }
     if user == nil {
@@ -336,7 +337,8 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
 func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*model.ApplicationUser, error) {
     // Similar to above but with email condition
     query := `
-        SELECT * FROM APPLICATION_USER au 
+        SELECT ` + getApplicationUserCols() + `, ` + getAssignBranchCols() + `, ` + getBranchCols() + ` 
+        FROM APPLICATION_USER au 
         LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
         INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
         WHERE au.EMAIL = :1
@@ -380,7 +382,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
             return nil, err
         }
 
-        ab.Branch = b
+        ab.Branch = &b
         branches = append(branches, ab)
     }
     if user == nil {
@@ -392,7 +394,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
 }
 
 func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :2)`
+    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :2)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, userId)
     if err != nil {
@@ -406,7 +408,7 @@ func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId
 }
 
 func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :2)`
+    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :2)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, email)
     if err != nil {
@@ -422,7 +424,7 @@ func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId 
 func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
     // Original query: SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND ab.PRN = :2)
     // Note: 'ab.PRN' likely missing table alias, but we'll replicate.
-    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND PRN = :2)`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND PRN = :2)`
     var u model.ApplicationUser
     err := s.db.GetContext(s.ctx, &u, query, userId, prn)
     if err != nil {
@@ -499,7 +501,7 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
         "master_prn":     o.MasterPrn.String,
         "middle_name":    o.MiddleName.String,
         "nationality":    o.Nationality.String,
-        "passport":       o.Passport.String, // Note: Passport field exists? Not in struct, add if needed.
+        "passport":       o.Passport.String,
         "resident":       o.Resident.String,
         "sex":            o.Sex.String,
         "title":          o.Title.String,
@@ -1255,4 +1257,86 @@ func (s *ApplicationUserService) ValidateCredentials2(user *model.ApplicationUse
         utils.LogError(err)
     }
     return err == nil, nil
+}
+
+func getApplicationUserCols() string {
+    return `
+        USER_ID,
+        USERNAME,
+        EMAIL,
+        PASSWORD,
+        TITLE,
+        FIRST_NAME,
+        MIDDLE_NAME,
+        LAST_NAME,
+        RESIDENT,
+        DOB,
+        SEX,
+        RACE,
+        ADDRESS,
+        ADDRESS_1,
+        ADDRESS_2,
+        ADDRESS_3,
+        CITYSTATE,
+        POSTCODE,
+        COUNTRY,
+        CONTACT_NUMBER,
+        PASSPORT,
+        NATIONALITY,
+        VERIFICATION_CODE,
+        FIRST_TIME_LOGIN,
+        FIRST_TIME_BIOMETRIC,
+        ROLE,
+        MASTER_PRN,
+        PLAYER_ID,
+        MACHINE_ID,
+        REGISTRATION_DATE_TIME,
+        INACTIVE_FLAG,
+        SESSION_ID,
+        SIGN_IN_TYPE
+    `
+}
+
+func getApplicationUserFamilyCols() string {
+    return `
+        AUF_ID,
+        USER_ID,
+        PATIENT_PRN,
+        NOK_REF_NUMBER,
+        IS_PATIENT,
+        FULLNAME,
+        RELATIONSHIP,
+        NOK_PRN,
+        NRIC_PASSPORT,
+        DOC_NUMBER,
+        DOB,
+        GENDER,
+        NATIONALITY,
+        CONTACT_NUMBER,
+        ADDRESS,
+        IS_ACTIVE,
+        MARITAL_STATUS,
+        EMAIL,
+        IS_KIDS_EXPLORER,
+        IS_GOLDEN_PEARL
+    `
+}
+
+func getBranchCols() string {
+    return `
+        BRANCH_ID,
+        URL,
+        PASSCODE,
+        BRANCH_NAME
+    `
+}
+
+func getAssignBranchCols() string {
+    return `
+        ASSIGN_BRANCH_ID,
+        PRN,
+        USER_ID,
+        ADMIN_ID,
+        BRANCH_ID
+    `
 }

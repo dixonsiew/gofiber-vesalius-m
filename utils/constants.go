@@ -8,3 +8,11 @@ var (
     JWT_SECRET = "itsSecret"
     ROLE_ADMIN = "ADMIN"
 )
+
+var (
+    PackageStatusOrdered = "ORDERED"
+    PackageStatusPurchased = "Purchased"
+    PackageStatusBooked = "Booked"
+    PackageStatusRedeemed = "Redeemed"
+    PackageStatusCancelled = "Cancelled"
+)
