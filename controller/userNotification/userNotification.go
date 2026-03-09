@@ -12,8 +12,12 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService = applicationUserNotificationService.NewApplicationUserNotificationService(database.GetDb(), database.GetCtx())
-var generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService = generalNotificationMasterService.NewGeneralNotificationMasterService(database.GetDb(), database.GetCtx())
+var (
+    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService = 
+        applicationUserNotificationService.NewApplicationUserNotificationService(database.GetDb(), database.GetCtx())
+    generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService = 
+        generalNotificationMasterService.NewGeneralNotificationMasterService(database.GetDb(), database.GetCtx())
+)
 
 // GetUnseenNotificationCount
 //
@@ -45,6 +49,8 @@ func GetUnseenNotificationCount(c fiber.Ctx) error {
 // @Tags Notification
 // @Produce json
 // @Security BearerAuth
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.OnesignalNotification
 // @Router /notification/all [get]
 func GetNotificationList(c fiber.Ctx) error {
@@ -74,6 +80,8 @@ func GetNotificationList(c fiber.Ctx) error {
 // @Tags Notification
 // @Produce json
 // @Security BearerAuth
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.GeneralNotification
 // @Router /notification/general/master/all [get]
 func GetGeneralNotificationList(c fiber.Ctx) error {

@@ -14,7 +14,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = 
+    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 type PatientPurchaseDetailsService struct {
     db  *sqlx.DB
@@ -28,14 +29,13 @@ func NewPatientPurchaseDetailsService(db *sqlx.DB, ctx context.Context) *Patient
 func (s *PatientPurchaseDetailsService) ListByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, page string, limit string) (*model.PagedList, error) {
     total, err := s.CountByKeyword(keyword, keyword2, keyword3, keyword4)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
+    utils.LogInfo("hello")
     pager := model.GetPager(total, page, limit)
     list, err := s.FindByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
@@ -52,13 +52,23 @@ func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 
              JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID`
     query := base + whereClause(conditions)
 
-    rows, err := s.db.NamedQueryContext(s.ctx, query, args)
+    var (
+        rows *sqlx.Rows
+        err error
+    )
+    if len(conditions) < 1 {
+        rows, err = s.db.QueryxContext(s.ctx, query)
+    } else {
+        rows, err = s.db.NamedQueryContext(s.ctx, query, args)
+    }
+    
     if err != nil {
         utils.LogError(err)
         return 0, err
     }
     defer rows.Close()
 
+    utils.LogInfo("get count")
     var count int
     if rows.Next() {
         if err = rows.Scan(&count); err != nil {
@@ -72,20 +82,17 @@ func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 
 func (s *PatientPurchaseDetailsService) ListByPrn(userId int64, page string, limit string) (*model.PagedList, error) {
     user, err := applicationUserSvc.FindByUserId(userId, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     prn := user.MasterPrn.String
     total, err := s.CountByPrn(prn)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
     list, err := s.FindAllByPrn(prn, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
@@ -156,8 +163,11 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
+    utils.LogInfo(query)
+    utils.LogInfo("-----")
     rows, err := s.db.NamedQueryContext(s.ctx, query, args)
     if err != nil {
+        utils.LogError(err)
         return nil, err
     }
     defer rows.Close()
@@ -166,6 +176,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     for rows.Next() {
         var item userPackage.UserPackage
         if err = rows.StructScan(&item); err != nil {
+            utils.LogError(err)
             return nil, err
         }
         item.SetWebadmin()
@@ -592,20 +603,20 @@ func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, ke
     args := make(map[string]interface{})
 
     if keyword != "" {
-        conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE LOWER(:keyword)`)
-        args["keyword"] = "%" + keyword + "%"
+        conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
+        args["keyword"] = keyword
     }
     if keyword2 != "" {
-        conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE LOWER(:keyword2)`)
-        args["keyword2"] = "%" + keyword2 + "%"
+        conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
+        args["keyword2"] = keyword2
     }
     if keyword3 != "" {
-        conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE LOWER(:keyword3)`)
-        args["keyword3"] = "%" + keyword3 + "%"
+        conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
+        args["keyword3"] = keyword3
     }
     if keyword4 != "" && keyword4 != "All" {
-        conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE LOWER(:keyword4)`)
-        args["keyword4"] = "%" + keyword4 + "%"
+        conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
+        args["keyword4"] = keyword4
     }
     return conds, args
 }
@@ -617,7 +628,7 @@ func whereClause(conds []string) string {
     return " WHERE " + strings.Join(conds, " AND ")
 }
 
-func getPatientPurchaseDetailsCols() string {
+func getPackagePaymentDetailsCols() string {
     return `
         ppd2.PAYMENT_GATEWAY,
         ppd2.PAYMENT_REQUEST_NO,
@@ -635,15 +646,19 @@ func getPatientPurchaseDetailsCols() string {
     `
 }
 
-func getPackagePaymentDetailsCols() string {
+func getPatientPurchaseDetailsCols() string {
     return `
-        ppd2.PAYMENT_REQUEST_NO,
-        ppd2.PAYMENT_REQUEST_CURRENCY,
-        ppd2.PAYMENT_AMOUNT,
-        ppd2.PAYMENT_CURRENCY,
-        ppd2.PAYMENT_GATEWAY,
-        ppd2.PAYMENT_AMOUNT_COLLECTED,
-        ppd2.PAYMENT_TRANS_DATE,
-        ppd2.BILLING_FULLNAME
+        ppd.PATIENT_PURCHASE_ID,
+        ppd.PATIENT_PRN,
+        ppd.PATIENT_NAME,
+        ppd.PACKAGE_ID,
+        ppd.PACKAGE_PURCHASE_NO,
+        ppd.PACKAGE_STATUS,
+        ppd.ORDERED_DATETIME,
+        ppd.BOOKED_DATETIME,
+        ppd.REDEEMED_DATETIME,
+        ppd.CANCELLED_DATETIME,
+        ppd.PURCHASED_DATETIME,
+        ppd.EXPIRED_DATETIME
     `
 }

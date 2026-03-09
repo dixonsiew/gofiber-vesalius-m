@@ -12,7 +12,8 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = 
+    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 // GetAllUsers
 //

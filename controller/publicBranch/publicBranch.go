@@ -7,7 +7,8 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var branchSvc *branchService.BranchService = branchService.NewBranchService(database.GetDb(), database.GetCtx())
+var branchSvc *branchService.BranchService = 
+    branchService.NewBranchService(database.GetDb(), database.GetCtx())
 
 // GetList
 //

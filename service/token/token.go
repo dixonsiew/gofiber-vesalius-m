@@ -13,7 +13,8 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = 
+    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{

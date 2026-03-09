@@ -213,7 +213,7 @@ func FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
 
         b.Passcode.String = ""
         b.Url.String = ""
-        ab.Branch = b
+        ab.Branch = &b
         lx = append(lx, ab)
 
         i++

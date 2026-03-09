@@ -290,6 +290,90 @@ definitions:
       visitType:
         type: string
     type: object
+  userPackage.UserPackage:
+    properties:
+      appointmentDateTime:
+        type: string
+      billingContactCode:
+        type: string
+      billingContactNo:
+        type: string
+      billingEmail:
+        type: string
+      billingFullContactExcel:
+        description: Excel formatted fields (optional)
+        type: string
+      billingFullname:
+        type: string
+      bookedDateTime:
+        type: string
+      bookedDateTimeExcel:
+        type: string
+      cancelledDateTime:
+        type: string
+      cancelledDateTimeExcel:
+        type: string
+      doctorMcr:
+        type: string
+      expiredDateTime:
+        type: string
+      expiredDateTimeExcel:
+        type: string
+      orderedDateTime:
+        type: string
+      orderedDateTimeExcel:
+        type: string
+      package_id:
+        type: integer
+      packageAllowAppt:
+        type: string
+      packageImage:
+        type: string
+      packageName:
+        type: string
+      packagePurchaseNo:
+        type: string
+      packageStatus:
+        type: string
+      packageValidity:
+        type: integer
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      paymentAmount:
+        type: string
+      paymentAmountCollected:
+        type: string
+      paymentCurrency:
+        type: string
+      paymentGateway:
+        type: string
+      paymentRequestCurrency:
+        type: string
+      paymentRequestNo:
+        type: string
+      paymentStatus:
+        type: string
+      paymentTransDate:
+        type: string
+      paymentTransDateExcel:
+        type: string
+      paymentUrl:
+        type: string
+      purchase_id:
+        type: integer
+      purchasedDateTime:
+        type: string
+      purchasedDateTimeExcel:
+        type: string
+      quantityPurchased:
+        type: integer
+      redeemedDateTime:
+        type: string
+      redeemedDateTimeExcel:
+        type: string
+    type: object
 info:
   contact: {}
   description: Vesalius-m Backend API Docs (IHP-UAT Version).
@@ -451,6 +535,15 @@ paths:
       - Notification
   /notification/all:
     get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
       produces:
       - application/json
       responses:
@@ -485,6 +578,15 @@ paths:
       - Notification
   /notification/general/master/all:
     get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
       produces:
       - application/json
       responses:
@@ -524,6 +626,37 @@ paths:
             type: array
       tags:
       - Public Branch
+  /user-package/all:
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/userPackage.UserPackage'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User Package
   /user/add-machine-id:
     post:
       parameters:

@@ -243,6 +243,20 @@
                 "tags": [
                     "Notification"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -268,6 +282,20 @@
                 ],
                 "tags": [
                     "Notification"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -384,6 +412,57 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/model.Branch"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user-package/all": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userPackage.UserPackage"
                             }
                         }
                     }
@@ -967,6 +1046,132 @@
                     "type": "integer"
                 },
                 "visitType": {
+                    "type": "string"
+                }
+            }
+        },
+        "userPackage.UserPackage": {
+            "type": "object",
+            "properties": {
+                "appointmentDateTime": {
+                    "type": "string"
+                },
+                "billingContactCode": {
+                    "type": "string"
+                },
+                "billingContactNo": {
+                    "type": "string"
+                },
+                "billingEmail": {
+                    "type": "string"
+                },
+                "billingFullContactExcel": {
+                    "description": "Excel formatted fields (optional)",
+                    "type": "string"
+                },
+                "billingFullname": {
+                    "type": "string"
+                },
+                "bookedDateTime": {
+                    "type": "string"
+                },
+                "bookedDateTimeExcel": {
+                    "type": "string"
+                },
+                "cancelledDateTime": {
+                    "type": "string"
+                },
+                "cancelledDateTimeExcel": {
+                    "type": "string"
+                },
+                "doctorMcr": {
+                    "type": "string"
+                },
+                "expiredDateTime": {
+                    "type": "string"
+                },
+                "expiredDateTimeExcel": {
+                    "type": "string"
+                },
+                "orderedDateTime": {
+                    "type": "string"
+                },
+                "orderedDateTimeExcel": {
+                    "type": "string"
+                },
+                "packageAllowAppt": {
+                    "type": "string"
+                },
+                "packageImage": {
+                    "type": "string"
+                },
+                "packageName": {
+                    "type": "string"
+                },
+                "packagePurchaseNo": {
+                    "type": "string"
+                },
+                "packageStatus": {
+                    "type": "string"
+                },
+                "packageValidity": {
+                    "type": "integer"
+                },
+                "package_id": {
+                    "type": "integer"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "paymentAmount": {
+                    "type": "string"
+                },
+                "paymentAmountCollected": {
+                    "type": "string"
+                },
+                "paymentCurrency": {
+                    "type": "string"
+                },
+                "paymentGateway": {
+                    "type": "string"
+                },
+                "paymentRequestCurrency": {
+                    "type": "string"
+                },
+                "paymentRequestNo": {
+                    "type": "string"
+                },
+                "paymentStatus": {
+                    "type": "string"
+                },
+                "paymentTransDate": {
+                    "type": "string"
+                },
+                "paymentTransDateExcel": {
+                    "type": "string"
+                },
+                "paymentUrl": {
+                    "type": "string"
+                },
+                "purchase_id": {
+                    "type": "integer"
+                },
+                "purchasedDateTime": {
+                    "type": "string"
+                },
+                "purchasedDateTimeExcel": {
+                    "type": "string"
+                },
+                "quantityPurchased": {
+                    "type": "integer"
+                },
+                "redeemedDateTime": {
+                    "type": "string"
+                },
+                "redeemedDateTimeExcel": {
                     "type": "string"
                 }
             }

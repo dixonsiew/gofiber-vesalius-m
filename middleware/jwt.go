@@ -16,7 +16,8 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = 
+    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func JWTProtected(c fiber.Ctx) error {
     return jwtware.New(jwtware.Config{
