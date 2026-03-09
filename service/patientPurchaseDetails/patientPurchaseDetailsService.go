@@ -163,8 +163,6 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
-    utils.LogInfo(query)
-    utils.LogInfo("-----")
     rows, err := s.db.NamedQueryContext(s.ctx, query, args)
     if err != nil {
         utils.LogError(err)
