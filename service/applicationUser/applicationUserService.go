@@ -132,16 +132,20 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
     if db == nil {
         db = s.db
     }
-    kw := strings.ToLower(keyword)
+    key := strings.ToLower(keyword)
     query := `
         SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER au
-        WHERE (LOWER(au.FIRST_NAME) LIKE :kw OR LOWER(au.MIDDLE_NAME) LIKE :kw OR LOWER(au.LAST_NAME) LIKE :kw
-        OR au.MASTER_PRN LIKE :kw OR LOWER(au.EMAIL) LIKE :kw)
+        WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
+        OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key)
         AND INACTIVE_FLAG = 'N'
         ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     users := make([]model.ApplicationUser, 0)
-    err := db.SelectContext(s.ctx, &users, query, kw, kw, kw, kw, kw, offset, limit)
+    err := db.SelectContext(s.ctx, &users, query, 
+        sql.Named("key", key),
+        sql.Named("offset", offset),
+        sql.Named("limit", limit),
+    )
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -174,14 +178,16 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    kw := strings.ToLower(keyword)
+    key := strings.ToLower(keyword)
     query := `
         SELECT COUNT(au.USER_ID) FROM APPLICATION_USER au
-        WHERE (LOWER(au.FIRST_NAME) LIKE :kw OR LOWER(au.MIDDLE_NAME) LIKE :kw OR LOWER(au.LAST_NAME) LIKE :kw
-        OR au.MASTER_PRN LIKE :kw OR LOWER(au.EMAIL) LIKE :kw) AND INACTIVE_FLAG = 'N'
+        WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
+        OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key) AND INACTIVE_FLAG = 'N'
     `
     var count int
-    err := db.GetContext(s.ctx, &count, query, kw, kw, kw, kw, kw)
+    err := db.GetContext(s.ctx, &count, query, 
+        sql.Named("key", key),
+    )
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -497,19 +503,19 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
         WHERE USER_ID = :user_id
     `
     _, err = tx.ExecContext(s.ctx, updateQuery,
-        o.Address.String,
-        o.ContactNumber.String,
-        o.Dob.String,
-        o.FirstName.String,
-        o.LastName.String,
-        o.MasterPrn.String,
-        o.MiddleName.String,
-        o.Nationality.String,
-        o.Passport.String,
-        o.Resident.String,
-        o.Sex.String,
-        o.Title.String,
-        o.UserID.Int64,
+        sql.Named("address", o.Address.String),
+        sql.Named("contact_number", o.ContactNumber.String),
+        sql.Named("dob", o.Dob.String),
+        sql.Named("first_name", o.FirstName.String),
+        sql.Named("last_name", o.LastName.String),
+        sql.Named("master_prn", o.MasterPrn.String),
+        sql.Named("middle_name", o.MiddleName.String),
+        sql.Named("nationality", o.Nationality.String),
+        sql.Named("passport", o.Passport.String),
+        sql.Named("resident", o.Resident.String),
+        sql.Named("sex", o.Sex.String),
+        sql.Named("title", o.Title.String),
+        sql.Named("user_id", o.UserID.Int64),
     )
     if err != nil {
         return err
@@ -517,7 +523,11 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
 
     // Insert ASSIGN_BRANCH
     insertQuery := `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`
-    _, err = tx.ExecContext(s.ctx, insertQuery, o.MasterPrn.String, o.UserID.Int64, branchId)
+    _, err = tx.ExecContext(s.ctx, insertQuery, 
+        sql.Named("prn", o.MasterPrn.String),
+        sql.Named("userId", o.UserID.Int64),
+        sql.Named("branchId", branchId),
+    )
     if err != nil {
         return err
     }
@@ -534,19 +544,19 @@ func (s *ApplicationUserService) Update(o *model.ApplicationUser) error {
         WHERE USER_ID = :user_id
     `
     _, err := s.db.ExecContext(s.ctx, updateQuery,
-        o.Address.String,
-        o.ContactNumber.String,
-        o.Dob.String,
-        o.FirstName.String,
-        o.LastName.String,
-        o.MasterPrn.String,
-        o.MiddleName.String,
-        o.Nationality.String,
-        o.Passport.String,
-        o.Resident.String,
-        o.Sex.String,
-        o.Title.String,
-        o.UserID.Int64,
+        sql.Named("address", o.Address.String),
+        sql.Named("contact_number", o.ContactNumber.String),
+        sql.Named("dob", o.Dob.String),
+        sql.Named("first_name", o.FirstName.String),
+        sql.Named("last_name", o.LastName.String),
+        sql.Named("master_prn", o.MasterPrn.String),
+        sql.Named("middle_name", o.MiddleName.String),
+        sql.Named("nationality", o.Nationality.String),
+        sql.Named("passport", o.Passport.String),
+        sql.Named("resident", o.Resident.String),
+        sql.Named("sex", o.Sex.String),
+        sql.Named("title", o.Title.String),
+        sql.Named("user_id", o.UserID.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -646,26 +656,26 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
     `
     var userId go_ora.Number
     _, err = tx.ExecContext(s.ctx, query,
-        o.Address.String,
-        o.ContactNumber.String,
-        o.Dob.String,
-        o.Email.String,
-        o.FirstName.String,
-        o.LastName.String,
-        o.MasterPrn.String,
-        o.MiddleName.String,
-        o.Nationality.String,
-        o.Passport.String,
-        string(hashedPwd),
-        o.Resident.String,
-        o.Role.String,
-        o.Sex.String,
-        o.Title.String,
-        o.Username.String,
-        verificationCode,
+        sql.Named("address", o.Address.String),
+        sql.Named("contact_number", o.ContactNumber.String),
+        sql.Named("dob", o.Dob.String),
+        sql.Named("email", o.Email.String),
+        sql.Named("first_name", o.FirstName.String),
+        sql.Named("last_name", o.LastName.String),
+        sql.Named("master_prn", o.MasterPrn.String),
+        sql.Named("middle_name", o.MiddleName.String),
+        sql.Named("nationality", o.Nationality.String),
+        sql.Named("passport", o.Passport.String),
+        sql.Named("password", string(hashedPwd)),
+        sql.Named("resident", o.Resident.String),
+        sql.Named("role", o.Role.String),
+        sql.Named("sex", o.Sex.String),
+        sql.Named("title", o.Title.String),
+        sql.Named("username", o.Username.String),
+        sql.Named("verification_code", verificationCode),
         nil,
-        o.Race.String,
-        o.PlayerID.String,
+        sql.Named("race", o.Race.String),
+        sql.Named("player_id", o.PlayerID.String),
         go_ora.Out{Dest: &userId},
     )
     if err != nil {
@@ -676,7 +686,10 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
 
     // Insert into ASSIGN_BRANCH
     _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
-        o.MasterPrn.String, o.UserID.Int64, branchId)
+        sql.Named("prn", o.MasterPrn.String),
+        sql.Named("userId", o.UserID.Int64),
+        sql.Named("branchId", branchId),
+    )
     if err != nil {
         return err
     }
@@ -764,39 +777,39 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
         WHERE USER_ID = :user_id
     `
     _, err = tx.ExecContext(s.ctx, updateQuery,
-        o.Address.String,
-        o.Address1.String,
-        o.Address2.String,
-        o.Address3.String,
-        o.Nationality.String,
-        o.Race.String,
-        o.Sex.String,
-        o.Title.String,
-        o.ContactNumber.String,
-        o.Dob.String,
-        o.Email.String,
-        o.MasterPrn.String,
-        o.FirstName.String,
-        o.MiddleName.String,
-        o.LastName.String,
-        isGoldenPearl,
-        isKidsExplorer,
-        string(hashedPwd),
-        o.Resident.String,
-        o.Role.String,
-        o.Username.String,
-        verificationCode,
-        o.InactiveFlag.String,
-        firstTimeLogin,
-        firstTimeBiometric,
-        o.PlayerID.String,
-        o.CityState.String,
-        o.Postcode.String,
-        o.Country.String,
-        o.SignInType.Int32,
-        o.FullnameSignup.String,
-        o.DocNoSignup.String,
-        o.UserID.Int64,
+        sql.Named("address", o.Address.String),
+        sql.Named("address1", o.Address1.String),
+        sql.Named("address2", o.Address2.String),
+        sql.Named("address3", o.Address3.String),
+        sql.Named("nationality", o.Nationality.String),
+        sql.Named("race", o.Race.String),
+        sql.Named("sex", o.Sex.String),
+        sql.Named("title", o.Title.String),
+        sql.Named("contact_number", o.ContactNumber.String),
+        sql.Named("dob", o.Dob.String),
+        sql.Named("email", o.Email.String),
+        sql.Named("master_prn", o.MasterPrn.String),
+        sql.Named("first_name", o.FirstName.String),
+        sql.Named("middle_name", o.MiddleName.String),
+        sql.Named("last_name", o.LastName.String),
+        sql.Named("isGoldenPearl", isGoldenPearl),
+        sql.Named("isKidsExplorer", isKidsExplorer),
+        sql.Named("password", string(hashedPwd)),
+        sql.Named("resident", o.Resident.String),
+        sql.Named("role", o.Role.String),
+        sql.Named("username", o.Username.String),
+        sql.Named("verification_code", verificationCode),
+        sql.Named("inactive", o.InactiveFlag.String),
+        sql.Named("firstTimeLogin", firstTimeLogin),
+        sql.Named("firstTimeBiometric", firstTimeBiometric),
+        sql.Named("player_id", o.PlayerID.String),
+        sql.Named("cityState", o.CityState.String),
+        sql.Named("postalCode", o.Postcode.String),
+        sql.Named("country", o.Country.String),
+        sql.Named("signInType", o.SignInType.Int32),
+        sql.Named("fullNameSignUp", o.FullnameSignup.String),
+        sql.Named("docNoSignUp", o.DocNoSignup.String),
+        sql.Named("user_id", o.UserID.Int64),
     )
     if err != nil {
         return err
@@ -856,34 +869,34 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
     `
     var userId go_ora.Number
     _, err = tx.ExecContext(s.ctx, query,
-        o.Address.String,
-        o.Address1.String,
-        o.Address2.String,
-        o.Address3.String,
-        o.CityState.String,
-        o.Postcode.String,
-        o.Country.String,
-        o.Nationality.String,
-        o.Race.String,
-        o.Sex.String,
-        o.Title.String,
-        o.ContactNumber.String,
-        o.Dob.String,
-        o.Email.String,
-        o.MasterPrn.String,
-        firstTimeLogin,
-        o.FirstName.String,
-        o.MiddleName.String,
-        o.LastName.String,
-        string(hashedPwd),
-        o.Resident.String,
-        o.Role.String,
-        o.Username.String,
-        verificationCode,
-        o.PlayerID.String,
-        o.SignInType.Int32,
-        o.FullnameSignup.String,
-        o.DocNoSignup.String,
+        sql.Named("address", o.Address.String),
+        sql.Named("address1", o.Address1.String),
+        sql.Named("address2", o.Address2.String),
+        sql.Named("address3", o.Address3.String),
+        sql.Named("cityState", o.CityState.String),
+        sql.Named("postalCode", o.Postcode.String),
+        sql.Named("country", o.Country.String),
+        sql.Named("nationality", o.Nationality.String),
+        sql.Named("race", o.Race.String),
+        sql.Named("sex", o.Sex.String),
+        sql.Named("title", o.Title.String),
+        sql.Named("contact_number", o.ContactNumber.String),
+        sql.Named("dob", o.Dob.String),
+        sql.Named("email", o.Email.String),
+        sql.Named("master_prn", o.MasterPrn.String),
+        sql.Named("firstTimeLogin", firstTimeLogin),
+        sql.Named("first_name", o.FirstName.String),
+        sql.Named("middle_name", o.MiddleName.String),
+        sql.Named("last_name", o.LastName.String),
+        sql.Named("password", string(hashedPwd)),
+        sql.Named("resident", o.Resident.String),
+        sql.Named("role", o.Role.String),
+        sql.Named("username", o.Username.String),
+        sql.Named("verification_code", verificationCode),
+        sql.Named("player_id", o.PlayerID.String),
+        sql.Named("signInType", o.SignInType.Int32),
+        sql.Named("fullNameSignUp", o.FullnameSignup.String),
+        sql.Named("docNoSignUp", o.DocNoSignup.String),
         go_ora.Out{Dest: &userId},
     )
     if err != nil {
@@ -893,7 +906,10 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
     o.UserID.Int64, _ = userId.Int64()
 
     _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
-        o.MasterPrn.String, o.UserID.Int64, branchId)
+        sql.Named("prn", o.MasterPrn.String),
+        sql.Named("userId", o.UserID.Int64),
+        sql.Named("branchId", branchId),
+    )
     if err != nil {
         return 0, err
     }
@@ -914,7 +930,10 @@ func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) err
         return err
     }
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
-    _, err = s.db.ExecContext(s.ctx, query, string(hashedPwd), o.UserID.Int64)
+    _, err = s.db.ExecContext(s.ctx, query, 
+        sql.Named("pw", string(hashedPwd)),
+        sql.Named("userId", o.UserID.Int64),
+    )
     if err != nil {
         utils.LogError(err)
         return err
@@ -931,7 +950,10 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
         return err
     }
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
-    _, err = s.db.ExecContext(s.ctx, query, string(hashedPwd), o.UserID.Int64)
+    _, err = s.db.ExecContext(s.ctx, query, 
+        sql.Named("pw", string(hashedPwd)),
+        sql.Named("userId", o.UserID.Int64),
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -942,7 +964,10 @@ func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUs
     code := getRandomStr(6)
     o.VerificationCode.String = code
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
-    _, err := s.db.ExecContext(s.ctx, query, code, o.UserID.Int64)
+    _, err := s.db.ExecContext(s.ctx, query, 
+        sql.Named("verificationCode", code),
+        sql.Named("userId", o.UserID.Int64),
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -951,7 +976,10 @@ func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUs
 
 func (s *ApplicationUserService) UpdateVerificationCode(code string, userId int64) error {
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
-    _, err := s.db.ExecContext(s.ctx, query, code, userId)
+    _, err := s.db.ExecContext(s.ctx, query, 
+        sql.Named("verificationCode", code),
+        sql.Named("userId", userId),
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -969,26 +997,29 @@ func (s *ApplicationUserService) UpdateMachineId(id string, userId int64, conn *
         return err
     }
     query := `UPDATE APPLICATION_USER SET MACHINE_ID = :machineId WHERE USER_ID = :userId`
-    _, err = db.ExecContext(s.ctx, query, string(hashedID), userId)
+    _, err = db.ExecContext(s.ctx, query, 
+        sql.Named("machineId", string(hashedID)),
+        sql.Named("userId", userId),
+    )
     if err != nil {
         utils.LogError(err)
     }
     return err
 }
 
-func (s *ApplicationUserService) UpdatePlayerId(id string, userId int64, conn *sqlx.DB) error {
+func (s *ApplicationUserService) UpdatePlayerId(playerId string, userId int64, conn *sqlx.DB) error {
     db := conn
     if db == nil {
         db = s.db
     }
     // First nullify any existing player_id with same id
-    _, err := db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = NULL WHERE PLAYER_ID = :playerId`, id)
+    _, err := db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = NULL WHERE PLAYER_ID = :playerId`, playerId)
     if err != nil {
         utils.LogError(err)
         return err
     }
     // Then set new player_id
-    _, err = db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = :playerId WHERE USER_ID = :userId`, id, userId)
+    _, err = db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = :playerId WHERE USER_ID = :userId`, playerId, userId)
     if err != nil {
         utils.LogError(err)
     }
@@ -1002,7 +1033,7 @@ func (s *ApplicationUserService) InsertDownloadApp(playerId string, conn *sqlx.D
     }
     query := `
         MERGE INTO APP_DOWNLOADED_USER apu
-        USING (SELECT :1 AS PLAYER_ID FROM DUAL) src
+        USING (SELECT :playerId AS PLAYER_ID FROM DUAL) src
         ON (apu.PLAYER_ID = src.PLAYER_ID)
         WHEN NOT MATCHED THEN
         INSERT (PLAYER_ID) VALUES (src.PLAYER_ID)
@@ -1155,13 +1186,14 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
         (:prn, :username, :patientName, :action, :actionDesc, :remarks, :userCreate)
     `
     _, err = tx.ExecContext(s.ctx, auditQuery,
-        user.MasterPrn.String,
-        user.Username.String,
-        patientName,
-        "Delete Account",
-        actionDesc,
-        remarks,
-        userCreate)
+        sql.Named("prn", user.MasterPrn.String),
+        sql.Named("username", user.Username.String),
+        sql.Named("patientName", patientName),
+        sql.Named("action", "Delete Account"),
+        sql.Named("actionDesc", actionDesc),
+        sql.Named("remarks", remarks),
+        sql.Named("userCreate", userCreate),
+    )
     if err != nil {
         return err
     }

@@ -47,21 +47,21 @@ func (s *NovaDoctorService) Save(doctor *model.NovaDoctor) error {
             CONSULTANT_TYPE, IS_FOR_PACKAGE, QUALIFICATIONS_SHORT,
             REGISTRATION_NO
         ) VALUES (
-            :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13
+            :doctorId, :gender, :image, :resizeImage, :mcr, :name, :nationality, :disSeq, :allowAppt, :cType, :isForPackage, :qualifications, :reg
         )`,
-        doctor.DoctorID.Int64,
-        doctor.Gender.String,
-        doctor.Image.String,
-        doctor.ResizeImage,
-        doctor.MCR.String,
-        doctor.Name.String,
-        doctor.Nationality.String,
-        doctor.DisplaySequence,
-        doctor.AllowAppointment,
-        doctor.ConsultantType,
-        doctor.IsForPackage,
-        doctor.Qualifications.String,
-        doctor.RegistrationNum.String,
+        sql.Named("doctorId", doctor.DoctorID.Int64),
+        sql.Named("gender", doctor.Gender.String),
+        sql.Named("image", doctor.Image.String),
+        sql.Named("resizeImage", doctor.ResizeImage),
+        sql.Named("mcr", doctor.MCR.String),
+        sql.Named("name", doctor.Name.String),
+        sql.Named("nationality", doctor.Nationality.String),
+        sql.Named("disSeq", doctor.DisplaySequence.Int32),
+        sql.Named("allowAppt", doctor.AllowAppointment.String),
+        sql.Named("cType", doctor.ConsultantType.String),
+        sql.Named("isForPackage", doctor.IsForPackage.String),
+        sql.Named("qualifications", doctor.Qualifications.String),
+        sql.Named("reg", doctor.RegistrationNum.String),
     )
     if err != nil {
         utils.LogError(err)
@@ -128,33 +128,33 @@ func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
     // Update main doctor
     _, err = tx.ExecContext(s.ctx, `
         UPDATE NOVA_DOCTOR SET
-            GENDER = :1,
-            IMAGE = :2,
-            RESIZE_IMAGE = :3,
-            MCR = :4,
-            NAME = :5,
-            NATIONALITY = :6,
-            DISPLAY_SEQUENCE = :7,
-            ALLOW_APPOINTMENT = :8,
-            CONSULTANT_TYPE = :9,
-            IS_FOR_PACKAGE = :10,
-            QUALIFICATIONS_SHORT = :11,
-            REGISTRATION_NO = :12
-        WHERE DOCTOR_ID = :13
+            GENDER = :gender,
+            IMAGE = :image,
+            RESIZE_IMAGE = :resizeImage,
+            MCR = :mcr,
+            NAME = :name,
+            NATIONALITY = :nationality,
+            DISPLAY_SEQUENCE = :disSeq,
+            ALLOW_APPOINTMENT = :allowAppt,
+            CONSULTANT_TYPE = :cType,
+            IS_FOR_PACKAGE = :isForPackage,
+            QUALIFICATIONS_SHORT = :qualifications,
+            REGISTRATION_NO = :reg
+        WHERE DOCTOR_ID = :doctorId
         `,
-        doctor.Gender.String,
-        doctor.Image.String,
-        doctor.ResizeImage,
-        doctor.MCR.String,
-        doctor.Name.String,
-        doctor.Nationality.String,
-        doctor.DisplaySequence.Int32,
-        doctor.AllowAppointment.String,
-        doctor.ConsultantType.String,
-        doctor.IsForPackage.String,
-        doctor.Qualifications.String,
-        doctor.RegistrationNum.String,
-        doctor.DoctorID.Int64,
+        sql.Named("gender", doctor.Gender.String),
+        sql.Named("image", doctor.Image.String),
+        sql.Named("resizeImage", doctor.ResizeImage),
+        sql.Named("mcr", doctor.MCR.String),
+        sql.Named("name", doctor.Name.String),
+        sql.Named("nationality", doctor.Nationality.String),
+        sql.Named("disSeq", doctor.DisplaySequence.Int32),
+        sql.Named("allowAppt", doctor.AllowAppointment.String),
+        sql.Named("cType", doctor.ConsultantType.String),
+        sql.Named("isForPackage", doctor.IsForPackage.String),
+        sql.Named("qualifications", doctor.Qualifications.String),
+        sql.Named("reg", doctor.RegistrationNum.String),
+        sql.Named("doctorId", doctor.DoctorID.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -203,7 +203,7 @@ func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
     return tx.Commit()
 }
 
-func (s *NovaDoctorService) deleteChildRecordsTx(tx *sqlx.Tx, doctorID int64) error {
+func (s *NovaDoctorService) deleteChildRecordsTx(tx *sqlx.Tx, doctorId int64) error {
     tables := []string{
         "NOVA_DOCTOR_CLINIC_HOURS",
         "NOVA_DOCTOR_CLINIC_LOCATION",
@@ -215,8 +215,8 @@ func (s *NovaDoctorService) deleteChildRecordsTx(tx *sqlx.Tx, doctorID int64) er
         "NOVA_DOCTOR_APPT_SLOT",
     }
     for _, table := range tables {
-        q := fmt.Sprintf("DELETE FROM %s WHERE DOCTOR_ID = :1", table)
-        if _, err := tx.ExecContext(s.ctx, q, doctorID); err != nil {
+        q := fmt.Sprintf("DELETE FROM %s WHERE DOCTOR_ID = :doctorId", table)
+        if _, err := tx.ExecContext(s.ctx, q, doctorId); err != nil {
             utils.LogError(err)
             return err
         }
@@ -237,7 +237,7 @@ func (s *NovaDoctorService) DeleteByDoctorId(doctorId int64) error {
         return err
     }
 
-    _, err = tx.ExecContext(s.ctx, `DELETE FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
+    _, err = tx.ExecContext(s.ctx, `DELETE FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         utils.LogError(err)
         return err
@@ -248,7 +248,7 @@ func (s *NovaDoctorService) DeleteByDoctorId(doctorId int64) error {
 
 func (s *NovaDoctorService) DeleteImageById(doctorId int64) error {
     _, err := s.db.ExecContext(s.ctx,
-        `UPDATE NOVA_DOCTOR SET IMAGE = NULL WHERE DOCTOR_ID = :1`,
+        `UPDATE NOVA_DOCTOR SET IMAGE = NULL WHERE DOCTOR_ID = :doctorId`,
         doctorId,
     )
     if err != nil {
@@ -265,14 +265,10 @@ func (s *NovaDoctorService) List(page string, limit string, isWebadmin bool) (*m
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    doctors, err := s.FindAll(pager.GetLowerBound(), pager.PageSize, isWebadmin)
+    list, err := s.FindAll(pager.GetLowerBound(), pager.PageSize, isWebadmin)
     if err != nil {
         utils.LogError(err)
         return nil, err
-    }
-    list := make([]interface{}, 0)
-    for _, d := range doctors {
-        list = append(list, d)
     }
     return &model.PagedList{
         List:       list,
@@ -287,7 +283,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
         query = `
             SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR
             ORDER BY DISPLAY_SEQUENCE, UPPER(NAME)
-            OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
+            OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
         `
     } else {
         query = `
@@ -298,7 +294,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
             FROM NOVA_DOCTOR
             WHERE IS_FOR_PACKAGE = 'N'
             ORDER BY DISPLAY_SEQUENCE, UPPER(NAME)
-            OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
+            OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
         `
     }
 
@@ -424,16 +420,16 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
             nd.DOCTOR_ID IN (
                 SELECT nds.DOCTOR_ID
                 FROM NOVA_DOCTOR_SPECIALITIES nds
-                WHERE LOWER(nds.SPECIALITIES) LIKE :1 OR LOWER(nds.SUBSPECIALTY) LIKE :2
+                WHERE LOWER(nds.SPECIALITIES) LIKE :key OR LOWER(nds.SUBSPECIALTY) LIKE :key
             )
-            OR LOWER(nd.NAME) LIKE :3
+            OR LOWER(nd.NAME) LIKE :key
           )
         ORDER BY nd.DISPLAY_SEQUENCE, nd.NAME
-        OFFSET :4 ROWS FETCH NEXT :5 ROWS ONLY
+        OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     key := strings.ToLower(keyword)
     doctors := make([]model.NovaDoctor, 0)
-    err := s.db.SelectContext(s.ctx, &doctors, query, key, key, key, offset, limit)
+    err := s.db.SelectContext(s.ctx, &doctors, query, sql.Named("key", key), sql.Named("offset", offset), sql.Named("limit", limit))
     if err != nil {
         utils.LogError(err)
         return doctors, err
@@ -525,12 +521,12 @@ func (s *NovaDoctorService) ListByKeywordGuest(keyword string, page string, limi
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    doctors, err := s.GuestFindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.GuestFindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
     return &model.PagedList{
-        List:       doctors,
+        List:       list,
         Total:      total,
         TotalPages: pager.GetTotalPages(),
     }, nil
@@ -545,14 +541,14 @@ func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
             nd.DOCTOR_ID IN (
                 SELECT nds.DOCTOR_ID
                 FROM NOVA_DOCTOR_SPECIALITIES nds
-                WHERE LOWER(nds.SPECIALITIES) LIKE :1 OR LOWER(nds.SUBSPECIALTY) LIKE :2
+                WHERE LOWER(nds.SPECIALITIES) LIKE :key OR LOWER(nds.SUBSPECIALTY) LIKE :key
             )
-            OR LOWER(nd.NAME) LIKE :3
+            OR LOWER(nd.NAME) LIKE :key
           )
     `
     key := strings.ToLower(keyword)
     var count int
-    err := s.db.GetContext(s.ctx, &count, query, key, key, key)
+    err := s.db.GetContext(s.ctx, &count, query, sql.Named("key", key))
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -560,10 +556,10 @@ func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
     return count, nil
 }
 
-func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, error) {
-    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1 AND DOCTOR_ID <> :2`
+func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorId int) (bool, error) {
+    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr AND DOCTOR_ID <> :doctorId`
     var count int
-    err := s.db.GetContext(s.ctx, &count, query, mcr, doctorID)
+    err := s.db.GetContext(s.ctx, &count, query, mcr, doctorId)
     if err != nil {
         utils.LogError(err)
         return false, err
@@ -572,7 +568,7 @@ func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, er
 }
 
 func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
-    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1`
+    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, mcr)
     if err != nil {
@@ -584,7 +580,7 @@ func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
 
 func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor, error) {
     var doctor model.NovaDoctor
-    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
+    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -640,7 +636,7 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
 
 func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64) (string, error) {
     var name string
-    err := s.db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
+    err := s.db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return "", nil
@@ -653,7 +649,7 @@ func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64) (string, er
 
 func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
     var id int64
-    err := s.db.GetContext(s.ctx, &id, `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
+    err := s.db.GetContext(s.ctx, &id, `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return 0, err
@@ -666,7 +662,7 @@ func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
 
 func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, error) {
     var doctor model.NovaDoctor
-    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
+    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -679,7 +675,7 @@ func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, erro
 
 func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error) {
     doctors := make([]model.NovaDoctor, 0)
-    err := s.db.SelectContext(s.ctx, &doctors, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
+    err := s.db.SelectContext(s.ctx, &doctors, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -1040,7 +1036,7 @@ func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.N
         INSERT INTO NOVA_DOCTOR_CLINIC_HOURS (
             CLINIC_HOUR_ID, BY_APPOINTMENT_ONLY, DAY_END_TIME,
             DAY_OF_THE_WEEK, DAY_START_TIME, DISPLAY_SEQUENCE, DOCTOR_ID
-        ) VALUES (DR_CLINIC_HOURS_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6)
+        ) VALUES (DR_CLINIC_HOURS_SEQ.NEXTVAL, :byAppt, :dayEndTime, :dayOfTheWeek, :dayStartTime, :displaySequence, :doctorId)
     `
     for _, item := range doctor.DoctorClinicHours {
         byAppt := 0
@@ -1048,12 +1044,12 @@ func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.N
             byAppt = 1
         }
         _, err := tx.ExecContext(s.ctx, query,
-            byAppt,
-            item.DayEndTime.String,
-            item.DayOfTheWeek.String,
-            item.DayStartTime.String,
-            item.DisplaySequence.Int32,
-            doctor.DoctorID.Int64,
+            sql.Named("byAppt", byAppt),
+            sql.Named("dayEndTime", item.DayEndTime.String),
+            sql.Named("dayOfTheWeek", item.DayOfTheWeek.String),
+            sql.Named("dayStartTime", item.DayStartTime.String),
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
+            sql.Named("doctorId", doctor.DoctorID.Int64),
         )
         if err != nil {
             utils.LogError(err)
@@ -1067,13 +1063,13 @@ func (s *NovaDoctorService) saveDoctorClinicLocationTx(tx *sqlx.Tx, doctor *mode
     const query = `
         INSERT INTO NOVA_DOCTOR_CLINIC_LOCATION (
             CLINIC_LOCATION_ID, DOCTOR_ID, LOCATION, BUILDING
-        ) VALUES (DR_CLINIC_LOCATION_SEQ.NEXTVAL, :1, :2, :3)
+        ) VALUES (DR_CLINIC_LOCATION_SEQ.NEXTVAL, :doctorId, :location, :building)
     `
     for _, item := range doctor.DoctorClinicLocation {
         _, err := tx.ExecContext(s.ctx, query,
-            doctor.DoctorID.Int64,
-            item.Location.String,
-            item.Building.String,
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("location", item.Location.String),
+            sql.Named("building", item.Building.String),
         )
         if err != nil {
             utils.LogError(err)
@@ -1087,21 +1083,21 @@ func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.N
     // First check for duplicates
     const checkQuery = `
         SELECT COUNT(*) FROM NOVA_DOCTOR_APPT_SLOT
-        WHERE DOCTOR_ID = :1 AND DAY_OF_WEEK = :2 AND SLOT_TYPE = :3 AND SESSION_TYPE = :4
+        WHERE DOCTOR_ID = :doctorId AND DAY_OF_WEEK = :dayOfWeek AND SLOT_TYPE = :slotType AND SESSION_TYPE = :sessionType
     `
     const insertQuery = `
         INSERT INTO NOVA_DOCTOR_APPT_SLOT (
             DOCTOR_APPT_SLOT_ID, DOCTOR_ID, DAY_OF_WEEK, SLOT_TYPE,
             SESSION_TYPE, START_TIME, END_TIME, MAX_SLOTS, DISPLAY_SEQUENCE
-        ) VALUES (DR_APPT_SLOT_ID_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8)
+        ) VALUES (DR_APPT_SLOT_ID_SEQ.NEXTVAL, :doctorId, :dayOfWeek, :slotType, :sessionType, :startTime, :endTime, :maxSlots, :displaySequence)
     `
     for _, item := range doctor.DoctorAppointment {
         var count int
         err := tx.GetContext(s.ctx, &count, checkQuery,
-            doctor.DoctorID.Int64,
-            item.ApptDayOfWeek.String,
-            item.ApptSlotType.String,
-            item.ApptSessionType.String,
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("dayOfWeek", item.ApptDayOfWeek.String),
+            sql.Named("slotType", item.ApptSlotType.String),
+            sql.Named("sessionType", item.ApptSessionType.String),
         )
         if err != nil {
             utils.LogError(err)
@@ -1111,14 +1107,14 @@ func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.N
             return fiber.NewError(fiber.StatusBadRequest, "Existing records with same appointment setup found")
         }
         _, err = tx.ExecContext(s.ctx, insertQuery,
-            doctor.DoctorID.Int64,
-            item.ApptDayOfWeek.String,
-            item.ApptSlotType.String,
-            item.ApptSessionType.String,
-            item.ApptStartTime.String,
-            item.ApptEndTime.String,
-            item.ApptMaxSlots.Int32,
-            item.DisplaySequence.Int32,
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("dayOfWeek", item.ApptDayOfWeek.String),
+            sql.Named("slotType", item.ApptSlotType.String),
+            sql.Named("sessionType", item.ApptSessionType.String),
+            sql.Named("startTime", item.ApptStartTime.String),
+            sql.Named("endTime", item.ApptEndTime.String),
+            sql.Named("maxSlots", item.ApptMaxSlots.Int32),
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
         )
         if err != nil {
             utils.LogError(err)
@@ -1132,14 +1128,14 @@ func (s *NovaDoctorService) saveDoctorContactsTx(tx *sqlx.Tx, doctor *model.Nova
     const query = `
         INSERT INTO NOVA_DOCTOR_CONTACT (
             CONTACT_ID, CONTACT_TYPE, CONTACT_VALUE, DISPLAY_SEQUENCE, DOCTOR_ID
-        ) VALUES (DR_CONTACT_SEQ.NEXTVAL, :1, :2, :3, :4)
+        ) VALUES (DR_CONTACT_SEQ.NEXTVAL, :contactType, :contactValue, :displaySequence, :doctorId)
     `
     for _, item := range doctor.DoctorContact {
         _, err := tx.ExecContext(s.ctx, query,
-            item.ContactType.String,
-            item.ContactValue.String,
-            item.DisplaySequence.Int32,
-            doctor.DoctorID.Int64,
+            sql.Named("contactType", item.ContactType.String),
+            sql.Named("contactValue", item.ContactValue.String),
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
+            sql.Named("doctorId", doctor.DoctorID.Int64),
         )
         if err != nil {
             utils.LogError(err)
@@ -1153,13 +1149,13 @@ func (s *NovaDoctorService) saveDoctorQualificationsTx(tx *sqlx.Tx, doctor *mode
     const query = `
         INSERT INTO NOVA_DOCTOR_QUALIFICATIONS (
             QUALIFICATION_ID, DISPLAY_SEQUENCE, DOCTOR_ID, QUALIFICATION
-        ) VALUES (DR_QUALIFICATIONS_SEQ.NEXTVAL, :1, :2, :3)
+        ) VALUES (DR_QUALIFICATIONS_SEQ.NEXTVAL, :displaySequence, :doctorId, :qualification)
     `
     for _, item := range doctor.DoctorQualifications {
         _, err := tx.ExecContext(s.ctx, query,
-            item.DisplaySequence.Int64,
-            doctor.DoctorID.Int64,
-            item.Qualification.String,
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("qualification", item.Qualification.String),
         )
         if err != nil {
             utils.LogError(err)
@@ -1173,14 +1169,14 @@ func (s *NovaDoctorService) saveDoctorSpecialitiesTx(tx *sqlx.Tx, doctor *model.
     const query = `
         INSERT INTO NOVA_DOCTOR_SPECIALITIES (
             SPECIALITIES_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPECIALITIES, SUBSPECIALTY
-        ) VALUES (DOCTOR_SPECIALITIES_ID_SEQ.NEXTVAL, :1, :2, :3, :4)
+        ) VALUES (DOCTOR_SPECIALITIES_ID_SEQ.NEXTVAL, :displaySequence, :doctorId, :specialities, :subspecialty)
     `
     for _, item := range doctor.DoctorSpecialities {
         _, err := tx.ExecContext(s.ctx, query,
-            item.DisplaySequence.Int32,
-            doctor.DoctorID.Int64,
-            item.Specialities.String,
-            item.Subspecialty.String,
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("specialities", item.Specialities.String),
+            sql.Named("subspecialty", item.Subspecialty.String),
         )
         if err != nil {
             utils.LogError(err)
@@ -1194,7 +1190,7 @@ func (s *NovaDoctorService) saveDoctorSpecialtyTx(tx *sqlx.Tx, doctor *model.Nov
     const query = `
         INSERT INTO NOVA_DOCTOR_SPECIALTY (
             DOCTOR_SPECIALTY_ID, DOCTOR_ID, PRIMARY_SPECIALTY, SPECIALTY_ID
-        ) VALUES (DR_SPECIALTIES_SEQ.NEXTVAL, :1, :2, :3)
+        ) VALUES (DR_SPECIALTIES_SEQ.NEXTVAL, :doctorId, :primarySpecialty, :specialtyId)
     `
     for _, item := range doctor.DoctorSpecialty {
         primary := 0
@@ -1202,9 +1198,9 @@ func (s *NovaDoctorService) saveDoctorSpecialtyTx(tx *sqlx.Tx, doctor *model.Nov
             primary = 1
         }
         _, err := tx.ExecContext(s.ctx, query,
-            doctor.DoctorID.Int64,
-            primary,
-            item.SpecialtyID.Int64,
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("primarySpecialty", primary),
+            sql.Named("specialtyId", item.SpecialtyID.Int64),
         )
         if err != nil {
             utils.LogError(err)
@@ -1218,13 +1214,13 @@ func (s *NovaDoctorService) saveDoctorSpokenLanguageTx(tx *sqlx.Tx, doctor *mode
     const query = `
         INSERT INTO NOVA_DOCTOR_SPOKEN_LANGUAGE (
             SPOKEN_LANGUAGE_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPOKEN_LANGUAGE
-        ) VALUES (DR_SPOKEN_LANGUAGE_SEQ.NEXTVAL, :1, :2, :3)
+        ) VALUES (DR_SPOKEN_LANGUAGE_SEQ.NEXTVAL, :displaySequence, :doctorId, :spokenLanguage)
     `
     for _, item := range doctor.DoctorSpokenLanguage {
         _, err := tx.ExecContext(s.ctx, query,
-            item.DisplaySequence.Int64,
-            doctor.DoctorID.Int64,
-            item.SpokenLanguage.String,
+            sql.Named("displaySequence", item.DisplaySequence.Int32),
+            sql.Named("doctorId", doctor.DoctorID.Int64),
+            sql.Named("spokenLanguage", item.SpokenLanguage.String),
         )
         if err != nil {
             utils.LogError(err)

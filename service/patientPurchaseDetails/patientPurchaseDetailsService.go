@@ -85,7 +85,7 @@ func (s *PatientPurchaseDetailsService) ListByPrn(userId int64, page string, lim
 }
 
 func (s *PatientPurchaseDetailsService) CountByPrn(prn string) (int, error) {
-    query := `SELECT COUNT(PATIENT_PURCHASE_ID) FROM PATIENT_PURCHASE_DETAILS WHERE PATIENT_PRN = :1`
+    query := `SELECT COUNT(PATIENT_PURCHASE_ID) FROM PATIENT_PURCHASE_DETAILS WHERE PATIENT_PRN = :prn`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, prn)
     if err != nil {
@@ -127,8 +127,8 @@ func (s *PatientPurchaseDetailsService) Count() (int, error) {
 
 func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, offset int, limit int) ([]userPackage.UserPackage, error) {
     conditions, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
-    args = append(args, offset)
-    args = append(args, limit)
+    args = append(args, sql.Named("offset", offset))
+    args = append(args, sql.Named("limit", limit))
 
     base := `
         SELECT ` + getPatientPurchaseDetailsCols() + `, hp.PACKAGE_NAME, ppd2.PAYMENT_REQUEST_NO,
@@ -143,7 +143,6 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     query := base + whereClause(conditions) +
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    query = s.db.Rebind(query)
     
     rows, err := s.db.QueryxContext(s.ctx, query, args...)
     if err != nil {
@@ -314,7 +313,8 @@ func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.Use
         ) VALUES (
             :patientPrn, :patientName, :package_id,
             :packageStatus, :payment_id, CURRENT_TIMESTAMP
-        )`
+        )
+    `
     tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
@@ -323,13 +323,14 @@ func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.Use
     defer tx.Rollback()
 
     for i := 0; i < o.QuantityPurchased; i++ {
-        _, err = tx.ExecContext(s.ctx, query,
-            o.PatientPrn.String,
-            o.PatientName.String,
-            o.PackageID.Int64,
-            o.PackageStatus.String,
-            payment_id,
-        )
+        args := []interface{}{
+            sql.Named("patientPrn", o.PatientPrn.String),
+            sql.Named("patientName", o.PatientName.String),
+            sql.Named("package_id", o.PackageID.Int64),
+            sql.Named("packageStatus", o.PackageStatus.String),
+            sql.Named("payment_id", payment_id),
+        }
+        _, err = tx.ExecContext(s.ctx, query, args...)
         if err != nil {
             return err
         }
@@ -341,10 +342,10 @@ func (s *PatientPurchaseDetailsService) SaveGuest(payment_id int64, o userPackag
     return s.Save(payment_id, o)
 }
 
-func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchaseNo string, status string) error {
+func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchaseNo string, packageStatus string) error {
     var query string
 
-    if status == utils.PackageStatusCancelled {
+    if packageStatus == utils.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PURCHASE_NO = :purchaseNo`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
         if err != nil {
@@ -358,13 +359,13 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
             utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
             utils.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
-        fieldDt, ok := fieldMap[status]
+        fieldDt, ok := fieldMap[packageStatus]
         if !ok {
-            return fmt.Errorf("invalid status: %s", status)
+            return fmt.Errorf("invalid status: %s", packageStatus)
         }
 
         query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PURCHASE_NO = :purchaseNo`, fieldDt)
-        _, err := s.db.ExecContext(s.ctx, query, status, purchaseNo)
+        _, err := s.db.ExecContext(s.ctx, query, packageStatus, purchaseNo)
         if err != nil {
             utils.LogError(err)
             return err
@@ -373,10 +374,10 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
     return nil
 }
 
-func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId int64, status string) error {
+func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId int64, packageStatus string) error {
     var query string
 
-    if status == utils.PackageStatusCancelled {
+    if packageStatus == utils.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PAYMENT_ID = :paymentId`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, paymentId)
         if err != nil {
@@ -390,13 +391,13 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId
             utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
             utils.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
-        fieldDt, ok := fieldMap[status]
+        fieldDt, ok := fieldMap[packageStatus]
         if !ok {
-            return fmt.Errorf("invalid status: %s", status)
+            return fmt.Errorf("invalid status: %s", packageStatus)
         }
 
         query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PAYMENT_ID = :paymentId`, fieldDt)
-        _, err := s.db.ExecContext(s.ctx, query, status, paymentId)
+        _, err := s.db.ExecContext(s.ctx, query, packageStatus, paymentId)
         if err != nil {
             utils.LogError(err)
             return err
@@ -405,10 +406,10 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId
     return nil
 }
 
-func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchaseId int64, status string) error {
+func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchaseId int64, packageStatus string) error {
     var query string
 
-    if status == utils.PackageStatusCancelled {
+    if packageStatus == utils.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PATIENT_PURCHASE_ID = :purchaseId`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseId)
         if err != nil {
@@ -422,13 +423,13 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchase
             utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
             utils.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
-        fieldDt, ok := fieldMap[status]
+        fieldDt, ok := fieldMap[packageStatus]
         if !ok {
-            return fmt.Errorf("invalid status: %s", status)
+            return fmt.Errorf("invalid status: %s", packageStatus)
         }
 
         query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PATIENT_PURCHASE_ID = :purchaseId`, fieldDt)
-        _, err := s.db.ExecContext(s.ctx, query, status, purchaseId)
+        _, err := s.db.ExecContext(s.ctx, query, packageStatus, purchaseId)
         if err != nil {
             utils.LogError(err)
             return err
@@ -528,7 +529,7 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(packageId
           WHERE PACKAGE_ID = :packageId
          ) hp
     `
-    err := s.db.GetContext(s.ctx, &result, query, quantityPurchased, quantityPurchased, packageId, packageId)
+    err := s.db.GetContext(s.ctx, &result, query, sql.Named("quantityPurchased", quantityPurchased), sql.Named("packageId", packageId))
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -576,24 +577,26 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
 }
 
 func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, []interface{}) {
-    var conds []string
-    var args []interface{}
+    var (
+        conds []string
+        args []interface{}
+    )
 
     if keyword != "" {
         conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args = append(args, keyword)
+        args = append(args, sql.Named("keyword", keyword))
     }
     if keyword2 != "" {
         conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args = append(args, keyword2)
+        args = append(args, sql.Named("keyword2", keyword2))
     }
     if keyword3 != "" {
         conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args = append(args, keyword3)
+        args = append(args, sql.Named("keyword3", keyword3))
     }
     if keyword4 != "" && keyword4 != "All" {
         conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args = append(args, keyword4)
+        args = append(args, sql.Named("keyword4", keyword4))
     }
     return conds, args
 }

@@ -455,14 +455,14 @@ type AllUserGroupDetails struct {
 type NovaDoctorSpokenLanguage struct {
     SpokenLanguageID null.Int64  `json:"spokenLanguageId" db:"SPOKEN_LANGUAGE_ID" swaggertype:"integer"`
     DoctorID         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
-    DisplaySequence  null.Int64  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
+    DisplaySequence  null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     SpokenLanguage   null.String `json:"spokenLanguage" db:"SPOKEN_LANGUAGE" swaggertype:"string"`
 }
 
 type NovaDoctorQualifications struct {
     QualificationID null.Int64  `json:"qualificationId" db:"QUALIFICATION_ID" swaggertype:"integer"`
     DoctorID        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
-    DisplaySequence null.Int64  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
+    DisplaySequence null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     Qualification   null.String `json:"qualification" db:"QUALIFICATION" swaggertype:"string"`
 }
 
