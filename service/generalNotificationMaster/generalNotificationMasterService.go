@@ -1,13 +1,13 @@
 package generalNotificationMaster
 
 import (
-    "context"
-    "database/sql"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/guregu/null/v6"
-    "github.com/jmoiron/sqlx"
+	"github.com/guregu/null/v6"
+	"github.com/jmoiron/sqlx"
 )
 
 type GeneralNotificationMasterService struct {
@@ -162,10 +162,12 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         utils.LogError(err)
         return nil, err
     }
+    la := make([]model.GeneralNotification, 0)
     for _, o := range lx {
         o.Set()
+        la = append(la, o)
     }
-    return lx, nil
+    return la, nil
 }
 
 func nullStringIfDash(s null.String) interface{} {

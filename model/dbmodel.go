@@ -698,12 +698,12 @@ type GeneralNotification struct {
 
 func (o *GeneralNotification) Set() {
     if o.StartDate.Valid {
-        g, _ := goment.New(o.StartDate.String, "YYYY-MM-DD[T]HH:mm:ss")
+        g, _ := goment.New(o.StartDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
         o.StartDate.String = g.Format("DD/MM/YYYY")
     }
 
     if o.EndDate.Valid {
-        g, _ := goment.New(o.EndDate.String, "YYYY-MM-DD[T]HH:mm:ss")
+        g, _ := goment.New(o.EndDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
         o.EndDate.String = g.Format("DD/MM/YYYY")
     }
 }
