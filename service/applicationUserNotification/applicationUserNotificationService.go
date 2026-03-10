@@ -26,16 +26,15 @@ func (s *ApplicationUserNotificationService) Save(o *model.OnesignalNotification
         VALUES 
         (:user_id, :notification_title, :msg_type, :short_message, :full_message, :visit_type, :account_no)
     `
-    params := map[string]interface{}{
-        "user_id":            o.UserID.Int64,
-        "notification_title": o.NotificationTitle.String,
-        "msg_type":           o.MsgType.String,
-        "short_message":      o.ShortMessage.String,
-        "full_message":       o.FullMessage.String,
-        "visit_type":         o.VisitType.String,
-        "account_no":         o.AccountNo.String,
-    }
-    _, err := s.db.NamedExecContext(s.ctx, query, params)
+    _, err := s.db.ExecContext(s.ctx, query,
+        o.UserID.Int64,
+        o.NotificationTitle.String,
+        o.MsgType.String,
+        o.ShortMessage.String,
+        o.FullMessage.String,
+        o.VisitType.String,
+        o.AccountNo.String,
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -43,7 +42,7 @@ func (s *ApplicationUserNotificationService) Save(o *model.OnesignalNotification
 }
 
 func (s *ApplicationUserNotificationService) CountUnseenByUserId(userId int64) (int, error) {
-    query := `SELECT COUNT(USER_ID) FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :1 AND DATE_SENT IS NOT NULL AND IS_SEEN = 'N'`
+    query := `SELECT COUNT(USER_ID) FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL AND IS_SEEN = 'N'`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, userId)
     if err != nil {
@@ -55,13 +54,11 @@ func (s *ApplicationUserNotificationService) CountUnseenByUserId(userId int64) (
 func (s *ApplicationUserNotificationService) ListByUserId(userId int64, page string, limit string) (*model.PagedList, error) {
     total, err := s.CountByUserId(userId, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
     list, err := s.FindAllByUserId(userId, pager.GetLowerBound(), pager.PageSize, nil)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     return &model.PagedList{
@@ -76,11 +73,10 @@ func (s *ApplicationUserNotificationService) CountByUserId(userId int64, conn *s
     if conn != nil {
         db = conn
     }
-    query := `SELECT COUNT(USER_ID) FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :1 AND DATE_SENT IS NOT NULL`
+    query := `SELECT COUNT(USER_ID) FROM APPLICATION_USER_NOTIFICATION WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL`
     var count int
     err := db.GetContext(s.ctx, &count, query, userId)
     if err != nil {
-        utils.LogError(err)
         return 0, err
     }
     return count, nil
@@ -93,11 +89,11 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
     }
     query := `
         SELECT ` + getOnesignalNotificationCols() + ` FROM APPLICATION_USER_NOTIFICATION 
-        WHERE USER_ID = :1 AND DATE_SENT IS NOT NULL
+        WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL
         ORDER BY DATE_SENT DESC 
-        OFFSET :2 ROWS FETCH NEXT :3 ROWS ONLY
+        OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    var notifications []model.OnesignalNotification
+    notifications := make([]model.OnesignalNotification, 0)
     err := db.SelectContext(s.ctx, &notifications, query, userId, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -110,9 +106,9 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
 }
 
 func (s *ApplicationUserNotificationService) FindByNotificationId(notificationId int64) (*model.OnesignalNotification, error) {
-    query := `SELECT ` + getOnesignalNotificationCols() + ` FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :1`
-    var n model.OnesignalNotification
-    err := s.db.GetContext(s.ctx, &n, query, notificationId)
+    query := `SELECT ` + getOnesignalNotificationCols() + ` FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`
+    var o model.OnesignalNotification
+    err := s.db.GetContext(s.ctx, &o, query, notificationId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -120,8 +116,8 @@ func (s *ApplicationUserNotificationService) FindByNotificationId(notificationId
         utils.LogError(err)
         return nil, err
     }
-    n.Set()
-    return &n, nil
+    o.Set()
+    return &o, nil
 }
 
 func (s *ApplicationUserNotificationService) UpdateSeenByUserId(userId int64, notificationId int64) error {
@@ -129,7 +125,7 @@ func (s *ApplicationUserNotificationService) UpdateSeenByUserId(userId int64, no
         UPDATE APPLICATION_USER_NOTIFICATION SET 
             IS_SEEN = 'Y',
             DATE_SEEN = CURRENT_TIMESTAMP
-        WHERE NOTIFICATION_ID = :1 AND USER_ID = :2
+        WHERE NOTIFICATION_ID = :notificationId AND USER_ID = :userId
     `
     _, err := s.db.ExecContext(s.ctx, query, notificationId, userId)
     if err != nil {

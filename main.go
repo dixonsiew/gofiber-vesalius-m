@@ -89,7 +89,7 @@ func main() {
     // }
 
     err := app.Listen(fmt.Sprintf(":%s", port), fiber.ListenConfig{
-        EnablePrefork: true,
+        EnablePrefork: false,
     })
 
     if err != nil {

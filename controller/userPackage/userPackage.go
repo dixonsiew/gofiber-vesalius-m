@@ -1,31 +1,74 @@
 package userPackage
 
 import (
-	"fmt"
-	"strings"
-	"vesaliusm/database"
-	"vesaliusm/middleware"
-	_ "vesaliusm/model/userPackage"
-	patientPurchaseDetailsService "vesaliusm/service/patientPurchaseDetails"
-	"vesaliusm/utils"
+    "fmt"
+    "strconv"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/dto"
+    "vesaliusm/middleware"
+    patientPurchaseDetailsService "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
+    "github.com/go-playground/validator/v10"
+    "github.com/gofiber/fiber/v3"
 )
 
-var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService = 
-    patientPurchaseDetailsService.NewPatientPurchaseDetailsService(database.GetDb(), database.GetCtx())
+var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService = patientPurchaseDetailsService.NewPatientPurchaseDetailsService(database.GetDb(), database.GetCtx())
 
-// SearchAllPurchaseHistory
+// CheckPackageExpiryMaxpurchase
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.CheckPackageExpiryMaxpurchaseDto true "CheckPackageExpiryMaxpurchaseDto"
+// @Success 200
+// @Router /user-package/check/expiry-maxpurchase [post]
+func CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
+    data := new(dto.CheckPackageExpiryMaxpurchaseDto)
+    if err := c.Bind().Body(data); err != nil {
+        if validationErrors, ok := err.(validator.ValidationErrors); ok {
+            errs := utils.GetValidationErrors(validationErrors)
+            if errs != nil {
+                return errs
+            }
+        }
+
+        return err
+    }
+
+    cartIsValid := true
+    cartResult := make([]interface{}, 0)
+
+    for _, pkg := range data.Package {
+        r, err := patientPurchaseDetailsSvc.CheckPackageExpiryMaxPurchase(pkg.PackageID, pkg.QuantityPurchased)
+        if err != nil {
+            return err
+        }
+
+        if r.Expired == 1 || r.Soldout == 1 || r.ExceedPurchase == 1 {
+            cartIsValid = false
+        }
+
+        cartResult = append(cartResult, r)
+    }
+
+    return c.JSON(fiber.Map{
+        "cartIsValid": cartIsValid,
+        "cartResult":  cartResult,
+    })
+}
+
+// GetAllUserPurchaseHistory
 //
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
 // @Param        _page              query      string  false  "_page"  default:"1"
 // @Param        _limit             query      string  false  "_limit" default:"10"
-// @Param request body map[string]string false "Keyword"
 // @Success 200 {array} userPackage.UserPackage
-// @Router /user-package/all [post]
-func SearchAllPurchaseHistory(c fiber.Ctx) error {
+// @Router /user-package/all/mobile [get]
+func GetAllUserPurchaseHistory(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
     if err != nil {
         return err
@@ -35,13 +78,58 @@ func SearchAllPurchaseHistory(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", "10")
+    m, err := patientPurchaseDetailsSvc.ListByPrn(user.UserID.Int64, page, limit)
+    if err != nil {
+        return err
+    }
+    
+    c.Set(utils.X_TOTAL_COUNT, fmt.Sprintf("%d", m.Total))
+    c.Set(utils.X_TOTAL_PAGE, fmt.Sprintf("%d", m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// GetAllPurchaseHistory
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Success 200 {array} userPackage.UserPackage
+// @Router /user-package/all [get]
+func GetAllPurchaseHistory(c fiber.Ctx) error {
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", "10")
+    m, err := patientPurchaseDetailsSvc.List(page, limit)
+    if err != nil {
+        return err
+    }
+    
+    c.Set(utils.X_TOTAL_COUNT, fmt.Sprintf("%d", m.Total))
+    c.Set(utils.X_TOTAL_PAGE, fmt.Sprintf("%d", m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// SearchAllPurchaseHistory
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param        _page              query      string  false  "_page"  default:"1"
+// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param request body dto.SearchPurchaseHistoryDto false "Keyword"
+// @Success 200 {array} userPackage.UserPackage
+// @Router /user-package/all [post]
+func SearchAllPurchaseHistory(c fiber.Ctx) error {
     var data fiber.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
     var (
-        key string
+        key  string
         key2 string
         key3 string
         key4 string
@@ -79,8 +167,31 @@ func SearchAllPurchaseHistory(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     c.Set(utils.X_TOTAL_COUNT, fmt.Sprintf("%d", m.Total))
     c.Set(utils.X_TOTAL_PAGE, fmt.Sprintf("%d", m.TotalPages))
     return c.JSON(m.List)
+}
+
+// GetUserPackageById
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param        purchaseId         path      string  true  "purchaseId"
+// @Success 200 {object} userPackage.UserPackage
+// @Router /user-package/{purchaseId} [post]
+func GetUserPackageById(c fiber.Ctx) error {
+    purchaseId := c.Params("purchaseId")
+    ipurchaseId, err := strconv.ParseInt(purchaseId, 10, 64)
+    if err != nil {
+        return err
+    }
+
+    o, err := patientPurchaseDetailsSvc.FindByPurchaseId(ipurchaseId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
 }

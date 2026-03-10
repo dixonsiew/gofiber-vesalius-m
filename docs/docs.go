@@ -426,6 +426,44 @@ const docTemplate = `{
             }
         },
         "/user-package/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userPackage.UserPackage"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -456,10 +494,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.SearchPurchaseHistoryDto"
                         }
                     }
                 ],
@@ -471,6 +506,109 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/userPackage.UserPackage"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/user-package/all/mobile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userPackage.UserPackage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user-package/check/expiry-maxpurchase": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "description": "CheckPackageExpiryMaxpurchaseDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckPackageExpiryMaxpurchaseDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user-package/{purchaseId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "purchaseId",
+                        "name": "purchaseId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userPackage.UserPackage"
                         }
                     }
                 }
@@ -618,6 +756,35 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.CheckPackageDto": {
+            "type": "object",
+            "required": [
+                "package_id",
+                "quantityPurchased"
+            ],
+            "properties": {
+                "package_id": {
+                    "type": "integer"
+                },
+                "quantityPurchased": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CheckPackageExpiryMaxpurchaseDto": {
+            "type": "object",
+            "required": [
+                "package"
+            ],
+            "properties": {
+                "package": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CheckPackageDto"
+                    }
+                }
+            }
+        },
         "dto.LoginDto": {
             "type": "object",
             "required": [
@@ -656,6 +823,23 @@ const docTemplate = `{
             ],
             "properties": {
                 "machineId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SearchPurchaseHistoryDto": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                },
+                "keyword2": {
+                    "type": "string"
+                },
+                "keyword3": {
+                    "type": "string"
+                },
+                "keyword4": {
                     "type": "string"
                 }
             }

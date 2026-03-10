@@ -1,15 +1,16 @@
 package novaDoctor
 
 import (
-    "context"
-    "database/sql"
-    "fmt"
-    "strings"
-    "vesaliusm/config"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"fmt"
+	"strings"
+	"vesaliusm/config"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/jmoiron/sqlx"
+	"github.com/gofiber/fiber/v3"
+	"github.com/jmoiron/sqlx"
 )
 
 type NovaDoctorService struct {
@@ -269,9 +270,9 @@ func (s *NovaDoctorService) List(page string, limit string, isWebadmin bool) (*m
         utils.LogError(err)
         return nil, err
     }
-    list := make([]interface{}, len(doctors))
-    for i, d := range doctors {
-        list[i] = d
+    list := make([]interface{}, 0)
+    for _, d := range doctors {
+        list = append(list, d)
     }
     return &model.PagedList{
         List:       list,
@@ -301,7 +302,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
         `
     }
 
-    var doctors []model.NovaDoctor
+    doctors := make([]model.NovaDoctor, 0)
     err := s.db.SelectContext(s.ctx, &doctors, query, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -313,7 +314,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
     }
 
     // Collect IDs for child fetches
-    ids := make([]int64, len(doctors))
+    ids := make([]int64, 0)
     for i, d := range doctors {
         ids = append(ids, d.DoctorID.Int64)
         // Set showMakeAppointmentButton based on config
@@ -383,6 +384,22 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
     return doctors, nil
 }
 
+func (s *NovaDoctorService) FindAllHSMcrAndName() ([]model.NovaDoctor, error) {
+    const query = `
+        SELECT DOCTOR_ID, MCR, NAME
+        FROM NOVA_DOCTOR
+        WHERE IS_FOR_PACKAGE = 'Y'
+        ORDER BY DISPLAY_SEQUENCE, UPPER(NAME)
+    `
+    list := make([]model.NovaDoctor, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return list, err
+    }
+    return list, nil
+}
+
 func (s *NovaDoctorService) Count(isWebadmin bool) (int, error) {
     var query string
     if isWebadmin {
@@ -399,65 +416,6 @@ func (s *NovaDoctorService) Count(isWebadmin bool) (int, error) {
     return count, nil
 }
 
-func (s *NovaDoctorService) FindAllHSMcrAndName() ([]model.NovaDoctor, error) {
-    const query = `
-        SELECT DOCTOR_ID, MCR, NAME
-        FROM NOVA_DOCTOR
-        WHERE IS_FOR_PACKAGE = 'Y'
-        ORDER BY DISPLAY_SEQUENCE, UPPER(NAME)
-    `
-    var doctors []model.NovaDoctor
-    err := s.db.SelectContext(s.ctx, &doctors, query)
-    if err != nil {
-        utils.LogError(err)
-        return doctors, err
-    }
-    return doctors, nil
-}
-
-func (s *NovaDoctorService) ListByKeyword(keyword string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    pager := model.GetPager(total, page, limit)
-    doctors, err := s.FindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    return &model.PagedList{
-        List:       doctors,
-        Total:      total,
-        TotalPages: pager.GetTotalPages(),
-    }, nil
-}
-
-func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
-    const query = `
-        SELECT COUNT(nd.DOCTOR_ID)
-        FROM NOVA_DOCTOR nd
-        WHERE nd.IS_FOR_PACKAGE = 'N'
-          AND (
-            nd.DOCTOR_ID IN (
-                SELECT nds.DOCTOR_ID
-                FROM NOVA_DOCTOR_SPECIALITIES nds
-                WHERE LOWER(nds.SPECIALITIES) LIKE ? OR LOWER(nds.SUBSPECIALTY) LIKE ?
-            )
-            OR LOWER(nd.NAME) LIKE ?
-          )
-    `
-    pattern := "%" + strings.ToLower(keyword) + "%"
-    var count int
-    err := s.db.GetContext(s.ctx, &count, query, pattern, pattern, pattern)
-    if err != nil {
-        utils.LogError(err)
-        return 0, err
-    }
-    return count, nil
-}
-
 func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]model.NovaDoctor, error) {
     query := `
         SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR nd
@@ -466,16 +424,16 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
             nd.DOCTOR_ID IN (
                 SELECT nds.DOCTOR_ID
                 FROM NOVA_DOCTOR_SPECIALITIES nds
-                WHERE LOWER(nds.SPECIALITIES) LIKE ? OR LOWER(nds.SUBSPECIALTY) LIKE ?
+                WHERE LOWER(nds.SPECIALITIES) LIKE :1 OR LOWER(nds.SUBSPECIALTY) LIKE :2
             )
-            OR LOWER(nd.NAME) LIKE ?
+            OR LOWER(nd.NAME) LIKE :3
           )
         ORDER BY nd.DISPLAY_SEQUENCE, nd.NAME
-        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+        OFFSET :4 ROWS FETCH NEXT :5 ROWS ONLY
     `
-    pattern := "%" + strings.ToLower(keyword) + "%"
-    var doctors []model.NovaDoctor
-    err := s.db.SelectContext(s.ctx, &doctors, query, pattern, pattern, pattern, offset, limit)
+    key := strings.ToLower(keyword)
+    doctors := make([]model.NovaDoctor, 0)
+    err := s.db.SelectContext(s.ctx, &doctors, query, key, key, key, offset, limit)
     if err != nil {
         utils.LogError(err)
         return doctors, err
@@ -492,27 +450,22 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
 
     specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     specMap, err := s.findAllNovaDoctorSpecialities(s.db, ids)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     locMap, err := s.findAllNovaDoctorClinicLocation(s.db, ids)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     contactMap, err := s.findAllNovaDoctorContact(s.db, ids)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     doctorSpecialtyMap, err := s.findAllNovaDoctorSpecialty(s.db, ids, specialtyMap)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
@@ -534,29 +487,9 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
     return doctors, nil
 }
 
-func (s *NovaDoctorService) ListByKeywordGuest(keyword string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    pager := model.GetPager(total, page, limit)
-    doctors, err := s.GuestFindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    return &model.PagedList{
-        List:       doctors,
-        Total:      total,
-        TotalPages: pager.GetTotalPages(),
-    }, nil
-}
-
 func (s *NovaDoctorService) GuestFindByKeyword(keyword string, offset, limit int) ([]model.NovaDoctor, error) {
     doctors, err := s.FindByKeyword(keyword, offset, limit)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     for i := range doctors {
@@ -569,12 +502,68 @@ func (s *NovaDoctorService) GuestFindByKeyword(keyword string, offset, limit int
     return doctors, nil
 }
 
-func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, error) {
+func (s *NovaDoctorService) ListByKeyword(keyword string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByKeyword(keyword)
+    if err != nil {
+        return nil, err
+    }
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *NovaDoctorService) ListByKeywordGuest(keyword string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByKeyword(keyword)
+    if err != nil {
+        return nil, err
+    }
+    pager := model.GetPager(total, page, limit)
+    doctors, err := s.GuestFindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+    return &model.PagedList{
+        List:       doctors,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
+    const query = `
+        SELECT COUNT(nd.DOCTOR_ID)
+        FROM NOVA_DOCTOR nd
+        WHERE nd.IS_FOR_PACKAGE = 'N'
+          AND (
+            nd.DOCTOR_ID IN (
+                SELECT nds.DOCTOR_ID
+                FROM NOVA_DOCTOR_SPECIALITIES nds
+                WHERE LOWER(nds.SPECIALITIES) LIKE :1 OR LOWER(nds.SUBSPECIALTY) LIKE :2
+            )
+            OR LOWER(nd.NAME) LIKE :3
+          )
+    `
+    key := strings.ToLower(keyword)
     var count int
-    err := s.db.GetContext(s.ctx, &count,
-        `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1 AND DOCTOR_ID <> :2`,
-        mcr, doctorID,
-    )
+    err := s.db.GetContext(s.ctx, &count, query, key, key, key)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, error) {
+    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1 AND DOCTOR_ID <> :2`
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, mcr, doctorID)
     if err != nil {
         utils.LogError(err)
         return false, err
@@ -583,11 +572,9 @@ func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorID int) (bool, er
 }
 
 func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
+    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1`
     var count int
-    err := s.db.GetContext(s.ctx, &count,
-        `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :1`,
-        mcr,
-    )
+    err := s.db.GetContext(s.ctx, &count, query, mcr)
     if err != nil {
         utils.LogError(err)
         return false, err
@@ -610,7 +597,6 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
 
     specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
 
@@ -654,10 +640,7 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
 
 func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64) (string, error) {
     var name string
-    err := s.db.GetContext(s.ctx, &name,
-        `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`,
-        doctorId,
-    )
+    err := s.db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :1`, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return "", nil
@@ -670,10 +653,7 @@ func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64) (string, er
 
 func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
     var id int64
-    err := s.db.GetContext(s.ctx, &id,
-        `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :1`,
-        mcr,
-    )
+    err := s.db.GetContext(s.ctx, &id, `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return 0, err
@@ -686,10 +666,7 @@ func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
 
 func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, error) {
     var doctor model.NovaDoctor
-    err := s.db.GetContext(s.ctx, &doctor,
-        `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`,
-        mcr,
-    )
+    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -701,11 +678,8 @@ func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, erro
 }
 
 func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error) {
-    var doctors []model.NovaDoctor
-    err := s.db.SelectContext(s.ctx, &doctors,
-        `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`,
-        mcr,
-    )
+    doctors := make([]model.NovaDoctor, 0)
+    err := s.db.SelectContext(s.ctx, &doctors, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :1`, mcr)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -715,7 +689,7 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
         return doctors, nil
     }
 
-    ids := make([]int64, len(doctors))
+    ids := make([]int64, 0)
     for _, d := range doctors {
         ids = append(ids, d.DoctorID.Int64)
     }
@@ -1109,6 +1083,51 @@ func (s *NovaDoctorService) saveDoctorClinicLocationTx(tx *sqlx.Tx, doctor *mode
     return nil
 }
 
+func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
+    // First check for duplicates
+    const checkQuery = `
+        SELECT COUNT(*) FROM NOVA_DOCTOR_APPT_SLOT
+        WHERE DOCTOR_ID = :1 AND DAY_OF_WEEK = :2 AND SLOT_TYPE = :3 AND SESSION_TYPE = :4
+    `
+    const insertQuery = `
+        INSERT INTO NOVA_DOCTOR_APPT_SLOT (
+            DOCTOR_APPT_SLOT_ID, DOCTOR_ID, DAY_OF_WEEK, SLOT_TYPE,
+            SESSION_TYPE, START_TIME, END_TIME, MAX_SLOTS, DISPLAY_SEQUENCE
+        ) VALUES (DR_APPT_SLOT_ID_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8)
+    `
+    for _, item := range doctor.DoctorAppointment {
+        var count int
+        err := tx.GetContext(s.ctx, &count, checkQuery,
+            doctor.DoctorID.Int64,
+            item.ApptDayOfWeek.String,
+            item.ApptSlotType.String,
+            item.ApptSessionType.String,
+        )
+        if err != nil {
+            utils.LogError(err)
+            return err
+        }
+        if count > 0 {
+            return fiber.NewError(fiber.StatusBadRequest, "Existing records with same appointment setup found")
+        }
+        _, err = tx.ExecContext(s.ctx, insertQuery,
+            doctor.DoctorID.Int64,
+            item.ApptDayOfWeek.String,
+            item.ApptSlotType.String,
+            item.ApptSessionType.String,
+            item.ApptStartTime.String,
+            item.ApptEndTime.String,
+            item.ApptMaxSlots.Int32,
+            item.DisplaySequence.Int32,
+        )
+        if err != nil {
+            utils.LogError(err)
+            return err
+        }
+    }
+    return nil
+}
+
 func (s *NovaDoctorService) saveDoctorContactsTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
     const query = `
         INSERT INTO NOVA_DOCTOR_CONTACT (
@@ -1206,52 +1225,6 @@ func (s *NovaDoctorService) saveDoctorSpokenLanguageTx(tx *sqlx.Tx, doctor *mode
             item.DisplaySequence.Int64,
             doctor.DoctorID.Int64,
             item.SpokenLanguage.String,
-        )
-        if err != nil {
-            utils.LogError(err)
-            return err
-        }
-    }
-    return nil
-}
-
-func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    // First check for duplicates
-    const checkQuery = `
-        SELECT COUNT(*) FROM NOVA_DOCTOR_APPT_SLOT
-        WHERE DOCTOR_ID = :1 AND DAY_OF_WEEK = :2 AND SLOT_TYPE = :3 AND SESSION_TYPE = :4
-    `
-    const insertQuery = `
-        INSERT INTO NOVA_DOCTOR_APPT_SLOT (
-            DOCTOR_APPT_SLOT_ID, DOCTOR_ID, DAY_OF_WEEK, SLOT_TYPE,
-            SESSION_TYPE, START_TIME, END_TIME, MAX_SLOTS, DISPLAY_SEQUENCE
-        ) VALUES (DR_APPT_SLOT_ID_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8)
-    `
-    for _, item := range doctor.DoctorAppointment {
-        var count int
-        err := tx.GetContext(s.ctx, &count, checkQuery,
-            doctor.DoctorID.Int64,
-            item.ApptDayOfWeek.String,
-            item.ApptSlotType.String,
-            item.ApptSessionType.String,
-        )
-        if err != nil {
-            utils.LogError(err)
-            return err
-        }
-        if count > 0 {
-            utils.LogError(err)
-            return err
-        }
-        _, err = tx.ExecContext(s.ctx, insertQuery,
-            doctor.DoctorID.Int64,
-            item.ApptDayOfWeek.String,
-            item.ApptSlotType.String,
-            item.ApptSessionType.String,
-            item.ApptStartTime.String,
-            item.ApptEndTime.String,
-            item.ApptMaxSlots.Int32,
-            item.DisplaySequence.Int32,
         )
         if err != nil {
             utils.LogError(err)

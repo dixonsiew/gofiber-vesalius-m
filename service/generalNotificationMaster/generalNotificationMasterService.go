@@ -42,21 +42,20 @@ func (s *GeneralNotificationMasterService) Save(o *model.GeneralNotification, ad
             :targetNationality, :targetCity, :targetState, :adminId
         )
     `
-    params := map[string]interface{}{
-        "notificationTitle": o.NotificationTitle.String,
-        "shortMessage":      o.ShortMessage.String,
-        "fullMessage":       o.FullMessage.String,
-        "startDateTime":     startDateVal,
-        "endDateTime":       endDateVal,
-        "targetAgeFrom":     o.TargetAgeFrom.Int64,
-        "targetAgeTo":       o.TargetAgeTo.Int64,
-        "targetGender":      o.TargetGender.String,
-        "targetNationality": o.TargetNationality.String,
-        "targetCity":        o.TargetCity.String,
-        "targetState":       o.TargetState.String,
-        "adminId":           adminId,
-    }
-    _, err := s.db.NamedExecContext(s.ctx, query, params)
+    _, err := s.db.ExecContext(s.ctx, query,
+        o.NotificationTitle.String,
+        o.ShortMessage.String,
+        o.FullMessage.String,
+        startDateVal,
+        endDateVal,
+        o.TargetAgeFrom.Int64,
+        o.TargetAgeTo.Int64,
+        o.TargetGender.String,
+        o.TargetNationality.String,
+        o.TargetCity.String,
+        o.TargetState.String,
+        adminId,
+    )
     return err
 }
 
@@ -81,22 +80,21 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
             DATE_UPDATE = CURRENT_TIMESTAMP
         WHERE NOTIFICATION_MASTER_ID = :notification_master_id
     `
-    params := map[string]interface{}{
-        "notification_master_id": o.NotificationMasterID.Int64,
-        "notificationTitle":      o.NotificationTitle.String,
-        "shortMessage":           o.ShortMessage.String,
-        "fullMessage":            o.FullMessage.String,
-        "startDateTime":          startDateVal,
-        "endDateTime":            endDateVal,
-        "targetAgeFrom":          o.TargetAgeFrom.Int64,
-        "targetAgeTo":            o.TargetAgeTo.Int64,
-        "targetGender":           o.TargetGender.String,
-        "targetNationality":      o.TargetNationality.String,
-        "targetCity":             o.TargetCity.String,
-        "targetState":            o.TargetState.String,
-        "adminId":                adminId,
-    }
-    _, err := s.db.NamedExecContext(s.ctx, query, params)
+    _, err := s.db.ExecContext(s.ctx, query,
+        o.NotificationMasterID.Int64,
+        o.NotificationTitle.String,
+        o.ShortMessage.String,
+        o.FullMessage.String,
+        startDateVal,
+        endDateVal,
+        o.TargetAgeFrom.Int64,
+        o.TargetAgeTo.Int64,
+        o.TargetGender.String,
+        o.TargetNationality.String,
+        o.TargetCity.String,
+        o.TargetState.String,
+        adminId,
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -104,7 +102,7 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
 }
 
 func (s *GeneralNotificationMasterService) FindByNotificationMasterId(notificationMasterId int64) (*model.GeneralNotification, error) {
-    query := `SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :1`
+    query := `SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notification_master_id`
     var o model.GeneralNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationMasterId)
     if err != nil {
@@ -121,13 +119,11 @@ func (s *GeneralNotificationMasterService) FindByNotificationMasterId(notificati
 func (s *GeneralNotificationMasterService) List(page string, limit string) (*model.PagedList, error) {
     total, err := s.Count(s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
     list, err := s.FindAll(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     return &model.PagedList{
@@ -158,9 +154,9 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
     }
     query := `
         SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER
-        ORDER BY DATE_CREATE DESC OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
+        ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    var lx []model.GeneralNotification
+    lx := make([]model.GeneralNotification, 0)
     err := db.SelectContext(s.ctx, &lx, query, offset, limit)
     if err != nil {
         utils.LogError(err)

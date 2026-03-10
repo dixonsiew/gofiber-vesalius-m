@@ -1,17 +1,18 @@
 package applicationUser
 
 import (
-    "context"
-    "database/sql"
-    "fmt"
-    "math/rand"
-    "strings"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"fmt"
+	"math/rand"
+	"strings"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/google/uuid"
-    "github.com/jmoiron/sqlx"
-    "golang.org/x/crypto/bcrypt"
+	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
+	go_ora "github.com/sijms/go-ora/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type ApplicationUserService struct {
@@ -53,8 +54,8 @@ func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY`
-    var users []model.ApplicationUser
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    users := make([]model.ApplicationUser, 0)
     err := db.SelectContext(s.ctx, &users, query, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -131,16 +132,20 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
     if db == nil {
         db = s.db
     }
-    kw := "%" + strings.ToLower(keyword) + "%"
+    kw := strings.ToLower(keyword)
     query := `
         SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER au
-        WHERE (LOWER(au.FIRST_NAME) LIKE :1 OR LOWER(au.MIDDLE_NAME) LIKE :1 OR LOWER(au.LAST_NAME) LIKE :1
-        OR au.MASTER_PRN LIKE :1 OR LOWER(au.EMAIL) LIKE :1)
+        WHERE (LOWER(au.FIRST_NAME) LIKE :kw OR LOWER(au.MIDDLE_NAME) LIKE :kw OR LOWER(au.LAST_NAME) LIKE :kw
+        OR au.MASTER_PRN LIKE :kw OR LOWER(au.EMAIL) LIKE :kw)
         AND INACTIVE_FLAG = 'N'
-        ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :2 ROWS FETCH NEXT :3 ROWS ONLY
+        ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    var users []model.ApplicationUser
-    err := db.SelectContext(s.ctx, &users, query, kw, offset, limit)
+    users := make([]model.ApplicationUser, 0)
+    err := db.SelectContext(s.ctx, &users, query, kw, kw, kw, kw, kw, offset, limit)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
     for _, o := range users {
         o.Set()
     }
@@ -155,7 +160,6 @@ func (s *ApplicationUserService) ListByKeyword(keyword string, page string, limi
     pager := model.GetPager(total, page, limit)
     list, err := s.FindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
     return &model.PagedList{
@@ -170,14 +174,14 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    kw := "%" + strings.ToLower(keyword) + "%"
+    kw := strings.ToLower(keyword)
     query := `
         SELECT COUNT(au.USER_ID) FROM APPLICATION_USER au
-        WHERE (LOWER(au.FIRST_NAME) LIKE :1 OR LOWER(au.MIDDLE_NAME) LIKE :1 OR LOWER(au.LAST_NAME) LIKE :1
-        OR au.MASTER_PRN LIKE :1 OR LOWER(au.EMAIL) LIKE :1) AND INACTIVE_FLAG = 'N'
+        WHERE (LOWER(au.FIRST_NAME) LIKE :kw OR LOWER(au.MIDDLE_NAME) LIKE :kw OR LOWER(au.LAST_NAME) LIKE :kw
+        OR au.MASTER_PRN LIKE :kw OR LOWER(au.EMAIL) LIKE :kw) AND INACTIVE_FLAG = 'N'
     `
     var count int
-    err := db.GetContext(s.ctx, &count, query, kw)
+    err := db.GetContext(s.ctx, &count, query, kw, kw, kw, kw, kw)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -186,7 +190,7 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
 }
 
 func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :1 AND SESSION_ID = :2`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
     var u model.ApplicationUser
     err := s.db.GetContext(s.ctx, &u, query, userId, sessionId)
     if err != nil {
@@ -205,7 +209,7 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :1`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :userId`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, userId)
     if err != nil {
@@ -224,7 +228,7 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:1) ORDER BY REGISTRATION_DATE_TIME DESC`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, username)
     if err != nil {
@@ -243,7 +247,7 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:1)`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, email)
     if err != nil {
@@ -262,7 +266,7 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE MASTER_PRN = :1`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
     var u model.ApplicationUser
     err := db.GetContext(s.ctx, &u, query, prn)
     if err != nil {
@@ -282,7 +286,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
         FROM APPLICATION_USER au 
         LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
         INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
-        WHERE au.USER_ID = :1
+        WHERE au.USER_ID = :userId
     `
     rows, err := s.db.QueryxContext(s.ctx, query, userId)
     if err != nil {
@@ -305,8 +309,8 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
                 utils.LogError(err)
                 return nil, err
             }
+            u.Set()
             user = &u
-            user.Set()
         }
         // Build assign branch
         ab := model.AssignBranch{}
@@ -341,7 +345,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
         FROM APPLICATION_USER au 
         LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
         INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
-        WHERE au.EMAIL = :1
+        WHERE au.EMAIL = :email
     `
     rows, err := s.db.QueryxContext(s.ctx, query, email)
     if err != nil {
@@ -364,8 +368,8 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
                 utils.LogError(err)
                 return nil, err
             }
+            u.Set()
             user = &u
-            user.Set()
         }
         // Build assign branch
         ab := model.AssignBranch{}
@@ -394,7 +398,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
 }
 
 func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :2)`
+    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, userId)
     if err != nil {
@@ -408,7 +412,7 @@ func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId
 }
 
 func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :1 AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :2)`
+    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, email)
     if err != nil {
@@ -424,7 +428,7 @@ func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId 
 func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
     // Original query: SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND ab.PRN = :2)
     // Note: 'ab.PRN' likely missing table alias, but we'll replicate.
-    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND PRN = :2)`
+    query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`
     var u model.ApplicationUser
     err := s.db.GetContext(s.ctx, &u, query, userId, prn)
     if err != nil {
@@ -439,7 +443,7 @@ func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*mode
 }
 
 func (s *ApplicationUserService) ExistsByEmail(email string) (bool, error) {
-    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:1))`
+    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:email))`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, email)
     if err != nil {
@@ -450,7 +454,7 @@ func (s *ApplicationUserService) ExistsByEmail(email string) (bool, error) {
 }
 
 func (s *ApplicationUserService) ExistsByPRN(prn string) (bool, error) {
-    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE MASTER_PRN = :1)`
+    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE MASTER_PRN = :prn)`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, prn)
     if err != nil {
@@ -461,7 +465,7 @@ func (s *ApplicationUserService) ExistsByPRN(prn string) (bool, error) {
 }
 
 func (s *ApplicationUserService) ExistsByMobileNo(mobileNo string) (bool, error) {
-    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE USERNAME = :1)`
+    query := `SELECT COUNT(*) FROM DUAL WHERE EXISTS (SELECT 1 FROM APPLICATION_USER WHERE USERNAME = :mobileNo)`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, mobileNo)
     if err != nil {
@@ -492,30 +496,29 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
         SEX = :sex, TITLE = :title
         WHERE USER_ID = :user_id
     `
-    _, err = tx.NamedExec(updateQuery, map[string]interface{}{
-        "address":        o.Address.String,
-        "contact_number": o.ContactNumber.String,
-        "dob":            o.Dob.String,
-        "first_name":     o.FirstName.String,
-        "last_name":      o.LastName.String,
-        "master_prn":     o.MasterPrn.String,
-        "middle_name":    o.MiddleName.String,
-        "nationality":    o.Nationality.String,
-        "passport":       o.Passport.String,
-        "resident":       o.Resident.String,
-        "sex":            o.Sex.String,
-        "title":          o.Title.String,
-        "user_id":        o.UserID.Int64,
-    })
+    _, err = tx.ExecContext(s.ctx, updateQuery,
+        o.Address.String,
+        o.ContactNumber.String,
+        o.Dob.String,
+        o.FirstName.String,
+        o.LastName.String,
+        o.MasterPrn.String,
+        o.MiddleName.String,
+        o.Nationality.String,
+        o.Passport.String,
+        o.Resident.String,
+        o.Sex.String,
+        o.Title.String,
+        o.UserID.Int64,
+    )
     if err != nil {
         return err
     }
 
     // Insert ASSIGN_BRANCH
-    insertQuery := `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :1, :2, :3)`
+    insertQuery := `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`
     _, err = tx.ExecContext(s.ctx, insertQuery, o.MasterPrn.String, o.UserID.Int64, branchId)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -530,21 +533,21 @@ func (s *ApplicationUserService) Update(o *model.ApplicationUser) error {
         SEX = :sex, TITLE = :title
         WHERE USER_ID = :user_id
     `
-    _, err := s.db.NamedExecContext(s.ctx, updateQuery, map[string]interface{}{
-        "address":        o.Address.String,
-        "contact_number": o.ContactNumber.String,
-        "dob":            o.Dob.String,
-        "first_name":     o.FirstName.String,
-        "last_name":      o.LastName.String,
-        "master_prn":     o.MasterPrn.String,
-        "middle_name":    o.MiddleName.String,
-        "nationality":    o.Nationality.String,
-        "passport":       o.Passport.String,
-        "resident":       o.Resident.String,
-        "sex":            o.Sex.String,
-        "title":          o.Title.String,
-        "user_id":        o.UserID.Int64,
-    })
+    _, err := s.db.ExecContext(s.ctx, updateQuery,
+        o.Address.String,
+        o.ContactNumber.String,
+        o.Dob.String,
+        o.FirstName.String,
+        o.LastName.String,
+        o.MasterPrn.String,
+        o.MiddleName.String,
+        o.Nationality.String,
+        o.Passport.String,
+        o.Resident.String,
+        o.Sex.String,
+        o.Title.String,
+        o.UserID.Int64,
+    )
     if err != nil {
         utils.LogError(err)
     }
@@ -556,18 +559,18 @@ func (s *ApplicationUserService) SaveSessionId(userId int64, conn *sqlx.DB) (str
     if db == nil {
         db = s.db
     }
-    sessionID := uuid.New().String()
-    query := `UPDATE APPLICATION_USER SET SESSION_ID = :1 WHERE USER_ID = :2`
-    _, err := db.ExecContext(s.ctx, query, sessionID, userId)
+    sessionId := uuid.New().String()
+    query := `UPDATE APPLICATION_USER SET SESSION_ID = :sessionId WHERE USER_ID = :userId`
+    _, err := db.ExecContext(s.ctx, query, sessionId, userId)
     if err != nil {
         utils.LogError(err)
         return "", err
     }
-    return sessionID, nil
+    return sessionId, nil
 }
 
 func (s *ApplicationUserService) SetActive(userId int64) error {
-    query := `UPDATE APPLICATION_USER SET INACTIVE_FLAG = 'N' WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET INACTIVE_FLAG = 'N' WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, userId)
     if err != nil {
         utils.LogError(err)
@@ -576,7 +579,7 @@ func (s *ApplicationUserService) SetActive(userId int64) error {
 }
 
 func (s *ApplicationUserService) SetInactive(userId int64) error {
-    query := `UPDATE APPLICATION_USER SET INACTIVE_FLAG = 'Y' WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET INACTIVE_FLAG = 'Y' WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, userId)
     if err != nil {
         utils.LogError(err)
@@ -597,14 +600,12 @@ func (s *ApplicationUserService) Delete(userId int64) error {
         }
     }()
 
-    _, err = tx.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE USER_ID = :1`, userId)
+    _, err = tx.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE USER_ID = :userId`, userId)
     if err != nil {
-        utils.LogError(err)
         return err
     }
-    _, err = tx.ExecContext(s.ctx, `DELETE FROM APPLICATION_USER WHERE USER_ID = :1`, userId)
+    _, err = tx.ExecContext(s.ctx, `DELETE FROM APPLICATION_USER WHERE USER_ID = :userId`, userId)
     if err != nil {
-        utils.LogError(err)
         return err
     }
     return tx.Commit()
@@ -643,40 +644,40 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
             :sex, :title, :username, :verification_code, :branch, :race, :player_id)
         RETURNING USER_ID INTO :user_id
     `
-    params := map[string]interface{}{
-        "address":           o.Address.String,
-        "contact_number":    o.ContactNumber.String,
-        "dob":               o.Dob.String,
-        "email":             o.Email.String,
-        "first_name":        o.FirstName.String,
-        "last_name":         o.LastName.String,
-        "master_prn":        o.MasterPrn.String,
-        "middle_name":       o.MiddleName.String,
-        "nationality":       o.Nationality.String,
-        "passport":          o.Passport.String,
-        "password":          string(hashedPwd),
-        "resident":          o.Resident.String,
-        "role":              o.Role.String,
-        "sex":               o.Sex.String,
-        "title":             o.Title.String,
-        "username":          o.Username.String,
-        "verification_code": verificationCode,
-        "branch":            nil,
-        "race":              o.Race.String,
-        "player_id":         o.PlayerID.String,
-        "user_id":           sql.Out{Dest: &o.UserID.Int64},
-    }
-    _, err = tx.NamedExecContext(s.ctx, query, params)
+    var userId go_ora.Number
+    _, err = tx.ExecContext(s.ctx, query,
+        o.Address.String,
+        o.ContactNumber.String,
+        o.Dob.String,
+        o.Email.String,
+        o.FirstName.String,
+        o.LastName.String,
+        o.MasterPrn.String,
+        o.MiddleName.String,
+        o.Nationality.String,
+        o.Passport.String,
+        string(hashedPwd),
+        o.Resident.String,
+        o.Role.String,
+        o.Sex.String,
+        o.Title.String,
+        o.Username.String,
+        verificationCode,
+        nil,
+        o.Race.String,
+        o.PlayerID.String,
+        go_ora.Out{Dest: &userId},
+    )
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
+    o.UserID.Int64, _ = userId.Int64()
+
     // Insert into ASSIGN_BRANCH
-    _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :1, :2, :3)`,
+    _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
         o.MasterPrn.String, o.UserID.Int64, branchId)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -762,51 +763,48 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
             DOC_NO_SIGNUP = :docNoSignUp
         WHERE USER_ID = :user_id
     `
-    params := map[string]interface{}{
-        "address":            o.Address.String,
-        "address1":           o.Address1.String,
-        "address2":           o.Address2.String,
-        "address3":           o.Address3.String,
-        "nationality":        o.Nationality.String,
-        "race":               o.Race.String,
-        "sex":                o.Sex.String,
-        "title":              o.Title.String,
-        "contact_number":     o.ContactNumber.String,
-        "dob":                o.Dob.String,
-        "email":              o.Email.String,
-        "master_prn":         o.MasterPrn.String,
-        "first_name":         o.FirstName.String,
-        "middle_name":        o.MiddleName.String,
-        "last_name":          o.LastName.String,
-        "isGoldenPearl":      isGoldenPearl,
-        "isKidsExplorer":     isKidsExplorer,
-        "password":           string(hashedPwd),
-        "resident":           o.Resident.String,
-        "role":               o.Role.String,
-        "username":           o.Username.String,
-        "verification_code":  verificationCode,
-        "inactive":           o.InactiveFlag.String,
-        "firstTimeLogin":     firstTimeLogin,
-        "firstTimeBiometric": firstTimeBiometric,
-        "player_id":          o.PlayerID.String,
-        "cityState":          o.CityState.String,
-        "postalCode":         o.Postcode.String,
-        "country":            o.Country.String,
-        "signInType":         o.SignInType.Int32,
-        "fullNameSignUp":     o.FullnameSignup.String,
-        "docNoSignUp":        o.DocNoSignup.String,
-        "user_id":            o.UserID.Int64,
-    }
-    _, err = tx.NamedExecContext(s.ctx, updateQuery, params)
+    _, err = tx.ExecContext(s.ctx, updateQuery,
+        o.Address.String,
+        o.Address1.String,
+        o.Address2.String,
+        o.Address3.String,
+        o.Nationality.String,
+        o.Race.String,
+        o.Sex.String,
+        o.Title.String,
+        o.ContactNumber.String,
+        o.Dob.String,
+        o.Email.String,
+        o.MasterPrn.String,
+        o.FirstName.String,
+        o.MiddleName.String,
+        o.LastName.String,
+        isGoldenPearl,
+        isKidsExplorer,
+        string(hashedPwd),
+        o.Resident.String,
+        o.Role.String,
+        o.Username.String,
+        verificationCode,
+        o.InactiveFlag.String,
+        firstTimeLogin,
+        firstTimeBiometric,
+        o.PlayerID.String,
+        o.CityState.String,
+        o.Postcode.String,
+        o.Country.String,
+        o.SignInType.Int32,
+        o.FullnameSignup.String,
+        o.DocNoSignup.String,
+        o.UserID.Int64,
+    )
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
     // Update ASSIGN_BRANCH
-    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = :1 WHERE USER_ID = :2`, o.MasterPrn.String, o.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = :prn WHERE USER_ID = :userId`, o.MasterPrn.String, o.UserID.Int64)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -856,47 +854,47 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
             :player_id, :signInType, :fullNameSignUp, :docNoSignUp
         ) RETURNING USER_ID INTO :user_id
     `
-    params := map[string]interface{}{
-        "address":           o.Address.String,
-        "address1":          o.Address1.String,
-        "address2":          o.Address2.String,
-        "address3":          o.Address3.String,
-        "cityState":         o.CityState.String,
-        "postalCode":        o.Postcode.String,
-        "country":           o.Country.String,
-        "nationality":       o.Nationality.String,
-        "race":              o.Race.String,
-        "sex":               o.Sex.String,
-        "title":             o.Title.String,
-        "contact_number":    o.ContactNumber.String,
-        "dob":               o.Dob.String,
-        "email":             o.Email.String,
-        "master_prn":        o.MasterPrn.String,
-        "firstTimeLogin":    firstTimeLogin,
-        "first_name":        o.FirstName.String,
-        "middle_name":       o.MiddleName.String,
-        "last_name":         o.LastName.String,
-        "password":          string(hashedPwd),
-        "resident":          o.Resident.String,
-        "role":              o.Role.String,
-        "username":          o.Username.String,
-        "verification_code": verificationCode,
-        "player_id":         o.PlayerID.String,
-        "signInType":        o.SignInType.Int32,
-        "fullNameSignUp":    o.FullnameSignup.String,
-        "docNoSignUp":       o.DocNoSignup.String,
-        "user_id":           sql.Out{Dest: &o.UserID.Int64},
-    }
-    _, err = tx.NamedExecContext(s.ctx, query, params)
+    var userId go_ora.Number
+    _, err = tx.ExecContext(s.ctx, query,
+        o.Address.String,
+        o.Address1.String,
+        o.Address2.String,
+        o.Address3.String,
+        o.CityState.String,
+        o.Postcode.String,
+        o.Country.String,
+        o.Nationality.String,
+        o.Race.String,
+        o.Sex.String,
+        o.Title.String,
+        o.ContactNumber.String,
+        o.Dob.String,
+        o.Email.String,
+        o.MasterPrn.String,
+        firstTimeLogin,
+        o.FirstName.String,
+        o.MiddleName.String,
+        o.LastName.String,
+        string(hashedPwd),
+        o.Resident.String,
+        o.Role.String,
+        o.Username.String,
+        verificationCode,
+        o.PlayerID.String,
+        o.SignInType.Int32,
+        o.FullnameSignup.String,
+        o.DocNoSignup.String,
+        go_ora.Out{Dest: &userId},
+    )
     if err != nil {
-        utils.LogError(err)
         return 0, err
     }
 
-    _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :1, :2, :3)`,
+    o.UserID.Int64, _ = userId.Int64()
+
+    _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
         o.MasterPrn.String, o.UserID.Int64, branchId)
     if err != nil {
-        utils.LogError(err)
         return 0, err
     }
 
@@ -915,7 +913,7 @@ func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) err
         utils.LogError(err)
         return err
     }
-    query := `UPDATE APPLICATION_USER SET PASSWORD = :1 WHERE USER_ID = :2`
+    query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
     _, err = s.db.ExecContext(s.ctx, query, string(hashedPwd), o.UserID.Int64)
     if err != nil {
         utils.LogError(err)
@@ -932,7 +930,7 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
     if err != nil {
         return err
     }
-    query := `UPDATE APPLICATION_USER SET PASSWORD = :1 WHERE USER_ID = :2`
+    query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
     _, err = s.db.ExecContext(s.ctx, query, string(hashedPwd), o.UserID.Int64)
     if err != nil {
         utils.LogError(err)
@@ -943,7 +941,7 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
 func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUser) error {
     code := getRandomStr(6)
     o.VerificationCode.String = code
-    query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :1 WHERE USER_ID = :2`
+    query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, code, o.UserID.Int64)
     if err != nil {
         utils.LogError(err)
@@ -952,7 +950,7 @@ func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUs
 }
 
 func (s *ApplicationUserService) UpdateVerificationCode(code string, userId int64) error {
-    query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :1 WHERE USER_ID = :2`
+    query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, code, userId)
     if err != nil {
         utils.LogError(err)
@@ -970,7 +968,7 @@ func (s *ApplicationUserService) UpdateMachineId(id string, userId int64, conn *
         utils.LogError(err)
         return err
     }
-    query := `UPDATE APPLICATION_USER SET MACHINE_ID = :1 WHERE USER_ID = :2`
+    query := `UPDATE APPLICATION_USER SET MACHINE_ID = :machineId WHERE USER_ID = :userId`
     _, err = db.ExecContext(s.ctx, query, string(hashedID), userId)
     if err != nil {
         utils.LogError(err)
@@ -984,13 +982,13 @@ func (s *ApplicationUserService) UpdatePlayerId(id string, userId int64, conn *s
         db = s.db
     }
     // First nullify any existing player_id with same id
-    _, err := db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = NULL WHERE PLAYER_ID = :1`, id)
+    _, err := db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = NULL WHERE PLAYER_ID = :playerId`, id)
     if err != nil {
         utils.LogError(err)
         return err
     }
     // Then set new player_id
-    _, err = db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = :1 WHERE USER_ID = :2`, id, userId)
+    _, err = db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = :playerId WHERE USER_ID = :userId`, id, userId)
     if err != nil {
         utils.LogError(err)
     }
@@ -1023,7 +1021,7 @@ func (s *ApplicationUserService) InsertDownloadAppV2(machineId string, playerId 
     }
     query := `
         MERGE INTO APP_DOWNLOADED_USER apu
-        USING (SELECT :1 AS MACHINE_ID, :2 AS PLAYER_ID FROM DUAL) src
+        USING (SELECT :machineId AS MACHINE_ID, :playerId AS PLAYER_ID FROM DUAL) src
         ON (apu.MACHINE_ID = src.MACHINE_ID)
         WHEN MATCHED THEN
             UPDATE SET apu.PLAYER_ID = src.PLAYER_ID, DATE_UPDATE = CURRENT_TIMESTAMP
@@ -1050,14 +1048,13 @@ func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, 
         }
     }()
 
-    _, err = tx.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0, FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :1`, o.UserID.Int64)
+    query := `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0, FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :userId`
+    _, err = tx.ExecContext(s.ctx, query, o.UserID.Int64)
     if err != nil {
-        utils.LogError(err)
         return false, err
     }
     sessionID, err := s.SaveSessionId(o.UserID.Int64, s.db)
     if err != nil {
-        utils.LogError(err)
         return false, err
     }
     o.SessionID.String = sessionID
@@ -1070,7 +1067,7 @@ func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, 
 }
 
 func (s *ApplicationUserService) VerifyUser(o *model.ApplicationUser) (bool, error) {
-    query := `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0 WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0 WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, o.UserID.Int64)
     if err != nil {
         utils.LogError(err)
@@ -1127,17 +1124,15 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
             COUNTRY = NULL,
             FULLNAME_SIGNUP = NULL,
             DOC_NO_SIGNUP = NULL
-        WHERE USER_ID = :1
+        WHERE USER_ID = :userId
     `
     _, err = tx.ExecContext(s.ctx, updateUserQuery, user.UserID.Int64)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
-    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = NULL WHERE USER_ID = :1`, user.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = NULL WHERE USER_ID = :userId`, user.UserID.Int64)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -1157,9 +1152,9 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
         INSERT INTO AUDIT_MOBILE_USER 
         (PRN, USERNAME, PATIENT_NAME, ACTION, ACTION_DESC, REMARKS, USER_CREATE)
         VALUES 
-        (:1, :2, :3, :4, :5, :6, :7)
+        (:prn, :username, :patientName, :action, :actionDesc, :remarks, :userCreate)
     `
-    _, err = tx.Exec(auditQuery,
+    _, err = tx.ExecContext(s.ctx, auditQuery,
         user.MasterPrn.String,
         user.Username.String,
         patientName,
@@ -1168,7 +1163,6 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
         remarks,
         userCreate)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -1176,7 +1170,7 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
 }
 
 func (s *ApplicationUserService) DisableFirstTimeBiometricUser(userId int64) error {
-    query := `UPDATE APPLICATION_USER SET FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, userId)
     if err != nil {
         utils.LogError(err)
@@ -1197,21 +1191,19 @@ func (s *ApplicationUserService) ResetUserSignup(userId int64, prn string) error
         }
     }()
 
-    _, err = tx.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE USER_ID = :1 AND PRN = :2`, userId, prn)
+    _, err = tx.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE USER_ID = :userId AND PRN = :prn`, userId, prn)
     if err != nil {
-        utils.LogError(err)
         return err
     }
-    _, err = tx.ExecContext(s.ctx, `DELETE FROM APPLICATION_USER WHERE USER_ID = :1 AND MASTER_PRN = :2`, userId, prn)
+    _, err = tx.ExecContext(s.ctx, `DELETE FROM APPLICATION_USER WHERE USER_ID = :userId AND MASTER_PRN = :prn`, userId, prn)
     if err != nil {
-        utils.LogError(err)
         return err
     }
     return tx.Commit()
 }
 
 func (s *ApplicationUserService) SetLogin(userId int64) error {
-    query := `UPDATE APPLICATION_USER SET IS_LOGGED_IN = 1, DATE_LOGGED_IN = CURRENT_TIMESTAMP WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET IS_LOGGED_IN = 1, DATE_LOGGED_IN = CURRENT_TIMESTAMP WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, userId)
     if err != nil {
         utils.LogError(err)
@@ -1220,7 +1212,7 @@ func (s *ApplicationUserService) SetLogin(userId int64) error {
 }
 
 func (s *ApplicationUserService) SetLogout(userId int64) error {
-    query := `UPDATE APPLICATION_USER SET IS_LOGGED_IN = 0 WHERE USER_ID = :1`
+    query := `UPDATE APPLICATION_USER SET IS_LOGGED_IN = 0 WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query, userId)
     if err != nil {
         utils.LogError(err)

@@ -32,7 +32,6 @@ func (s *PatientPurchaseDetailsService) ListByKeyword(keyword string, keyword2 s
         return nil, err
     }
 
-    utils.LogInfo("hello")
     pager := model.GetPager(total, page, limit)
     list, err := s.FindByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
@@ -52,29 +51,11 @@ func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 
              JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID`
     query := base + whereClause(conditions)
 
-    var (
-        rows *sqlx.Rows
-        err error
-    )
-    if len(conditions) < 1 {
-        rows, err = s.db.QueryxContext(s.ctx, query)
-    } else {
-        rows, err = s.db.NamedQueryContext(s.ctx, query, args)
-    }
-    
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, args...)
     if err != nil {
         utils.LogError(err)
         return 0, err
-    }
-    defer rows.Close()
-
-    utils.LogInfo("get count")
-    var count int
-    if rows.Next() {
-        if err = rows.Scan(&count); err != nil {
-            utils.LogError(err)
-            return 0, err
-        }
     }
     return count, nil
 }
@@ -146,8 +127,8 @@ func (s *PatientPurchaseDetailsService) Count() (int, error) {
 
 func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, offset int, limit int) ([]userPackage.UserPackage, error) {
     conditions, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
-    args["offset"] = offset
-    args["limit"] = limit
+    args = append(args, offset)
+    args = append(args, limit)
 
     base := `
         SELECT ` + getPatientPurchaseDetailsCols() + `, hp.PACKAGE_NAME, ppd2.PAYMENT_REQUEST_NO,
@@ -162,25 +143,26 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     query := base + whereClause(conditions) +
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-
-    rows, err := s.db.NamedQueryContext(s.ctx, query, args)
+    query = s.db.Rebind(query)
+    
+    rows, err := s.db.QueryxContext(s.ctx, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
     defer rows.Close()
 
-    var items []userPackage.UserPackage
+    var list []userPackage.UserPackage
     for rows.Next() {
-        var item userPackage.UserPackage
-        if err = rows.StructScan(&item); err != nil {
+        var o userPackage.UserPackage
+        if err = rows.StructScan(&o); err != nil {
             utils.LogError(err)
             return nil, err
         }
-        item.SetWebadmin()
-        items = append(items, item)
+        o.SetWebadmin()
+        list = append(list, o)
     }
-    return items, nil
+    return list, nil
 }
 
 func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPackage.UserPackage, error) {
@@ -195,9 +177,9 @@ func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPa
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
         WHERE ppd.PACKAGE_STATUS = 'Purchased'
         ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
-        OFFSET :1 ROWS FETCH NEXT :2 ROWS ONLY
+        OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    var list []userPackage.UserPackage
+    list := make([]userPackage.UserPackage, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -232,10 +214,10 @@ func (s *PatientPurchaseDetailsService) FindAllByPaymentId(paymentId int64) ([]u
         PATIENT_PURCHASE_DETAILS ppd
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
-        WHERE ppd.PACKAGE_PAYMENT_ID = :1
+        WHERE ppd.PACKAGE_PAYMENT_ID = :paymentId
         GROUP BY ppd.PACKAGE_ID
     `
-    var list []userPackage.UserPackagePaymentEmail
+    list := make([]userPackage.UserPackagePaymentEmail, 0)
     err := s.db.SelectContext(s.ctx, &list, query, paymentId)
     if err != nil {
         utils.LogError(err)
@@ -279,11 +261,11 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
           GROUP BY PACKAGE_PURCHASE_NO
         ) 
         ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
-        WHERE ppd.PATIENT_PRN = :1
+        WHERE ppd.PATIENT_PRN = :prn
         ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC 
-        OFFSET :2 ROWS FETCH NEXT :3 ROWS ONLY
+        OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    var list []userPackage.UserPackage
+    list := make([]userPackage.UserPackage, 0)
     err := s.db.SelectContext(s.ctx, &list, query, prn, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -310,7 +292,7 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
         GROUP BY PACKAGE_PURCHASE_NO
         )
         ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
-        WHERE ppd.PATIENT_PURCHASE_ID = :1
+        WHERE ppd.PATIENT_PURCHASE_ID = :purchaseId
     `
     err := s.db.GetContext(s.ctx, &o, query, purchaseId)
     if err != nil {
@@ -341,17 +323,14 @@ func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.Use
     defer tx.Rollback()
 
     for i := 0; i < o.QuantityPurchased; i++ {
-        args := map[string]interface{}{
-            "patientPrn":    o.PatientPrn,
-            "patientName":   o.PatientName,
-            "package_id":    o.PackageID,
-            "packageStatus": o.PackageStatus,
-            "payment_id":    payment_id,
-        }
-
-        _, err = tx.NamedExecContext(s.ctx, query, args)
+        _, err = tx.ExecContext(s.ctx, query,
+            o.PatientPrn.String,
+            o.PatientName.String,
+            o.PackageID.Int64,
+            o.PackageStatus.String,
+            payment_id,
+        )
         if err != nil {
-            utils.LogError(err)
             return err
         }
     }
@@ -366,7 +345,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
     var query string
 
     if status == utils.PackageStatusCancelled {
-        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1 WHERE PACKAGE_PURCHASE_NO = :2`
+        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PURCHASE_NO = :purchaseNo`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
         if err != nil {
             utils.LogError(err)
@@ -384,7 +363,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
             return fmt.Errorf("invalid status: %s", status)
         }
 
-        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PURCHASE_NO = :2`, fieldDt)
+        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PURCHASE_NO = :purchaseNo`, fieldDt)
         _, err := s.db.ExecContext(s.ctx, query, status, purchaseNo)
         if err != nil {
             utils.LogError(err)
@@ -398,7 +377,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId
     var query string
 
     if status == utils.PackageStatusCancelled {
-        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1 WHERE PACKAGE_PAYMENT_ID = :2`
+        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PAYMENT_ID = :paymentId`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, paymentId)
         if err != nil {
             utils.LogError(err)
@@ -416,7 +395,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId
             return fmt.Errorf("invalid status: %s", status)
         }
 
-        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PAYMENT_ID = :2`, fieldDt)
+        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PAYMENT_ID = :paymentId`, fieldDt)
         _, err := s.db.ExecContext(s.ctx, query, status, paymentId)
         if err != nil {
             utils.LogError(err)
@@ -430,7 +409,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchase
     var query string
 
     if status == utils.PackageStatusCancelled {
-        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1 WHERE PATIENT_PURCHASE_ID = :2`
+        query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PATIENT_PURCHASE_ID = :purchaseId`
         _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseId)
         if err != nil {
             utils.LogError(err)
@@ -448,7 +427,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchase
             return fmt.Errorf("invalid status: %s", status)
         }
 
-        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :1, %s = CURRENT_TIMESTAMP WHERE PATIENT_PURCHASE_ID = :2`, fieldDt)
+        query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PATIENT_PURCHASE_ID = :purchaseId`, fieldDt)
         _, err := s.db.ExecContext(s.ctx, query, status, purchaseId)
         if err != nil {
             utils.LogError(err)
@@ -463,7 +442,7 @@ func (s *PatientPurchaseDetailsService) GetAppointmentDetailsByPurchaseId(paymen
     query := `
         SELECT ndpa.PATIENT_PRN, ndpa.PACKAGE_PURCHASE_NO, ndpa.APPT_NO FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN NOVA_DOCTOR_PATIENT_APPT ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
-        WHERE ndpa.APPT_STATUS <> 'CANCELLED' AND ppd.PATIENT_PURCHASE_ID = :1
+        WHERE ndpa.APPT_STATUS <> 'CANCELLED' AND ppd.PATIENT_PURCHASE_ID = :paymentId
     `
     err := s.db.GetContext(s.ctx, &o, query, paymentId)
     if err != nil {
@@ -486,7 +465,7 @@ func (s *PatientPurchaseDetailsService) GetPackageExpiryStatus(packageId int64) 
             ELSE 'Not Expired'
           END AS PACKAGE_EXPIRY_STATUS
          FROM HOSPITAL_PACKAGE
-         WHERE PACKAGE_ID = :1
+         WHERE PACKAGE_ID = :packageId
     `
     err := s.db.GetContext(s.ctx, &r, query, packageId)
     if err != nil {
@@ -506,8 +485,8 @@ func (s *PatientPurchaseDetailsService) GetPackageSoldoutStatus(packageId int64)
         CASE
           WHEN (SELECT COALESCE(COUNT(*), 0)
             FROM PATIENT_PURCHASE_DETAILS 
-            WHERE PACKAGE_ID = :1) >=
-            (SELECT PACKAGE_MAX_PURCHASE FROM HOSPITAL_PACKAGE WHERE PACKAGE_ID = :2)
+            WHERE PACKAGE_ID = :packageId) >=
+            (SELECT PACKAGE_MAX_PURCHASE FROM HOSPITAL_PACKAGE WHERE PACKAGE_ID = :packageId)
           THEN 'Sold Out'
           ELSE 'Available'
         END AS PACKAGE_PURCHASE_AVAILABILITY
@@ -529,24 +508,24 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(packageId
     query := `
         SELECT
           CASE
-              WHEN ppd.TOTAL_PURCHASES + :1 > hp.PACKAGE_MAX_PURCHASE 
+              WHEN ppd.TOTAL_PURCHASES + :quantityPurchased > hp.PACKAGE_MAX_PURCHASE 
               THEN 'Exceeded'
               ELSE 'Not Exceeded'
           END AS PURCHASE_STATUS,
           CASE
-              WHEN ppd.TOTAL_PURCHASES + :2 > hp.PACKAGE_MAX_PURCHASE 
+              WHEN ppd.TOTAL_PURCHASES + :quantityPurchased > hp.PACKAGE_MAX_PURCHASE 
               THEN GREATEST(hp.PACKAGE_MAX_PURCHASE - ppd.TOTAL_PURCHASES, 0)
               ELSE hp.PACKAGE_MAX_PURCHASE - ppd.TOTAL_PURCHASES
           END AS RECOMMENDED_QUANTITY
          FROM (
           SELECT COALESCE(SUM(1), 0) AS TOTAL_PURCHASES
           FROM PATIENT_PURCHASE_DETAILS 
-          WHERE PACKAGE_ID = :3
+          WHERE PACKAGE_ID = :packageId
          ) ppd,
          (
           SELECT PACKAGE_MAX_PURCHASE
           FROM HOSPITAL_PACKAGE
-          WHERE PACKAGE_ID = :4
+          WHERE PACKAGE_ID = :packageId
          ) hp
     `
     err := s.db.GetContext(s.ctx, &result, query, quantityPurchased, quantityPurchased, packageId, packageId)
@@ -596,25 +575,25 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
     return result, nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, map[string]interface{}) {
+func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, []interface{}) {
     var conds []string
-    args := make(map[string]interface{})
+    var args []interface{}
 
     if keyword != "" {
         conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args["keyword"] = keyword
+        args = append(args, keyword)
     }
     if keyword2 != "" {
         conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args["keyword2"] = keyword2
+        args = append(args, keyword2)
     }
     if keyword3 != "" {
         conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args["keyword3"] = keyword3
+        args = append(args, keyword3)
     }
     if keyword4 != "" && keyword4 != "All" {
         conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args["keyword4"] = keyword4
+        args = append(args, keyword4)
     }
     return conds, args
 }
