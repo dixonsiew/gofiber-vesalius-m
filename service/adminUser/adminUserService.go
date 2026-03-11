@@ -44,7 +44,7 @@ func (s *AdminUserService) List(page string, limit string) (*model.PagedList, er
 }
 
 func (s *AdminUserService) FindAll(offset int, limit int) ([]model.AdminUser, error) {
-    query := `SELECT * FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query := `SELECT ` + utils.GetDbCols(model.AdminUser{}, "") + ` FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     list := make([]model.AdminUser, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -324,7 +324,7 @@ func (s *AdminUserService) CountByKeyword(keyword string) (int, error) {
 }
 
 func (s *AdminUserService) FindByAdminId(adminId int64) (*model.AdminUser, error) {
-    query := `SELECT * FROM ADMIN_USER WHERE ADMIN_ID = :adminId`
+    query := `SELECT ` + utils.GetDbCols(model.AdminUser{}, "") + ` FROM ADMIN_USER WHERE ADMIN_ID = :adminId`
     var o model.AdminUser
     err := s.db.GetContext(s.ctx, &o, query, adminId)
     if err != nil {
@@ -338,7 +338,7 @@ func (s *AdminUserService) FindByAdminId(adminId int64) (*model.AdminUser, error
 }
 
 func (s *AdminUserService) FindByEmail(email string) (*model.AdminUser, error) {
-    query := `SELECT * FROM ADMIN_USER WHERE EMAIL = :email`
+    query := `SELECT ` + utils.GetDbCols(model.AdminUser{}, "") + ` FROM ADMIN_USER WHERE EMAIL = :email`
     var o model.AdminUser
     err := s.db.GetContext(s.ctx, &o, query, email)
     if err != nil {
@@ -352,7 +352,7 @@ func (s *AdminUserService) FindByEmail(email string) (*model.AdminUser, error) {
 }
 
 func (s *AdminUserService) FindByUsername(email string) (*model.AdminUser, error) {
-    query := `SELECT * FROM ADMIN_USER WHERE USERNAME = :email`
+    query := `SELECT ` + utils.GetDbCols(model.AdminUser{}, "") + ` FROM ADMIN_USER WHERE USERNAME = :email`
     var o model.AdminUser
     err := s.db.GetContext(s.ctx, &o, query, email)
     if err != nil {
@@ -366,8 +366,9 @@ func (s *AdminUserService) FindByUsername(email string) (*model.AdminUser, error
 }
 
 func (s *AdminUserService) FindByUserGroupId(userGroupId int64) ([]model.AdminUser, error) {
+    query := `SELECT ` + utils.GetDbCols(model.AdminUser{}, "") + ` FROM ADMIN_USER WHERE USER_GROUP_ID = :userGroupId`
     list := make([]model.AdminUser, 0)
-    err := s.db.SelectContext(s.ctx, &list, `SELECT * FROM ADMIN_USER WHERE USER_GROUP_ID = :userGroupId`, userGroupId)
+    err := s.db.SelectContext(s.ctx, &list, query, userGroupId)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -377,12 +378,16 @@ func (s *AdminUserService) FindByUserGroupId(userGroupId int64) ([]model.AdminUs
 
 func (s *AdminUserService) FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
     query := `
-        SELECT ` + getAdminUserCols() + `, ` + getAssignBranchCols() + `, ` + getBranchCols() + ` 
+        SELECT ` + 
+        utils.GetDbCols(model.AdminUser{}, "au.") + `, ` + 
+        utils.GetDbCols(model.AssignBranch{}, "ab.") + `, ` + 
+        utils.GetDbCols(model.Branch{}, "b.") + ` 
         FROM ADMIN_USER au 
         LEFT JOIN ASSIGN_BRANCH ab ON au.ADMIN_ID = ab.ADMIN_ID 
         INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
         WHERE au.ADMIN_ID = :adminId
     `
+    utils.LogInfo(query)
     rows, err := s.db.QueryxContext(s.ctx, query, adminId)
     if err != nil {
         utils.LogError(err)
@@ -432,7 +437,7 @@ func (s *AdminUserService) FindWithAssignBranchByAdminId(adminId int64) (*model.
 }
 
 func (s *AdminUserService) FindAssignBranchByAdminId(adminId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + getAssignBranchCols() + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE ADMIN_ID = :adminId)`
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE ADMIN_ID = :adminId)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, adminId)
     if err != nil {
@@ -786,7 +791,7 @@ func whereClause(conds []string) string {
     return " WHERE " + strings.Join(conds, " AND ")
 }
 
-func getAdminUserCols() string {
+/* func getAdminUserCols() string {
     return `
         ADMIN_ID,
         USERNAME,
@@ -841,4 +846,4 @@ func getAuditMobileUserCols() string {
         USER_CREATE,
         DATE_CREATE
     `
-}
+} */

@@ -38,6 +38,92 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/adminportal/log/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AdminAuditLog"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AdminAuditLog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/adminportal/mobile-user/log/all": {
             "get": {
                 "security": [
@@ -103,19 +189,11 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "description": "Keyword",
+                        "description": "Search",
                         "name": "keyword",
                         "in": "body",
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Keyword2",
-                        "name": "keyword2",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
                         }
                     }
                 ],
@@ -197,11 +275,11 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "description": "Keyword",
+                        "description": "Search",
                         "name": "keyword",
                         "in": "body",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
                         }
                     }
                 ],
@@ -213,6 +291,38 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/model.AdminUser"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/adminId/{adminId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "adminId",
+                        "name": "adminId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminUser"
                         }
                     }
                 }
@@ -967,6 +1077,25 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.SearchKeyword2Dto": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                },
+                "keyword2": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SearchKeywordDto": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.SearchPurchaseHistoryDto": {
             "type": "object",
             "properties": {
@@ -980,6 +1109,41 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword4": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AdminAuditLog": {
+            "type": "object",
+            "properties": {
+                "eventAction": {
+                    "type": "string"
+                },
+                "eventAdminEmail": {
+                    "type": "string"
+                },
+                "eventAdminId": {
+                    "type": "integer"
+                },
+                "eventDateTime": {
+                    "type": "string"
+                },
+                "eventDescription": {
+                    "type": "string"
+                },
+                "eventFunction": {
+                    "type": "string"
+                },
+                "eventKeyword": {
+                    "type": "string"
+                },
+                "eventModule": {
+                    "type": "string"
+                },
+                "event_id": {
+                    "type": "integer"
+                },
+                "patientPrn": {
                     "type": "string"
                 }
             }

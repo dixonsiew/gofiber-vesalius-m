@@ -15,4 +15,7 @@ func SetupRoutes(router fiber.Router) {
     api.Post("/all", admin.SearchAllAdmin)
     api.Get("/adminportal/mobile-user/log/all", admin.GetAllAuditMobileUser)
     api.Post("/adminportal/mobile-user/log/all", admin.SearchAllAuditMobileUser)
+    api.Get("/adminportal/log/all", admin.GetAllAuditLog)
+    api.Post("/adminportal/log/all", admin.SearchAllAuditLog)
+    api.Get("/adminId/:adminId", admin.GetUserById)
 }

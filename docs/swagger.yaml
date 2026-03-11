@@ -48,6 +48,18 @@ definitions:
     required:
     - machineId
     type: object
+  dto.SearchKeyword2Dto:
+    properties:
+      keyword:
+        type: string
+      keyword2:
+        type: string
+    type: object
+  dto.SearchKeywordDto:
+    properties:
+      keyword:
+        type: string
+    type: object
   dto.SearchPurchaseHistoryDto:
     properties:
       keyword:
@@ -57,6 +69,29 @@ definitions:
       keyword3:
         type: string
       keyword4:
+        type: string
+    type: object
+  model.AdminAuditLog:
+    properties:
+      event_id:
+        type: integer
+      eventAction:
+        type: string
+      eventAdminEmail:
+        type: string
+      eventAdminId:
+        type: integer
+      eventDateTime:
+        type: string
+      eventDescription:
+        type: string
+      eventFunction:
+        type: string
+      eventKeyword:
+        type: string
+      eventModule:
+        type: string
+      patientPrn:
         type: string
     type: object
   model.AdminUser:
@@ -444,6 +479,58 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/adminportal/log/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AdminAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AdminAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/adminportal/mobile-user/log/all:
     get:
       parameters:
@@ -478,16 +565,11 @@ paths:
         in: query
         name: _limit
         type: string
-      - description: Keyword
+      - description: Search
         in: body
         name: keyword
         schema:
-          type: string
-      - description: Keyword2
-        in: body
-        name: keyword2
-        schema:
-          type: string
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
       produces:
       - application/json
       responses:
@@ -535,11 +617,11 @@ paths:
         in: query
         name: _limit
         type: string
-      - description: Keyword
+      - description: Search
         in: body
         name: keyword
         schema:
-          type: string
+          $ref: '#/definitions/dto.SearchKeywordDto'
       produces:
       - application/json
       responses:
@@ -549,6 +631,25 @@ paths:
             items:
               $ref: '#/definitions/model.AdminUser'
             type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /adminId/{adminId}:
+    get:
+      parameters:
+      - description: adminId
+        in: path
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AdminUser'
       security:
       - BearerAuth: []
       tags:

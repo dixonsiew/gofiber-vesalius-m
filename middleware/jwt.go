@@ -50,12 +50,21 @@ func DecodeToken(c fiber.Ctx) (string, int64, string, string, error) {
         return "", 0, "", "", fmt.Errorf("could not parse claims")
     }
 
+    vSessionId := ""
     sub := (*claims)["subject"].(string)
     username := (*claims)["username"].(string)
-    sessionId := (*claims)["sessionId"].(string)
+    sessionId := (*claims)["sessionId"]
     types := (*claims)["type"].(string)
     id, _ := strconv.ParseInt(sub, 10, 64)
-    return username, id, types, sessionId, nil
+    if sessionId == nil {
+        vSessionId = ""
+    }
+
+    if val, ok := sessionId.(string); ok {
+        vSessionId = val
+    }
+    
+    return username, id, types, vSessionId, nil
 }
 
 func ValidateToken(c fiber.Ctx) (int64, *model.ApplicationUser, error) {
