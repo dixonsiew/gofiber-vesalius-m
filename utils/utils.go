@@ -39,6 +39,36 @@ func SetLogger(runLogFile *os.File) {
     iLogger = zerolog.New(os.Stdout).Level(zerolog.DebugLevel).With().Timestamp().Logger()
 }
 
+func GetDbCols(s interface{}, prefix string) string {
+    r := ""
+    // Get the type of the struct
+    t := reflect.TypeOf(s)
+    if t.Kind() == reflect.Ptr {
+        t = t.Elem() // Dereference the pointer
+    }
+
+    // Check if the input is a struct (or pointer to a struct)
+    if t.Kind() != reflect.Struct {
+		return r
+	}
+
+    var columns []string
+	for i := 0; i < t.NumField(); i++ {
+		// Get the field information
+		field := t.Field(i)
+		
+		// Access the "db" tag value using the Get method
+		tagValue := field.Tag.Get("db")
+		
+		// If a "db" tag exists and is not empty, add it to the list
+		if tagValue != "" {
+			columns = append(columns, fmt.Sprintf("%s%s", prefix, tagValue))
+		}
+	}
+    
+    return strings.Join(columns, ", ")
+}
+
 func GetValidationErrors(errs validator.ValidationErrors) error {
     if len(errs) > 0 {
         errMsgs := make([]string, 0)

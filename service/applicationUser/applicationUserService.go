@@ -703,6 +703,7 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
     if o.SignInType.Valid && o.SignInType.Int32 == 2 && o.Password.Valid && o.Password.String != "" {
         hashedPwd, err = bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
         if err != nil {
+            utils.LogError(err)
             return err
         }
     }

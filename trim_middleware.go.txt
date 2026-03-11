@@ -1,0 +1,55 @@
+package middleware
+
+import (
+	"encoding/json"
+	"strings"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+func TrimMiddleware(c *fiber.Ctx) error {
+	// For body data
+	if len(c.Body()) > 0 {
+		c.Request().SetBody(TrimBytes(c.Body()))
+	}
+
+	// For params (URL parameters)
+	for key := range c.AllParams() {
+		c.Params(key, TrimString(c.Params(key)))
+	}
+
+	return c.Next()
+}
+
+func TrimString(value string) string {
+	return strings.TrimSpace(value)
+}
+
+func TrimBytes(data []byte) []byte {
+	var obj interface{}
+	json.Unmarshal(data, &obj)
+	trimmed := TrimValue(obj)
+	result, _ := json.Marshal(trimmed)
+	return result
+}
+
+func TrimValue(value interface{}) interface{} {
+	switch v := value.(type) {
+	case string:
+		return strings.TrimSpace(v)
+	case map[string]interface{}:
+		trimmedMap := make(map[string]interface{})
+		for key, val := range v {
+			trimmedMap[key] = TrimValue(val)
+		}
+		return trimmedMap
+	case []interface{}:
+		trimmedArr := make([]interface{}, len(v))
+		for i, item := range v {
+			trimmedArr[i] = TrimValue(item)
+		}
+		return trimmedArr
+	default:
+		return v
+	}
+}

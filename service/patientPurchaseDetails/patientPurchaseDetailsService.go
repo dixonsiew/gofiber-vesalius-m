@@ -584,19 +584,19 @@ func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, ke
 
     if keyword != "" {
         conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", keyword))
+        args = append(args, sql.Named("keyword", string.ToLower(keyword)))
     }
     if keyword2 != "" {
         conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", keyword2))
+        args = append(args, sql.Named("keyword2", string.ToLower(keyword2)))
     }
     if keyword3 != "" {
         conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", string.ToLower(keyword3)))
     }
     if keyword4 != "" && keyword4 != "All" {
         conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", keyword4))
+        args = append(args, sql.Named("keyword4", string.ToLower(keyword4)))
     }
     return conds, args
 }

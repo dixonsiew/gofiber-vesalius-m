@@ -93,16 +93,16 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
         ORDER BY DATE_SENT DESC 
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    notifications := make([]model.OnesignalNotification, 0)
-    err := db.SelectContext(s.ctx, &notifications, query, userId, offset, limit)
+    list := make([]model.OnesignalNotification, 0)
+    err := db.SelectContext(s.ctx, &list, query, userId, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    for i := range notifications {
-        notifications[i].Set()
+    for i := range list {
+        list[i].Set()
     }
-    return notifications, nil
+    return list, nil
 }
 
 func (s *ApplicationUserNotificationService) FindByNotificationId(notificationId int64) (*model.OnesignalNotification, error) {
