@@ -1,10 +1,10 @@
 package common
 
 import (
-	novaCountryService "vesaliusm/service/country"
     "vesaliusm/database"
+    novaCountryService "vesaliusm/service/country"
 
-	"github.com/gofiber/fiber/v3"
+    "github.com/gofiber/fiber/v3"
 )
 
 var novaCountrySvc *novaCountryService.CountryService = 

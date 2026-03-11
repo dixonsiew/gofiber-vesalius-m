@@ -38,6 +38,100 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/adminportal/mobile-user/log/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MobileUserAuditLog"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Keyword2",
+                        "name": "keyword2",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MobileUserAuditLog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/all": {
             "get": {
                 "security": [
@@ -63,6 +157,52 @@ const docTemplate = `{
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AdminUser"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1186,6 +1326,38 @@ const docTemplate = `{
                 },
                 "golden_club_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.MobileUserAuditLog": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "actionDesc": {
+                    "type": "string"
+                },
+                "audit_id": {
+                    "type": "integer"
+                },
+                "dateCreate": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "remarks": {
+                    "type": "string"
+                },
+                "userCreate": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

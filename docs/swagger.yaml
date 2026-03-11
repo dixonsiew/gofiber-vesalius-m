@@ -286,6 +286,27 @@ definitions:
       goldenClubTnc:
         type: string
     type: object
+  model.MobileUserAuditLog:
+    properties:
+      action:
+        type: string
+      actionDesc:
+        type: string
+      audit_id:
+        type: integer
+      dateCreate:
+        type: string
+      patientName:
+        type: string
+      prn:
+        type: string
+      remarks:
+        type: string
+      userCreate:
+        type: string
+      username:
+        type: string
+    type: object
   model.Nationality:
     properties:
       nationality:
@@ -423,6 +444,63 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/adminportal/mobile-user/log/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MobileUserAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Keyword
+        in: body
+        name: keyword
+        schema:
+          type: string
+      - description: Keyword2
+        in: body
+        name: keyword2
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MobileUserAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/all:
     get:
       parameters:
@@ -434,6 +512,34 @@ paths:
         in: query
         name: _limit
         type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AdminUser'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Keyword
+        in: body
+        name: keyword
+        schema:
+          type: string
       produces:
       - application/json
       responses:

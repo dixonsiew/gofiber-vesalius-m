@@ -88,7 +88,7 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
         db = conn
     }
     query := `
-        SELECT ` + getOnesignalNotificationCols() + ` FROM APPLICATION_USER_NOTIFICATION 
+        SELECT ` + utils.GetDbCols(model.OnesignalNotification{}, "") + ` FROM APPLICATION_USER_NOTIFICATION 
         WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL
         ORDER BY DATE_SENT DESC 
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
@@ -106,7 +106,7 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
 }
 
 func (s *ApplicationUserNotificationService) FindByNotificationId(notificationId int64) (*model.OnesignalNotification, error) {
-    query := `SELECT ` + getOnesignalNotificationCols() + ` FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`
+    query := `SELECT ` + utils.GetDbCols(model.OnesignalNotification{}, "") + ` FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`
     var o model.OnesignalNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationId)
     if err != nil {
@@ -134,7 +134,7 @@ func (s *ApplicationUserNotificationService) UpdateSeenByUserId(userId int64, no
     return err
 }
 
-func getOnesignalNotificationCols() string {
+/* func getOnesignalNotificationCols() string {
     return `
         NOTIFICATION_ID,
         USER_ID,
@@ -148,4 +148,4 @@ func getOnesignalNotificationCols() string {
         IS_SEEN,
         DATE_SENT
     `
-}
+} */

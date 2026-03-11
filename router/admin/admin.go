@@ -12,4 +12,7 @@ func SetupRoutes(router fiber.Router) {
     api.Use(middleware.JWTProtected, middleware.ValidateAdminUser)
     api.Get("/", admin.GetAdmin)
     api.Get("/all", admin.GetAllAdmin)
+    api.Post("/all", admin.SearchAllAdmin)
+    api.Get("/adminportal/mobile-user/log/all", admin.GetAllAuditMobileUser)
+    api.Post("/adminportal/mobile-user/log/all", admin.SearchAllAuditMobileUser)
 }

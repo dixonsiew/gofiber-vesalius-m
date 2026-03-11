@@ -4,6 +4,7 @@ import (
     "context"
     "database/sql"
     "math/rand"
+    "strings"
     "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/utils"
@@ -43,8 +44,9 @@ func (s *AdminUserService) List(page string, limit string) (*model.PagedList, er
 }
 
 func (s *AdminUserService) FindAll(offset int, limit int) ([]model.AdminUser, error) {
+    query := `SELECT * FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     list := make([]model.AdminUser, 0)
-    err := s.db.SelectContext(s.ctx, &list, `SELECT * FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`, offset, limit)
+    err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -127,10 +129,10 @@ func (s *AdminUserService) ListMobileUserAuditLogByKeyword(keyword string, keywo
     }, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyword2 string) ([]model.MobileUserAuditLog, error) {
+func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyword2 string) (int, error) {
     conds, args := buildKeywordConditions(keyword, keyword2)
     base := `SELECT COUNT(amu.AUDIT_ID) AS COUNT FROM AUDIT_MOBILE_USER amu`
-    query := base + whereClause(conditions)
+    query := base + whereClause(conds)
 
     var count int
     err := s.db.GetContext(s.ctx, &count, query, args...)
@@ -147,7 +149,7 @@ func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keywo
     args = append(args, sql.Named("limit", limit))
 
     base := `SELECT ` + utils.GetDbCols(model.MobileUserAuditLog{}, "amu.") + ` FROM AUDIT_MOBILE_USER amu`
-    query := base + whereClause(conditions) + 
+    query := base + whereClause(conditions) +
         ` ORDER BY amu.DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
     list := make([]model.MobileUserAuditLog, 0)
@@ -179,8 +181,11 @@ func (s *AdminUserService) ListAuditLog(page string, limit string) (*model.Paged
 }
 
 func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.AdminAuditLog, error) {
+    m := map[string]string{
+        "EVENT_ADMIN_EMAIL": "au.EMAIL AS EVENT_ADMIN_EMAIL",
+    }
     query := `
-        SELECT ` + utils.GetDbCols(model.AdminAuditLog{}) + `, au.EMAIL AS EVENT_ADMIN_EMAIL 
+        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "", m) + `
          FROM ADMIN_PORTAL_AUDIT_LOG apal
          JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID
          ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
@@ -205,6 +210,25 @@ func (s *AdminUserService) AuditLogCount() (int, error) {
     return count, nil
 }
 
+func (s *AdminUserService) ListAuditByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.AuditCountByKeyword(keyword, keyword2)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.AuditFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
 func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string) (int, error) {
     conds, args := buildAdminAuditLogConditions(keyword, keyword2)
     base := `
@@ -226,11 +250,14 @@ func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, o
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
+    m := map[string]string{
+        "EVENT_ADMIN_EMAIL": "au.EMAIL AS EVENT_ADMIN_EMAIL",
+    }
     base := `
-        SELECT ` + utils.GetDbCols(model.AdminAuditLog{}) + ` au.EMAIL AS EVENT_ADMIN_EMAIL FROM ADMIN_PORTAL_AUDIT_LOG apal
+        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "", m) + ` FROM ADMIN_PORTAL_AUDIT_LOG apal
         JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID
     `
-    query := base + whereClause(conditions) + 
+    query := base + whereClause(conditions) +
         ` ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
     list := make([]model.AdminAuditLog, 0)
@@ -261,9 +288,9 @@ func (s *AdminUserService) ListByKeyword(keyword string, page string, limit stri
     }, nil
 }
 
-func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int) ([]model.AdminUser) {
+func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int) ([]model.AdminUser, error) {
     query := `
-        SELECT * FROM ADMIN_USER au
+        SELECT ` + utils.GetDbCols(model.AdminUser{}, "au.") + ` FROM ADMIN_USER au
         WHERE LOWER(au.FIRST_NAME) LIKE :keyword OR LOWER(au.MIDDLE_NAME) LIKE :keyword OR LOWER(au.LAST_NAME) LIKE :keyword
         OR LOWER(au.EMAIL) LIKE :keyword
         ORDER BY au.FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
@@ -462,7 +489,7 @@ func (s *AdminUserService) saveResetPassword(o *model.AdminUser) error {
         return err
     }
     query := `UPDATE ADMIN_USER SET PASSWORD = :pw WHERE ADMIN_ID = :adminId`
-    _, err = s.db.ExecContext(s.ctx, query, 
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
         sql.Named("adminId", o.AdminID.Int64),
     )
@@ -481,7 +508,7 @@ func (s *AdminUserService) SavePassword(o *model.AdminUser) error {
         return err
     }
     query := `UPDATE ADMIN_USER SET PASSWORD = :pw WHERE ADMIN_ID = :adminId`
-    _, err = s.db.ExecContext(s.ctx, query, 
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
         sql.Named("adminId", o.AdminID.Int64),
     )
@@ -511,7 +538,7 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
             tx.Rollback()
         }
     }()
-    
+
     query := `
         INSERT INTO ADMIN_USER
         (ADMIN_ID, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, "ROLE", USER_GROUP_ID, USER_GROUP_NAME, USERNAME)
@@ -560,7 +587,7 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
         utils.LogError(err)
         return err
     }
-    
+
     for _, adminBranchId := range adminBranchIds {
         _, err = s.db.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,
             sql.Named("adminId", o.AdminID.Int64),
@@ -584,7 +611,7 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
         utils.LogError(err)
         return err
     }
-    
+
     return nil
 }
 
@@ -594,13 +621,13 @@ func (s *AdminUserService) Delete(adminId int64) error {
         utils.LogError(err)
         return err
     }
-    
+
     _, err = s.db.ExecContext(s.ctx, `DELETE FROM ADMIN_USER WHERE ADMIN_ID = :adminId`, adminId)
     if err != nil {
         utils.LogError(err)
         return err
     }
-    
+
     return nil
 }
 
@@ -636,20 +663,21 @@ func (s *AdminUserService) SaveAdminPortalLog(o dto.AdminPortalLogDto, adminId i
         sql.Named("eventFunction", o.EventFunction),
         sql.Named("eventAction", o.EventAction),
         sql.Named("eventKeyword", o.EventKeyword),
-        sql.Named("eventDesc", o.EventDescription),
+        sql.Named("eventDesc", o.EventDesc),
         sql.Named("patientPrn", o.PatientPrn),
     )
     if err != nil {
         utils.LogError(err)
         return err
     }
-    
+
     return nil
 }
 
 func (s *AdminUserService) ChangeUserSignInType(prm dto.ChangeSignInTypeDto) error {
     var err error
-    if prm.SignInType == 1 {
+    switch prm.SignInType {
+    case 1:
         query := `
             UPDATE APPLICATION_USER SET 
               SIGN_IN_TYPE = :signInType,
@@ -663,7 +691,7 @@ func (s *AdminUserService) ChangeUserSignInType(prm dto.ChangeSignInTypeDto) err
             sql.Named("signInMobileNumber", prm.SignInMobileNumber),
             sql.Named("user_id", prm.UserId),
         )
-    } else if prm.SignInType == 2 {
+    case 2:
         hashedPwd, err := bcrypt.GenerateFromPassword([]byte(prm.SignInEmailPassword), saltRounds)
         if err != nil {
             utils.LogError(err)
@@ -715,7 +743,7 @@ func (s *AdminUserService) ValidateCredentials(user model.AdminUser, password st
 func buildKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
     var (
         conds []string
-        args []interface{}
+        args  []interface{}
     )
 
     if keyword != "" {
@@ -736,7 +764,7 @@ func buildKeywordConditions(keyword string, keyword2 string) ([]string, []interf
 func buildAdminAuditLogConditions(keyword string, keyword2 string) ([]string, []interface{}) {
     var (
         conds []string
-        args []interface{}
+        args  []interface{}
     )
 
     if keyword != "" {

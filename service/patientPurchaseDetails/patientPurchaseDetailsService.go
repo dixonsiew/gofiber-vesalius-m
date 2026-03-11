@@ -131,11 +131,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     args = append(args, sql.Named("limit", limit))
 
     base := `
-        SELECT ` + getPatientPurchaseDetailsCols() + `, hp.PACKAGE_NAME, ppd2.PAYMENT_REQUEST_NO,
-               ppd2.PAYMENT_REQUEST_CURRENCY, ppd2.PAYMENT_AMOUNT, ppd2.PAYMENT_CURRENCY,
-               ppd2.PAYMENT_AMOUNT_COLLECTED, ppd2.PAYMENT_STATUS, ppd2.PAYMENT_TRANS_DATE,
-               ppd2.BILLING_FULLNAME, ppd2.BILLING_CONTACT_NO, ppd2.BILLING_CONTACT_CODE, 
-               ppd2.BILLING_EMAIL, ppd2.PAYMENT_URL
+        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -166,11 +162,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
 
 func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT ` + getPatientPurchaseDetailsCols() + `, hp.PACKAGE_NAME, ppd2.PAYMENT_REQUEST_NO,
-        ppd2.PAYMENT_REQUEST_CURRENCY, ppd2.PAYMENT_AMOUNT, ppd2.PAYMENT_CURRENCY,
-        ppd2.PAYMENT_AMOUNT_COLLECTED, ppd2.PAYMENT_STATUS, ppd2.PAYMENT_TRANS_DATE,
-        ppd2.BILLING_FULLNAME, ppd2.BILLING_CONTACT_NO, ppd2.BILLING_CONTACT_CODE, 
-        ppd2.BILLING_EMAIL, ppd2.PAYMENT_URL
+        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -230,24 +222,7 @@ func (s *PatientPurchaseDetailsService) FindAllByPaymentId(paymentId int64) ([]u
 
 func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT 
-          ppd.PACKAGE_PURCHASE_NO, 
-          ppd.PACKAGE_STATUS,
-          ppd.REDEEMED_DATETIME, 
-          ppd.CANCELLED_DATETIME, 
-          ppd.EXPIRED_DATETIME, 
-          ppd.PURCHASED_DATETIME,
-          hp.PACKAGE_ID, 
-          hp.PACKAGE_NAME, 
-          hp.PACKAGE_IMG, 
-          hp.PACKAGE_ALLOW_APPT, 
-          nd.MCR,
-          ppd2.BILLING_FULLNAME, 
-          ppd2.PAYMENT_TRANS_DATE, 
-          ppd2.PAYMENT_AMOUNT_COLLECTED, 
-          ppd2.PAYMENT_GATEWAY, 
-          ppd2.PAYMENT_REQUEST_NO, 
-          ndpa.DATE_APPT
+        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN NOVA_DOCTOR nd ON hp.PACKAGE_ASSIGNED_DOCTOR = nd.DOCTOR_ID
@@ -279,7 +254,7 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
 func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*userPackage.UserPackage, error) {
     var o userPackage.UserPackage
     query := `
-        SELECT ` + getPatientPurchaseDetailsCols() + `, hp.PACKAGE_NAME, ` + getPackagePaymentDetailsCols() + `, ndpa.DATE_APPT
+        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -584,19 +559,19 @@ func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, ke
 
     if keyword != "" {
         conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", string.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
     }
     if keyword2 != "" {
         conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", string.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
     }
     if keyword3 != "" {
         conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args = append(args, sql.Named("keyword3", string.ToLower(keyword3)))
+        args = append(args, sql.Named("keyword3", strings.ToLower(keyword3)))
     }
     if keyword4 != "" && keyword4 != "All" {
         conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", string.ToLower(keyword4)))
+        args = append(args, sql.Named("keyword4", strings.ToLower(keyword4)))
     }
     return conds, args
 }
@@ -608,7 +583,7 @@ func whereClause(conds []string) string {
     return " WHERE " + strings.Join(conds, " AND ")
 }
 
-func getPackagePaymentDetailsCols() string {
+/* func getPackagePaymentDetailsCols() string {
     return `
         ppd2.PAYMENT_GATEWAY,
         ppd2.PAYMENT_REQUEST_NO,
@@ -641,4 +616,4 @@ func getPatientPurchaseDetailsCols() string {
         ppd.PURCHASED_DATETIME,
         ppd.EXPIRED_DATETIME
     `
-}
+} */

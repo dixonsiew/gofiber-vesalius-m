@@ -307,7 +307,7 @@ type ApplicationUser struct {
     FirstName            null.String    `json:"firstName" db:"FIRST_NAME" swaggertype:"string"`
     MiddleName           null.String    `json:"middleName" db:"MIDDLE_NAME" swaggertype:"string"`
     LastName             null.String    `json:"lastName" db:"LAST_NAME" swaggertype:"string"`
-    FullName             null.String    `json:"fullName" db:"FULL_NAME" swaggertype:"string"`
+    FullName             null.String    `json:"fullName" db:"FIRST_NAME" swaggertype:"string"`
     Resident             null.String    `json:"resident" db:"RESIDENT" swaggertype:"string"`
     Dob                  null.String    `json:"dob" db:"DOB" swaggertype:"string"`
     Sex                  null.String    `json:"sex" db:"SEX" swaggertype:"string"`

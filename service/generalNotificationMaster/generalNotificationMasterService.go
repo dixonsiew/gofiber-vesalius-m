@@ -81,7 +81,6 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
         WHERE NOTIFICATION_MASTER_ID = :notification_master_id
     `
     _, err := s.db.ExecContext(s.ctx, query,
-        sql.Named("notification_master_id", o.NotificationMasterID.Int64),
         sql.Named("notificationTitle", o.NotificationTitle.String),
         sql.Named("shortMessage", o.ShortMessage.String),
         sql.Named("fullMessage", o.FullMessage.String),
@@ -94,6 +93,7 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
         sql.Named("targetCity", o.TargetCity.String),
         sql.Named("targetState", o.TargetState.String),
         sql.Named("adminId", adminId),
+        sql.Named("notification_master_id", o.NotificationMasterID.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -102,7 +102,7 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
 }
 
 func (s *GeneralNotificationMasterService) FindByNotificationMasterId(notificationMasterId int64) (*model.GeneralNotification, error) {
-    query := `SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notification_master_id`
+    query := `SELECT ` + utils.GetDbCols(model.GeneralNotification{}, "") + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notification_master_id`
     var o model.GeneralNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationMasterId)
     if err != nil {
@@ -153,7 +153,7 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         db = conn
     }
     query := `
-        SELECT ` + getGeneralNotificationMasterCols() + ` FROM GENERAL_NOTIFICATION_MASTER
+        SELECT ` + utils.GetDbCols(model.GeneralNotification{}, "") + ` FROM GENERAL_NOTIFICATION_MASTER
         ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     lx := make([]model.GeneralNotification, 0)
@@ -178,7 +178,7 @@ func nullStringIfDash(s null.String) interface{} {
     return s.String
 }
 
-func getGeneralNotificationMasterCols() string {
+/* func getGeneralNotificationMasterCols() string {
     return `
         NOTIFICATION_MASTER_ID,
         NOTIFICATION_TITLE,
@@ -193,4 +193,4 @@ func getGeneralNotificationMasterCols() string {
         TARGET_CITY,
         TARGET_STATE
     `
-}
+} */
