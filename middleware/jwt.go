@@ -6,8 +6,8 @@ import (
     "strings"
     "vesaliusm/database"
     "vesaliusm/model"
-    applicationuserService "vesaliusm/service/applicationUser"
     adminUserService "vesaliusm/service/adminUser"
+    applicationuserService "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     jwtware "github.com/gofiber/contrib/v3/jwt"
@@ -16,14 +16,14 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = 
-    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var adminUserSvc *adminUserService.AdminUserService = adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 func JWTProtected(c fiber.Ctx) error {
     return jwtware.New(jwtware.Config{
         SigningKey: jwtware.SigningKey{Key: []byte(utils.JWT_SECRET)},
         //ContextKey: "jwt",
-        Extractor:  extractors.FromAuthHeader("Bearer"),
+        Extractor: extractors.FromAuthHeader("Bearer"),
         ErrorHandler: func(c fiber.Ctx, err error) error {
             return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
                 "statusCode": fiber.StatusUnauthorized,
@@ -78,7 +78,7 @@ func ValidateAdminToken(c fiber.Ctx) (int64, *model.AdminUser, error) {
         return id, nil, err
     }
 
-    user, err := adminUserService.FindByAdminId(id)
+    user, err := adminUserSvc.FindByAdminId(id)
     if err != nil || user == nil {
         return id, user, err
     }

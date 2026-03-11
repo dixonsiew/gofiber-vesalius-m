@@ -2,12 +2,16 @@ package admin
 
 import (
     "fmt"
+    "vesaliusm/database"
     "vesaliusm/middleware"
     adminUserService "vesaliusm/service/adminUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
+
+var adminUserSvc *adminUserService.AdminUserService = 
+    adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
 
 // GetAdmin
 //
@@ -22,7 +26,7 @@ func GetAdmin(c fiber.Ctx) error {
         return err
     }
 
-    admin, err := adminUserService.FindWithAssignBranchByAdminId(user.AdminID.Int64)
+    admin, err := adminUserSvc.FindWithAssignBranchByAdminId(user.AdminID.Int64)
     if err != nil {
         return err
     }
@@ -51,7 +55,7 @@ func GetAllAdmin(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserService.List(page, limit)
+    m, err := adminUserSvc.List(page, limit)
     if err != nil {
         return err
     }

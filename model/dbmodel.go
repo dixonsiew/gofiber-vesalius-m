@@ -193,7 +193,7 @@ type AdminUser struct {
     Nationality   null.String    `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
     Role          null.String    `json:"role" db:"ROLE" swaggertype:"string"`
     UserGroupID   null.Int64     `json:"userGroupId" db:"USER_GROUP_ID" swaggertype:"integer"`
-    UserGroupName null.String    `json:"userGroupName" swaggertype:"string"`
+    UserGroupName null.String    `json:"userGroupName" db:"USER_GROUP_NAME" swaggertype:"string"`
     AdminBranches []AssignBranch `json:"adminBranches"`
 }
 

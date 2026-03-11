@@ -1,8 +1,10 @@
 package auth
 
 import (
+    "vesaliusm/database"
     "vesaliusm/dto"
     adminUserService "vesaliusm/service/adminUser"
+    applicationuserService "vesaliusm/service/applicationUser"
     authService "vesaliusm/service/auth"
     tokenService "vesaliusm/service/token"
     tokenAdminService "vesaliusm/service/tokenAdmin"
@@ -11,6 +13,11 @@ import (
     "github.com/go-playground/validator/v10"
     "github.com/gofiber/fiber/v3"
 )
+
+var adminUserSvc *adminUserService.AdminUserService = 
+    adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
+var applicationUserSvc *applicationuserService.ApplicationUserService = 
+    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
 
 // Login
 //
@@ -37,14 +44,14 @@ func Login(c fiber.Ctx) error {
     }
 
     if data.FromAdmin {
-        user, err := adminUserService.FindByEmail(data.Username)
+        user, err := adminUserSvc.FindByEmail(data.Username)
         if err != nil {
             return err
         }
 
         valid := false
         if user != nil {
-            valid = adminUserService.ValidateCredentials(*user, data.Password)
+            valid = adminUserSvc.ValidateCredentials(*user, data.Password)
         }
 
         if valid == false {

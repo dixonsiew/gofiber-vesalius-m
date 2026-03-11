@@ -99,8 +99,8 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
         utils.LogError(err)
         return nil, err
     }
-    for _, o := range notifications {
-        o.Set()
+    for i := range notifications {
+        notifications[i].Set()
     }
     return notifications, nil
 }

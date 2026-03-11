@@ -151,7 +151,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     }
     defer rows.Close()
 
-    var list []userPackage.UserPackage
+    list := make([]userPackage.UserPackage, 0)
     for rows.Next() {
         var o userPackage.UserPackage
         if err = rows.StructScan(&o); err != nil {
@@ -184,8 +184,8 @@ func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPa
         utils.LogError(err)
         return list, err
     }
-    for _, o := range list {
-        o.SetWebadmin()
+    for i := range list {
+        list[i].SetWebadmin()
     }
     return list, nil
 }
@@ -222,8 +222,8 @@ func (s *PatientPurchaseDetailsService) FindAllByPaymentId(paymentId int64) ([]u
         utils.LogError(err)
         return list, err
     }
-    for _, o := range list {
-        o.Set()
+    for i := range list {
+        list[i].Set()
     }
     return list, nil
 }
@@ -270,8 +270,8 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
         utils.LogError(err)
         return list, err
     }
-    for _, o := range list {
-        o.SetMobile()
+    for i := range list {
+        list[i].SetMobile()
     }
     return list, nil
 }

@@ -55,16 +55,16 @@ func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) (
         db = s.db
     }
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    users := make([]model.ApplicationUser, 0)
-    err := db.SelectContext(s.ctx, &users, query, offset, limit)
+    list := make([]model.ApplicationUser, 0)
+    err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    for _, o := range users {
-        o.Set()
+    for i := range list {
+        list[i].Set()
     }
-    return users, nil
+    return list, nil
 }
 
 func (s *ApplicationUserService) List(page string, limit string) (*model.PagedList, error) {
@@ -150,8 +150,8 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
         utils.LogError(err)
         return nil, err
     }
-    for _, o := range users {
-        o.Set()
+    for i := range users {
+        users[i].Set()
     }
     return users, err
 }
@@ -197,8 +197,8 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
 
 func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
-    var u model.ApplicationUser
-    err := s.db.GetContext(s.ctx, &u, query, userId, sessionId)
+    var o model.ApplicationUser
+    err := s.db.GetContext(s.ctx, &o, query, userId, sessionId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -206,8 +206,8 @@ func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId s
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*model.ApplicationUser, error) {
@@ -216,8 +216,8 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
         db = s.db
     }
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID = :userId`
-    var u model.ApplicationUser
-    err := db.GetContext(s.ctx, &u, query, userId)
+    var o model.ApplicationUser
+    err := db.GetContext(s.ctx, &o, query, userId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -225,8 +225,8 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) (*model.ApplicationUser, error) {
@@ -235,8 +235,8 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
         db = s.db
     }
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
-    var u model.ApplicationUser
-    err := db.GetContext(s.ctx, &u, query, username)
+    var o model.ApplicationUser
+    err := db.GetContext(s.ctx, &o, query, username)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -244,8 +244,8 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*model.ApplicationUser, error) {
@@ -254,8 +254,8 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
         db = s.db
     }
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
-    var u model.ApplicationUser
-    err := db.GetContext(s.ctx, &u, query, email)
+    var o model.ApplicationUser
+    err := db.GetContext(s.ctx, &o, query, email)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -263,8 +263,8 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.ApplicationUser, error) {
@@ -273,8 +273,8 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
         db = s.db
     }
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
-    var u model.ApplicationUser
-    err := db.GetContext(s.ctx, &u, query, prn)
+    var o model.ApplicationUser
+    err := db.GetContext(s.ctx, &o, query, prn)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -282,8 +282,8 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) {
@@ -301,7 +301,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
     }
     defer rows.Close()
 
-    var u model.ApplicationUser
+    var o model.ApplicationUser
     var user *model.ApplicationUser
     var branches []model.AssignBranch
 
@@ -310,13 +310,13 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
         // We need to scan into all fields from three tables. For simplicity, we scan into a map and then construct.
         // Alternatively, we could use sqlx with embedded structs. Let's use a map for clarity.
         if user == nil {
-            err = rows.StructScan(&u)
+            err = rows.StructScan(&o)
             if err != nil {
                 utils.LogError(err)
                 return nil, err
             }
-            u.Set()
-            user = &u
+            o.Set()
+            user = &o
         }
         // Build assign branch
         ab := model.AssignBranch{}
@@ -360,7 +360,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
     }
     defer rows.Close()
     
-    var u model.ApplicationUser
+    var o model.ApplicationUser
     var user *model.ApplicationUser
     var branches []model.AssignBranch
 
@@ -369,13 +369,13 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
         // We need to scan into all fields from three tables. For simplicity, we scan into a map and then construct.
         // Alternatively, we could use sqlx with embedded structs. Let's use a map for clarity.
         if user == nil {
-            err = rows.StructScan(&u)
+            err = rows.StructScan(&o)
             if err != nil {
                 utils.LogError(err)
                 return nil, err
             }
-            u.Set()
-            user = &u
+            o.Set()
+            user = &o
         }
         // Build assign branch
         ab := model.AssignBranch{}
@@ -435,8 +435,8 @@ func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*mode
     // Original query: SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND ab.PRN = :2)
     // Note: 'ab.PRN' likely missing table alias, but we'll replicate.
     query := `SELECT ` + getApplicationUserCols() + ` FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`
-    var u model.ApplicationUser
-    err := s.db.GetContext(s.ctx, &u, query, userId, prn)
+    var o model.ApplicationUser
+    err := s.db.GetContext(s.ctx, &o, query, userId, prn)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -444,8 +444,8 @@ func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*mode
         utils.LogError(err)
         return nil, err
     }
-    u.Set()
-    return &u, err
+    o.Set()
+    return &o, err
 }
 
 func (s *ApplicationUserService) ExistsByEmail(email string) (bool, error) {
@@ -1261,26 +1261,20 @@ func getRandomStr(length int) string {
     return string(b)
 }
 
-func (s *ApplicationUserService) ValidateCredentials(user *model.ApplicationUser, password string) (bool, error) {
+func (s *ApplicationUserService) ValidateCredentials(user *model.ApplicationUser, password string) bool {
     if user.Password.String == "" {
-        return false, nil
+        return false
     }
     err := bcrypt.CompareHashAndPassword([]byte(user.Password.String), []byte(password))
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err == nil, nil
+    return err == nil
 }
 
-func (s *ApplicationUserService) ValidateCredentials2(user *model.ApplicationUser, password string) (bool, error) {
+func (s *ApplicationUserService) ValidateCredentials2(user *model.ApplicationUser, password string) bool {
     if user.MachineID.String == "" {
-        return false, nil
+        return false
     }
     err := bcrypt.CompareHashAndPassword([]byte(user.MachineID.String), []byte(password))
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err == nil, nil
+    return err == nil
 }
 
 func getApplicationUserCols() string {

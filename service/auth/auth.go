@@ -21,9 +21,9 @@ func AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
 
     if user != nil {
         if data.FromBiometric == 1 {
-            valid, _ = applicationUserSvc.ValidateCredentials2(user, data.Password)
+            valid = applicationUserSvc.ValidateCredentials2(user, data.Password)
         } else {
-            valid, _ = applicationUserSvc.ValidateCredentials(user, data.Password)
+            valid = applicationUserSvc.ValidateCredentials(user, data.Password)
         }
     }
 

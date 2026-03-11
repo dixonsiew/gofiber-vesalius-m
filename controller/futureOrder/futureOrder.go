@@ -2,11 +2,14 @@ package futureOrder
 
 import (
     "fmt"
+    "vesaliusm/database"
     futureOrderService "vesaliusm/service/futureOrder"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
+
+var futureOrderSvc *futureOrderService.FutureOrderService = futureOrderService.NewFutureOrderService(database.GetDb(), database.GetCtx())
 
 // GetAllFutureOrder
 //
@@ -21,8 +24,8 @@ import (
 func GetAllFutureOrder(c fiber.Ctx) error {
     prn := c.Query("prn", "")
     page := c.Query("_page", "1")
-	limit := c.Query("_limit", "10")
-    m, err := futureOrderService.List(prn, page, limit)
+    limit := c.Query("_limit", "10")
+    m, err := futureOrderSvc.List(prn, page, limit)
     if err != nil {
         return err
     }

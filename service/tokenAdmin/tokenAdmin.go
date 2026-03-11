@@ -4,6 +4,7 @@ import (
     "fmt"
     "strconv"
     "time"
+    "vesaliusm/database"
     "vesaliusm/model"
     adminUserService "vesaliusm/service/adminUser"
     "vesaliusm/utils"
@@ -11,6 +12,9 @@ import (
     "github.com/gofiber/fiber/v3"
     "github.com/golang-jwt/jwt/v5"
 )
+
+var adminUserSvc *adminUserService.AdminUserService = 
+    adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
 
 func GenerateAccessToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
@@ -99,5 +103,5 @@ func decodeRefreshToken(tokenStr string) (string, int64, error) {
 }
 
 func getUserFromRefreshTokenPayload(id int64) (*model.AdminUser, error) {
-    return adminUserService.FindByAdminId(id)
+    return adminUserSvc.FindByAdminId(id)
 }

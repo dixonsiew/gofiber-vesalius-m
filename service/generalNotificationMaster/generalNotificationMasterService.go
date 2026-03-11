@@ -162,12 +162,10 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         utils.LogError(err)
         return nil, err
     }
-    la := make([]model.GeneralNotification, 0)
-    for _, o := range lx {
-        o.Set()
-        la = append(la, o)
+    for i := range lx {
+        lx[i].Set()
     }
-    return la, nil
+    return lx, nil
 }
 
 func nullStringIfDash(s null.String) interface{} {
