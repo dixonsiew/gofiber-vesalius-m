@@ -7,6 +7,7 @@ var (
     X_TOTAL_PAGE = "x-total-page"
     JWT_SECRET = "itsSecret"
     ROLE_ADMIN = "ADMIN"
+    ROLE_SUPER_ADMIN = "SUPER ADMIN"
 )
 
 var (

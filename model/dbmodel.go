@@ -340,7 +340,6 @@ type ApplicationUser struct {
     FullnameSignup       null.String    `json:"fullNameSignUp" db:"FULLNAME_SIGNUP" swaggertype:"string"`
     UserBranches         []AssignBranch `json:"userBranches"`
     SessionID            null.String    `json:"sessionId" db:"SESSION_ID" swaggertype:"string"`
-    Branch               null.String    `json:"branch" db:"BRANCH" swaggertype:"string"`
 }
 
 func (o *ApplicationUserFamily) SetFromFamilyMember(m ApplicationUser) {

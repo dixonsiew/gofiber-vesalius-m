@@ -14,10 +14,12 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var adminUserSvc *adminUserService.AdminUserService = 
-    adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
-var applicationUserSvc *applicationuserService.ApplicationUserService = 
-    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var (
+    adminUserSvc *adminUserService.AdminUserService = 
+        adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
+    applicationUserSvc *applicationuserService.ApplicationUserService = 
+        applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+)
 
 // Login
 //

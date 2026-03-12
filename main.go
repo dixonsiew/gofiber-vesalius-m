@@ -1,26 +1,27 @@
 package main
 
 import (
-    "errors"
-    "fmt"
-    "html/template"
-    "os"
-    "vesaliusm/config"
-    "vesaliusm/database"
-    _ "vesaliusm/docs"
-    "vesaliusm/router"
-    "vesaliusm/utils"
+	"errors"
+	"fmt"
+	"html/template"
+	"os"
+	"strings"
+	"vesaliusm/config"
+	"vesaliusm/database"
+	_ "vesaliusm/docs"
+	"vesaliusm/router"
+	"vesaliusm/utils"
 
-    "github.com/go-playground/validator/v10"
-    // jwtware "github.com/gofiber/contrib/jwt"
-    swaggo "github.com/gofiber/contrib/v3/swaggo"
-    fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
-    "github.com/gofiber/fiber/v3"
-    "github.com/gofiber/fiber/v3/middleware/compress"
-    "github.com/gofiber/fiber/v3/middleware/cors"
-    "github.com/gofiber/fiber/v3/middleware/healthcheck"
-    "github.com/gofiber/fiber/v3/middleware/recover"
-    "github.com/gofiber/fiber/v3/middleware/static"
+	"github.com/go-playground/validator/v10"
+	// jwtware "github.com/gofiber/contrib/jwt"
+	swaggo "github.com/gofiber/contrib/v3/swaggo"
+	fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/compress"
+	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/healthcheck"
+	"github.com/gofiber/fiber/v3/middleware/recover"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
 // convert this to go using go-ora with github.com/jmoiron/sqlx
@@ -53,9 +54,15 @@ func main() {
                 code = e.Code
             }
 
+            ms := err.Error()
+            if strings.Contains(ms,"no rows in result set") {
+                ms = "No record found"
+                code = fiber.StatusNotFound
+            }
+
             return c.Status(code).JSON(fiber.Map{
                 "statusCode": code,
-                "message":    err.Error(),
+                "message":    ms,
             })
         },
     })

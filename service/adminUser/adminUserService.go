@@ -1,17 +1,19 @@
 package adminUser
 
 import (
-    "context"
-    "database/sql"
-    "math/rand"
-    "strings"
-    "vesaliusm/dto"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"math/rand"
+	"strings"
+	"vesaliusm/database"
+	"vesaliusm/dto"
+	"vesaliusm/model"
+	branchService "vesaliusm/service/branch"
+	"vesaliusm/utils"
 
-    "github.com/jmoiron/sqlx"
-    go_ora "github.com/sijms/go-ora/v2"
-    "golang.org/x/crypto/bcrypt"
+	"github.com/jmoiron/sqlx"
+	go_ora "github.com/sijms/go-ora/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AdminUserService struct {
@@ -24,6 +26,8 @@ func NewAdminUserService(db *sqlx.DB, ctx context.Context) *AdminUserService {
 }
 
 const saltRounds = 10
+var branchSvc *branchService.BranchService = 
+    branchService.NewBranchService(database.GetDb(), database.GetCtx())
 
 func (s *AdminUserService) List(page string, limit string) (*model.PagedList, error) {
     total, err := s.Count()
@@ -377,67 +381,33 @@ func (s *AdminUserService) FindByUserGroupId(userGroupId int64) ([]model.AdminUs
 }
 
 func (s *AdminUserService) FindWithAssignBranchByAdminId(adminId int64) (*model.AdminUser, error) {
-    query := `
-        SELECT ` + 
-        utils.GetDbCols(model.AdminUser{}, "au.") + `, ` + 
-        utils.GetDbCols(model.AssignBranch{}, "ab.") + `, ` + 
-        utils.GetDbCols(model.Branch{}, "b.") + ` 
-        FROM ADMIN_USER au 
-        LEFT JOIN ASSIGN_BRANCH ab ON au.ADMIN_ID = ab.ADMIN_ID 
-        INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
-        WHERE au.ADMIN_ID = :adminId
-    `
-    utils.LogInfo(query)
-    rows, err := s.db.QueryxContext(s.ctx, query, adminId)
+    o, err := s.FindByAdminId(adminId)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
-    defer rows.Close()
 
-    var o model.AdminUser
-    var user *model.AdminUser
-    var branches []model.AssignBranch
+    ablist, err := s.FindAssignBranchByAdminId2(o.AdminID.Int64)
+    if err != nil {
+        return nil, err
+    }
 
-    for rows.Next() {
-        if user == nil {
-            err = rows.StructScan(&o)
-            if err != nil {
-                utils.LogError(err)
-                return nil, err
-            }
-            user = &o
-        }
-
-        ab := model.AssignBranch{}
-        err = rows.StructScan(&ab)
+    for i := range ablist {
+        b, err := branchSvc.FindByBranchId(int(ablist[i].BranchID.Int64))
         if err != nil {
-            utils.LogError(err)
             return nil, err
         }
-
-        b := model.Branch{}
-        err = rows.StructScan(&b)
-        if err != nil {
-            utils.LogError(err)
-            return nil, err
-        }
-
         b.Passcode.String = ""
         b.Url.String = ""
-        ab.Branch = &b
-        branches = append(branches, ab)
+        ablist[i].Branch = b
     }
-    if user == nil {
-        return nil, nil
-    }
-    user.Password.String = ""
-    user.AdminBranches = branches
-    return user, nil
+    o.Password.String = ""
+    o.AdminBranches = ablist
+    return o, nil
 }
 
 func (s *AdminUserService) FindAssignBranchByAdminId(adminId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE ADMIN_ID = :adminId)`
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
+        ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE ADMIN_ID = :adminId)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, adminId)
     if err != nil {
@@ -448,6 +418,18 @@ func (s *AdminUserService) FindAssignBranchByAdminId(adminId int64, branchId int
         return nil, err
     }
     return &ab, err
+}
+
+func (s *AdminUserService) FindAssignBranchByAdminId2(adminId int64) ([]model.AssignBranch, error) {
+    list := make([]model.AssignBranch, 0)
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
+        ` FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`
+    err := s.db.SelectContext(s.ctx, &list, query, adminId)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    return list, err
 }
 
 func (s *AdminUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
@@ -486,7 +468,7 @@ func (s *AdminUserService) ExistsByEmail(email string) (bool, error) {
     return count == 1, err
 }
 
-func (s *AdminUserService) saveResetPassword(o *model.AdminUser) error {
+func (s *AdminUserService) SaveResetPassword(o *model.AdminUser) error {
     newPwd := getRandomStr(6)
     hashedPwd, err := bcrypt.GenerateFromPassword([]byte(newPwd), saltRounds)
     if err != nil {

@@ -38,6 +38,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/adminId/{adminId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AdminId",
+                        "name": "adminId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminUser"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/adminportal/log/all": {
             "get": {
                 "security": [
@@ -296,7 +328,156 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminId/{adminId}": {
+        "/admin/change-password": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostLinkUserPrnDto Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostChangePasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/delete-user/{userId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/link-user-prn": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostLinkUserPrnDto Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostLinkUserPrnDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/reset-admin-password/{email}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/reset-user-password/{email}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/search-user-email/{email}": {
             "get": {
                 "security": [
                     {
@@ -312,8 +493,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "adminId",
-                        "name": "adminId",
+                        "description": "Email",
+                        "name": "email",
                         "in": "path",
                         "required": true
                     }
@@ -322,7 +503,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.AdminUser"
+                            "$ref": "#/definitions/model.ApplicationUser"
                         }
                     }
                 }
@@ -1066,6 +1247,78 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PostChangePasswordDto": {
+            "type": "object",
+            "required": [
+                "newPassword",
+                "oldPassword"
+            ],
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostLinkUserPrnDto": {
+            "type": "object",
+            "required": [
+                "branchId",
+                "dob",
+                "email",
+                "first_name",
+                "prn",
+                "resident",
+                "sex",
+                "title"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branchId": {
+                    "type": "integer"
+                },
+                "contact_number": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "middle_name": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "passport": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.PostMachineInfo": {
             "type": "object",
             "required": [
@@ -1223,9 +1476,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "address3": {
-                    "type": "string"
-                },
-                "branch": {
                     "type": "string"
                 },
                 "cityState": {

@@ -41,6 +41,56 @@ definitions:
     - password
     - username
     type: object
+  dto.PostChangePasswordDto:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    required:
+    - newPassword
+    - oldPassword
+    type: object
+  dto.PostLinkUserPrnDto:
+    properties:
+      address:
+        type: string
+      branchId:
+        type: integer
+      contact_number:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      nationality:
+        type: string
+      passport:
+        type: string
+      prn:
+        type: string
+      resident:
+        type: string
+      sex:
+        type: string
+      title:
+        type: string
+    required:
+    - branchId
+    - dob
+    - email
+    - first_name
+    - prn
+    - resident
+    - sex
+    - title
+    type: object
   dto.PostMachineInfo:
     properties:
       machineId:
@@ -144,8 +194,6 @@ definitions:
       address2:
         type: string
       address3:
-        type: string
-      branch:
         type: string
       cityState:
         type: string
@@ -479,6 +527,25 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/adminId/{adminId}:
+    get:
+      parameters:
+      - description: AdminId
+        in: path
+        name: adminId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AdminUser'
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/adminportal/log/all:
     get:
       parameters:
@@ -635,12 +702,99 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
-  /adminId/{adminId}:
+  /admin/change-password:
+    post:
+      parameters:
+      - description: PostLinkUserPrnDto Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostChangePasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/delete-user/{userId}:
+    post:
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/link-user-prn:
+    post:
+      parameters:
+      - description: PostLinkUserPrnDto Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostLinkUserPrnDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/reset-admin-password/{email}:
+    post:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/reset-user-password/{email}:
+    post:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/search-user-email/{email}:
     get:
       parameters:
-      - description: adminId
+      - description: Email
         in: path
-        name: adminId
+        name: email
         required: true
         type: string
       produces:
@@ -649,7 +803,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.AdminUser'
+            $ref: '#/definitions/model.ApplicationUser'
       security:
       - BearerAuth: []
       tags:

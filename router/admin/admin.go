@@ -18,4 +18,9 @@ func SetupRoutes(router fiber.Router) {
     api.Get("/adminportal/log/all", admin.GetAllAuditLog)
     api.Post("/adminportal/log/all", admin.SearchAllAuditLog)
     api.Get("/adminId/:adminId", admin.GetUserById)
+    api.Post("/reset-admin-password/:email", admin.ResetAdminPassword)
+    api.Post("/reset-user-password/:email", admin.ResetUserPassword)
+    api.Post("/delete-user/:userId", admin.DeleteUser)
+    api.Post("/link-user-prn", admin.LinkUserPrn)
+    api.Post("/change-password", admin.ChangePassword)
 }

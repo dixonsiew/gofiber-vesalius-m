@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+    "vesaliusm/database"
 	"vesaliusm/model"
+    branchService "vesaliusm/service/branch"
 	"vesaliusm/utils"
 
 	"github.com/google/uuid"
@@ -25,6 +27,8 @@ func NewApplicationUserService(db *sqlx.DB, ctx context.Context) *ApplicationUse
 }
 
 const saltRounds = 10
+var branchSvc *branchService.BranchService = 
+    branchService.NewBranchService(database.GetDb(), database.GetCtx())
 
 func scanApplicationUser(row *sqlx.Row) (*model.ApplicationUser, error) {
     var u model.ApplicationUser
@@ -134,7 +138,7 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
         db = s.db
     }
     query := `
-        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + 
+        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "au.") + 
         ` FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
         OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key)
@@ -179,7 +183,6 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    key := strings.ToLower(keyword)
     query := `
         SELECT COUNT(au.USER_ID) FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
@@ -187,7 +190,7 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
     `
     var count int
     err := db.GetContext(s.ctx, &count, query, 
-        sql.Named("key", key),
+        sql.Named("key", strings.ToLower(keyword)),
     )
     if err != nil {
         utils.LogError(err)
@@ -288,128 +291,53 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
 }
 
 func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*model.ApplicationUser, error) {
-    query := `
-        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + `, ` + 
-        utils.GetDbCols(model.AssignBranch{}, "") + `, ` + 
-        utils.GetDbCols(model.Branch{}, "") + ` 
-        FROM APPLICATION_USER au 
-        LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
-        INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
-        WHERE au.USER_ID = :userId
-    `
-    rows, err := s.db.QueryxContext(s.ctx, query, userId)
+    o, err := s.FindByUserId(userId, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
-    defer rows.Close()
 
-    var (
-        o model.ApplicationUser
-        user *model.ApplicationUser
-        branches []model.AssignBranch
-    )
+    ablist, err := s.FindAssignBranchByUserId2(userId)
+    if err != nil {
+        return nil, err
+    }
 
-    for rows.Next() {
-
-        // We need to scan into all fields from three tables. For simplicity, we scan into a map and then construct.
-        // Alternatively, we could use sqlx with embedded structs. Let's use a map for clarity.
-        if user == nil {
-            err = rows.StructScan(&o)
-            if err != nil {
-                utils.LogError(err)
-                return nil, err
-            }
-            o.Set()
-            user = &o
-        }
-        // Build assign branch
-        ab := model.AssignBranch{}
-        err = rows.StructScan(&ab)
+    for i := range ablist {
+        b, err := branchSvc.FindByBranchId(int(ablist[i].BranchID.Int64))
         if err != nil {
-            utils.LogError(err)
             return nil, err
         }
-
-        b := model.Branch{}
-        err = rows.StructScan(&b)
-        if err != nil {
-            utils.LogError(err)
-            return nil, err
-        }
-
-        ab.Branch = &b
-        branches = append(branches, ab)
+        b.Passcode.String = ""
+        b.Url.String = ""
+        ablist[i].Branch = b
     }
-    if user == nil {
-        return nil, nil
-    }
-    user.Password.String = "" // Clear password for security
-    user.UserBranches = branches
-    return user, nil
+    o.Password.String = ""
+    o.UserBranches = ablist
+    return o, nil
 }
 
 func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*model.ApplicationUser, error) {
-    // Similar to above but with email condition
-    query := `
-        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + `, ` + 
-        utils.GetDbCols(model.AssignBranch{}, "") + `, ` + 
-        utils.GetDbCols(model.Branch{}, "") + ` 
-        FROM APPLICATION_USER au 
-        LEFT JOIN ASSIGN_BRANCH ab ON au.USER_ID = ab.USER_ID 
-        INNER JOIN BRANCH b ON b.BRANCH_ID = ab.BRANCH_ID 
-        WHERE au.EMAIL = :email
-    `
-    rows, err := s.db.QueryxContext(s.ctx, query, email)
+    o, err := s.FindByEmail(email, s.db)
     if err != nil {
-        utils.LogError(err)
         return nil, err
     }
-    defer rows.Close()
-    
-    var (
-        o model.ApplicationUser
-        user *model.ApplicationUser
-        branches []model.AssignBranch
-    )
 
-    for rows.Next() {
+    ablist, err := s.FindAssignBranchByUserId2(o.UserID.Int64)
+    if err != nil {
+        return nil, err
+    }
 
-        // We need to scan into all fields from three tables. For simplicity, we scan into a map and then construct.
-        // Alternatively, we could use sqlx with embedded structs. Let's use a map for clarity.
-        if user == nil {
-            err = rows.StructScan(&o)
-            if err != nil {
-                utils.LogError(err)
-                return nil, err
-            }
-            o.Set()
-            user = &o
-        }
-        // Build assign branch
-        ab := model.AssignBranch{}
-        err = rows.StructScan(&ab)
+    for i := range ablist {
+        b, err := branchSvc.FindByBranchId(int(ablist[i].BranchID.Int64))
         if err != nil {
-            utils.LogError(err)
             return nil, err
         }
-
-        b := model.Branch{}
-        err = rows.StructScan(&b)
-        if err != nil {
-            utils.LogError(err)
-            return nil, err
-        }
-
-        ab.Branch = &b
-        branches = append(branches, ab)
+        b.Passcode.String = ""
+        b.Url.String = ""
+        ablist[i].Branch = b
     }
-    if user == nil {
-        return nil, nil
-    }
-    user.Password.String = "" // Clear password for security
-    user.UserBranches = branches
-    return user, nil
+    o.Password.String = ""
+    o.UserBranches = ablist
+    return o, nil
 }
 
 func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
@@ -425,6 +353,18 @@ func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId
         return nil, err
     }
     return &ab, err
+}
+
+func (s *ApplicationUserService) FindAssignBranchByUserId2(userId int64) ([]model.AssignBranch, error) {
+    list := make([]model.AssignBranch, 0)
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
+        ` FROM ASSIGN_BRANCH WHERE USER_ID = :userId`
+    err := s.db.SelectContext(s.ctx, &list, query, userId)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    return list, err
 }
 
 func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
