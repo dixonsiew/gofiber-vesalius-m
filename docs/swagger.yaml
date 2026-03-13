@@ -70,6 +70,16 @@ definitions:
     - newPassword
     - oldPassword
     type: object
+  dto.PostChangeUserPasswordDto:
+    properties:
+      new_password:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - new_password
+    - user_id
+    type: object
   dto.PostLinkUserPrnDto:
     properties:
       address:
@@ -757,6 +767,24 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/change-user-password:
+    post:
+      parameters:
+      - description: PostChangeUserPasswordDto Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostChangeUserPasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/delete-admin/{email}:
     post:
       parameters:
@@ -890,6 +918,26 @@ paths:
             $ref: '#/definitions/model.ApplicationUser'
       security:
       - BearerAuth: []
+      tags:
+      - Admin
+  /admin/self-reset-password/{branchId}/{email}:
+    post:
+      parameters:
+      - description: BranchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       tags:
       - Admin
   /clubs/goldenpearl/about-us:

@@ -390,6 +390,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/change-user-password": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostChangeUserPasswordDto Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostChangeUserPasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/delete-admin/{email}": {
             "post": {
                 "security": [
@@ -613,6 +644,37 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.ApplicationUser"
                         }
+                    }
+                }
+            }
+        },
+        "/admin/self-reset-password/{branchId}/{email}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "BranchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -1395,6 +1457,21 @@ const docTemplate = `{
                 },
                 "oldPassword": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.PostChangeUserPasswordDto": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "user_id"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
