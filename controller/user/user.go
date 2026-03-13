@@ -8,7 +8,6 @@ import (
     applicationuserService "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
-    "github.com/go-playground/validator/v10"
     "github.com/gofiber/fiber/v3"
 )
 
@@ -99,14 +98,7 @@ func AddMachineId(c fiber.Ctx) error {
     }
 
     data := new(dto.PostMachineInfo)
-    if err := c.Bind().Body(data); err != nil {
-        if validationErrors, ok := err.(validator.ValidationErrors); ok {
-            errs := utils.GetValidationErrors(validationErrors)
-            if errs != nil {
-                return errs
-            }
-        }
-
+    if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 

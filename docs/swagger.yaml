@@ -1,5 +1,24 @@
 basePath: /ih/mobile_central_2_0_0
 definitions:
+  dto.AdminPortalLogDto:
+    properties:
+      eventAction:
+        type: string
+      eventDesc:
+        type: string
+      eventFunction:
+        type: string
+      eventKeyword:
+        type: string
+      eventModule:
+        type: string
+      patientPrn:
+        type: string
+    required:
+    - eventAction
+    - eventFunction
+    - eventModule
+    type: object
   dto.CheckPackageDto:
     properties:
       package_id:
@@ -650,6 +669,24 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/adminportal/save-log:
+    post:
+      parameters:
+      - description: AdminPortalLogDto Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdminPortalLogDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/all:
     get:
       parameters:
@@ -720,6 +757,23 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/delete-admin/{email}:
+    post:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/delete-user/{userId}:
     post:
       parameters:
@@ -770,6 +824,36 @@ paths:
           description: OK
       security:
       - BearerAuth: []
+      tags:
+      - Admin
+  /admin/reset-signup-email/user/{email}:
+    post:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Admin
+  /admin/reset-signup-mobile/user/{mobile}:
+    post:
+      parameters:
+      - description: Mobile
+        in: path
+        name: mobile
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       tags:
       - Admin
   /admin/reset-user-password/{email}:

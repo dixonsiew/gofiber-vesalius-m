@@ -2,6 +2,7 @@ package admin
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"vesaliusm/database"
 	"vesaliusm/dto"
@@ -9,9 +10,9 @@ import (
 	"vesaliusm/model"
 	adminUserService "vesaliusm/service/adminUser"
 	applicationuserService "vesaliusm/service/applicationUser"
+	assignBranchService "vesaliusm/service/assignBranch"
 	"vesaliusm/utils"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -20,6 +21,8 @@ var (
         adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
     applicationUserSvc *applicationuserService.ApplicationUserService = 
         applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+    assignBranchSvc *assignBranchService.AssignBranchService = 
+        assignBranchService.NewAssignBranchService(database.GetDb(), database.GetCtx())
 )
 
 // GetAdmin
@@ -395,14 +398,7 @@ func LinkUserPrn(c fiber.Ctx) error {
     }
 
     data := new(dto.PostLinkUserPrnDto)
-    if err := c.Bind().Body(data); err != nil {
-        if validationErrors, ok := err.(validator.ValidationErrors); ok {
-            errs := utils.GetValidationErrors(validationErrors)
-            if errs != nil {
-                return errs
-            }
-        }
-
+    if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
@@ -455,14 +451,7 @@ func ChangePassword(c fiber.Ctx) error {
     }
 
     data := new(dto.PostChangePasswordDto)
-    if err := c.Bind().Body(data); err != nil {
-        if validationErrors, ok := err.(validator.ValidationErrors); ok {
-            errs := utils.GetValidationErrors(validationErrors)
-            if errs != nil {
-                return errs
-            }
-        }
-
+    if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
@@ -477,10 +466,10 @@ func ChangePassword(c fiber.Ctx) error {
     }
 
     user.Password.String = data.NewPassword
-    err = adminUserSvc.SavePassword(user)
-    if err != nil {
-        return err
-    }
+    // err = adminUserSvc.SavePassword(user)
+    // if err != nil {
+    //     return err
+    // }
     
     return c.JSON(fiber.Map{
         "successMessage": "Password has been updated",
@@ -489,14 +478,7 @@ func ChangePassword(c fiber.Ctx) error {
 
 func AddAdminUser(c fiber.Ctx) error {
     data := new(dto.PostAdminUserDto)
-    if err := c.Bind().Body(data); err != nil {
-        if validationErrors, ok := err.(validator.ValidationErrors); ok {
-            errs := utils.GetValidationErrors(validationErrors)
-            if errs != nil {
-                return errs
-            }
-        }
-
+    if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
@@ -581,6 +563,13 @@ func ResetSignUpUserByEmail(c fiber.Ctx) error {
     })
 }
 
+// ResetSignUpUserByMobile
+//
+// @Tags Admin
+// @Produce json
+// @Param        mobile           path        string  true  "Mobile"
+// @Success 200
+// @Router /admin/reset-signup-mobile/user/{mobile} [post]
 func ResetSignUpUserByMobile(c fiber.Ctx) error {
     mobile := c.Params("mobile")
     b, err := applicationUserSvc.ExistsByMobileNo(mobile)
@@ -597,5 +586,125 @@ func ResetSignUpUserByMobile(c fiber.Ctx) error {
         return err
     }
 
-    
+    err = applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "User sign up has been reset",
+    })
+}
+
+// SaveAdminPortalLog
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.AdminPortalLogDto true "AdminPortalLogDto Request"
+// @Success 200
+// @Router /admin/adminportal/save-log [post]
+func SaveAdminPortalLog(c fiber.Ctx) error {
+    adminId, _, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    data := new(dto.AdminPortalLogDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    err = adminUserSvc.SaveAdminPortalLog(*data, adminId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "Audit Log has been inserted",
+    })
+}
+
+// ChangeUserPassword
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.PostChangeUserPasswordDto true "PostChangeUserPasswordDto Request"
+// @Success 200
+// @Router /admin/change-user-password [post]
+func ChangeUserPassword(c fiber.Ctx) error {
+    data := new(dto.PostChangeUserPasswordDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    o, err := applicationUserSvc.FindByUserId(int64(data.UserId))
+    if err != nil {
+        return err
+    }
+
+    if o == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "User does not exist")
+    }
+
+    err = adminUserSvc.ChangeUserPassword(data.NewPassword, data.UserId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "Change User Password success",
+    })
+}
+
+// ChangeUserPassword
+//
+// @Tags Admin
+// @Produce json
+// @Param        branchId           path        string  true  "BranchId"
+// @Param        email              path        string  true  "Email"
+// @Success 200
+// @Router /admin/self-reset-password/{branchId}/{email} [post]
+func SelfResetPassword(c fiber.Ctx) error {
+    branchId := c.Params("branchId")
+    email := c.Params("email")
+    o, err := applicationUserSvc.FindByUsername(email, nil)
+    if err != nil {
+        return err
+    }
+
+    if o == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
+    }
+
+    if o.SignInType.Int32 == 1 {
+        return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
+    }
+
+    ab, err := assignBranchSvc.FindAllByUserId(o.UserID.Int64)
+    if err != nil {
+        return err
+    }
+
+    if len(ab) < 1 {
+        return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
+    }
+
+    i := slices.IndexFunc(ab, func(item model.AssignBranch) bool {
+        return strconv.FormatInt(item.BranchID.Int64, 10) == branchId
+    })
+
+    if i < 0 {
+        return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
+    }
+
+    err = applicationUserSvc.GenerateVerificationCode(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "New password has been sent to your registered email address",
+    })
 }

@@ -104,6 +104,21 @@ func GetDbCols(s interface{}, prefix string) string {
     return strings.Join(columns, ", ")
 }
 
+func BindNValidate(c fiber.Ctx, out any) error {
+    if err := c.Bind().Body(out); err != nil {
+        if validationErrors, ok := err.(validator.ValidationErrors); ok {
+            errs := GetValidationErrors(validationErrors)
+            if errs != nil {
+                return errs
+            }
+        }
+
+        return err
+    }
+
+    return nil
+}
+
 func GetValidationErrors(errs validator.ValidationErrors) error {
     if len(errs) > 0 {
         errMsgs := make([]string, 0)

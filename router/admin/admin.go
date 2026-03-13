@@ -10,6 +10,7 @@ import (
 func SetupRoutes(router fiber.Router) {
     api := router.Group("/admin")
     api.Post("/reset-signup-email/user/:email", admin.ResetSignUpUserByEmail)
+    api.Post("/self-reset-password/:branchId/:email", admin.SelfResetPassword)
     api.Use(middleware.JWTProtected, middleware.ValidateAdminUser)
     api.Get("/", admin.GetAdmin)
     api.Get("/all", admin.GetAllAdmin)
@@ -25,4 +26,6 @@ func SetupRoutes(router fiber.Router) {
     api.Post("/link-user-prn", admin.LinkUserPrn)
     api.Post("/change-password", admin.ChangePassword)
     api.Post("/delete-admin/:email", admin.DeleteAdmin)
+    api.Post("/adminportal/save-log", admin.SaveAdminPortalLog)
+    api.Post("/change-user-password", admin.ChangeUserPassword)
 }

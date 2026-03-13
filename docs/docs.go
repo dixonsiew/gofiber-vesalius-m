@@ -242,6 +242,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/adminportal/save-log": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "AdminPortalLogDto Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AdminPortalLogDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/all": {
             "get": {
                 "security": [
@@ -359,6 +390,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/delete-admin/{email}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/delete-user/{userId}": {
             "post": {
                 "security": [
@@ -437,6 +497,54 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Email",
                         "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/reset-signup-email/user/{email}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/reset-signup-mobile/user/{mobile}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mobile",
+                        "name": "mobile",
                         "in": "path",
                         "required": true
                     }
@@ -1187,6 +1295,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.AdminPortalLogDto": {
+            "type": "object",
+            "required": [
+                "eventAction",
+                "eventFunction",
+                "eventModule"
+            ],
+            "properties": {
+                "eventAction": {
+                    "type": "string"
+                },
+                "eventDesc": {
+                    "type": "string"
+                },
+                "eventFunction": {
+                    "type": "string"
+                },
+                "eventKeyword": {
+                    "type": "string"
+                },
+                "eventModule": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CheckPackageDto": {
             "type": "object",
             "required": [

@@ -10,7 +10,6 @@ import (
     patientPurchaseDetailsService "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/utils"
 
-    "github.com/go-playground/validator/v10"
     "github.com/gofiber/fiber/v3"
 )
 
@@ -26,14 +25,7 @@ var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDeta
 // @Router /user-package/check/expiry-maxpurchase [post]
 func CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
     data := new(dto.CheckPackageExpiryMaxpurchaseDto)
-    if err := c.Bind().Body(data); err != nil {
-        if validationErrors, ok := err.(validator.ValidationErrors); ok {
-            errs := utils.GetValidationErrors(validationErrors)
-            if errs != nil {
-                return errs
-            }
-        }
-
+    if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
