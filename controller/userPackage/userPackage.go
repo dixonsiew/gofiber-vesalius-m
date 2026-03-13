@@ -178,9 +178,9 @@ func SearchAllPurchaseHistory(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        purchaseId         path      string  true  "purchaseId"
+// @Param        purchaseId         path      string  true  "PurchaseId"
 // @Success 200 {object} userPackage.UserPackage
-// @Router /user-package/{purchaseId} [post]
+// @Router /user-package/{purchaseId} [get]
 func GetUserPackageById(c fiber.Ctx) error {
     purchaseId := c.Params("purchaseId")
     ipurchaseId, err := strconv.ParseInt(purchaseId, 10, 64)

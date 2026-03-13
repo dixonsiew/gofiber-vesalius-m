@@ -160,17 +160,17 @@ type Nationality struct {
 }
 
 type Branch struct {
-    BranchId   null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
-    Url        null.String `json:"url" db:"URL" swaggertype:"string"`
-    Passcode   null.String `json:"passcode" db:"PASSCODE" swaggertype:"string"`
+    BranchID   null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
     BranchName null.String `json:"branchName" db:"BRANCH_NAME" swaggertype:"string"`
+    Passcode   null.String `json:"passcode" db:"PASSCODE" swaggertype:"string"`
+    Url        null.String `json:"url" db:"URL" swaggertype:"string"`
 }
 
 type AssignBranch struct {
     AssignBranchID null.Int64  `json:"assignBranchId" db:"ASSIGN_BRANCH_ID" swaggertype:"integer"`
+    AdminID        null.Int64  `json:"adminId" db:"ADMIN_ID" swaggertype:"integer"`
     Prn            null.String `json:"prn" db:"PRN" swaggertype:"string"`
     UserID         null.Int64  `json:"userId" db:"USER_ID" swaggertype:"integer"`
-    AdminID        null.Int64  `json:"adminId" db:"ADMIN_ID" swaggertype:"integer"`
     BranchID       null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
     Branch         *Branch     `json:"branch"`
 }
@@ -395,7 +395,7 @@ func (o *ApplicationUser) Set() {
 }
 
 type DoctorPatientAppointment struct {
-    DoctorPatientApptId null.Int64  `json:"doctor_patient_appt_id" db:"DOCTOR_PATIENT_APPT_ID" swaggertype:"integer"`
+    DoctorPatientApptID null.Int64  `json:"doctor_patient_appt_id" db:"DOCTOR_PATIENT_APPT_ID" swaggertype:"integer"`
     DoctorID            null.Int64  `json:"doctor_id" db:"DOCTOR_ID" swaggertype:"integer"`
     DoctorName          null.String `json:"doctorName" db:"DOCTOR_NAME" swaggertype:"string"`
     DoctorSpecialty     null.String `json:"doctorSpecialty" db:"DOCTOR_SPECIALTY" swaggertype:"string"`

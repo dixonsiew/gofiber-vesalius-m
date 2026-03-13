@@ -18,7 +18,7 @@ func NewBranchService(db *sqlx.DB, ctx context.Context) *BranchService {
     return &BranchService{db: db, ctx: ctx}
 }
 
-func (s *BranchService) FindByBranchId(branchId int) (*model.Branch, error) {
+func (s *BranchService) FindByBranchId(branchId int64) (*model.Branch, error) {
     const query = `SELECT * FROM BRANCH WHERE BRANCH_ID = :branchId`
     var b model.Branch
     err := s.db.GetContext(s.ctx, &b, query, branchId)

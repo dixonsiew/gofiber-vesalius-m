@@ -1,17 +1,18 @@
 package admin
 
 import (
-    "fmt"
-    "strconv"
-    "vesaliusm/database"
-    "vesaliusm/dto"
-    "vesaliusm/middleware"
-    adminUserService "vesaliusm/service/adminUser"
-    applicationuserService "vesaliusm/service/applicationUser"
-    "vesaliusm/utils"
+	"fmt"
+	"strconv"
+	"vesaliusm/database"
+	"vesaliusm/dto"
+	"vesaliusm/middleware"
+	"vesaliusm/model"
+	adminUserService "vesaliusm/service/adminUser"
+	applicationuserService "vesaliusm/service/applicationUser"
+	"vesaliusm/utils"
 
-    "github.com/go-playground/validator/v10"
-    "github.com/gofiber/fiber/v3"
+	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v3"
 )
 
 var (
@@ -331,7 +332,6 @@ func ResetAdminPassword(c fiber.Ctx) error {
 // @Router /admin/reset-user-password/{email} [post]
 func ResetUserPassword(c fiber.Ctx) error {
     email := c.Params("email")
-
     o, err := applicationUserSvc.FindByEmail(email, nil)
     if err != nil {
         return err
@@ -485,4 +485,117 @@ func ChangePassword(c fiber.Ctx) error {
     return c.JSON(fiber.Map{
         "successMessage": "Password has been updated",
     })
+}
+
+func AddAdminUser(c fiber.Ctx) error {
+    data := new(dto.PostAdminUserDto)
+    if err := c.Bind().Body(data); err != nil {
+        if validationErrors, ok := err.(validator.ValidationErrors); ok {
+            errs := utils.GetValidationErrors(validationErrors)
+            if errs != nil {
+                return errs
+            }
+        }
+
+        return err
+    }
+
+    b, err := adminUserSvc.ExistsByEmail(data.Email)
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, "User with the email already exist")
+    }
+
+    o := new(model.AdminUser)
+    o.Username.String = data.Email
+    o.Email.String = data.Email
+    o.FirstName.String = data.FirstName
+    o.LastName.String = data.LastName
+    o.UserGroupID.Int64 = data.UserGroupId
+
+    return nil
+}
+
+// DeleteAdmin
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param        email           path        string  true  "Email"
+// @Success 200
+// @Router /admin/delete-admin/{email} [post]
+func DeleteAdmin(c fiber.Ctx) error {
+    email := c.Params("email")
+    o, err := adminUserSvc.FindByEmail(email)
+    if err != nil {
+        return err
+    }
+    
+    if o == nil {
+        return fiber.NewError(fiber.StatusNotFound, "User not found")
+    }
+
+    err = adminUserSvc.Delete(o.AdminID.Int64)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(fiber.Map{
+        "successMessage": "Admin has been deleted",
+    })
+}
+
+// ResetSignUpUserByEmail
+//
+// @Tags Admin
+// @Produce json
+// @Param        email           path        string  true  "Email"
+// @Success 200
+// @Router /admin/reset-signup-email/user/{email} [post]
+func ResetSignUpUserByEmail(c fiber.Ctx) error {
+    email := c.Params("email")
+    b, err := applicationUserSvc.ExistsByEmail(email)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return fiber.NewError(fiber.StatusBadRequest, "User does not exist to reset signup")
+    }
+
+    user, err := applicationUserSvc.FindByUsername(email, nil)
+    if err != nil {
+        return err
+    }
+
+    err = applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "User sign up has been reset",
+    })
+}
+
+func ResetSignUpUserByMobile(c fiber.Ctx) error {
+    mobile := c.Params("mobile")
+    b, err := applicationUserSvc.ExistsByMobileNo(mobile)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return fiber.NewError(fiber.StatusBadRequest, "User does not exist to reset signup")
+    }
+
+    user, err := applicationUserSvc.FindByUsername(mobile, nil)
+    if err != nil {
+        return err
+    }
+
+    
 }

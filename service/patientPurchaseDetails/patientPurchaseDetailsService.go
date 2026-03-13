@@ -131,7 +131,10 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     args = append(args, sql.Named("limit", limit))
 
     base := `
-        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
+        SELECT ` + 
+        getPatientPurchaseDetailsCols("ppd.") + `, ` + 
+        getHospitalPackageCols("hp.") + `, ` + 
+        getPackagePaymentDetailsCols("ppd2.") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -162,7 +165,10 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
 
 func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
+        SELECT ` + 
+        getPatientPurchaseDetailsCols("ppd.") + `, ` + 
+        getHospitalPackageCols("hp.") + `, ` + 
+        getPackagePaymentDetailsCols("ppd2.") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -222,7 +228,24 @@ func (s *PatientPurchaseDetailsService) FindAllByPaymentId(paymentId int64) ([]u
 
 func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
+        SELECT
+          ppd.PACKAGE_PURCHASE_NO, 
+          ppd.PACKAGE_STATUS,
+          ppd.REDEEMED_DATETIME, 
+          ppd.CANCELLED_DATETIME, 
+          ppd.EXPIRED_DATETIME, 
+          ppd.PURCHASED_DATETIME,
+          hp.PACKAGE_ID, 
+          hp.PACKAGE_NAME, 
+          hp.PACKAGE_IMG, 
+          hp.PACKAGE_ALLOW_APPT, 
+          nd.MCR,
+          ppd2.BILLING_FULLNAME, 
+          ppd2.PAYMENT_TRANS_DATE, 
+          ppd2.PAYMENT_AMOUNT_COLLECTED, 
+          ppd2.PAYMENT_GATEWAY, 
+          ppd2.PAYMENT_REQUEST_NO, 
+          ndpa.DATE_APPT
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN NOVA_DOCTOR nd ON hp.PACKAGE_ASSIGNED_DOCTOR = nd.DOCTOR_ID
@@ -254,7 +277,10 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
 func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*userPackage.UserPackage, error) {
     var o userPackage.UserPackage
     query := `
-        SELECT ` + utils.GetDbCols(userPackage.UserPackage{}, "") + `
+        SELECT ` + 
+        getPatientPurchaseDetailsCols("ppd.") + `, ` +
+        getHospitalPackageCols("hp.") + `, ` +
+        getPackagePaymentDetailsCols("ppd2.") + `, ndpa.DATE_APPT
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -583,37 +609,61 @@ func whereClause(conds []string) string {
     return " WHERE " + strings.Join(conds, " AND ")
 }
 
-/* func getPackagePaymentDetailsCols() string {
-    return `
-        ppd2.PAYMENT_GATEWAY,
-        ppd2.PAYMENT_REQUEST_NO,
-        ppd2.PAYMENT_REQUEST_CURRENCY,
-        ppd2.PAYMENT_AMOUNT,
-        ppd2.PAYMENT_CURRENCY,
-        ppd2.PAYMENT_AMOUNT_COLLECTED,
-        ppd2.PAYMENT_STATUS,
-        ppd2.PAYMENT_TRANS_DATE,
-        ppd2.BILLING_FULLNAME,
-        ppd2.BILLING_CONTACT_NO,
-        ppd2.BILLING_CONTACT_CODE,
-        ppd2.BILLING_EMAIL,
-        ppd2.PAYMENT_URL
-    `
+func getPatientPurchaseDetailsCols(prefix string) string {
+    lx := []string{
+        "PATIENT_PURCHASE_ID",
+        "PATIENT_PRN",
+        "PATIENT_NAME",
+        "PACKAGE_ID",
+        "PACKAGE_PURCHASE_NO",
+        "PACKAGE_STATUS",
+        "ORDERED_DATETIME",
+        "BOOKED_DATETIME",
+        "REDEEMED_DATETIME",
+        "CANCELLED_DATETIME",
+        "PURCHASED_DATETIME",
+        "EXPIRED_DATETIME",
+    }
+    ls := make([]string, 0)
+    for _, v := range lx {
+        ls = append(ls, prefix + v)
+    }
+    return strings.Join(ls, ", ")
 }
 
-func getPatientPurchaseDetailsCols() string {
-    return `
-        ppd.PATIENT_PURCHASE_ID,
-        ppd.PATIENT_PRN,
-        ppd.PATIENT_NAME,
-        ppd.PACKAGE_ID,
-        ppd.PACKAGE_PURCHASE_NO,
-        ppd.PACKAGE_STATUS,
-        ppd.ORDERED_DATETIME,
-        ppd.BOOKED_DATETIME,
-        ppd.REDEEMED_DATETIME,
-        ppd.CANCELLED_DATETIME,
-        ppd.PURCHASED_DATETIME,
-        ppd.EXPIRED_DATETIME
-    `
-} */
+func getHospitalPackageCols(prefix string) string {
+    lx := []string{
+        "PACKAGE_NAME",
+        "PACKAGE_IMG",
+        "PACKAGE_VALIDITY",
+        "PACKAGE_ALLOW_APPT",
+    }
+    ls := make([]string, 0)
+    for _, v := range lx {
+        ls = append(ls, prefix + v)
+    }
+    return strings.Join(ls, ", ")
+}
+
+func getPackagePaymentDetailsCols(prefix string) string {
+    lx := []string{
+        "PAYMENT_GATEWAY",
+        "PAYMENT_REQUEST_NO",
+        "PAYMENT_REQUEST_CURRENCY",
+        "PAYMENT_AMOUNT",
+        "PAYMENT_CURRENCY",
+        "PAYMENT_AMOUNT_COLLECTED",
+        "PAYMENT_STATUS",
+        "PAYMENT_TRANS_DATE",
+        "BILLING_FULLNAME",
+        "BILLING_CONTACT_NO",
+        "BILLING_CONTACT_CODE",
+        "BILLING_EMAIL",
+        "PAYMENT_URL",
+    }
+    ls := make([]string, 0)
+    for _, v := range lx {
+        ls = append(ls, prefix + v)
+    }
+    return strings.Join(ls, ", ")
+}

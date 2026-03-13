@@ -1018,9 +1018,9 @@ paths:
       tags:
       - Public Branch
   /user-package/{purchaseId}:
-    post:
+    get:
       parameters:
-      - description: purchaseId
+      - description: PurchaseId
         in: path
         name: purchaseId
         required: true

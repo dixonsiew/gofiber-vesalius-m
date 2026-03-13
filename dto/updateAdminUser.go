@@ -1,7 +1,6 @@
 package dto
 
-type PostAdminUserDto struct {
-    Username       string  `json:"username" validate:"required"`
+type PostUpdateAdminUserDto struct {
     Title          string  `json:"title"`
     FirstName      string  `json:"first_name" validate:"required"`
     MiddleName     string  `json:"middle_name"`
@@ -14,6 +13,7 @@ type PostAdminUserDto struct {
     Passport       string  `json:"passport"`
     Nationality    string  `json:"nationality"`
     Email          string  `json:"email" validate:"required,email"`
-    UserGroupId    int64   `json:"userGroupId" validate:"required,numeric"`
-    AdminBranchIds []int64 `json:"adminBranchIds"`
+    UserGroupID    int64   `json:"userGroupId" validate:"required"`
+    UserGroupName  string  `json:"userGroupName,omitempty"`
+    AdminBranchIDs []int64 `json:"adminBranchIds"`
 }

@@ -8,6 +8,7 @@ import (
 	"vesaliusm/database"
 	"vesaliusm/dto"
 	"vesaliusm/model"
+    assignBranchService "vesaliusm/service/assignBranch"
 	branchService "vesaliusm/service/branch"
 	"vesaliusm/utils"
 
@@ -26,8 +27,13 @@ func NewAdminUserService(db *sqlx.DB, ctx context.Context) *AdminUserService {
 }
 
 const saltRounds = 10
-var branchSvc *branchService.BranchService = 
-    branchService.NewBranchService(database.GetDb(), database.GetCtx())
+
+var (
+    assignBranchSvc *assignBranchService.AssignBranchService = 
+        assignBranchService.NewAssignBranchService(database.GetDb(), database.GetCtx())
+    branchSvc *branchService.BranchService = 
+        branchService.NewBranchService(database.GetDb(), database.GetCtx())
+)
 
 func (s *AdminUserService) List(page string, limit string) (*model.PagedList, error) {
     total, err := s.Count()
@@ -386,13 +392,13 @@ func (s *AdminUserService) FindWithAssignBranchByAdminId(adminId int64) (*model.
         return nil, err
     }
 
-    ablist, err := s.FindAssignBranchByAdminId2(o.AdminID.Int64)
+    ablist, err := assignBranchSvc.FindAllByAdminId(o.AdminID.Int64)
     if err != nil {
         return nil, err
     }
 
     for i := range ablist {
-        b, err := branchSvc.FindByBranchId(int(ablist[i].BranchID.Int64))
+        b, err := branchSvc.FindByBranchId(ablist[i].BranchID.Int64)
         if err != nil {
             return nil, err
         }
@@ -418,18 +424,6 @@ func (s *AdminUserService) FindAssignBranchByAdminId(adminId int64, branchId int
         return nil, err
     }
     return &ab, err
-}
-
-func (s *AdminUserService) FindAssignBranchByAdminId2(adminId int64) ([]model.AssignBranch, error) {
-    list := make([]model.AssignBranch, 0)
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
-        ` FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`
-    err := s.db.SelectContext(s.ctx, &list, query, adminId)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    return list, err
 }
 
 func (s *AdminUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {

@@ -1014,7 +1014,7 @@ const docTemplate = `{
             }
         },
         "/user-package/{purchaseId}": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -1029,7 +1029,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "purchaseId",
+                        "description": "PurchaseId",
                         "name": "purchaseId",
                         "in": "path",
                         "required": true

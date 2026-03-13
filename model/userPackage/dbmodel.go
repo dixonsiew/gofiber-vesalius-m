@@ -36,39 +36,38 @@ type UserPackage struct {
     PatientPrn        null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
     PatientName       null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
     PackageID         null.Int64  `json:"package_id" db:"PACKAGE_ID" swaggertype:"integer"`
-    PackageValidity   null.Int32  `json:"packageValidity" db:"PACKAGE_VALIDITY" swaggertype:"integer"`
     PackagePurchaseNo null.String `json:"packagePurchaseNo" db:"PACKAGE_PURCHASE_NO" swaggertype:"string"`
     PackageStatus     null.String `json:"packageStatus" db:"PACKAGE_STATUS" swaggertype:"string"`
     OrderedDateTime   null.String `json:"orderedDateTime" db:"ORDERED_DATETIME" swaggertype:"string"`
-    PurchasedDateTime null.String `json:"purchasedDateTime" db:"PURCHASED_DATETIME" swaggertype:"string"`
     BookedDateTime    null.String `json:"bookedDateTime" db:"BOOKED_DATETIME" swaggertype:"string"`
     RedeemedDateTime  null.String `json:"redeemedDateTime" db:"REDEEMED_DATETIME" swaggertype:"string"`
     CancelledDateTime null.String `json:"cancelledDateTime" db:"CANCELLED_DATETIME" swaggertype:"string"`
+    PurchasedDateTime null.String `json:"purchasedDateTime" db:"PURCHASED_DATETIME" swaggertype:"string"`
     ExpiredDateTime   null.String `json:"expiredDateTime" db:"EXPIRED_DATETIME" swaggertype:"string"`
     QuantityPurchased int         `json:"quantityPurchased"`
 
     PackageName      null.String `json:"packageName" db:"PACKAGE_NAME" swaggertype:"string"`
     PackageImage     null.String `json:"packageImage" db:"PACKAGE_IMG" swaggertype:"string"`
+    PackageValidity  null.Int32  `json:"packageValidity" db:"PACKAGE_VALIDITY" swaggertype:"integer"`
     PackageAllowAppt null.String `json:"packageAllowAppt" db:"PACKAGE_ALLOW_APPT" swaggertype:"string"`
 
     AppointmentDateTime null.String `json:"appointmentDateTime" db:"DATE_APPT" swaggertype:"string"`
+    DoctorMcr           null.String `json:"doctorMcr" db:"MCR" swaggertype:"string"`
 
-    DoctorMcr null.String `json:"doctorMcr" db:"MCR" swaggertype:"string"`
-
-    PaymentRequestNo       null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`
     PaymentGatewayV        null.String `json:"-" db:"PAYMENT_GATEWAY" swaggertype:"string"`
     PaymentGateway         string      `json:"paymentGateway"`
+    PaymentRequestNo       null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`
     PaymentRequestCurrency null.String `json:"paymentRequestCurrency" db:"PAYMENT_REQUEST_CURRENCY" swaggertype:"string"`
-    PaymentCurrency        null.String `json:"paymentCurrency" db:"PAYMENT_CURRENCY" swaggertype:"string"`
     PaymentAmount          null.String `json:"paymentAmount" db:"PAYMENT_AMOUNT" swaggertype:"string"`
+    PaymentCurrency        null.String `json:"paymentCurrency" db:"PAYMENT_CURRENCY" swaggertype:"string"`
     PaymentAmountCollected null.String `json:"paymentAmountCollected" db:"PAYMENT_AMOUNT_COLLECTED" swaggertype:"string"`
     PaymentStatus          null.String `json:"paymentStatus" db:"PAYMENT_STATUS" swaggertype:"string"`
     PaymentTransDate       null.String `json:"paymentTransDate" db:"PAYMENT_TRANS_DATE" swaggertype:"string"`
-    PaymentUrl             null.String `json:"paymentUrl" db:"PAYMENT_URL" swaggertype:"string"`
     BillingFullname        null.String `json:"billingFullname" db:"BILLING_FULLNAME" swaggertype:"string"`
-    BillingContactCode     null.String `json:"billingContactCode" db:"BILLING_CONTACT_CODE" swaggertype:"string"`
     BillingContactNo       null.String `json:"billingContactNo" db:"BILLING_CONTACT_NO" swaggertype:"string"`
+    BillingContactCode     null.String `json:"billingContactCode" db:"BILLING_CONTACT_CODE" swaggertype:"string"`
     BillingEmail           null.String `json:"billingEmail" db:"BILLING_EMAIL" swaggertype:"string"`
+    PaymentUrl             null.String `json:"paymentUrl" db:"PAYMENT_URL" swaggertype:"string"`
 
     // Excel formatted fields (optional)
     BillingFullContactExcel string `json:"billingFullContactExcel"`
