@@ -639,7 +639,7 @@ func ChangeUserPassword(c fiber.Ctx) error {
         return err
     }
 
-    o, err := applicationUserSvc.FindByUserId(int64(data.UserId))
+    o, err := applicationUserSvc.FindByUserId(data.UserId, nil)
     if err != nil {
         return err
     }
