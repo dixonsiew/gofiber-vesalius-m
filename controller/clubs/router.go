@@ -9,7 +9,7 @@ import (
 )
 
 func SetupRoutes(router fiber.Router) {
-    var clubSvc *clubService.ClubService = clubService.NewClubService(database.GetDb(), database.GetCtx())
+    var clubSvc *clubService.ClubService = clubService.NewClubService(database.GetDb(), database.GetCtx(), database.GetDbrs(), database.GetCtxrs())
 
     clubController := NewClubsController(clubSvc)
     clubController.registerRoutes(router)

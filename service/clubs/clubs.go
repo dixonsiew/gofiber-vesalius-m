@@ -17,7 +17,7 @@ type ClubService struct {
     ctxrs context.Context
 }
 
-func NewClubService(db *sqlx.DB, dbrs *sqlx.DB, ctx context.Context, ctxrs context.Context) *ClubService {
+func NewClubService(db *sqlx.DB, ctx context.Context, dbrs *sqlx.DB, ctxrs context.Context) *ClubService {
     return &ClubService{db: db, dbrs: dbrs, ctx: ctx, ctxrs: ctxrs}
 }
 
@@ -143,7 +143,7 @@ func (s *ClubService) FindGoldenPearlMembershipByMembershipId(membershipId int64
 }
 
 func (s *ClubService) SaveLittleKidsMembership(o clubs.LittleExplorersKidsMembership) error {
-    type prns struct {
+    type Prns struct {
         kidsPrn     string
         guardianPrn string
     }
@@ -152,8 +152,10 @@ func (s *ClubService) SaveLittleKidsMembership(o clubs.LittleExplorersKidsMember
         WHERE DOCUMENT_TYPE = 'NRIC / Passport' AND
         DOCUMENT_NUMBER = :doc
     `
-    var prns prns
-    var prn string
+    var (
+        prns Prns
+        prn string
+    )
     err := s.dbrs.GetContext(s.ctxrs, &prn, query, o.KidsDocNumber)
     if err != nil {
 		if err == sql.ErrNoRows {

@@ -696,7 +696,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.GoldenPearlAboutUs"
+                            "$ref": "#/definitions/clubs.GoldenPearlAboutUs"
                         }
                     }
                 }
@@ -805,7 +805,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.FutureOrder"
+                                "$ref": "#/definitions/futureOrder.FutureOrder"
                             }
                         }
                     }
@@ -1357,6 +1357,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "clubs.GoldenPearlAboutUs": {
+            "type": "object",
+            "properties": {
+                "goldenClubDesc": {
+                    "type": "string"
+                },
+                "goldenClubExtLink": {
+                    "type": "string"
+                },
+                "goldenClubImage": {
+                    "type": "string"
+                },
+                "goldenClubTitle": {
+                    "type": "string"
+                },
+                "goldenClubTnc": {
+                    "type": "string"
+                },
+                "golden_club_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.AdminPortalLogDto": {
             "type": "object",
             "required": [
@@ -1575,6 +1598,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword4": {
+                    "type": "string"
+                }
+            }
+        },
+        "futureOrder.FutureOrder": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "orderDoctor": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "performDate": {
+                    "type": "string"
+                },
+                "planType": {
+                    "type": "string"
+                },
+                "prn": {
                     "type": "string"
                 }
             }
@@ -1869,29 +1915,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.FutureOrder": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "orderDoctor": {
-                    "type": "string"
-                },
-                "patientName": {
-                    "type": "string"
-                },
-                "performDate": {
-                    "type": "string"
-                },
-                "planType": {
-                    "type": "string"
-                },
-                "prn": {
-                    "type": "string"
-                }
-            }
-        },
         "model.GeneralNotification": {
             "type": "object",
             "properties": {
@@ -1930,29 +1953,6 @@ const docTemplate = `{
                 },
                 "targetState": {
                     "type": "string"
-                }
-            }
-        },
-        "model.GoldenPearlAboutUs": {
-            "type": "object",
-            "properties": {
-                "goldenClubDesc": {
-                    "type": "string"
-                },
-                "goldenClubExtLink": {
-                    "type": "string"
-                },
-                "goldenClubImage": {
-                    "type": "string"
-                },
-                "goldenClubTitle": {
-                    "type": "string"
-                },
-                "goldenClubTnc": {
-                    "type": "string"
-                },
-                "golden_club_id": {
-                    "type": "integer"
                 }
             }
         },

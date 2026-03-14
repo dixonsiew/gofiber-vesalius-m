@@ -2,6 +2,7 @@ package futureOrder
 
 import (
     "fmt"
+    _ "vesaliusm/model/futureOrder"
     futureOrderService "vesaliusm/service/futureOrder"
     "vesaliusm/utils"
 
@@ -26,7 +27,7 @@ func NewFutureOrderController(futureOrderSvc *futureOrderService.FutureOrderServ
 // @Param        prn               path        string  true  "prn"
 // @Param        _page             query       string  false  "_page"  default:"1"
 // @Param        _limit            query       string  false  "_limit" default:"10"
-// @Success 200 {array} model.FutureOrder
+// @Success 200 {array} futureOrder.FutureOrder
 // @Router /future-order/all/{prn} [get]
 func (cr *FutureOrderController) GetAllFutureOrder(c fiber.Ctx) error {
     prn := c.Query("prn", "")
