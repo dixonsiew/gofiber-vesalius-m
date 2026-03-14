@@ -3,7 +3,6 @@ package userNotification
 import (
     "fmt"
     "strconv"
-    "vesaliusm/database"
     "vesaliusm/middleware"
     applicationUserNotificationService "vesaliusm/service/applicationUserNotification"
     generalNotificationMasterService "vesaliusm/service/generalNotificationMaster"
@@ -12,12 +11,19 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var (
-    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService = 
-        applicationUserNotificationService.NewApplicationUserNotificationService(database.GetDb(), database.GetCtx())
-    generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService = 
-        generalNotificationMasterService.NewGeneralNotificationMasterService(database.GetDb(), database.GetCtx())
-)
+type UserNotificationController struct {
+    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService
+    generalNotificationMasterSvc   *generalNotificationMasterService.GeneralNotificationMasterService
+}
+
+func NewUserNotificationController(
+    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService,
+    generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService) *UserNotificationController {
+    return &UserNotificationController{
+        applicationUserNotificationSvc: applicationUserNotificationSvc,
+        generalNotificationMasterSvc:   generalNotificationMasterSvc,
+    }
+}
 
 // GetUnseenNotificationCount
 //
@@ -26,7 +32,7 @@ var (
 // @Security BearerAuth
 // @Success 200 {integer} int
 // @Router /notification/unseen/count [get]
-func GetUnseenNotificationCount(c fiber.Ctx) error {
+func (cr *UserNotificationController) GetUnseenNotificationCount(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
     if err != nil {
         return err
@@ -36,7 +42,7 @@ func GetUnseenNotificationCount(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    count, err := applicationUserNotificationSvc.CountUnseenByUserId(user.UserID.Int64)
+    count, err := cr.applicationUserNotificationSvc.CountUnseenByUserId(user.UserID.Int64)
     if err != nil {
         return err
     }
@@ -53,7 +59,7 @@ func GetUnseenNotificationCount(c fiber.Ctx) error {
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.OnesignalNotification
 // @Router /notification/all [get]
-func GetNotificationList(c fiber.Ctx) error {
+func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
     if err != nil {
         return err
@@ -65,7 +71,7 @@ func GetNotificationList(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := applicationUserNotificationSvc.ListByUserId(user.UserID.Int64, page, limit)
+    m, err := cr.applicationUserNotificationSvc.ListByUserId(user.UserID.Int64, page, limit)
     if err != nil {
         return err
     }
@@ -84,10 +90,10 @@ func GetNotificationList(c fiber.Ctx) error {
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.GeneralNotification
 // @Router /notification/general/master/all [get]
-func GetGeneralNotificationList(c fiber.Ctx) error {
+func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := generalNotificationMasterSvc.List(page, limit)
+    m, err := cr.generalNotificationMasterSvc.List(page, limit)
     if err != nil {
         return err
     }
@@ -105,10 +111,10 @@ func GetGeneralNotificationList(c fiber.Ctx) error {
 // @Param        notificationMasterId              path      string  true  "Notification MasterId"
 // @Success 200 {object} model.GeneralNotification
 // @Router /notification/general/master/{notificationMasterId} [get]
-func GetByNotificationMasterId(c fiber.Ctx) error {
+func (cr *UserNotificationController) GetByNotificationMasterId(c fiber.Ctx) error {
     notificationMasterId := c.Params("notificationMasterId")
     id, _ := strconv.ParseInt(notificationMasterId, 10, 64)
-    o, err := generalNotificationMasterSvc.FindByNotificationMasterId(id)
+    o, err := cr.generalNotificationMasterSvc.FindByNotificationMasterId(id)
     if err != nil {
         return err
     }
@@ -124,10 +130,10 @@ func GetByNotificationMasterId(c fiber.Ctx) error {
 // @Param        notificationId              path      string  true  "Notification Id"
 // @Success 200 {object} model.OnesignalNotification
 // @Router /notification/{notificationId} [get]
-func GetNotificationById(c fiber.Ctx) error {
+func (cr *UserNotificationController) GetNotificationById(c fiber.Ctx) error {
     notificationId := c.Params("notificationId")
     id, _ := strconv.ParseInt(notificationId, 10, 64)
-    o, err := applicationUserNotificationSvc.FindByNotificationId(id)
+    o, err := cr.applicationUserNotificationSvc.FindByNotificationId(id)
     if err != nil {
         return err
     }

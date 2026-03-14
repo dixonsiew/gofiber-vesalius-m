@@ -156,16 +156,16 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         SELECT ` + utils.GetDbCols(model.GeneralNotification{}, "") + ` FROM GENERAL_NOTIFICATION_MASTER
         ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    lx := make([]model.GeneralNotification, 0)
-    err := db.SelectContext(s.ctx, &lx, query, offset, limit)
+    list := make([]model.GeneralNotification, 0)
+    err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    for i := range lx {
-        lx[i].Set()
+    for i := range list {
+        list[i].Set()
     }
-    return lx, nil
+    return list, nil
 }
 
 func nullStringIfDash(s null.String) interface{} {

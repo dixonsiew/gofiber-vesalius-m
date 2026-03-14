@@ -2,7 +2,6 @@ package user
 
 import (
     "fmt"
-    "vesaliusm/database"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     applicationuserService "vesaliusm/service/applicationUser"
@@ -11,8 +10,15 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = 
-    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+type UserController struct {
+    applicationUserSvc *applicationuserService.ApplicationUserService
+}
+
+func NewUserController(applicationUserSvc *applicationuserService.ApplicationUserService) *UserController {
+    return &UserController{
+        applicationUserSvc: applicationUserSvc,
+    }
+}
 
 // GetAllUsers
 //
@@ -23,10 +29,10 @@ var applicationUserSvc *applicationuserService.ApplicationUserService =
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all [get]
-func GetAllUsers(c fiber.Ctx) error {
+func (cr *UserController) GetAllUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := applicationUserSvc.List(page, limit)
+    m, err := cr.applicationUserSvc.List(page, limit)
     if err != nil {
         return err
     }
@@ -45,10 +51,10 @@ func GetAllUsers(c fiber.Ctx) error {
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all/active [get]
-func GetAllActiveUsers(c fiber.Ctx) error {
+func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := applicationUserSvc.ListActive(page, limit)
+    m, err := cr.applicationUserSvc.ListActive(page, limit)
     if err != nil {
         return err
     }
@@ -66,14 +72,14 @@ func GetAllActiveUsers(c fiber.Ctx) error {
 // @Param        playerId              path      string  true  "PlayerId"
 // @Success 200
 // @Router /user/update-playerid/{playerId} [post]
-func UpdatePlayerId(c fiber.Ctx) error {
+func (cr *UserController) UpdatePlayerId(c fiber.Ctx) error {
     id, _, err := middleware.ValidateToken(c)
     if err != nil {
         return err
     }
 
     playerId := c.Params("playerId")
-    err = applicationUserSvc.UpdatePlayerId(playerId, id, nil)
+    err = cr.applicationUserSvc.UpdatePlayerId(playerId, id, nil)
     if err != nil {
         return err
     }
@@ -91,7 +97,7 @@ func UpdatePlayerId(c fiber.Ctx) error {
 // @Param request body dto.PostMachineInfo true "AddMachineId Request"
 // @Success 200
 // @Router /user/add-machine-id [post]
-func AddMachineId(c fiber.Ctx) error {
+func (cr *UserController) AddMachineId(c fiber.Ctx) error {
     id, _, err := middleware.ValidateToken(c)
     if err != nil {
         return err
@@ -102,7 +108,7 @@ func AddMachineId(c fiber.Ctx) error {
         return err
     }
 
-    err = applicationUserSvc.UpdateMachineId(data.MachineId, id, nil)
+    err = cr.applicationUserSvc.UpdateMachineId(data.MachineId, id, nil)
     if err != nil {
         return err
     }

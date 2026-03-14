@@ -4,7 +4,6 @@ import (
     "fmt"
     "strconv"
     "time"
-    "vesaliusm/database"
     "vesaliusm/model"
     adminUserService "vesaliusm/service/adminUser"
     "vesaliusm/utils"
@@ -13,15 +12,20 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var adminUserSvc *adminUserService.AdminUserService = 
-    adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
+type TokenAdminService struct {
+    adminUserSvc *adminUserService.AdminUserService
+}
 
-func GenerateAccessToken(user model.AdminUser) (string, error) {
+func NewTokenAdminService(adminUserSvc *adminUserService.AdminUserService) *TokenAdminService {
+    return &TokenAdminService{adminUserSvc: adminUserSvc}
+}
+
+func (s *TokenAdminService) GenerateAccessToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email.String,
-        "type":      "0",
-        "subject":   fmt.Sprintf("%d", user.AdminID.Int64),
-        "exp":       time.Now().Add(time.Hour * 720).Unix(),
+        "username": user.Email.String,
+        "type":     "0",
+        "subject":  fmt.Sprintf("%d", user.AdminID.Int64),
+        "exp":      time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     t, err := token.SignedString([]byte(utils.JWT_SECRET))
@@ -33,10 +37,10 @@ func GenerateAccessToken(user model.AdminUser) (string, error) {
     return t, nil
 }
 
-func GenerateRefreshToken(user model.AdminUser) (string, error) {
+func (s *TokenAdminService) GenerateRefreshToken(user model.AdminUser) (string, error) {
     claims := jwt.MapClaims{
-        "username":  user.Email.String,
-        "type":      "0",
+        "username": user.Email.String,
+        "type":     "0",
         "subject":  fmt.Sprintf("%d", user.AdminID.Int64),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
@@ -50,13 +54,13 @@ func GenerateRefreshToken(user model.AdminUser) (string, error) {
     return t, nil
 }
 
-func ResolveRefreshToken(encoded string) (*model.AdminUser, error) {
-    _, id, err := decodeRefreshToken(encoded)
+func (s *TokenAdminService) ResolveRefreshToken(encoded string) (*model.AdminUser, error) {
+    _, id, err := s.decodeRefreshToken(encoded)
     if id == 0 || err != nil {
         return nil, fmt.Errorf("refresh token not found")
     }
 
-    user, err := getUserFromRefreshTokenPayload(id)
+    user, err := s.getUserFromRefreshTokenPayload(id)
     if err != nil {
         return nil, fmt.Errorf("refresh token malformed")
     }
@@ -64,13 +68,13 @@ func ResolveRefreshToken(encoded string) (*model.AdminUser, error) {
     return user, nil
 }
 
-func CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
-    user, err := ResolveRefreshToken(refresh)
+func (s *TokenAdminService) CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
+    user, err := s.ResolveRefreshToken(refresh)
     if err != nil {
         return nil, err
     }
 
-    token, err := GenerateAccessToken(*user)
+    token, err := s.GenerateAccessToken(*user)
     if err != nil {
         return nil, err
     }
@@ -81,7 +85,7 @@ func CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
     }, nil
 }
 
-func decodeRefreshToken(tokenStr string) (string, int64, error) {
+func (s *TokenAdminService) decodeRefreshToken(tokenStr string) (string, int64, error) {
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
         return []byte(utils.JWT_SECRET), nil
     })
@@ -102,6 +106,6 @@ func decodeRefreshToken(tokenStr string) (string, int64, error) {
     return username, id, nil
 }
 
-func getUserFromRefreshTokenPayload(id int64) (*model.AdminUser, error) {
-    return adminUserSvc.FindByAdminId(id)
+func (s *TokenAdminService) getUserFromRefreshTokenPayload(id int64) (*model.AdminUser, error) {
+    return s.adminUserSvc.FindByAdminId(id)
 }

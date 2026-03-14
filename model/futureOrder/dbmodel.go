@@ -1,4 +1,4 @@
-package model
+package futureOrder
 
 import (
     "github.com/guregu/null/v6"

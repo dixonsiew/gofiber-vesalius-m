@@ -1,29 +1,36 @@
 package admin
 
 import (
-	"fmt"
-	"slices"
-	"strconv"
-	"vesaliusm/database"
-	"vesaliusm/dto"
-	"vesaliusm/middleware"
-	"vesaliusm/model"
-	adminUserService "vesaliusm/service/adminUser"
-	applicationuserService "vesaliusm/service/applicationUser"
-	assignBranchService "vesaliusm/service/assignBranch"
-	"vesaliusm/utils"
+    "fmt"
+    "slices"
+    "strconv"
+    "vesaliusm/dto"
+    "vesaliusm/middleware"
+    "vesaliusm/model"
+    adminUserService "vesaliusm/service/adminUser"
+    applicationuserService "vesaliusm/service/applicationUser"
+    assignBranchService "vesaliusm/service/assignBranch"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
+    "github.com/gofiber/fiber/v3"
 )
 
-var (
-    adminUserSvc *adminUserService.AdminUserService = 
-        adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
-    applicationUserSvc *applicationuserService.ApplicationUserService = 
-        applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
-    assignBranchSvc *assignBranchService.AssignBranchService = 
-        assignBranchService.NewAssignBranchService(database.GetDb(), database.GetCtx())
-)
+type AdminController struct {
+    adminUserSvc       *adminUserService.AdminUserService
+    applicationUserSvc *applicationuserService.ApplicationUserService
+    assignBranchSvc    *assignBranchService.AssignBranchService
+}
+
+func NewAdminController(
+    adminUserSvc *adminUserService.AdminUserService,
+    applicationUserSvc *applicationuserService.ApplicationUserService,
+    assignBranchSvc *assignBranchService.AssignBranchService) *AdminController {
+    return &AdminController{
+        adminUserSvc:       adminUserSvc,
+        applicationUserSvc: applicationUserSvc,
+        assignBranchSvc:    assignBranchSvc,
+    }
+}
 
 // GetAdmin
 //
@@ -32,13 +39,13 @@ var (
 // @Security BearerAuth
 // @Success 200 {object} model.AdminUser
 // @Router /admin [get]
-func GetAdmin(c fiber.Ctx) error {
+func (cr *AdminController) GetAdmin(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    admin, err := adminUserSvc.FindWithAssignBranchByAdminId(user.AdminID.Int64)
+    admin, err := cr.adminUserSvc.FindWithAssignBranchByAdminId(user.AdminID.Int64)
     if err != nil {
         return err
     }
@@ -55,10 +62,10 @@ func GetAdmin(c fiber.Ctx) error {
 // @Param        _limit            query       string  false  "_limit" default:"10"
 // @Success 200 {array} model.AdminUser
 // @Router /admin/all [get]
-func GetAllAdmin(c fiber.Ctx) error {
+func (cr *AdminController) GetAllAdmin(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.List(page, limit)
+    m, err := cr.adminUserSvc.List(page, limit)
     if err != nil {
         return err
     }
@@ -78,7 +85,7 @@ func GetAllAdmin(c fiber.Ctx) error {
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.AdminUser
 // @Router /admin/all [post]
-func SearchAllAdmin(c fiber.Ctx) error {
+func (cr *AdminController) SearchAllAdmin(c fiber.Ctx) error {
     var data fiber.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
@@ -94,7 +101,7 @@ func SearchAllAdmin(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.ListByKeyword(key, page, limit)
+    m, err := cr.adminUserSvc.ListByKeyword(key, page, limit)
     if err != nil {
         return err
     }
@@ -113,10 +120,10 @@ func SearchAllAdmin(c fiber.Ctx) error {
 // @Param        _limit            query       string  false  "_limit" default:"10"
 // @Success 200 {array} model.MobileUserAuditLog
 // @Router /admin/adminportal/mobile-user/log/all [get]
-func GetAllAuditMobileUser(c fiber.Ctx) error {
+func (cr *AdminController) GetAllAuditMobileUser(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.ListMobileUserAuditLog(page, limit)
+    m, err := cr.adminUserSvc.ListMobileUserAuditLog(page, limit)
     if err != nil {
         return err
     }
@@ -136,7 +143,7 @@ func GetAllAuditMobileUser(c fiber.Ctx) error {
 // @Param        keyword           body        dto.SearchKeyword2Dto  false  "Search"
 // @Success 200 {array} model.MobileUserAuditLog
 // @Router /admin/adminportal/mobile-user/log/all [post]
-func SearchAllAuditMobileUser(c fiber.Ctx) error {
+func (cr *AdminController) SearchAllAuditMobileUser(c fiber.Ctx) error {
     var data fiber.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
@@ -161,7 +168,7 @@ func SearchAllAuditMobileUser(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.ListMobileUserAuditLogByKeyword(key, key2, page, limit)
+    m, err := cr.adminUserSvc.ListMobileUserAuditLogByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
@@ -180,10 +187,10 @@ func SearchAllAuditMobileUser(c fiber.Ctx) error {
 // @Param        _limit            query       string  false  "_limit" default:"10"
 // @Success 200 {array} model.AdminAuditLog
 // @Router /admin/adminportal/log/all [get]
-func GetAllAuditLog(c fiber.Ctx) error {
+func (cr *AdminController) GetAllAuditLog(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.ListAuditLog(page, limit)
+    m, err := cr.adminUserSvc.ListAuditLog(page, limit)
     if err != nil {
         return err
     }
@@ -203,7 +210,7 @@ func GetAllAuditLog(c fiber.Ctx) error {
 // @Param        keyword           body        dto.SearchKeyword2Dto  false  "Search"
 // @Success 200 {array} model.AdminAuditLog
 // @Router /admin/adminportal/log/all [post]
-func SearchAllAuditLog(c fiber.Ctx) error {
+func (cr *AdminController) SearchAllAuditLog(c fiber.Ctx) error {
     var data fiber.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
@@ -228,7 +235,7 @@ func SearchAllAuditLog(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := adminUserSvc.ListAuditByKeyword(key, key2, page, limit)
+    m, err := cr.adminUserSvc.ListAuditByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
@@ -246,10 +253,10 @@ func SearchAllAuditLog(c fiber.Ctx) error {
 // @Param        adminId           path        string  true  "AdminId"
 // @Success 200 {object} model.AdminUser
 // @Router /admin/adminId/{adminId} [get]
-func GetUserById(c fiber.Ctx) error {
+func (cr *AdminController) GetUserById(c fiber.Ctx) error {
     adminId := c.Params("adminId")
     iadminId, _ := strconv.ParseInt(adminId, 10, 64)
-    o, err := adminUserSvc.FindWithAssignBranchByAdminId(iadminId)
+    o, err := cr.adminUserSvc.FindWithAssignBranchByAdminId(iadminId)
     if err != nil {
         return err
     }
@@ -269,9 +276,9 @@ func GetUserById(c fiber.Ctx) error {
 // @Param        email           path        string  true  "Email"
 // @Success 200 {object} model.ApplicationUser
 // @Router /admin/search-user-email/{email} [get]
-func GetUserByEmail(c fiber.Ctx) error {
+func (cr *AdminController) GetUserByEmail(c fiber.Ctx) error {
     email := c.Params("email")
-    o, err := applicationUserSvc.FindWithAssignBranchByEmail(email)
+    o, err := cr.applicationUserSvc.FindWithAssignBranchByEmail(email)
     if err != nil {
         return err
     }
@@ -291,7 +298,7 @@ func GetUserByEmail(c fiber.Ctx) error {
 // @Param        email           path        string  true  "Email"
 // @Success 200
 // @Router /admin/reset-admin-password/{email} [post]
-func ResetAdminPassword(c fiber.Ctx) error {
+func (cr *AdminController) ResetAdminPassword(c fiber.Ctx) error {
     email := c.Params("email")
     _, user, err := middleware.ValidateAdminToken(c)
     if err != nil {
@@ -306,7 +313,7 @@ func ResetAdminPassword(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    o, err := adminUserSvc.FindByEmail(email)
+    o, err := cr.adminUserSvc.FindByEmail(email)
     if err != nil {
         return err
     }
@@ -315,7 +322,7 @@ func ResetAdminPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "The email address you provide does not exist in our system")
     }
 
-    err = adminUserSvc.SaveResetPassword(o)
+    err = cr.adminUserSvc.SaveResetPassword(o)
     if err != nil {
         return err
     }
@@ -333,9 +340,9 @@ func ResetAdminPassword(c fiber.Ctx) error {
 // @Param        email           path        string  true  "Email"
 // @Success 200
 // @Router /admin/reset-user-password/{email} [post]
-func ResetUserPassword(c fiber.Ctx) error {
+func (cr *AdminController) ResetUserPassword(c fiber.Ctx) error {
     email := c.Params("email")
-    o, err := applicationUserSvc.FindByEmail(email, nil)
+    o, err := cr.applicationUserSvc.FindByEmail(email, nil)
     if err != nil {
         return err
     }
@@ -344,7 +351,7 @@ func ResetUserPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "The email address you provide does not exist in our system")
     }
 
-    err = applicationUserSvc.SaveResetPassword(o)
+    err = cr.applicationUserSvc.SaveResetPassword(o)
     if err != nil {
         return err
     }
@@ -362,10 +369,10 @@ func ResetUserPassword(c fiber.Ctx) error {
 // @Param        userId           path        string  true  "UserId"
 // @Success 200
 // @Router /admin/delete-user/{userId} [post]
-func DeleteUser(c fiber.Ctx) error {
+func (cr *AdminController) DeleteUser(c fiber.Ctx) error {
     userId := c.Params("userId")
     iuserId, _ := strconv.ParseInt(userId, 10, 64)
-    err := adminUserSvc.Delete(iuserId)
+    err := cr.adminUserSvc.Delete(iuserId)
     if err != nil {
         return err
     }
@@ -383,7 +390,7 @@ func DeleteUser(c fiber.Ctx) error {
 // @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto Request"
 // @Success 200
 // @Router /admin/link-user-prn [post]
-func LinkUserPrn(c fiber.Ctx) error {
+func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
@@ -402,7 +409,7 @@ func LinkUserPrn(c fiber.Ctx) error {
         return err
     }
 
-    o, err := applicationUserSvc.FindByEmail(data.Email, nil)
+    o, err := cr.applicationUserSvc.FindByEmail(data.Email, nil)
     if err != nil {
         return err
     }
@@ -423,7 +430,7 @@ func LinkUserPrn(c fiber.Ctx) error {
     o.Resident.String = data.Resident
     o.Sex.String = data.Sex
     o.Title.String = data.Title
-    applicationUserSvc.SaveUserBranch(int64(data.BranchId), o)
+    cr.applicationUserSvc.SaveUserBranch(int64(data.BranchId), o)
 
     // TODO: Implement link user PRN logic
     // For now, just return success
@@ -440,7 +447,7 @@ func LinkUserPrn(c fiber.Ctx) error {
 // @Param request body dto.PostChangePasswordDto true "PostLinkUserPrnDto Request"
 // @Success 200
 // @Router /admin/change-password [post]
-func ChangePassword(c fiber.Ctx) error {
+func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
@@ -455,12 +462,12 @@ func ChangePassword(c fiber.Ctx) error {
         return err
     }
 
-    valid := adminUserSvc.ValidateCredentials(*user, data.OldPassword)
+    valid := cr.adminUserSvc.ValidateCredentials(*user, data.OldPassword)
     if !valid {
         return fiber.NewError(fiber.StatusBadRequest, "Old password is invalid")
     }
 
-    valid1 := adminUserSvc.ValidateCredentials(*user, data.NewPassword)
+    valid1 := cr.adminUserSvc.ValidateCredentials(*user, data.NewPassword)
     if valid1 {
         return fiber.NewError(fiber.StatusBadRequest, "New Password is not allowed to be the same with Old Password")
     }
@@ -470,19 +477,19 @@ func ChangePassword(c fiber.Ctx) error {
     // if err != nil {
     //     return err
     // }
-    
+
     return c.JSON(fiber.Map{
         "successMessage": "Password has been updated",
     })
 }
 
-func AddAdminUser(c fiber.Ctx) error {
+func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
     data := new(dto.PostAdminUserDto)
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
-    b, err := adminUserSvc.ExistsByEmail(data.Email)
+    b, err := cr.adminUserSvc.ExistsByEmail(data.Email)
     if err != nil {
         return err
     }
@@ -509,22 +516,22 @@ func AddAdminUser(c fiber.Ctx) error {
 // @Param        email           path        string  true  "Email"
 // @Success 200
 // @Router /admin/delete-admin/{email} [post]
-func DeleteAdmin(c fiber.Ctx) error {
+func (cr *AdminController) DeleteAdmin(c fiber.Ctx) error {
     email := c.Params("email")
-    o, err := adminUserSvc.FindByEmail(email)
+    o, err := cr.adminUserSvc.FindByEmail(email)
     if err != nil {
         return err
     }
-    
+
     if o == nil {
         return fiber.NewError(fiber.StatusNotFound, "User not found")
     }
 
-    err = adminUserSvc.Delete(o.AdminID.Int64)
+    err = cr.adminUserSvc.Delete(o.AdminID.Int64)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(fiber.Map{
         "successMessage": "Admin has been deleted",
     })
@@ -537,9 +544,9 @@ func DeleteAdmin(c fiber.Ctx) error {
 // @Param        email           path        string  true  "Email"
 // @Success 200
 // @Router /admin/reset-signup-email/user/{email} [post]
-func ResetSignUpUserByEmail(c fiber.Ctx) error {
+func (cr *AdminController) ResetSignUpUserByEmail(c fiber.Ctx) error {
     email := c.Params("email")
-    b, err := applicationUserSvc.ExistsByEmail(email)
+    b, err := cr.applicationUserSvc.ExistsByEmail(email)
     if err != nil {
         return err
     }
@@ -548,12 +555,12 @@ func ResetSignUpUserByEmail(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "User does not exist to reset signup")
     }
 
-    user, err := applicationUserSvc.FindByUsername(email, nil)
+    user, err := cr.applicationUserSvc.FindByUsername(email, nil)
     if err != nil {
         return err
     }
 
-    err = applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    err = cr.applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
     if err != nil {
         return err
     }
@@ -570,9 +577,9 @@ func ResetSignUpUserByEmail(c fiber.Ctx) error {
 // @Param        mobile           path        string  true  "Mobile"
 // @Success 200
 // @Router /admin/reset-signup-mobile/user/{mobile} [post]
-func ResetSignUpUserByMobile(c fiber.Ctx) error {
+func (cr *AdminController) ResetSignUpUserByMobile(c fiber.Ctx) error {
     mobile := c.Params("mobile")
-    b, err := applicationUserSvc.ExistsByMobileNo(mobile)
+    b, err := cr.applicationUserSvc.ExistsByMobileNo(mobile)
     if err != nil {
         return err
     }
@@ -581,12 +588,12 @@ func ResetSignUpUserByMobile(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "User does not exist to reset signup")
     }
 
-    user, err := applicationUserSvc.FindByUsername(mobile, nil)
+    user, err := cr.applicationUserSvc.FindByUsername(mobile, nil)
     if err != nil {
         return err
     }
 
-    err = applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    err = cr.applicationUserSvc.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
     if err != nil {
         return err
     }
@@ -604,7 +611,7 @@ func ResetSignUpUserByMobile(c fiber.Ctx) error {
 // @Param request body dto.AdminPortalLogDto true "AdminPortalLogDto Request"
 // @Success 200
 // @Router /admin/adminportal/save-log [post]
-func SaveAdminPortalLog(c fiber.Ctx) error {
+func (cr *AdminController) SaveAdminPortalLog(c fiber.Ctx) error {
     adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
@@ -615,7 +622,7 @@ func SaveAdminPortalLog(c fiber.Ctx) error {
         return err
     }
 
-    err = adminUserSvc.SaveAdminPortalLog(*data, adminId)
+    err = cr.adminUserSvc.SaveAdminPortalLog(*data, adminId)
     if err != nil {
         return err
     }
@@ -633,13 +640,13 @@ func SaveAdminPortalLog(c fiber.Ctx) error {
 // @Param request body dto.PostChangeUserPasswordDto true "PostChangeUserPasswordDto Request"
 // @Success 200
 // @Router /admin/change-user-password [post]
-func ChangeUserPassword(c fiber.Ctx) error {
+func (cr *AdminController) ChangeUserPassword(c fiber.Ctx) error {
     data := new(dto.PostChangeUserPasswordDto)
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
-    o, err := applicationUserSvc.FindByUserId(data.UserId, nil)
+    o, err := cr.applicationUserSvc.FindByUserId(data.UserId, nil)
     if err != nil {
         return err
     }
@@ -648,7 +655,7 @@ func ChangeUserPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "User does not exist")
     }
 
-    err = adminUserSvc.ChangeUserPassword(data.NewPassword, data.UserId)
+    err = cr.adminUserSvc.ChangeUserPassword(data.NewPassword, data.UserId)
     if err != nil {
         return err
     }
@@ -666,10 +673,10 @@ func ChangeUserPassword(c fiber.Ctx) error {
 // @Param        email              path        string  true  "Email"
 // @Success 200
 // @Router /admin/self-reset-password/{branchId}/{email} [post]
-func SelfResetPassword(c fiber.Ctx) error {
+func (cr *AdminController) SelfResetPassword(c fiber.Ctx) error {
     branchId := c.Params("branchId")
     email := c.Params("email")
-    o, err := applicationUserSvc.FindByUsername(email, nil)
+    o, err := cr.applicationUserSvc.FindByUsername(email, nil)
     if err != nil {
         return err
     }
@@ -682,7 +689,7 @@ func SelfResetPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
     }
 
-    ab, err := assignBranchSvc.FindAllByUserId(o.UserID.Int64)
+    ab, err := cr.assignBranchSvc.FindAllByUserId(o.UserID.Int64)
     if err != nil {
         return err
     }
@@ -699,7 +706,7 @@ func SelfResetPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
     }
 
-    err = applicationUserSvc.GenerateVerificationCode(o)
+    err = cr.applicationUserSvc.GenerateVerificationCode(o)
     if err != nil {
         return err
     }

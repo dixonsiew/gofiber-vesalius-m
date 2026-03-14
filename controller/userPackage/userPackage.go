@@ -4,7 +4,6 @@ import (
     "fmt"
     "strconv"
     "strings"
-    "vesaliusm/database"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     patientPurchaseDetailsService "vesaliusm/service/patientPurchaseDetails"
@@ -13,7 +12,15 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService = patientPurchaseDetailsService.NewPatientPurchaseDetailsService(database.GetDb(), database.GetCtx())
+type UserPackageController struct {
+    patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService
+}
+
+func NewUserPackageController(patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService) *UserPackageController {
+    return &UserPackageController{
+        patientPurchaseDetailsSvc: patientPurchaseDetailsSvc,
+    }
+}
 
 // CheckPackageExpiryMaxpurchase
 //
@@ -23,7 +30,7 @@ var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDeta
 // @Param request body dto.CheckPackageExpiryMaxpurchaseDto true "CheckPackageExpiryMaxpurchaseDto"
 // @Success 200
 // @Router /user-package/check/expiry-maxpurchase [post]
-func CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
+func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
     data := new(dto.CheckPackageExpiryMaxpurchaseDto)
     if err := utils.BindNValidate(c, data); err != nil {
         return err
@@ -33,7 +40,7 @@ func CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
     cartResult := make([]interface{}, 0)
 
     for _, pkg := range data.Package {
-        r, err := patientPurchaseDetailsSvc.CheckPackageExpiryMaxPurchase(pkg.PackageID, pkg.QuantityPurchased)
+        r, err := cr.patientPurchaseDetailsSvc.CheckPackageExpiryMaxPurchase(pkg.PackageID, pkg.QuantityPurchased)
         if err != nil {
             return err
         }
@@ -60,7 +67,7 @@ func CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all/mobile [get]
-func GetAllUserPurchaseHistory(c fiber.Ctx) error {
+func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
     if err != nil {
         return err
@@ -72,7 +79,7 @@ func GetAllUserPurchaseHistory(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := patientPurchaseDetailsSvc.ListByPrn(user.UserID.Int64, page, limit)
+    m, err := cr.patientPurchaseDetailsSvc.ListByPrn(user.UserID.Int64, page, limit)
     if err != nil {
         return err
     }
@@ -91,10 +98,10 @@ func GetAllUserPurchaseHistory(c fiber.Ctx) error {
 // @Param        _limit             query      string  false  "_limit" default:"10"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all [get]
-func GetAllPurchaseHistory(c fiber.Ctx) error {
+func (cr *UserPackageController) GetAllPurchaseHistory(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := patientPurchaseDetailsSvc.List(page, limit)
+    m, err := cr.patientPurchaseDetailsSvc.List(page, limit)
     if err != nil {
         return err
     }
@@ -114,7 +121,7 @@ func GetAllPurchaseHistory(c fiber.Ctx) error {
 // @Param request body dto.SearchPurchaseHistoryDto false "Keyword"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all [post]
-func SearchAllPurchaseHistory(c fiber.Ctx) error {
+func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
     var data fiber.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
@@ -155,7 +162,7 @@ func SearchAllPurchaseHistory(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := patientPurchaseDetailsSvc.ListByKeyword(key, key2, key3, key4, page, limit)
+    m, err := cr.patientPurchaseDetailsSvc.ListByKeyword(key, key2, key3, key4, page, limit)
     if err != nil {
         return err
     }
@@ -173,14 +180,14 @@ func SearchAllPurchaseHistory(c fiber.Ctx) error {
 // @Param        purchaseId         path      string  true  "PurchaseId"
 // @Success 200 {object} userPackage.UserPackage
 // @Router /user-package/{purchaseId} [get]
-func GetUserPackageById(c fiber.Ctx) error {
+func (cr *UserPackageController) GetUserPackageById(c fiber.Ctx) error {
     purchaseId := c.Params("purchaseId")
     ipurchaseId, err := strconv.ParseInt(purchaseId, 10, 64)
     if err != nil {
         return err
     }
 
-    o, err := patientPurchaseDetailsSvc.FindByPurchaseId(ipurchaseId)
+    o, err := cr.patientPurchaseDetailsSvc.FindByPurchaseId(ipurchaseId)
     if err != nil {
         return err
     }

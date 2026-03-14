@@ -1,15 +1,15 @@
 package router
 
 import (
-    "vesaliusm/router/admin"
-    "vesaliusm/router/auth"
-    "vesaliusm/router/common"
-    "vesaliusm/router/clubs"
-    "vesaliusm/router/futureOrder"
-    "vesaliusm/router/publicBranch"
-    "vesaliusm/router/user"
-    "vesaliusm/router/userNotification"
-    "vesaliusm/router/userPackage"
+    "vesaliusm/controller/admin"
+    "vesaliusm/controller/auth"
+    "vesaliusm/controller/common"
+    "vesaliusm/controller/clubs"
+    "vesaliusm/controller/futureOrder"
+    "vesaliusm/controller/publicBranch"
+    "vesaliusm/controller/user"
+    "vesaliusm/controller/userNotification"
+    "vesaliusm/controller/userPackage"
 
     "github.com/gofiber/fiber/v3"
 )

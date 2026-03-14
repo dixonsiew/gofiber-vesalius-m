@@ -1,7 +1,6 @@
 package auth
 
 import (
-    "vesaliusm/database"
     "vesaliusm/dto"
     adminUserService "vesaliusm/service/adminUser"
     applicationuserService "vesaliusm/service/applicationUser"
@@ -14,12 +13,28 @@ import (
     "github.com/gofiber/fiber/v3"
 )
 
-var (
-    adminUserSvc *adminUserService.AdminUserService = 
-        adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
-    applicationUserSvc *applicationuserService.ApplicationUserService = 
-        applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
-)
+type AuthController struct {
+    adminUserSvc       *adminUserService.AdminUserService
+    applicationUserSvc *applicationuserService.ApplicationUserService
+    authSvc            *authService.AuthService
+    tokenSvc           *tokenService.TokenService
+    tokenAdminSvc      *tokenAdminService.TokenAdminService
+}
+
+func NewAuthController(
+    adminUserSvc *adminUserService.AdminUserService,
+    applicationUserSvc *applicationuserService.ApplicationUserService,
+    authSvc *authService.AuthService,
+    tokenSvc *tokenService.TokenService,
+    tokenAdminSvc *tokenAdminService.TokenAdminService) *AuthController {
+    return &AuthController{
+        adminUserSvc:       adminUserSvc,
+        applicationUserSvc: applicationUserSvc,
+        authSvc:            authSvc,
+        tokenSvc:           tokenSvc,
+        tokenAdminSvc:      tokenAdminSvc,
+    }
+}
 
 // Login
 //
@@ -28,7 +43,7 @@ var (
 // @Param request body dto.LoginDto true "Login Request"
 // @Success 200
 // @Router /login [post]
-func Login(c fiber.Ctx) error {
+func (cr *AuthController) Login(c fiber.Ctx) error {
     data := new(dto.LoginDto)
     mx := fiber.Map{
         "statusCode": fiber.StatusUnauthorized,
@@ -46,62 +61,62 @@ func Login(c fiber.Ctx) error {
     }
 
     if data.FromAdmin {
-        user, err := adminUserSvc.FindByEmail(data.Username)
+        user, err := cr.adminUserSvc.FindByEmail(data.Username)
         if err != nil {
             return err
         }
 
         valid := false
         if user != nil {
-            valid = adminUserSvc.ValidateCredentials(*user, data.Password)
+            valid = cr.adminUserSvc.ValidateCredentials(*user, data.Password)
         }
 
         if valid == false {
             return fiber.NewError(fiber.StatusUnauthorized, "Invalid Credentials")
         }
 
-        token, err := tokenAdminService.GenerateAccessToken(*user)
+        token, err := cr.tokenAdminSvc.GenerateAccessToken(*user)
         if err != nil {
             return err
         }
 
-        refreshToken, err := tokenAdminService.GenerateRefreshToken(*user)
+        refreshToken, err := cr.tokenAdminSvc.GenerateRefreshToken(*user)
         if err != nil {
             return err
         }
 
         c.Set(fiber.HeaderAuthorization, token)
         return c.JSON(fiber.Map{
-            "type": "bearer",
-            "token": token,
-            "refresh_token": refreshToken,
+            "type":             "bearer",
+            "token":            token,
+            "refresh_token":    refreshToken,
             "isFirstTimeLogin": false,
-            "role": user.Role,
+            "role":             user.Role,
         })
     } else {
-        user, err := authService.AuthenticateUser(*data)
+        user, err := cr.authSvc.AuthenticateUser(*data)
         if err != nil {
             return err
         }
 
-        token, err := tokenService.GenerateAccessToken(*user)
+        token, err := cr.tokenSvc.GenerateAccessToken(*user)
         if err != nil {
             return err
         }
 
-        refreshToken, err := tokenService.GenerateRefreshToken(*user)
+        refreshToken, err := cr.tokenSvc.GenerateRefreshToken(*user)
         if err != nil {
             return err
         }
 
         c.Set(fiber.HeaderAuthorization, token)
         return c.JSON(fiber.Map{
-            "type": "bearer",
-            "token": token,
-            "refresh_token": refreshToken,
-            "isFirstTimeLogin": user.FirstTimeLogin,
+            "type":                 "bearer",
+            "token":                token,
+            "refresh_token":        refreshToken,
+            "isFirstTimeLogin":     user.FirstTimeLogin,
             "isFirstTimeBiometric": user.FirstTimeBiometric,
-            "role": user.Role,
+            "role":                 user.Role,
         })
     }
 }

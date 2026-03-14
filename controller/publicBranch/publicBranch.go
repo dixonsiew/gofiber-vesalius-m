@@ -2,13 +2,19 @@ package publicBranch
 
 import (
     branchService "vesaliusm/service/branch"
-    "vesaliusm/database"
 
     "github.com/gofiber/fiber/v3"
 )
 
-var branchSvc *branchService.BranchService = 
-    branchService.NewBranchService(database.GetDb(), database.GetCtx())
+type PublicBranchController struct {
+    branchSvc *branchService.BranchService
+}
+
+func NewPublicBranchController(branchSvc *branchService.BranchService) *PublicBranchController {
+    return &PublicBranchController{
+        branchSvc: branchSvc,
+    }
+}
 
 // GetList
 //
@@ -16,8 +22,8 @@ var branchSvc *branchService.BranchService =
 // @Produce json
 // @Success 200 {array} model.Branch
 // @Router /public/branch/list [get]
-func GetList(c fiber.Ctx) error {
-    lx, err := branchSvc.FindAll()
+func (cr *PublicBranchController) GetList(c fiber.Ctx) error {
+    lx, err := cr.branchSvc.FindAll()
     if err != nil {
         return err
     }

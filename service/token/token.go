@@ -4,7 +4,6 @@ import (
     "fmt"
     "strconv"
     "time"
-    "vesaliusm/database"
     "vesaliusm/model"
     applicationuserService "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
@@ -13,10 +12,15 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = 
-    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+type TokenService struct {
+    applicationUserSvc *applicationuserService.ApplicationUserService
+}
 
-func GenerateAccessToken(user model.ApplicationUser) (string, error) {
+func NewTokenService(applicationUserSvc *applicationuserService.ApplicationUserService) *TokenService {
+    return &TokenService{applicationUserSvc: applicationUserSvc}
+}
+
+func (s *TokenService) GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email.String,
         "sessionId": user.SessionID.String,
@@ -34,7 +38,7 @@ func GenerateAccessToken(user model.ApplicationUser) (string, error) {
     return t, nil
 }
 
-func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
+func (s *TokenService) GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email.String,
         "sessionId": user.SessionID.String,
@@ -52,13 +56,13 @@ func GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     return t, nil
 }
 
-func ResolveRefreshToken(encoded string) (*model.ApplicationUser, error) {
-    _, id, err := decodeRefreshToken(encoded)
+func (s *TokenService) ResolveRefreshToken(encoded string) (*model.ApplicationUser, error) {
+    _, id, err := s.decodeRefreshToken(encoded)
     if id == 0 || err != nil {
         return nil, fmt.Errorf("refresh token not found")
     }
 
-    user, err := getUserFromRefreshTokenPayload(id)
+    user, err := s.getUserFromRefreshTokenPayload(id)
     if err != nil {
         return nil, fmt.Errorf("refresh token malformed")
     }
@@ -66,13 +70,13 @@ func ResolveRefreshToken(encoded string) (*model.ApplicationUser, error) {
     return user, nil
 }
 
-func CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
-    user, err := ResolveRefreshToken(refresh)
+func (s *TokenService) CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
+    user, err := s.ResolveRefreshToken(refresh)
     if err != nil {
         return nil, err
     }
 
-    token, err := GenerateAccessToken(*user)
+    token, err := s.GenerateAccessToken(*user)
     if err != nil {
         return nil, err
     }
@@ -83,7 +87,7 @@ func CreateAccessTokenFromRefreshToken(refresh string) (fiber.Map, error) {
     }, nil
 }
 
-func decodeRefreshToken(tokenStr string) (string, int64, error) {
+func (s *TokenService) decodeRefreshToken(tokenStr string) (string, int64, error) {
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
         return []byte(utils.JWT_SECRET), nil
     })
@@ -104,6 +108,6 @@ func decodeRefreshToken(tokenStr string) (string, int64, error) {
     return username, id, nil
 }
 
-func getUserFromRefreshTokenPayload(id int64) (*model.ApplicationUser, error) {
-    return applicationUserSvc.FindByUserId(id, nil)
+func (s *TokenService) getUserFromRefreshTokenPayload(id int64) (*model.ApplicationUser, error) {
+    return s.applicationUserSvc.FindByUserId(id, nil)
 }

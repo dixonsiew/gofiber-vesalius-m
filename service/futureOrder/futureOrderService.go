@@ -3,6 +3,7 @@ package futureOrder
 import (
     "context"
     "vesaliusm/model"
+    "vesaliusm/model/futureOrder"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
@@ -17,7 +18,7 @@ func NewFutureOrderService(db *sqlx.DB, ctx context.Context) *FutureOrderService
     return &FutureOrderService{db: db, ctx: ctx}
 }
 
-func (s *FutureOrderService) FindAll(patientPrn string, offset int, limit int) ([]model.FutureOrder, error) {
+func (s *FutureOrderService) FindAll(patientPrn string, offset int, limit int) ([]futureOrder.FutureOrder, error) {
     query := `
         SELECT np.PATIENT_NAME, npfo.PRN, npfo.PLAN_TYPE, 
         npfo.START_DATE_TIME, npfo.ORDER_DOCTOR,
@@ -46,7 +47,7 @@ func (s *FutureOrderService) FindAll(patientPrn string, offset int, limit int) (
         )
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    list := make([]model.FutureOrder, 0)
+    list := make([]futureOrder.FutureOrder, 0)
     err := s.db.SelectContext(s.ctx, &list, query, patientPrn, offset, limit)
     if err != nil {
         utils.LogError(err)

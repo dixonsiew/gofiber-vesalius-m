@@ -5,53 +5,53 @@ import (
 )
 
 type LittleExplorersKidsMyActivity struct {
-    KidsName             null.String `json:"kidsName" db:"KIDS_NAME"`
-    KidsMembershipNumber null.String `json:"kidsMembershipNumber" db:"KIDS_MEMBERSHIP_NUMBER"`
-    KidsActivityName     null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME"`
-    ActivityDateTime     null.String `json:"activityDateTime" db:"ACTIVITY_DATE_TIME"`
+    KidsName             null.String `json:"kidsName" db:"KIDS_NAME" swaggertype:"string"`
+    KidsMembershipNumber null.String `json:"kidsMembershipNumber" db:"KIDS_MEMBERSHIP_NUMBER" swaggertype:"string"`
+    KidsActivityName     null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME" swaggertype:"string"`
+    ActivityDateTime     null.String `json:"activityDateTime" db:"ACTIVITY_DATE_TIME" swaggertype:"string"`
 }
 
 type GoldenPearlMyActivity struct {
-    GoldenName             null.String `json:"goldenName" db:"GOLDEN_NAME"`
-    GoldenMembershipNumber null.String `json:"goldenMembershipNumber" db:"GOLDEN_MEMBERSHIP_NUMBER"`
-    GoldenActivityName     null.String `json:"goldenActivityName" db:"GOLDEN_ACTIVITY_NAME"`
-    ActivityDateTime       null.String `json:"activityDateTime" db:"ACTIVITY_DATE_TIME"`
+    GoldenName             null.String `json:"goldenName" db:"GOLDEN_NAME" swaggertype:"string"`
+    GoldenMembershipNumber null.String `json:"goldenMembershipNumber" db:"GOLDEN_MEMBERSHIP_NUMBER" swaggertype:"string"`
+    GoldenActivityName     null.String `json:"goldenActivityName" db:"GOLDEN_ACTIVITY_NAME" swaggertype:"string"`
+    ActivityDateTime       null.String `json:"activityDateTime" db:"ACTIVITY_DATE_TIME" swaggertype:"string"`
 }
 
 type LittleExplorersKidsMembership struct {
-    KidsMembershipID       null.Int64  `json:"kidsMembershipID" db:"KIDS_MEMBERSHIP_ID"`
-    KidsMembershipNumber   null.String `json:"kidsMembershipNumber" db:"KIDS_MEMBERSHIP_NUMBER"`
-    KidsMembershipJoinDate null.String `json:"kidsMembershipJoinDate" db:"KIDS_MEMBERSHIP_JOIN_DATE"`
-    KidsPrn                null.String `json:"kidsPrn" db:"KIDS_PRN"`
-    KidsName               null.String `json:"kidsName" db:"KIDS_NAME"`
-    KidsDob                null.String `json:"kidsDob" db:"KIDS_DOB"`
-    KidsDocType            null.String `json:"kidsDocType" db:"KIDS_DOC_TYPE"`
-    KidsDocNumber          null.String `json:"kidsDocNumber" db:"KIDS_DOC_NUMBER"`
-    KidsGender             null.String `json:"kidsGender" db:"KIDS_GENDER"`
-    KidsNationality        null.String `json:"kidsNationality" db:"KIDS_NATIONALITY"`
-    KidsEmail              null.String `json:"kidsEmail" db:"KIDS_EMAIL"`
-    GuardianPrn            null.String `json:"guardianPrn" db:"GUARDIAN_PRN"`
-    GuardianName           null.String `json:"guardianName" db:"GUARDIAN_NAME"`
-    GuardianDob            null.String `json:"guardianDob" db:"GUARDIAN_DOB"`
-    GuardianDocType        null.String `json:"guardianDocType" db:"GUARDIAN_DOC_TYPE"`
-    GuardianDocNumber      null.String `json:"guardianDocNumber" db:"GUARDIAN_DOC_NUMBER"`
-    GuardianGender         null.String `json:"guardianGender" db:"GUARDIAN_GENDER"`
-    GuardianNationality    null.String `json:"guardianNationality" db:"GUARDIAN_NATIONALITY"`
-    GuardianEmail          null.String `json:"guardianEmail" db:"GUARDIAN_EMAIL"`
-    GuardianHomeContact    null.String `json:"guardianHomeContact" db:"GUARDIAN_HOME_CONTACT"`
-    GuardianMobileContact  null.String `json:"guardianMobileContact" db:"GUARDIAN_MOBILE_CONTACT"`
-    GuardianAddress1       null.String `json:"guardianAddress1" db:"GUARDIAN_ADDRESS1"`
-    GuardianAddress2       null.String `json:"guardianAddress2" db:"GUARDIAN_ADDRESS2"`
-    GuardianAddress3       null.String `json:"guardianAddress3" db:"GUARDIAN_ADDRESS3"`
-    GuardianPostCode       null.String `json:"guardianPostCode" db:"GUARDIAN_POSTCODE"`
-    GuardianState          null.String `json:"guardianState" db:"GUARDIAN_STATE"`
-    GuardianCountryCode    null.String `json:"guardianCountryCode" db:"GUARDIAN_COUNTRY_CODE"`
-    Relationship           null.String `json:"relationship" db:"RELATIONSHIP"`
-    PreferredLanguage      null.String `json:"preferredLanguage" db:"PREFERRED_LANGUAGE"`
-    IsActive               null.String `json:"isActive" db:"IS_ACTIVE"`
+    KidsMembershipID       null.Int64  `json:"kidsMembershipID" db:"KIDS_MEMBERSHIP_ID" swaggertype:"integer"`
+    KidsMembershipNumber   null.String `json:"kidsMembershipNumber" db:"KIDS_MEMBERSHIP_NUMBER" swaggertype:"string"`
+    KidsMembershipJoinDate null.String `json:"kidsMembershipJoinDate" db:"KIDS_MEMBERSHIP_JOIN_DATE" swaggertype:"string"`
+    KidsPrn                null.String `json:"kidsPrn" db:"KIDS_PRN" swaggertype:"string"`
+    KidsName               null.String `json:"kidsName" db:"KIDS_NAME" swaggertype:"string"`
+    KidsDob                null.String `json:"kidsDob" db:"KIDS_DOB" swaggertype:"string"`
+    KidsDocType            null.String `json:"kidsDocType" db:"KIDS_DOC_TYPE" swaggertype:"string"`
+    KidsDocNumber          null.String `json:"kidsDocNumber" db:"KIDS_DOC_NUMBER" swaggertype:"string"`
+    KidsGender             null.String `json:"kidsGender" db:"KIDS_GENDER" swaggertype:"string"`
+    KidsNationality        null.String `json:"kidsNationality" db:"KIDS_NATIONALITY" swaggertype:"string"`
+    KidsEmail              null.String `json:"kidsEmail" db:"KIDS_EMAIL" swaggertype:"string"`
+    GuardianPrn            null.String `json:"guardianPrn" db:"GUARDIAN_PRN" swaggertype:"string"`
+    GuardianName           null.String `json:"guardianName" db:"GUARDIAN_NAME" swaggertype:"string"`
+    GuardianDob            null.String `json:"guardianDob" db:"GUARDIAN_DOB" swaggertype:"string"`
+    GuardianDocType        null.String `json:"guardianDocType" db:"GUARDIAN_DOC_TYPE" swaggertype:"string"`
+    GuardianDocNumber      null.String `json:"guardianDocNumber" db:"GUARDIAN_DOC_NUMBER" swaggertype:"string"`
+    GuardianGender         null.String `json:"guardianGender" db:"GUARDIAN_GENDER" swaggertype:"string"`
+    GuardianNationality    null.String `json:"guardianNationality" db:"GUARDIAN_NATIONALITY" swaggertype:"string"`
+    GuardianEmail          null.String `json:"guardianEmail" db:"GUARDIAN_EMAIL" swaggertype:"string"`
+    GuardianHomeContact    null.String `json:"guardianHomeContact" db:"GUARDIAN_HOME_CONTACT" swaggertype:"string"`
+    GuardianMobileContact  null.String `json:"guardianMobileContact" db:"GUARDIAN_MOBILE_CONTACT" swaggertype:"string"`
+    GuardianAddress1       null.String `json:"guardianAddress1" db:"GUARDIAN_ADDRESS1" swaggertype:"string"`
+    GuardianAddress2       null.String `json:"guardianAddress2" db:"GUARDIAN_ADDRESS2" swaggertype:"string"`
+    GuardianAddress3       null.String `json:"guardianAddress3" db:"GUARDIAN_ADDRESS3" swaggertype:"string"`
+    GuardianPostCode       null.String `json:"guardianPostCode" db:"GUARDIAN_POSTCODE" swaggertype:"string"`
+    GuardianState          null.String `json:"guardianState" db:"GUARDIAN_STATE" swaggertype:"string"`
+    GuardianCountryCode    null.String `json:"guardianCountryCode" db:"GUARDIAN_COUNTRY_CODE" swaggertype:"string"`
+    Relationship           null.String `json:"relationship" db:"RELATIONSHIP" swaggertype:"string"`
+    PreferredLanguage      null.String `json:"preferredLanguage" db:"PREFERRED_LANGUAGE" swaggertype:"string"`
+    IsActive               null.String `json:"isActive" db:"IS_ACTIVE" swaggertype:"string"`
 
     // Fields used in some contexts (e.g., attendee export)
-    ActivityJoinDate null.String `json:"activityJoinDate" db:"ACTIVITY_DATE_TIME"`
+    ActivityJoinDate null.String `json:"activityJoinDate" db:"ACTIVITY_DATE_TIME" swaggertype:"string"`
 
     // Excel-specific fields (not stored in DB)
     ActivityJoinDateExcel       string `json:"activityJoinDateExcel"`
@@ -171,39 +171,39 @@ func (o *LittleExplorersKidsMembership) SetAttendees() {
 }
 
 type GoldenPearlMembership struct {
-    GoldenMembershipID       null.Int64  `json:"golden_membership_id" db:"GOLDEN_MEMBERSHIP_ID"`
-    GoldenMembershipNumber   null.String `json:"goldenMembershipNumber" db:"GOLDEN_MEMBERSHIP_NUMBER"`
-    GoldenMembershipJoinDate null.String `json:"goldenMembershipJoinDate" db:"GOLDEN_MEMBERSHIP_JOIN_DATE"`
-    GoldenPrn                null.String `json:"goldenPrn" db:"GOLDEN_PRN"`
-    GoldenName               null.String `json:"goldenName" db:"GOLDEN_NAME"`
-    GoldenDob                null.String `json:"goldenDob" db:"GOLDEN_DOB"`
-    GoldenDocType            null.String `json:"goldenDocType" db:"GOLDEN_DOC_TYPE"`
-    GoldenDocNumber          null.String `json:"goldenDocNumber" db:"GOLDEN_DOC_NUMBER"`
-    GoldenGender             null.String `json:"goldenGender" db:"GOLDEN_GENDER"`
-    GoldenNationality        null.String `json:"goldenNationality" db:"GOLDEN_NATIONALITY"`
-    GoldenEmail              null.String `json:"goldenEmail" db:"GOLDEN_EMAIL"`
-    NokPrn                   null.String `json:"nokPrn" db:"NOK_PRN"`
-    NokName                  null.String `json:"nokName" db:"NOK_NAME"`
-    NokDob                   null.String `json:"nokDob" db:"NOK_DOB"`
-    NokDocType               null.String `json:"nokDocType" db:"NOK_DOC_TYPE"`
-    NokDocNumber             null.String `json:"nokDocNumber" db:"NOK_DOC_NUMBER"`
-    NokGender                null.String `json:"nokGender" db:"NOK_GENDER"`
-    NokNationality           null.String `json:"nokNationality" db:"NOK_NATIONALITY"`
-    NokEmail                 null.String `json:"nokEmail" db:"NOK_EMAIL"`
-    NokHomeContact           null.String `json:"nokHomeContact" db:"NOK_HOME_CONTACT"`
-    NokMobileContact         null.String `json:"nokMobileContact" db:"NOK_MOBILE_CONTACT"`
-    NokAddress1              null.String `json:"nokAddress1" db:"NOK_ADDRESS1"`
-    NokAddress2              null.String `json:"nokAddress2" db:"NOK_ADDRESS2"`
-    NokAddress3              null.String `json:"nokAddress3" db:"NOK_ADDRESS3"`
-    NokPostCode              null.String `json:"nokPostCode" db:"NOK_POSTCODE"`
-    NokState                 null.String `json:"nokState" db:"NOK_STATE"`
-    NokCountryCode           null.String `json:"nokCountryCode" db:"NOK_COUNTRY_CODE"`
-    Relationship             null.String `json:"relationship" db:"RELATIONSHIP"`
-    PreferredLanguage        null.String `json:"preferredLanguage" db:"PREFERRED_LANGUAGE"`
-    IsActive                 null.String `json:"isActive" db:"IS_ACTIVE"`
+    GoldenMembershipID       null.Int64  `json:"golden_membership_id" db:"GOLDEN_MEMBERSHIP_ID" swaggertype:"integer"`
+    GoldenMembershipNumber   null.String `json:"goldenMembershipNumber" db:"GOLDEN_MEMBERSHIP_NUMBER" swaggertype:"string"`
+    GoldenMembershipJoinDate null.String `json:"goldenMembershipJoinDate" db:"GOLDEN_MEMBERSHIP_JOIN_DATE" swaggertype:"string"`
+    GoldenPrn                null.String `json:"goldenPrn" db:"GOLDEN_PRN" swaggertype:"string"`
+    GoldenName               null.String `json:"goldenName" db:"GOLDEN_NAME" swaggertype:"string"`
+    GoldenDob                null.String `json:"goldenDob" db:"GOLDEN_DOB" swaggertype:"string"`
+    GoldenDocType            null.String `json:"goldenDocType" db:"GOLDEN_DOC_TYPE" swaggertype:"string"`
+    GoldenDocNumber          null.String `json:"goldenDocNumber" db:"GOLDEN_DOC_NUMBER" swaggertype:"string"`
+    GoldenGender             null.String `json:"goldenGender" db:"GOLDEN_GENDER" swaggertype:"string"`
+    GoldenNationality        null.String `json:"goldenNationality" db:"GOLDEN_NATIONALITY" swaggertype:"string"`
+    GoldenEmail              null.String `json:"goldenEmail" db:"GOLDEN_EMAIL" swaggertype:"string"`
+    NokPrn                   null.String `json:"nokPrn" db:"NOK_PRN" swaggertype:"string"`
+    NokName                  null.String `json:"nokName" db:"NOK_NAME" swaggertype:"string"`
+    NokDob                   null.String `json:"nokDob" db:"NOK_DOB" swaggertype:"string"`
+    NokDocType               null.String `json:"nokDocType" db:"NOK_DOC_TYPE" swaggertype:"string"`
+    NokDocNumber             null.String `json:"nokDocNumber" db:"NOK_DOC_NUMBER" swaggertype:"string"`
+    NokGender                null.String `json:"nokGender" db:"NOK_GENDER" swaggertype:"string"`
+    NokNationality           null.String `json:"nokNationality" db:"NOK_NATIONALITY" swaggertype:"string"`
+    NokEmail                 null.String `json:"nokEmail" db:"NOK_EMAIL" swaggertype:"string"`
+    NokHomeContact           null.String `json:"nokHomeContact" db:"NOK_HOME_CONTACT" swaggertype:"string"`
+    NokMobileContact         null.String `json:"nokMobileContact" db:"NOK_MOBILE_CONTACT" swaggertype:"string"`
+    NokAddress1              null.String `json:"nokAddress1" db:"NOK_ADDRESS1" swaggertype:"string"`
+    NokAddress2              null.String `json:"nokAddress2" db:"NOK_ADDRESS2" swaggertype:"string"`
+    NokAddress3              null.String `json:"nokAddress3" db:"NOK_ADDRESS3" swaggertype:"string"`
+    NokPostCode              null.String `json:"nokPostCode" db:"NOK_POSTCODE" swaggertype:"string"`
+    NokState                 null.String `json:"nokState" db:"NOK_STATE" swaggertype:"string"`
+    NokCountryCode           null.String `json:"nokCountryCode" db:"NOK_COUNTRY_CODE" swaggertype:"string"`
+    Relationship             null.String `json:"relationship" db:"RELATIONSHIP" swaggertype:"string"`
+    PreferredLanguage        null.String `json:"preferredLanguage" db:"PREFERRED_LANGUAGE" swaggertype:"string"`
+    IsActive                 null.String `json:"isActive" db:"IS_ACTIVE" swaggertype:"string"`
 
     // Fields used in attendee contexts
-    ActivityJoinDate null.String `json:"activityJoinDate" db:"ACTIVITY_DATE_TIME"`
+    ActivityJoinDate null.String `json:"activityJoinDate" db:"ACTIVITY_DATE_TIME" swaggertype:"string"`
 
     // Excel-specific fields (not stored in DB)
     ActivityJoinDateExcel         string `json:"activityJoinDateExcel"`
@@ -212,7 +212,7 @@ type GoldenPearlMembership struct {
     NokDobExcel                   string `json:"nokDobExcel"`
 }
 
-func (o *GoldenPearlMembership) Set() {
+func (o *GoldenPearlMembership) SetWebAdmin() {
     if !o.GoldenPrn.Valid {
         o.GoldenPrn.String = "-"
     }
@@ -273,5 +273,144 @@ func (o *GoldenPearlMembership) Set() {
 
     if !o.NokCountryCode.Valid {
         o.NokCountryCode.String = "-"
+    }
+}
+
+func (o *GoldenPearlMembership) SetAttendees() {
+    if o.GoldenPrn.Valid {
+        o.GoldenPrn.String = "-"
+    }
+
+    if !o.GoldenDob.Valid {
+        o.GoldenDob.String = "-"
+    }
+
+    if !o.GoldenEmail.Valid {
+        o.GoldenEmail.String = "-"
+    }
+
+    if !o.NokPrn.Valid {
+        o.NokPrn.String = "-"
+    }
+
+    if !o.NokHomeContact.Valid {
+        o.GoldenDob.String = "-"
+    }
+
+    if !o.NokMobileContact.Valid {
+        o.GoldenDob.String = "-"
+    }
+
+    if !o.NokAddress1.Valid {
+        o.NokAddress1.String = "-"
+    }
+
+    if !o.NokAddress2.Valid {
+        o.NokAddress2.String = "-"
+    }
+
+    if !o.NokAddress3.Valid {
+        o.NokAddress3.String = "-"
+    }
+
+    if !o.NokPostCode.Valid {
+        o.NokPostCode.String = "-"
+    }
+
+    if !o.NokState.Valid {
+        o.NokState.String = "-"
+    }
+
+    if !o.NokCountryCode.Valid {
+        o.NokCountryCode.String = "-"
+    }
+}
+
+type LittleExplorersKidsAboutUs struct {
+    KidsClubID          null.Int64  `json:"kids_club_id" db:"KIDS_CLUB_ID" swaggertype:"integer"`
+    KidsClubTitle       null.String `json:"kidsClubTitle" db:"KIDS_CLUB_TITLE" swaggertype:"string"`
+    KidsClubDesc        null.String `json:"kidsClubDesc" db:"KIDS_CLUB_DESC" swaggertype:"string"`
+    KidsClubImage       null.String `json:"kidsClubImage" db:"KIDS_CLUB_IMG" swaggertype:"string"`
+    KidsClubTnc         null.String `json:"kidsClubTnc" db:"KIDS_CLUB_TNC" swaggertype:"string"`
+    KidsClubPartnerLink null.String `json:"kidsClubPartnerLink" db:"PARTNERS_LINK" swaggertype:"string"`
+}
+
+type GoldenPearlAboutUs struct {
+    GoldenClubID      null.Int64  `json:"golden_club_id" db:"GOLDEN_CLUB_ID" swaggertype:"integer"`
+    GoldenClubTitle   null.String `json:"goldenClubTitle" db:"GOLDEN_CLUB_TITLE" swaggertype:"string"`
+    GoldenClubDesc    null.String `json:"goldenClubDesc" db:"GOLDEN_CLUB_DESC" swaggertype:"string"`
+    GoldenClubImage   null.String `json:"goldenClubImage" db:"GOLDEN_CLUB_IMG" swaggertype:"string"`
+    GoldenClubTnc     null.String `json:"goldenClubTnc" db:"GOLDEN_CLUB_TNC" swaggertype:"string"`
+    GoldenClubExtLink null.String `json:"goldenClubExtLink" db:"EXTERNAL_LINK" swaggertype:"string"`
+}
+
+type LittleExplorersKidsActvParticipation struct {
+    KidsActvParticipationID int    `json:"kids_actv_participation_id"`
+    KidsActivityID          int    `json:"kidsActivityId"`
+    KidsMembershipID        int    `json:"kidsMembershipId"`
+    ActivityDateTime        string `json:"activityDateTime"`
+}
+
+type GoldenPearlActvParticipation struct {
+    GoldenActvParticipationID int    `json:"golden_actv_participation_id"`
+    GoldenActivityID          int    `json:"goldenActivityId"`
+    GoldenMembershipID        int    `json:"goldenMembershipId"`
+    ActivityDateTime          string `json:"activityDateTime"`
+}
+
+type LittleExplorersKidsActivity struct {
+    KidsActivityID         null.Int64  `json:"kids_activity_id" db:"KIDS_ACTIVITY_ID" swaggertype:"integer"`
+    KidsActivityCode       null.String `json:"kidsActivityCode" db:"KIDS_ACTIVITY_CODE" swaggertype:"string"`
+    KidsActivityName       null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME" swaggertype:"string"`
+    KidsActivityDesc       null.String `json:"kidsActivityDesc" db:"KIDS_ACTIVITY_DESC" swaggertype:"string"`
+    KidsActivityImage      null.String `json:"kidsActivityImage" db:"KIDS_ACTIVITY_IMG" swaggertype:"string"`
+    ActivityStartDateTime  null.String `json:"activityStartDateTime" db:"ACTIVITY_START_DATETIME" swaggertype:"string"`
+    ActivityEndDateTime    null.String `json:"activityEndDateTime" db:"ACTIVITY_END_DATETIME" swaggertype:"string"`
+    ActivityMaxParticipant null.Int32  `json:"activityMaxParticipant" db:"ACTIVITY_MAX_PARTICIPANT" swaggertype:"integer"`
+    ActivityTnc            null.String `json:"activityTnc" db:"ACTIVITY_TNC" swaggertype:"string"`
+    ActivityDisplayOrder   null.String `json:"activityDisplayOrder" db:"ACTIVITY_DISPLAY_ORDER" swaggertype:"string"`
+    ActivityAttendees      null.Int32  `json:"activityAttendees" db:"ATTENDEES" swaggertype:"integer"`
+    ActivitySeatsAvailable int         `json:"activitySeatsAvailable"`
+    // Excel fields - not in DB, used for export
+    ActivityStartDateTimeExcel string `json:"activityStartDateTimeExcel"`
+    ActivityEndDateTimeExcel   string `json:"activityEndDateTimeExcel"`
+}
+
+func (o *LittleExplorersKidsActivity) Set() {
+    if !o.ActivityEndDateTime.Valid {
+        o.ActivityEndDateTime.String = "-"
+    }
+
+    if !o.ActivityTnc.Valid {
+        o.ActivityTnc.String = "-"
+    }
+}
+
+type GoldenPearlActivity struct {
+    GoldenActivityID       null.Int64  `json:"golden_activity_id" db:"GOLDEN_ACTIVITY_ID" swaggertype:"integer"`
+    GoldenActivityCode     null.String `json:"goldenActivityCode" db:"GOLDEN_ACTIVITY_CODE" swaggertype:"string"`
+    GoldenActivityName     null.String `json:"goldenActivityName" db:"GOLDEN_ACTIVITY_NAME" swaggertype:"string"`
+    GoldenActivityDesc     null.String `json:"goldenActivityDesc" db:"GOLDEN_ACTIVITY_DESC" swaggertype:"string"`
+    GoldenActivityImage    null.String `json:"goldenActivityImage" db:"GOLDEN_ACTIVITY_IMG" swaggertype:"string"`
+    ActivityStartDateTime  null.String `json:"activityStartDateTime" db:"ACTIVITY_START_DATETIME" swaggertype:"string"`
+    ActivityEndDateTime    null.String `json:"activityEndDateTime" db:"ACTIVITY_END_DATETIME" swaggertype:"string"`
+    ActivityMaxParticipant null.Int32  `json:"activityMaxParticipant" db:"ACTIVITY_MAX_PARTICIPANT" swaggertype:"integer"`
+    ActivityTnc            null.String `json:"activityTnc" db:"ACTIVITY_TNC" swaggertype:"string"`
+    ActivityDisplayOrder   null.String `json:"activityDisplayOrder" db:"ACTIVITY_DISPLAY_ORDER" swaggertype:"string"`
+    ActivityAttendees      null.Int32  `json:"activityAttendees" db:"ATTENDEES" swaggertype:"integer"`
+    ActivitySeatsAvailable null.Int32  `json:"activitySeatsAvailable" db:"ACTIVITY_SEATS_AVAILABLE" swaggertype:"integer"`
+
+    // Excel export fields (not stored in DB)
+    ActivityStartDateTimeExcel null.String `json:"activityStartDateTimeExcel"`
+    ActivityEndDateTimeExcel   null.String `json:"activityEndDateTimeExcel"`
+}
+
+func (o *GoldenPearlActivity) Set() {
+    if !o.ActivityEndDateTime.Valid {
+        o.ActivityEndDateTime.String = "-"
+    }
+
+    if !o.ActivityTnc.Valid {
+        o.ActivityTnc.String = "-"
     }
 }

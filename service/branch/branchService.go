@@ -78,11 +78,11 @@ func (s *BranchService) FirstByURLLike(urlLikeStr string) (*model.Branch, error)
 
 func (s *BranchService) FindAll() ([]model.Branch, error) {
     const query = `SELECT * FROM BRANCH`
-    lx := make([]model.Branch, 0)
-    err := s.db.SelectContext(s.ctx, &lx, query)
+    list := make([]model.Branch, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return lx, nil
+    return list, nil
 }

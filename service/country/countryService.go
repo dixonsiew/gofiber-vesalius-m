@@ -20,19 +20,21 @@ func NewCountryService(db *sqlx.DB, ctx context.Context) *CountryService {
 }
 
 func (s *CountryService) FindAllCountryTelCode() ([]model.CountryTelCode, error) {
-    lx := make([]model.CountryTelCode, 0)
-    err := s.db.SelectContext(s.ctx, &lx, `SELECT COUNTRY_NAME, TEL_CODE FROM NOVA_COUNTRY WHERE TEL_CODE IS NOT NULL ORDER BY COUNTRY_NAME`)
+    query := `SELECT COUNTRY_NAME, TEL_CODE FROM NOVA_COUNTRY WHERE TEL_CODE IS NOT NULL ORDER BY COUNTRY_NAME`
+    list := make([]model.CountryTelCode, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return lx, nil
+    return list, nil
 }
 
 func (s *CountryService) FindCountryCodeByNationality(nationality string) (string, error) {
+    query := `SELECT COUNTRY_CODE FROM NOVA_COUNTRY WHERE NATIONALITY = :nationality`
     v := ""
     var r null.String
-    err := s.db.GetContext(s.ctx, &r, `SELECT COUNTRY_CODE FROM NOVA_COUNTRY WHERE NATIONALITY = :nationality`, nationality)
+    err := s.db.GetContext(s.ctx, &r, query, nationality)
     if err != nil {
         if err == sql.ErrNoRows {
             return v, err
@@ -45,21 +47,23 @@ func (s *CountryService) FindCountryCodeByNationality(nationality string) (strin
 }
 
 func (s *CountryService) FindAllCountries() ([]model.Country, error) {
-    lx := make([]model.Country, 0)
-    err := s.db.SelectContext(s.ctx, &lx, `SELECT COUNTRY_NAME, TEL_CODE, COUNTRY_CODE FROM NOVA_COUNTRY WHERE COUNTRY_NAME IS NOT NULL ORDER BY COUNTRY_NAME`)
+    query := `SELECT COUNTRY_NAME, TEL_CODE, COUNTRY_CODE FROM NOVA_COUNTRY WHERE COUNTRY_NAME IS NOT NULL ORDER BY COUNTRY_NAME`
+    list := make([]model.Country, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return lx, nil
+    return list, nil
 }
 
 func (s *CountryService) FindAllNationalities() ([]model.Nationality, error) {
-    lx := make([]model.Nationality, 0)
-    err := s.db.SelectContext(s.ctx, &lx, `SELECT NATIONALITY FROM NOVA_COUNTRY WHERE NATIONALITY IS NOT NULL ORDER BY NATIONALITY`)
+    query := `SELECT NATIONALITY FROM NOVA_COUNTRY WHERE NATIONALITY IS NOT NULL ORDER BY NATIONALITY`
+    list := make([]model.Nationality, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return lx, nil
+    return list, nil
 }
