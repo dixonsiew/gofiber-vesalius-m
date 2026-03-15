@@ -1,23 +1,27 @@
-package tokenadmin
+package tokenAdmin
 
 import (
     "fmt"
     "strconv"
     "time"
     "vesaliusm/model"
-    adminUserService "vesaliusm/service/adminUser"
+    "vesaliusm/service/adminUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
     "github.com/golang-jwt/jwt/v5"
 )
 
+var TokenAdminSvc *TokenAdminService = NewTokenAdminService()
+
 type TokenAdminService struct {
-    adminUserSvc *adminUserService.AdminUserService
+    adminUserService *adminUser.AdminUserService
 }
 
-func NewTokenAdminService(adminUserSvc *adminUserService.AdminUserService) *TokenAdminService {
-    return &TokenAdminService{adminUserSvc: adminUserSvc}
+func NewTokenAdminService() *TokenAdminService {
+    return &TokenAdminService{
+        adminUserService: adminUser.AdminUserSvc,
+    }
 }
 
 func (s *TokenAdminService) GenerateAccessToken(user model.AdminUser) (string, error) {
@@ -107,5 +111,5 @@ func (s *TokenAdminService) decodeRefreshToken(tokenStr string) (string, int64, 
 }
 
 func (s *TokenAdminService) getUserFromRefreshTokenPayload(id int64) (*model.AdminUser, error) {
-    return s.adminUserSvc.FindByAdminId(id)
+    return s.adminUserService.FindByAdminId(id)
 }

@@ -1,18 +1,18 @@
 package publicBranch
 
 import (
-    branchService "vesaliusm/service/branch"
+    "vesaliusm/service/branch"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type PublicBranchController struct {
-    branchSvc *branchService.BranchService
+    branchService *branch.BranchService
 }
 
-func NewPublicBranchController(branchSvc *branchService.BranchService) *PublicBranchController {
+func NewPublicBranchController() *PublicBranchController {
     return &PublicBranchController{
-        branchSvc: branchSvc,
+        branchService: branch.BranchSvc,
     }
 }
 
@@ -23,7 +23,7 @@ func NewPublicBranchController(branchSvc *branchService.BranchService) *PublicBr
 // @Success 200 {array} model.Branch
 // @Router /public/branch/list [get]
 func (cr *PublicBranchController) GetList(c fiber.Ctx) error {
-    lx, err := cr.branchSvc.FindAll()
+    lx, err := cr.branchService.FindAll()
     if err != nil {
         return err
     }

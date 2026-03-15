@@ -4,19 +4,19 @@ import (
     "fmt"
     "vesaliusm/dto"
     "vesaliusm/middleware"
-    applicationuserService "vesaliusm/service/applicationUser"
+    "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type UserController struct {
-    applicationUserSvc *applicationuserService.ApplicationUserService
+    applicationUserService *applicationUser.ApplicationUserService
 }
 
-func NewUserController(applicationUserSvc *applicationuserService.ApplicationUserService) *UserController {
+func NewUserController() *UserController {
     return &UserController{
-        applicationUserSvc: applicationUserSvc,
+        applicationUserService: applicationUser.ApplicationUserSvc,
     }
 }
 
@@ -32,7 +32,7 @@ func NewUserController(applicationUserSvc *applicationuserService.ApplicationUse
 func (cr *UserController) GetAllUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.applicationUserSvc.List(page, limit)
+    m, err := cr.applicationUserService.List(page, limit)
     if err != nil {
         return err
     }
@@ -54,7 +54,7 @@ func (cr *UserController) GetAllUsers(c fiber.Ctx) error {
 func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.applicationUserSvc.ListActive(page, limit)
+    m, err := cr.applicationUserService.ListActive(page, limit)
     if err != nil {
         return err
     }
@@ -79,7 +79,7 @@ func (cr *UserController) UpdatePlayerId(c fiber.Ctx) error {
     }
 
     playerId := c.Params("playerId")
-    err = cr.applicationUserSvc.UpdatePlayerId(playerId, id, nil)
+    err = cr.applicationUserService.UpdatePlayerId(playerId, id, nil)
     if err != nil {
         return err
     }
@@ -108,7 +108,7 @@ func (cr *UserController) AddMachineId(c fiber.Ctx) error {
         return err
     }
 
-    err = cr.applicationUserSvc.UpdateMachineId(data.MachineId, id, nil)
+    err = cr.applicationUserService.UpdateMachineId(data.MachineId, id, nil)
     if err != nil {
         return err
     }

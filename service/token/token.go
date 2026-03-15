@@ -5,19 +5,23 @@ import (
     "strconv"
     "time"
     "vesaliusm/model"
-    applicationuserService "vesaliusm/service/applicationUser"
+    "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
     "github.com/golang-jwt/jwt/v5"
 )
 
+var TokenSvc *TokenService = NewTokenService()
+
 type TokenService struct {
-    applicationUserSvc *applicationuserService.ApplicationUserService
+    applicationUserService *applicationUser.ApplicationUserService
 }
 
-func NewTokenService(applicationUserSvc *applicationuserService.ApplicationUserService) *TokenService {
-    return &TokenService{applicationUserSvc: applicationUserSvc}
+func NewTokenService() *TokenService {
+    return &TokenService{
+        applicationUserService: applicationUser.ApplicationUserSvc,
+    }
 }
 
 func (s *TokenService) GenerateAccessToken(user model.ApplicationUser) (string, error) {
@@ -43,8 +47,8 @@ func (s *TokenService) GenerateRefreshToken(user model.ApplicationUser) (string,
         "username":  user.Email.String,
         "sessionId": user.SessionID.String,
         "type":      "1",
-        "subject":  fmt.Sprintf("%d", user.UserID.Int64),
-        "exp":      time.Now().Add(time.Hour * 87600).Unix(),
+        "subject":   fmt.Sprintf("%d", user.UserID.Int64),
+        "exp":       time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     t, err := token.SignedString([]byte(utils.JWT_SECRET))
@@ -109,5 +113,5 @@ func (s *TokenService) decodeRefreshToken(tokenStr string) (string, int64, error
 }
 
 func (s *TokenService) getUserFromRefreshTokenPayload(id int64) (*model.ApplicationUser, error) {
-    return s.applicationUserSvc.FindByUserId(id, nil)
+    return s.applicationUserService.FindByUserId(id, nil)
 }

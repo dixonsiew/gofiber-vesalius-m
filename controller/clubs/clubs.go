@@ -1,18 +1,18 @@
 package clubs
 
 import (
-    clubService "vesaliusm/service/clubs"
+	"vesaliusm/service/clubs"
 
-    "github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3"
 )
 
 type ClubsController struct {
-    clubSvc *clubService.ClubService
+    clubSvc *clubs.ClubService
 }
 
-func NewClubsController(clubSvc *clubService.ClubService) *ClubsController {
+func NewClubsController() *ClubsController {
     return &ClubsController{
-        clubSvc: clubSvc,
+        clubSvc: clubs.ClubSvc,
     }
 }
 

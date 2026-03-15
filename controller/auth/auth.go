@@ -2,11 +2,11 @@ package auth
 
 import (
     "vesaliusm/dto"
-    adminUserService "vesaliusm/service/adminUser"
-    applicationuserService "vesaliusm/service/applicationUser"
-    authService "vesaliusm/service/auth"
-    tokenService "vesaliusm/service/token"
-    tokenAdminService "vesaliusm/service/tokenAdmin"
+    "vesaliusm/service/adminUser"
+    "vesaliusm/service/applicationUser"
+    "vesaliusm/service/auth"
+    "vesaliusm/service/token"
+    "vesaliusm/service/tokenAdmin"
     "vesaliusm/utils"
 
     "github.com/go-playground/validator/v10"
@@ -14,25 +14,20 @@ import (
 )
 
 type AuthController struct {
-    adminUserSvc       *adminUserService.AdminUserService
-    applicationUserSvc *applicationuserService.ApplicationUserService
-    authSvc            *authService.AuthService
-    tokenSvc           *tokenService.TokenService
-    tokenAdminSvc      *tokenAdminService.TokenAdminService
+    adminUserService       *adminUser.AdminUserService
+    applicationUserService *applicationUser.ApplicationUserService
+    authService            *auth.AuthService
+    tokenService           *token.TokenService
+    tokenAdminService      *tokenAdmin.TokenAdminService
 }
 
-func NewAuthController(
-    adminUserSvc *adminUserService.AdminUserService,
-    applicationUserSvc *applicationuserService.ApplicationUserService,
-    authSvc *authService.AuthService,
-    tokenSvc *tokenService.TokenService,
-    tokenAdminSvc *tokenAdminService.TokenAdminService) *AuthController {
+func NewAuthController() *AuthController {
     return &AuthController{
-        adminUserSvc:       adminUserSvc,
-        applicationUserSvc: applicationUserSvc,
-        authSvc:            authSvc,
-        tokenSvc:           tokenSvc,
-        tokenAdminSvc:      tokenAdminSvc,
+        adminUserService:       adminUser.AdminUserSvc,
+        applicationUserService: applicationUser.ApplicationUserSvc,
+        authService:            auth.AuthSvc,
+        tokenService:           token.TokenSvc,
+        tokenAdminService:      tokenAdmin.TokenAdminSvc,
     }
 }
 
@@ -61,26 +56,26 @@ func (cr *AuthController) Login(c fiber.Ctx) error {
     }
 
     if data.FromAdmin {
-        user, err := cr.adminUserSvc.FindByEmail(data.Username)
+        user, err := cr.adminUserService.FindByEmail(data.Username)
         if err != nil {
             return err
         }
 
         valid := false
         if user != nil {
-            valid = cr.adminUserSvc.ValidateCredentials(*user, data.Password)
+            valid = cr.adminUserService.ValidateCredentials(*user, data.Password)
         }
 
         if valid == false {
             return fiber.NewError(fiber.StatusUnauthorized, "Invalid Credentials")
         }
 
-        token, err := cr.tokenAdminSvc.GenerateAccessToken(*user)
+        token, err := cr.tokenAdminService.GenerateAccessToken(*user)
         if err != nil {
             return err
         }
 
-        refreshToken, err := cr.tokenAdminSvc.GenerateRefreshToken(*user)
+        refreshToken, err := cr.tokenAdminService.GenerateRefreshToken(*user)
         if err != nil {
             return err
         }
@@ -94,17 +89,17 @@ func (cr *AuthController) Login(c fiber.Ctx) error {
             "role":             user.Role,
         })
     } else {
-        user, err := cr.authSvc.AuthenticateUser(*data)
+        user, err := cr.authService.AuthenticateUser(*data)
         if err != nil {
             return err
         }
 
-        token, err := cr.tokenSvc.GenerateAccessToken(*user)
+        token, err := cr.tokenService.GenerateAccessToken(*user)
         if err != nil {
             return err
         }
 
-        refreshToken, err := cr.tokenSvc.GenerateRefreshToken(*user)
+        refreshToken, err := cr.tokenService.GenerateRefreshToken(*user)
         if err != nil {
             return err
         }

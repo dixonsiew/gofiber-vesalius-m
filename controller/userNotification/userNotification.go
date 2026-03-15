@@ -4,24 +4,22 @@ import (
     "fmt"
     "strconv"
     "vesaliusm/middleware"
-    applicationUserNotificationService "vesaliusm/service/applicationUserNotification"
-    generalNotificationMasterService "vesaliusm/service/generalNotificationMaster"
+    "vesaliusm/service/applicationUserNotification"
+    "vesaliusm/service/generalNotificationMaster"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type UserNotificationController struct {
-    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService
-    generalNotificationMasterSvc   *generalNotificationMasterService.GeneralNotificationMasterService
+    applicationUserNotificationService *applicationUserNotification.ApplicationUserNotificationService
+    generalNotificationMasterService   *generalNotificationMaster.GeneralNotificationMasterService
 }
 
-func NewUserNotificationController(
-    applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService,
-    generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService) *UserNotificationController {
+func NewUserNotificationController() *UserNotificationController {
     return &UserNotificationController{
-        applicationUserNotificationSvc: applicationUserNotificationSvc,
-        generalNotificationMasterSvc:   generalNotificationMasterSvc,
+        applicationUserNotificationService: applicationUserNotification.ApplicationUserNotificationSvc,
+        generalNotificationMasterService:   generalNotificationMaster.GeneralNotificationMasterSvc,
     }
 }
 
@@ -42,7 +40,7 @@ func (cr *UserNotificationController) GetUnseenNotificationCount(c fiber.Ctx) er
         return middleware.Unauthorized(c)
     }
 
-    count, err := cr.applicationUserNotificationSvc.CountUnseenByUserId(user.UserID.Int64)
+    count, err := cr.applicationUserNotificationService.CountUnseenByUserId(user.UserID.Int64)
     if err != nil {
         return err
     }
@@ -71,7 +69,7 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.applicationUserNotificationSvc.ListByUserId(user.UserID.Int64, page, limit)
+    m, err := cr.applicationUserNotificationService.ListByUserId(user.UserID.Int64, page, limit)
     if err != nil {
         return err
     }
@@ -93,7 +91,7 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
 func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) error {
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.generalNotificationMasterSvc.List(page, limit)
+    m, err := cr.generalNotificationMasterService.List(page, limit)
     if err != nil {
         return err
     }
@@ -114,7 +112,7 @@ func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) er
 func (cr *UserNotificationController) GetByNotificationMasterId(c fiber.Ctx) error {
     notificationMasterId := c.Params("notificationMasterId")
     id, _ := strconv.ParseInt(notificationMasterId, 10, 64)
-    o, err := cr.generalNotificationMasterSvc.FindByNotificationMasterId(id)
+    o, err := cr.generalNotificationMasterService.FindByNotificationMasterId(id)
     if err != nil {
         return err
     }
@@ -133,7 +131,7 @@ func (cr *UserNotificationController) GetByNotificationMasterId(c fiber.Ctx) err
 func (cr *UserNotificationController) GetNotificationById(c fiber.Ctx) error {
     notificationId := c.Params("notificationId")
     id, _ := strconv.ParseInt(notificationId, 10, 64)
-    o, err := cr.applicationUserNotificationSvc.FindByNotificationId(id)
+    o, err := cr.applicationUserNotificationService.FindByNotificationId(id)
     if err != nil {
         return err
     }

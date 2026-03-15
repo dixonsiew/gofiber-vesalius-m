@@ -2,12 +2,15 @@ package futureOrder
 
 import (
     "context"
+    "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/model/futureOrder"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
 )
+
+var FutureOrderSvc *FutureOrderService = NewFutureOrderService(database.GetDb(), database.GetCtx())
 
 type FutureOrderService struct {
     db  *sqlx.DB

@@ -1,18 +1,13 @@
 package userPackage
 
 import (
-    "vesaliusm/database"
     "vesaliusm/middleware"
-    patientPurchaseDetailsService "vesaliusm/service/patientPurchaseDetails"
 
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-    var patientPurchaseDetailsSvc *patientPurchaseDetailsService.PatientPurchaseDetailsService = 
-        patientPurchaseDetailsService.NewPatientPurchaseDetailsService(database.GetDb(), database.GetCtx())
-
-    userPackageController := NewUserPackageController(patientPurchaseDetailsSvc)
+    userPackageController := NewUserPackageController()
     userPackageController.registerRoutes(router)
 }
 

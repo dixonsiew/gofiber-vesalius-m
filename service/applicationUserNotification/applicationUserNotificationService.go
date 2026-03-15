@@ -3,18 +3,20 @@ package applicationUserNotification
 import (
     "context"
     "database/sql"
+    "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
 )
 
+var ApplicationUserNotificationSvc *ApplicationUserNotificationService = NewApplicationUserNotificationService(database.GetDb(), database.GetCtx())
+
 type ApplicationUserNotificationService struct {
     db  *sqlx.DB
     ctx context.Context
 }
 
-// NewApplicationUserNotificationService creates a new instance.
 func NewApplicationUserNotificationService(db *sqlx.DB, ctx context.Context) *ApplicationUserNotificationService {
     return &ApplicationUserNotificationService{db: db, ctx: ctx}
 }

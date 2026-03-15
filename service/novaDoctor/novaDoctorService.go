@@ -1,17 +1,20 @@
 package novaDoctor
 
 import (
-	"context"
-	"database/sql"
-	"fmt"
-	"strings"
-	"vesaliusm/config"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "fmt"
+    "strings"
+    "vesaliusm/config"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/jmoiron/sqlx"
+    "github.com/gofiber/fiber/v3"
+    "github.com/jmoiron/sqlx"
 )
+
+var NovaDoctorSvc *NovaDoctorService = NewNovaDoctorService(database.GetDb(), database.GetCtx())
 
 type NovaDoctorService struct {
     db  *sqlx.DB

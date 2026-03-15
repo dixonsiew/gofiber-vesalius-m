@@ -1,14 +1,17 @@
 package country
 
 import (
-	"context"
-	"database/sql"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/guregu/null/v6"
-	"github.com/jmoiron/sqlx"
+    "github.com/guregu/null/v6"
+    "github.com/jmoiron/sqlx"
 )
+
+var CountrySvc *CountryService = NewCountryService(database.GetDb(), database.GetCtx())
 
 type CountryService struct {
     db  *sqlx.DB

@@ -1,29 +1,33 @@
 package patientPurchaseDetails
 
 import (
-	"context"
-	"database/sql"
-	"fmt"
-	"strings"
-	"vesaliusm/database"
-	"vesaliusm/model"
-	"vesaliusm/model/userPackage"
-	applicationuserService "vesaliusm/service/applicationUser"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "fmt"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/model/userPackage"
+    "vesaliusm/service/applicationUser"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
-var applicationUserSvc *applicationuserService.ApplicationUserService = 
-    applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var PatientPurchaseDetailsSvc *PatientPurchaseDetailsService = NewPatientPurchaseDetailsService(database.GetDb(), database.GetCtx())
 
 type PatientPurchaseDetailsService struct {
-    db  *sqlx.DB
-    ctx context.Context
+    db                     *sqlx.DB
+    ctx                    context.Context
+    applicationuserService *applicationUser.ApplicationUserService
 }
 
 func NewPatientPurchaseDetailsService(db *sqlx.DB, ctx context.Context) *PatientPurchaseDetailsService {
-    return &PatientPurchaseDetailsService{db: db, ctx: ctx}
+    return &PatientPurchaseDetailsService{
+        db: db, 
+        ctx: ctx, 
+        applicationuserService: applicationUser.ApplicationUserSvc,
+    }
 }
 
 func (s *PatientPurchaseDetailsService) ListByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, page string, limit string) (*model.PagedList, error) {
@@ -61,7 +65,7 @@ func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 
 }
 
 func (s *PatientPurchaseDetailsService) ListByPrn(userId int64, page string, limit string) (*model.PagedList, error) {
-    user, err := applicationUserSvc.FindByUserId(userId, s.db)
+    user, err := s.applicationuserService.FindByUserId(userId, s.db)
     if err != nil {
         return nil, err
     }
@@ -131,9 +135,9 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     args = append(args, sql.Named("limit", limit))
 
     base := `
-        SELECT ` + 
-        getPatientPurchaseDetailsCols("ppd.") + `, ` + 
-        getHospitalPackageCols("hp.") + `, ` + 
+        SELECT ` +
+        getPatientPurchaseDetailsCols("ppd.") + `, ` +
+        getHospitalPackageCols("hp.") + `, ` +
         getPackagePaymentDetailsCols("ppd2.") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
@@ -142,7 +146,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     query := base + whereClause(conditions) +
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    
+
     rows, err := s.db.QueryxContext(s.ctx, query, args...)
     if err != nil {
         utils.LogError(err)
@@ -165,9 +169,9 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
 
 func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT ` + 
-        getPatientPurchaseDetailsCols("ppd.") + `, ` + 
-        getHospitalPackageCols("hp.") + `, ` + 
+        SELECT ` +
+        getPatientPurchaseDetailsCols("ppd.") + `, ` +
+        getHospitalPackageCols("hp.") + `, ` +
         getPackagePaymentDetailsCols("ppd2.") + `
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
@@ -277,7 +281,7 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
 func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*userPackage.UserPackage, error) {
     var o userPackage.UserPackage
     query := `
-        SELECT ` + 
+        SELECT ` +
         getPatientPurchaseDetailsCols("ppd.") + `, ` +
         getHospitalPackageCols("hp.") + `, ` +
         getPackagePaymentDetailsCols("ppd2.") + `, ndpa.DATE_APPT
@@ -543,10 +547,10 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(packageId
 
 func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId int64, quantityPurchased int) (*userPackage.PackageCheckResult, error) {
     result := &userPackage.PackageCheckResult{
-        PackageID: packageId,
-        Expired:   0,
-        Soldout:   0,
-        ExceedPurchase: 0,
+        PackageID:           packageId,
+        Expired:             0,
+        Soldout:             0,
+        ExceedPurchase:      0,
         RecommendedQuantity: 0,
     }
     expiry, err := s.GetPackageExpiryStatus(packageId)
@@ -580,7 +584,7 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
 func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, []interface{}) {
     var (
         conds []string
-        args []interface{}
+        args  []interface{}
     )
 
     if keyword != "" {
@@ -626,7 +630,7 @@ func getPatientPurchaseDetailsCols(prefix string) string {
     }
     ls := make([]string, 0)
     for _, v := range lx {
-        ls = append(ls, prefix + v)
+        ls = append(ls, prefix+v)
     }
     return strings.Join(ls, ", ")
 }
@@ -640,7 +644,7 @@ func getHospitalPackageCols(prefix string) string {
     }
     ls := make([]string, 0)
     for _, v := range lx {
-        ls = append(ls, prefix + v)
+        ls = append(ls, prefix+v)
     }
     return strings.Join(ls, ", ")
 }
@@ -663,7 +667,7 @@ func getPackagePaymentDetailsCols(prefix string) string {
     }
     ls := make([]string, 0)
     for _, v := range lx {
-        ls = append(ls, prefix + v)
+        ls = append(ls, prefix+v)
     }
     return strings.Join(ls, ", ")
 }

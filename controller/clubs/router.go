@@ -1,17 +1,13 @@
 package clubs
 
 import (
-    "vesaliusm/database"
     "vesaliusm/middleware"
-    clubService "vesaliusm/service/clubs"
 
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-    var clubSvc *clubService.ClubService = clubService.NewClubService(database.GetDb(), database.GetCtx(), database.GetDbrs(), database.GetCtxrs())
-
-    clubController := NewClubsController(clubSvc)
+    clubController := NewClubsController()
     clubController.registerRoutes(router)
 }
 

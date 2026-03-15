@@ -2,20 +2,19 @@ package futureOrder
 
 import (
     "fmt"
-    _ "vesaliusm/model/futureOrder"
-    futureOrderService "vesaliusm/service/futureOrder"
+    "vesaliusm/service/futureOrder"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type FutureOrderController struct {
-    futureOrderSvc *futureOrderService.FutureOrderService
+    futureOrderService *futureOrder.FutureOrderService
 }
 
-func NewFutureOrderController(futureOrderSvc *futureOrderService.FutureOrderService) *FutureOrderController {
+func NewFutureOrderController() *FutureOrderController {
     return &FutureOrderController{
-        futureOrderSvc: futureOrderSvc,
+        futureOrderService: futureOrder.FutureOrderSvc,
     }
 }
 
@@ -33,7 +32,7 @@ func (cr *FutureOrderController) GetAllFutureOrder(c fiber.Ctx) error {
     prn := c.Query("prn", "")
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.futureOrderSvc.List(prn, page, limit)
+    m, err := cr.futureOrderService.List(prn, page, limit)
     if err != nil {
         return err
     }

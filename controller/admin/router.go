@@ -1,26 +1,13 @@
 package admin
 
 import (
-	"vesaliusm/database"
     "vesaliusm/middleware"
-	adminUserService "vesaliusm/service/adminUser"
-    applicationuserService "vesaliusm/service/applicationUser"
-    assignBranchService "vesaliusm/service/assignBranch"
 
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-	var (
-		adminUserSvc *adminUserService.AdminUserService = 
-            adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
-        applicationUserSvc *applicationuserService.ApplicationUserService = 
-            applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
-        assignBranchSvc *assignBranchService.AssignBranchService = 
-            assignBranchService.NewAssignBranchService(database.GetDb(), database.GetCtx())
-	)
-    
-    adminController := NewAdminController(adminUserSvc, applicationUserSvc, assignBranchSvc)
+    adminController := NewAdminController()
     adminController.registerRoutes(router)
 }
 

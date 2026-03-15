@@ -1,18 +1,13 @@
 package user
 
 import (
-    "vesaliusm/database"
     "vesaliusm/middleware"
-    applicationuserService "vesaliusm/service/applicationUser"
 
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-    var applicationUserSvc *applicationuserService.ApplicationUserService = 
-        applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
-
-    userController := NewUserController(applicationUserSvc)
+    userController := NewUserController()
     userController.registerRoutes(router)
 }
 

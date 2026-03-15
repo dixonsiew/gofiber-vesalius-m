@@ -1,18 +1,18 @@
 package common
 
 import (
-    novaCountryService "vesaliusm/service/country"
+    "vesaliusm/service/country"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type CommonController struct {
-    novaCountrySvc *novaCountryService.CountryService
+    novaCountryService *country.CountryService
 }
 
-func NewCommonController(novaCountrySvc *novaCountryService.CountryService) *CommonController {
+func NewCommonController() *CommonController {
     return &CommonController{
-        novaCountrySvc: novaCountrySvc,
+        novaCountryService: country.CountrySvc,
     }
 }
 
@@ -23,7 +23,7 @@ func NewCommonController(novaCountrySvc *novaCountryService.CountryService) *Com
 // @Success 200 {array} model.CountryTelCode
 // @Router /common/telcode/list [get]
 func (cr *CommonController) GetCountriesTelCode(c fiber.Ctx) error {
-    lx, err := cr.novaCountrySvc.FindAllCountryTelCode()
+    lx, err := cr.novaCountryService.FindAllCountryTelCode()
     if err != nil {
         return err
     }
@@ -38,7 +38,7 @@ func (cr *CommonController) GetCountriesTelCode(c fiber.Ctx) error {
 // @Success 200 {array} model.Country
 // @Router /common/country/list [get]
 func (cr *CommonController) GetCountries(c fiber.Ctx) error {
-    lx, err := cr.novaCountrySvc.FindAllCountries()
+    lx, err := cr.novaCountryService.FindAllCountries()
     if err != nil {
         return err
     }
@@ -53,7 +53,7 @@ func (cr *CommonController) GetCountries(c fiber.Ctx) error {
 // @Success 200 {array} model.Nationality
 // @Router /common/nationality/list [get]
 func (cr *CommonController) GetNationalities(c fiber.Ctx) error {
-    lx, err := cr.novaCountrySvc.FindAllNationalities()
+    lx, err := cr.novaCountryService.FindAllNationalities()
     if err != nil {
         return err
     }

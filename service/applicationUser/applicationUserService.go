@@ -1,40 +1,42 @@
 package applicationUser
 
 import (
-	"context"
-	"database/sql"
-	"fmt"
-	"math/rand"
-	"strings"
+    "context"
+    "database/sql"
+    "fmt"
+    "math/rand"
+    "strings"
     "vesaliusm/database"
-	"vesaliusm/model"
-    assignBranchService "vesaliusm/service/assignBranch"
-    branchService "vesaliusm/service/branch"
-	"vesaliusm/utils"
+    "vesaliusm/model"
+    "vesaliusm/service/assignBranch"
+    "vesaliusm/service/branch"
+    "vesaliusm/utils"
 
-	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
-	go_ora "github.com/sijms/go-ora/v2"
-	"golang.org/x/crypto/bcrypt"
+    "github.com/google/uuid"
+    "github.com/jmoiron/sqlx"
+    go_ora "github.com/sijms/go-ora/v2"
+    "golang.org/x/crypto/bcrypt"
 )
 
+var ApplicationUserSvc *ApplicationUserService = NewApplicationUserService(database.GetDb(), database.GetCtx())
+
 type ApplicationUserService struct {
-    db  *sqlx.DB
-    ctx context.Context
+    db                  *sqlx.DB
+    ctx                 context.Context
+    branchService       *branch.BranchService
+    assignBranchService *assignBranch.AssignBranchService
 }
 
 func NewApplicationUserService(db *sqlx.DB, ctx context.Context) *ApplicationUserService {
-    return &ApplicationUserService{db: db, ctx: ctx}
+    return &ApplicationUserService{
+        db:                  db, 
+        ctx:                 ctx, 
+        branchService:       branch.BranchSvc, 
+        assignBranchService: assignBranch.AssignBranchSvc,
+    }
 }
 
 const saltRounds = 10
-
-var (
-    assignBranchSvc *assignBranchService.AssignBranchService = 
-        assignBranchService.NewAssignBranchService(database.GetDb(), database.GetCtx())
-    branchSvc *branchService.BranchService = 
-        branchService.NewBranchService(database.GetDb(), database.GetCtx())
-)
 
 func scanApplicationUser(row *sqlx.Row) (*model.ApplicationUser, error) {
     var u model.ApplicationUser
@@ -64,7 +66,7 @@ func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + 
+    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") +
         ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     list := make([]model.ApplicationUser, 0)
     err := db.SelectContext(s.ctx, &list, query, offset, limit)
@@ -144,7 +146,7 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
         db = s.db
     }
     query := `
-        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "au.") + 
+        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "au.") +
         ` FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
         OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key)
@@ -152,7 +154,7 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
         ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     users := make([]model.ApplicationUser, 0)
-    err := db.SelectContext(s.ctx, &users, query, 
+    err := db.SelectContext(s.ctx, &users, query,
         sql.Named("key", strings.ToLower(keyword)),
         sql.Named("offset", offset),
         sql.Named("limit", limit),
@@ -195,7 +197,7 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
         OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key) AND INACTIVE_FLAG = 'N'
     `
     var count int
-    err := db.GetContext(s.ctx, &count, query, 
+    err := db.GetContext(s.ctx, &count, query,
         sql.Named("key", strings.ToLower(keyword)),
     )
     if err != nil {
@@ -302,13 +304,13 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
         return nil, err
     }
 
-    ablist, err := assignBranchSvc.FindAllByUserId(userId)
+    ablist, err := s.assignBranchService.FindAllByUserId(userId)
     if err != nil {
         return nil, err
     }
 
     for i := range ablist {
-        b, err := branchSvc.FindByBranchId(ablist[i].BranchID.Int64)
+        b, err := s.branchService.FindByBranchId(ablist[i].BranchID.Int64)
         if err != nil {
             return nil, err
         }
@@ -327,13 +329,13 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
         return nil, err
     }
 
-    ablist, err := assignBranchSvc.FindAllByUserId(o.UserID.Int64)
+    ablist, err := s.assignBranchService.FindAllByUserId(o.UserID.Int64)
     if err != nil {
         return nil, err
     }
 
     for i := range ablist {
-        b, err := branchSvc.FindByBranchId(ablist[i].BranchID.Int64)
+        b, err := s.branchService.FindByBranchId(ablist[i].BranchID.Int64)
         if err != nil {
             return nil, err
         }
@@ -347,7 +349,7 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
 }
 
 func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") +
         ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, userId)
@@ -362,7 +364,7 @@ func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId
 }
 
 func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") + 
+    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") +
         ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, email)
@@ -468,7 +470,7 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
 
     // Insert ASSIGN_BRANCH
     insertQuery := `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`
-    _, err = tx.ExecContext(s.ctx, insertQuery, 
+    _, err = tx.ExecContext(s.ctx, insertQuery,
         sql.Named("prn", o.MasterPrn.String),
         sql.Named("userId", o.UserID.Int64),
         sql.Named("branchId", branchId),
@@ -876,7 +878,7 @@ func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) err
         return err
     }
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
-    _, err = s.db.ExecContext(s.ctx, query, 
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
         sql.Named("userId", o.UserID.Int64),
     )
@@ -896,7 +898,7 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
         return err
     }
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
-    _, err = s.db.ExecContext(s.ctx, query, 
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
         sql.Named("userId", o.UserID.Int64),
     )
@@ -910,7 +912,7 @@ func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUs
     code := getRandomStr(6)
     o.VerificationCode.String = code
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
-    _, err := s.db.ExecContext(s.ctx, query, 
+    _, err := s.db.ExecContext(s.ctx, query,
         sql.Named("verificationCode", code),
         sql.Named("userId", o.UserID.Int64),
     )
@@ -922,7 +924,7 @@ func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUs
 
 func (s *ApplicationUserService) UpdateVerificationCode(code string, userId int64) error {
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
-    _, err := s.db.ExecContext(s.ctx, query, 
+    _, err := s.db.ExecContext(s.ctx, query,
         sql.Named("verificationCode", code),
         sql.Named("userId", userId),
     )
@@ -943,7 +945,7 @@ func (s *ApplicationUserService) UpdateMachineId(id string, userId int64, conn *
         return err
     }
     query := `UPDATE APPLICATION_USER SET MACHINE_ID = :machineId WHERE USER_ID = :userId`
-    _, err = db.ExecContext(s.ctx, query, 
+    _, err = db.ExecContext(s.ctx, query,
         sql.Named("machineId", string(hashedID)),
         sql.Named("userId", userId),
     )

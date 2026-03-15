@@ -1,17 +1,11 @@
 package common
 
 import (
-    "vesaliusm/database"
-    novaCountryService "vesaliusm/service/country"
-
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-    var novaCountrySvc *novaCountryService.CountryService = 
-        novaCountryService.NewCountryService(database.GetDb(), database.GetCtx())
-
-    commonController := NewCommonController(novaCountrySvc)
+    commonController := NewCommonController()
     commonController.registerRoutes(router)
 }
 

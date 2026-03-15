@@ -1,23 +1,13 @@
 package userNotification
 
 import (
-    "vesaliusm/database"
     "vesaliusm/middleware"
-    applicationUserNotificationService "vesaliusm/service/applicationUserNotification"
-    generalNotificationMasterService "vesaliusm/service/generalNotificationMaster"
 
     "github.com/gofiber/fiber/v3"
 )
 
 func SetupRoutes(router fiber.Router) {
-    var (
-        applicationUserNotificationSvc *applicationUserNotificationService.ApplicationUserNotificationService = 
-            applicationUserNotificationService.NewApplicationUserNotificationService(database.GetDb(), database.GetCtx())
-        generalNotificationMasterSvc *generalNotificationMasterService.GeneralNotificationMasterService = 
-            generalNotificationMasterService.NewGeneralNotificationMasterService(database.GetDb(), database.GetCtx())
-    )
-
-    userNotificationController := NewUserNotificationController(applicationUserNotificationSvc, generalNotificationMasterSvc)
+    userNotificationController := NewUserNotificationController()
     userNotificationController.registerRoutes(router)
 }
 

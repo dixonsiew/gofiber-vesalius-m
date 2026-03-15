@@ -3,11 +3,14 @@ package branch
 import (
     "context"
     "database/sql"
+    "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
 )
+
+var BranchSvc *BranchService = NewBranchService(database.GetDb(), database.GetCtx())
 
 type BranchService struct {
     db  *sqlx.DB
