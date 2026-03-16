@@ -7,13 +7,17 @@ import (
 )
 
 type ClubsController struct {
-    clubSvc *clubs.ClubService
+    clubService *clubs.ClubService
 }
 
 func NewClubsController() *ClubsController {
     return &ClubsController{
-        clubSvc: clubs.ClubSvc,
+        clubService: clubs.ClubSvc,
     }
+}
+
+func (cr *ClubsController) CreateLittleKidsMembership(c fiber.Ctx) error {
+
 }
 
 // GetGoldenPearlAboutUs
@@ -24,7 +28,7 @@ func NewClubsController() *ClubsController {
 // @Success 200 {object} clubs.GoldenPearlAboutUs
 // @Router /clubs/goldenpearl/about-us [get]
 func (cr *ClubsController) GetGoldenPearlAboutUs(c fiber.Ctx) error {
-    o, err := cr.clubSvc.FindGoldenPearlAboutUs()
+    o, err := cr.clubService.FindGoldenPearlAboutUs()
     if err != nil {
         return err
     }

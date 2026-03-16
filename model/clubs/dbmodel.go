@@ -359,18 +359,20 @@ type GoldenPearlActvParticipation struct {
 }
 
 type LittleExplorersKidsActivity struct {
-    KidsActivityID         null.Int64  `json:"kids_activity_id" db:"KIDS_ACTIVITY_ID" swaggertype:"integer"`
-    KidsActivityCode       null.String `json:"kidsActivityCode" db:"KIDS_ACTIVITY_CODE" swaggertype:"string"`
-    KidsActivityName       null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME" swaggertype:"string"`
-    KidsActivityDesc       null.String `json:"kidsActivityDesc" db:"KIDS_ACTIVITY_DESC" swaggertype:"string"`
-    KidsActivityImage      null.String `json:"kidsActivityImage" db:"KIDS_ACTIVITY_IMG" swaggertype:"string"`
-    ActivityStartDateTime  null.String `json:"activityStartDateTime" db:"ACTIVITY_START_DATETIME" swaggertype:"string"`
-    ActivityEndDateTime    null.String `json:"activityEndDateTime" db:"ACTIVITY_END_DATETIME" swaggertype:"string"`
-    ActivityMaxParticipant null.Int32  `json:"activityMaxParticipant" db:"ACTIVITY_MAX_PARTICIPANT" swaggertype:"integer"`
-    ActivityTnc            null.String `json:"activityTnc" db:"ACTIVITY_TNC" swaggertype:"string"`
-    ActivityDisplayOrder   null.String `json:"activityDisplayOrder" db:"ACTIVITY_DISPLAY_ORDER" swaggertype:"string"`
-    ActivityAttendees      null.Int32  `json:"activityAttendees" db:"ATTENDEES" swaggertype:"integer"`
-    ActivitySeatsAvailable int         `json:"activitySeatsAvailable"`
+    KidsActivityID              null.Int64  `json:"kids_activity_id" db:"KIDS_ACTIVITY_ID" swaggertype:"integer"`
+    KidsActivityCode            null.String `json:"kidsActivityCode" db:"KIDS_ACTIVITY_CODE" swaggertype:"string"`
+    KidsActivityName            null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME" swaggertype:"string"`
+    KidsActivityDesc            null.String `json:"kidsActivityDesc" db:"KIDS_ACTIVITY_DESC" swaggertype:"string"`
+    KidsActivityImage           null.String `json:"kidsActivityImage" db:"KIDS_ACTIVITY_IMG" swaggertype:"string"`
+    ActivityStartDateTime       null.String `json:"activityStartDateTime" db:"ACTIVITY_START_DATETIME" swaggertype:"string"`
+    ActivityEndDateTime         null.String `json:"activityEndDateTime" db:"ACTIVITY_END_DATETIME" swaggertype:"string"`
+    ActivityMaxParticipant      null.Int32  `json:"activityMaxParticipant" db:"ACTIVITY_MAX_PARTICIPANT" swaggertype:"integer"`
+    ActivityTnc                 null.String `json:"activityTnc" db:"ACTIVITY_TNC" swaggertype:"string"`
+    ActivityDisplayOrder        null.String `json:"activityDisplayOrder" db:"ACTIVITY_DISPLAY_ORDER" swaggertype:"string"`
+    ActivityAttendees           null.Int32  `json:"activityAttendees" db:"ATTENDEES" swaggertype:"integer"`
+    ActivitySeatsAvailable      int         `json:"activitySeatsAvailable"`
+    ActivityEndDateTimeCalendar string      `json:"activityEndDateTimeCalendar"`
+
     // Excel fields - not in DB, used for export
     ActivityStartDateTimeExcel string `json:"activityStartDateTimeExcel"`
     ActivityEndDateTimeExcel   string `json:"activityEndDateTimeExcel"`
@@ -398,7 +400,8 @@ type GoldenPearlActivity struct {
     ActivityTnc            null.String `json:"activityTnc" db:"ACTIVITY_TNC" swaggertype:"string"`
     ActivityDisplayOrder   null.String `json:"activityDisplayOrder" db:"ACTIVITY_DISPLAY_ORDER" swaggertype:"string"`
     ActivityAttendees      null.Int32  `json:"activityAttendees" db:"ATTENDEES" swaggertype:"integer"`
-    ActivitySeatsAvailable null.Int32  `json:"activitySeatsAvailable" db:"ACTIVITY_SEATS_AVAILABLE" swaggertype:"integer"`
+    ActivitySeatsAvailable int         `json:"activitySeatsAvailable"`
+    ActivityEndDateTimeCalendar string `json:"activityEndDateTimeCalendar"`
 
     // Excel export fields (not stored in DB)
     ActivityStartDateTimeExcel null.String `json:"activityStartDateTimeExcel"`

@@ -1,17 +1,17 @@
 package novaDoctor
 
 import (
-    "context"
-    "database/sql"
-    "fmt"
-    "strings"
-    "vesaliusm/config"
-    "vesaliusm/database"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"fmt"
+	"strings"
+	"vesaliusm/config"
+	"vesaliusm/database"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/gofiber/fiber/v3"
-    "github.com/jmoiron/sqlx"
+	"github.com/gofiber/fiber/v3"
+	"github.com/jmoiron/sqlx"
 )
 
 var NovaDoctorSvc *NovaDoctorService = NewNovaDoctorService(database.GetDb(), database.GetCtx())
@@ -31,11 +31,16 @@ func (s *NovaDoctorService) Save(doctor *model.NovaDoctor) error {
         utils.LogError(err)
         return err
     }
-    defer tx.Rollback()
+    defer func() {
+        if err != nil {
+            utils.LogError(err)
+            tx.Rollback()
+        }
+    }()
 
     // Get next sequence value
     var doctorID int64
-    err = tx.GetContext(s.ctx, &doctorID, "SELECT DOCTOR_ID_SEQ.NEXTVAL FROM DUAL")
+    err = s.db.GetContext(s.ctx, &doctorID, "SELECT DOCTOR_ID_SEQ.NEXTVAL FROM DUAL")
     if err != nil {
         utils.LogError(err)
         return err
@@ -67,41 +72,32 @@ func (s *NovaDoctorService) Save(doctor *model.NovaDoctor) error {
         sql.Named("reg", doctor.RegistrationNum.String),
     )
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
     // Save child records
     if err := s.saveDoctorClinicHoursTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorClinicLocationTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorContactsTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorQualificationsTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpecialitiesTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpecialtyTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpokenLanguageTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorAppointmentTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -126,7 +122,12 @@ func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
         utils.LogError(err)
         return err
     }
-    defer tx.Rollback()
+    defer func() {
+        if err != nil {
+            utils.LogError(err)
+            tx.Rollback()
+        }
+    }()
 
     // Update main doctor
     _, err = tx.ExecContext(s.ctx, `
@@ -160,46 +161,37 @@ func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
         sql.Named("doctorId", doctor.DoctorID.Int64),
     )
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
     // Delete existing child records
     if err := s.deleteChildRecordsTx(tx, doctor.DoctorID.Int64); err != nil {
-        utils.LogError(err)
         return err
     }
 
     // Re-insert child records
     if err := s.saveDoctorClinicHoursTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorClinicLocationTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorContactsTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorQualificationsTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpecialitiesTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpecialtyTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
     if err := s.saveDoctorSpokenLanguageTx(tx, doctor); err != nil {
         return err
     }
     if err := s.saveDoctorAppointmentTx(tx, doctor); err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -233,16 +225,19 @@ func (s *NovaDoctorService) DeleteByDoctorId(doctorId int64) error {
         utils.LogError(err)
         return err
     }
-    defer tx.Rollback()
+    defer func() {
+        if err != nil {
+            utils.LogError(err)
+            tx.Rollback()
+        }
+    }()
 
     if err := s.deleteChildRecordsTx(tx, doctorId); err != nil {
-        utils.LogError(err)
         return err
     }
 
     _, err = tx.ExecContext(s.ctx, `DELETE FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
-        utils.LogError(err)
         return err
     }
 
@@ -250,10 +245,7 @@ func (s *NovaDoctorService) DeleteByDoctorId(doctorId int64) error {
 }
 
 func (s *NovaDoctorService) DeleteImageById(doctorId int64) error {
-    _, err := s.db.ExecContext(s.ctx,
-        `UPDATE NOVA_DOCTOR SET IMAGE = NULL WHERE DOCTOR_ID = :doctorId`,
-        doctorId,
-    )
+    _, err := s.db.ExecContext(s.ctx, `UPDATE NOVA_DOCTOR SET IMAGE = NULL WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         utils.LogError(err)
         return err

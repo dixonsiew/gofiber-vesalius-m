@@ -450,7 +450,7 @@ func (s *AdminUserService) ExistsByAdminId(adminId int64) (bool, error) {
         utils.LogError(err)
         return false, err
     }
-    return count == 1, err
+    return count > 0, err
 }
 
 func (s *AdminUserService) ExistsByEmail(email string) (bool, error) {
@@ -461,7 +461,7 @@ func (s *AdminUserService) ExistsByEmail(email string) (bool, error) {
         utils.LogError(err)
         return false, err
     }
-    return count == 1, err
+    return count > 0, err
 }
 
 func (s *AdminUserService) SaveResetPassword(o *model.AdminUser) error {
@@ -510,7 +510,7 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
         return err
     }
 
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err

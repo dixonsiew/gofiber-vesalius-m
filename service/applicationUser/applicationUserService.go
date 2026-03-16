@@ -429,7 +429,7 @@ func (s *ApplicationUserService) ExistsByMobileNo(mobileNo string) (bool, error)
 }
 
 func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.ApplicationUser) error {
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err
@@ -545,7 +545,7 @@ func (s *ApplicationUserService) SetInactive(userId int64) error {
 }
 
 func (s *ApplicationUserService) Delete(userId int64) error {
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err
@@ -576,7 +576,7 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
     }
     verificationCode := getRandomStr(6)
 
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err
@@ -674,7 +674,7 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
         firstTimeBiometric = 1
     }
 
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err
@@ -787,7 +787,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         firstTimeLogin = 1
     }
 
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return -1, err
@@ -1015,7 +1015,7 @@ func (s *ApplicationUserService) InsertDownloadAppV2(machineId string, playerId 
 }
 
 func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, error) {
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return false, err
@@ -1055,7 +1055,7 @@ func (s *ApplicationUserService) VerifyUser(o *model.ApplicationUser) (bool, err
 }
 
 func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, admin *model.AdminUser) error {
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err
@@ -1159,7 +1159,7 @@ func (s *ApplicationUserService) DisableFirstTimeBiometricUser(userId int64) err
 }
 
 func (s *ApplicationUserService) ResetUserSignup(userId int64, prn string) error {
-    tx, err := s.db.Beginx()
+    tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
         return err

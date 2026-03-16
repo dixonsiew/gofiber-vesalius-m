@@ -311,7 +311,7 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
 }
 
 func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.UserPackage) error {
-    query := `
+    const query = `
         INSERT INTO PATIENT_PURCHASE_DETAILS (
             PATIENT_PRN, PATIENT_NAME, PACKAGE_ID,
             PACKAGE_STATUS, PACKAGE_PAYMENT_ID, ORDERED_DATETIME
@@ -325,7 +325,12 @@ func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.Use
         utils.LogError(err)
         return err
     }
-    defer tx.Rollback()
+    defer func() {
+        if err != nil {
+            utils.LogError(err)
+            tx.Rollback()
+        }
+    }()
 
     for i := 0; i < o.QuantityPurchased; i++ {
         args := []interface{}{
