@@ -1,17 +1,18 @@
 package utils
 
 import (
-    "fmt"
-    "os"
-    "reflect"
-    "strings"
-    "time"
+	"fmt"
+	"os"
+	"reflect"
+	"strings"
+	"time"
 
-    "github.com/go-playground/validator/v10"
-    "github.com/go-resty/resty/v2"
-    "github.com/gofiber/fiber/v3"
-    "github.com/rs/zerolog"
-    "github.com/ztrue/tracerr"
+	"github.com/go-playground/validator/v10"
+	"github.com/go-resty/resty/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/guregu/null/v6"
+	"github.com/rs/zerolog"
+	"github.com/ztrue/tracerr"
 )
 
 type StructValidator struct {
@@ -65,7 +66,11 @@ func GetDbColsWithReplace(s interface{}, prefix string, m map[string]string) str
         if tagValue != "" {
             x := fmt.Sprintf("%s%s", prefix, tagValue)
             if val, ok := m[x]; ok {
-                x = val
+                if val == "" {
+                    continue
+                } else {
+                    x = val
+                }
             }
             columns = append(columns, x)
         }
@@ -102,6 +107,13 @@ func GetDbCols(s interface{}, prefix string) string {
     }
     
     return strings.Join(columns, ", ")
+}
+
+func NewNullString(s string) null.String {
+    if s == "" {
+        return null.NewString(s, false)
+    }
+    return null.NewString(s, true)
 }
 
 func BindNValidate(c fiber.Ctx, out any) error {

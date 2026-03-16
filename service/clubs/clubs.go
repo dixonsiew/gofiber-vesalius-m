@@ -161,7 +161,7 @@ func (s *ClubService) SaveLittleKidsMembership(o clubs.LittleExplorersKidsMember
         kidsPrn     string
         guardianPrn string
     }
-    const query = `
+    query := `
         SELECT PRN FROM NOVA_PATIENT_DOCUMENT
         WHERE DOCUMENT_TYPE = 'NRIC / Passport' AND
         DOCUMENT_NUMBER = :doc
@@ -255,7 +255,7 @@ func (s *ClubService) SaveLittleKidsMembershipViaWebportal(o clubs.LittleExplore
         kidsPrn     string
         guardianPrn string
     }
-    const query = `
+    query := `
         SELECT PRN FROM NOVA_PATIENT_DOCUMENT
         WHERE DOCUMENT_TYPE = 'NRIC / Passport' AND
         DOCUMENT_NUMBER = :doc
@@ -412,7 +412,7 @@ func (s *ClubService) SaveGoldenPearlMembership(o clubs.GoldenPearlMembership) e
         goldenPrn string
         nokPrn    string
     }
-    const query = `
+    query := `
         SELECT PRN FROM NOVA_PATIENT_DOCUMENT
         WHERE DOCUMENT_TYPE = 'NRIC / Passport' AND
         DOCUMENT_NUMBER = :doc
@@ -506,7 +506,7 @@ func (s *ClubService) SaveGoldenPearlMembershipViaWebportal(o clubs.GoldenPearlM
         goldenPrn string
         nokPrn    string
     }
-    const query = `
+    query := `
         SELECT PRN FROM NOVA_PATIENT_DOCUMENT
         WHERE DOCUMENT_TYPE = 'NRIC / Passport' AND
         DOCUMENT_NUMBER = :doc
@@ -759,7 +759,7 @@ func (s *ClubService) FindGoldenPearlActivitiesByActivityId(activityId int64) (*
 }
 
 func (s *ClubService) ParticipateLittleKidsActivity(o []clubs.LittleExplorersKidsActvParticipation) error {
-    const query = `
+    query := `
         INSERT INTO KIDS_CLUB_ACTV_PARTICIPATION
         (KIDS_ACTIVITY_ID, KIDS_MEMBERSHIP_ID, ACTIVITY_DATE_TIME)
         VALUES 
@@ -792,7 +792,7 @@ func (s *ClubService) ParticipateLittleKidsActivity(o []clubs.LittleExplorersKid
 }
 
 func (s *ClubService) ParticipateGoldenPearlActivity(o []clubs.GoldenPearlActvParticipation) error {
-    const query = `
+    query := `
         INSERT INTO GOLDEN_CLUB_ACTV_PARTICIPATION
         (GOLDEN_ACTIVITY_ID, GOLDEN_MEMBERSHIP_ID, ACTIVITY_DATE_TIME)
         VALUES
@@ -825,7 +825,7 @@ func (s *ClubService) ParticipateGoldenPearlActivity(o []clubs.GoldenPearlActvPa
 }
 
 func (s *ClubService) SaveLittleKidsActivity(o clubs.LittleExplorersKidsActivity, adminId int64) error {
-    const query = `
+    query := `
         INSERT INTO KIDS_CLUB_ACTIVITY
         (KIDS_ACTIVITY_CODE, KIDS_ACTIVITY_NAME, KIDS_ACTIVITY_DESC, 
          KIDS_ACTIVITY_IMG, ACTIVITY_START_DATETIME, ACTIVITY_END_DATETIME, 
@@ -857,7 +857,7 @@ func (s *ClubService) SaveLittleKidsActivity(o clubs.LittleExplorersKidsActivity
 }
 
 func (s *ClubService) SaveGoldenPearlActivity(o clubs.GoldenPearlActivity, adminId int64) error {
-    const query = `
+    query := `
         INSERT INTO GOLDEN_CLUB_ACTIVITY
         (GOLDEN_ACTIVITY_CODE, GOLDEN_ACTIVITY_NAME, GOLDEN_ACTIVITY_DESC, 
          GOLDEN_ACTIVITY_IMG, ACTIVITY_START_DATETIME, ACTIVITY_END_DATETIME, 
@@ -889,7 +889,7 @@ func (s *ClubService) SaveGoldenPearlActivity(o clubs.GoldenPearlActivity, admin
 }
 
 func (s *ClubService) UpdateLittleKidsActivity(o clubs.LittleExplorersKidsActivity, adminId int64) error {
-    const query = `
+    query := `
         UPDATE KIDS_CLUB_ACTIVITY SET
           KIDS_ACTIVITY_CODE = :kidsActivityCode,
           KIDS_ACTIVITY_NAME = :kidsActivityName,
@@ -925,7 +925,7 @@ func (s *ClubService) UpdateLittleKidsActivity(o clubs.LittleExplorersKidsActivi
 }
 
 func (s *ClubService) UpdateGoldenPearlActivity(o clubs.GoldenPearlActivity, adminId int64) error {
-    const query = `
+    query := `
         UPDATE GOLDEN_CLUB_ACTIVITY SET
           GOLDEN_ACTIVITY_CODE = :goldenActivityCode,
           GOLDEN_ACTIVITY_NAME = :goldenActivityName,
@@ -961,7 +961,7 @@ func (s *ClubService) UpdateGoldenPearlActivity(o clubs.GoldenPearlActivity, adm
 }
 
 func (s *ClubService) SaveLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs, adminId int64) (int64, error) {
-    const query = `
+    query := `
         INSERT INTO KIDS_CLUB_INFO
          (KIDS_CLUB_TITLE, KIDS_CLUB_DESC, KIDS_CLUB_IMG, 
           KIDS_CLUB_TNC, PARTNERS_LINK, USER_CREATE)
@@ -989,7 +989,7 @@ func (s *ClubService) SaveLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs, 
 }
 
 func (s *ClubService) SaveGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, adminId int64) (int64, error) {
-    const query = `
+    query := `
         INSERT INTO GOLDEN_CLUB_INFO
          (GOLDEN_CLUB_TITLE, GOLDEN_CLUB_DESC, GOLDEN_CLUB_IMG, 
           GOLDEN_CLUB_TNC, EXTERNAL_LINK, USER_CREATE)
@@ -1017,7 +1017,7 @@ func (s *ClubService) SaveGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, adminId
 }
 
 func (s *ClubService) UpdateLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs, adminId int64) error {
-    const query = `
+    query := `
         UPDATE KIDS_CLUB_INFO SET
           KIDS_CLUB_TITLE = :kidsClubTitle,
           KIDS_CLUB_DESC = :kidsClubDesc,
@@ -1045,7 +1045,7 @@ func (s *ClubService) UpdateLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs
 }
 
 func (s *ClubService) UpdateGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, adminId int64) error {
-    const query = `
+    query := `
         UPDATE GOLDEN_CLUB_INFO SET
           GOLDEN_CLUB_TITLE = :goldenClubTitle,
           GOLDEN_CLUB_DESC = :goldenClubDesc,
@@ -1287,7 +1287,7 @@ func (s *ClubService) FindAllUserGoldenPearlActivities(userId int64) ([]clubs.Go
 }
 
 func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
-    const query = `
+    query := `
         SELECT kcm.*, kcap.ACTIVITY_DATE_TIME
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
@@ -1296,9 +1296,9 @@ func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset in
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     list := make([]clubs.LittleExplorersKidsMembership, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, 
-        sql.Named("kidsActivityId", kidsActivityId), 
-        sql.Named("offset", offset), 
+    err := s.db.SelectContext(s.ctx, &list, query,
+        sql.Named("kidsActivityId", kidsActivityId),
+        sql.Named("offset", offset),
         sql.Named("limit", limit),
     )
     if err != nil {
@@ -1312,7 +1312,7 @@ func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset in
 }
 
 func (s *ClubService) FindAllGoldenPearlAttendees(goldenActivityId int64, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
-    const query = `
+    query := `
         SELECT gcm.*, gcap.ACTIVITY_DATE_TIME
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
@@ -1321,9 +1321,9 @@ func (s *ClubService) FindAllGoldenPearlAttendees(goldenActivityId int64, offset
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     list := make([]clubs.GoldenPearlMembership, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, 
-        sql.Named("goldenActivityId", goldenActivityId), 
-        sql.Named("offset", offset), 
+    err := s.db.SelectContext(s.ctx, &list, query,
+        sql.Named("goldenActivityId", goldenActivityId),
+        sql.Named("offset", offset),
         sql.Named("limit", limit),
     )
     if err != nil {
@@ -1368,7 +1368,7 @@ func (s *ClubService) FindAllGoldenPearlMemberships(offset int, limit int) ([]cl
 
 func (s *ClubService) FindAllLittleKidsActivities(offset int, limit int) ([]clubs.LittleExplorersKidsActivity, error) {
     m := map[string]string{
-        "kca.ATTENDEES": "ATTENDEES",
+        "kca.ATTENDEES": "",
     }
     query := `
         SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
@@ -1392,7 +1392,7 @@ func (s *ClubService) FindAllLittleKidsActivities(offset int, limit int) ([]club
 
 func (s *ClubService) FindAllGoldenPearlActivities(offset int, limit int) ([]clubs.GoldenPearlActivity, error) {
     m := map[string]string{
-        "gca.ATTENDEES": "ATTENDEES",
+        "gca.ATTENDEES": "",
     }
     query := `
         SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
@@ -1421,7 +1421,7 @@ func (s *ClubService) ListAppLittleKidsActivities(isHome bool, page string, limi
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllAppLittleKidsActivities(pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindAllAppLittleKidsActivities(pager.GetLowerBound(), pager.PageSize, isHome)
     if err != nil {
         return nil, err
     }
@@ -1465,6 +1465,419 @@ func (s *ClubService) CountAppLittleKidsActivities(isHome bool) (int, error) {
     return count, nil
 }
 
+func (s *ClubService) ListAppGoldenPearlActivities(isHome bool, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountAppGoldenPearlActivities(isHome)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindAllAppGoldenPearlActivities(pager.GetLowerBound(), pager.PageSize, isHome)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountAppGoldenPearlActivities(isHome bool) (int, error) {
+    query := `
+        SELECT COUNT(GOLDEN_ACTIVITY_ID) AS COUNT FROM GOLDEN_CLUB_ACTIVITY
+        WHERE (
+            ACTIVITY_START_DATETIME <= CURRENT_TIMESTAMP 
+            AND (
+                ACTIVITY_END_DATETIME >= CURRENT_TIMESTAMP 
+                OR ACTIVITY_END_DATETIME IS NULL
+            )
+        )
+    `
+    if isHome {
+        query = `
+            SELECT COUNT(GOLDEN_ACTIVITY_ID) AS COUNT FROM GOLDEN_CLUB_ACTIVITY
+             WHERE (
+              ACTIVITY_START_DATETIME <= CURRENT_TIMESTAMP 
+              AND (
+                ACTIVITY_END_DATETIME >= CURRENT_TIMESTAMP 
+                OR ACTIVITY_END_DATETIME IS NULL
+              )
+             ) AND ACTIVITY_DISPLAY_ORDER = 1
+        `
+    }
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListLittleKidsMemberships(page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsMemberships()
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindAllLittleKidsMemberships(pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountLittleKidsMemberships() (int, error) {
+    query := `SELECT COUNT(KIDS_MEMBERSHIP_ID) AS COUNT FROM KIDS_CLUB_MEMBERSHIP`
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListGoldenPearlMemberships(page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountGoldenPearlMemberships()
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindAllGoldenPearlMemberships(pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountGoldenPearlMemberships() (int, error) {
+    query := `SELECT COUNT(GOLDEN_PEARL_MEMBERSHIP_ID) AS COUNT FROM GOLDEN_PEARL_CLUB_MEMBERSHIP`
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListLittleKidsActivityAttendees(kidsActivityId int64, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsActivityAttendees(kidsActivityId)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindAllLittleKidsAttendees(kidsActivityId, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountLittleKidsActivityAttendees(kidsActivityId int64) (int, error) {
+    query := `SELECT COUNT(KIDS_ACTV_PARTICIPATION_ID) AS COUNT FROM KIDS_CLUB_ACTV_PARTICIPATION WHERE KIDS_ACTIVITY_ID = :kidsActivityId`
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, kidsActivityId)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListGoldenPearlActivityAttendees(goldenActivityId int64, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountGoldenPearlActivityAttendees(goldenActivityId)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindAllGoldenPearlAttendees(goldenActivityId, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountGoldenPearlActivityAttendees(goldenActivityId int64) (int, error) {
+    query := `SELECT COUNT(GOLDEN_ACTV_PARTICIPATION_ID) AS COUNT FROM GOLDEN_CLUB_ACTV_PARTICIPATION WHERE GOLDEN_ACTIVITY_ID = :goldenActivityId`
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, goldenActivityId)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsAttendeesByKeyword(kidsActivityId, keyword, keyword2)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindLittleKidsAttendeesByKeyword(kidsActivityId, keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string) (int, error) {
+    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, keyword, keyword2)
+    base := `SELECT COUNT(kcap.KIDS_ACTV_PARTICIPATION_ID) AS COUNT
+             FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
+             JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID`
+    query := base + whereClause(conditions)
+
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListGoldenPearlAttendeesByKeyword(goldenActivityId int64, keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountGoldenPearlAttendeesByKeyword(goldenActivityId, keyword, keyword2)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindGoldenPearlAttendeesByKeyword(goldenActivityId, keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountGoldenPearlAttendeesByKeyword(goldenActivityId int64, keyword string, keyword2 string) (int, error) {
+    conditions, args := buildGoldenPearlAttendeesKeywordConditions(goldenActivityId, keyword, keyword2)
+    base := `SELECT COUNT(gcap.GOLDEN_ACTV_PARTICIPATION_ID) AS COUNT
+             FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
+             JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID`
+    query := base + whereClause(conditions)
+
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListLittleKidsMembershipByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsMembershipByKeyword(keyword, keyword2)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindLittleKidsMembershipByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountLittleKidsMembershipByKeyword(keyword string, keyword2 string) (int, error) {
+    conditions, args := buildLittleKidsMembershipKeywordConditions(keyword, keyword2)
+    base := `SELECT COUNT(kcm.KIDS_MEMBERSHIP_ID) AS COUNT FROM KIDS_CLUB_MEMBERSHIP kcm`
+    query := base + whereClause(conditions)
+
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) ListGoldenPearlMembershipByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountGoldenPearlMembershipByKeyword(keyword, keyword2)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := model.GetPager(total, page, limit)
+    list, err := s.FindGoldenPearlMembershipByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    if err != nil {
+        return nil, err
+    }
+
+    return &model.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *ClubService) CountGoldenPearlMembershipByKeyword(keyword string, keyword2 string) (int, error) {
+    conditions, args := buildGoldenPearlMembershipKeywordConditions(keyword, keyword2)
+    base := `SELECT COUNT(gcm.GOLDEN_MEMBERSHIP_ID) AS COUNT FROM GOLDEN_CLUB_MEMBERSHIP gcm`
+    query := base + whereClause(conditions)
+
+    var count int
+    err := s.db.GetContext(s.ctx, &count, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
+}
+
+func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
+    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, keyword, keyword2)
+    args = append(args, sql.Named("offset", offset))
+    args = append(args, sql.Named("limit", limit))
+    
+    m := map[string]string{
+        "kcm.ACTIVITY_DATE_TIME": "",
+    }
+    base := `
+        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m) + `, kcap.ACTIVITY_DATE_TIME
+        FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
+        JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
+    `
+    
+    query := base + whereClause(conditions) +
+        ` ORDER BY kcm.KIDS_MEMBERSHIP_NUMBER DESC 
+          OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    
+    list := make([]clubs.LittleExplorersKidsMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].SetAttendees()
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindGoldenPearlAttendeesByKeyword(goldenActivityId int64, keyword string, keyword2 string, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
+    conditions, args := buildGoldenPearlAttendeesKeywordConditions(goldenActivityId, keyword, keyword2)
+    args = append(args, sql.Named("offset", offset))
+    args = append(args, sql.Named("limit", limit))
+
+    m := map[string]string{
+        "gcm.ACTIVITY_DATE_TIME": "",
+    }
+    base := `
+        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
+        FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
+        JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
+    `
+
+    query := base + whereClause(conditions) +
+        ` ORDER BY gcm.GOLDEN_MEMBERSHIP_NUMBER DESC 
+          OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+
+    list := make([]clubs.GoldenPearlMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].SetAttendees()
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindLittleKidsMembershipByKeyword(keyword string, keyword2 string, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
+    conditions, args := buildLittleKidsMembershipKeywordConditions(keyword, keyword2)
+    args = append(args, sql.Named("offset", offset))
+    args = append(args, sql.Named("limit", limit))
+
+    base := `SELECT * FROM KIDS_CLUB_MEMBERSHIP kcm`
+
+    query := base + whereClause(conditions) +
+        ` ORDER BY kcm.KIDS_MEMBERSHIP_NUMBER DESC 
+          OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+
+    list := make([]clubs.LittleExplorersKidsMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindGoldenPearlMembershipByKeyword(keyword string, keyword2 string, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
+    conditions, args := buildGoldenPearlMembershipKeywordConditions(keyword, keyword2)
+    args = append(args, sql.Named("offset", offset))
+    args = append(args, sql.Named("limit", limit))
+
+    base := `SELECT * FROM GOLDEN_CLUB_MEMBERSHIP gcm`
+
+    query := base + whereClause(conditions) +
+        ` ORDER BY gcm.GOLDEN_MEMBERSHIP_NUMBER DESC 
+          OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+
+    list := make([]clubs.GoldenPearlMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+    }
+    return list, nil
+}
+
 func (s *ClubService) ListLittleKidsActivities(page string, limit string) (*model.PagedList, error) {
     total, err := s.CountLittleKidsActivities()
     if err != nil {
@@ -1485,7 +1898,7 @@ func (s *ClubService) ListLittleKidsActivities(page string, limit string) (*mode
 }
 
 func (s *ClubService) CountLittleKidsActivities() (int, error) {
-    const query = `SELECT COUNT(KIDS_ACTIVITY_ID) AS COUNT FROM KIDS_CLUB_ACTIVITY`
+    query := `SELECT COUNT(KIDS_ACTIVITY_ID) AS COUNT FROM KIDS_CLUB_ACTIVITY`
     var count int
     err := s.db.GetContext(s.ctx, &count, query)
     if err != nil {
@@ -1515,7 +1928,7 @@ func (s *ClubService) ListGoldenPearlActivities(page string, limit string) (*mod
 }
 
 func (s *ClubService) CountGoldenPearlActivities(isHome bool) (int, error) {
-    const query = `SELECT COUNT(GOLDEN_ACTIVITY_ID) AS COUNT FROM GOLDEN_CLUB_ACTIVITY`
+    query := `SELECT COUNT(GOLDEN_ACTIVITY_ID) AS COUNT FROM GOLDEN_CLUB_ACTIVITY`
     var count int
     err := s.db.GetContext(s.ctx, &count, query)
     if err != nil {
@@ -1597,7 +2010,7 @@ func (s *ClubService) FindLittleKidsActivitiesByKeyword(keyword string, keyword2
     args = append(args, sql.Named("limit", limit))
 
     m := map[string]string{
-        "kca.ATTENDEES": "ATTENDEES",
+        "kca.ATTENDEES": "",
     }
     base := `
         SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*)
@@ -1605,15 +2018,18 @@ func (s *ClubService) FindLittleKidsActivitiesByKeyword(keyword string, keyword2
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
     `
-    query := base + whereClause(conditions) + 
+    query := base + whereClause(conditions) +
         ` ORDER BY kca.ACTIVITY_START_DATETIME DESC 
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
-    var list []clubs.LittleExplorersKidsActivity
+    list := make([]clubs.LittleExplorersKidsActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
+    }
+    for i := range list {
+        list[i].Set()
     }
     return list, nil
 }
@@ -1624,7 +2040,7 @@ func (s *ClubService) FindGoldenPearlActivitiesByKeyword(keyword string, keyword
     args = append(args, sql.Named("limit", limit))
 
     m := map[string]string{
-        "gca.ATTENDEES": "ATTENDEES",
+        "gca.ATTENDEES": "",
     }
     base := `
         SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*)
@@ -1632,22 +2048,25 @@ func (s *ClubService) FindGoldenPearlActivitiesByKeyword(keyword string, keyword
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
     `
-    query := base + whereClause(conditions) + 
+    query := base + whereClause(conditions) +
         ` ORDER BY gca.ACTIVITY_START_DATETIME DESC 
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
-    var list []clubs.GoldenPearlActivity
+    list := make([]clubs.GoldenPearlActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
+    }
+    for i := range list {
+        list[i].Set()
     }
     return list, nil
 }
 
 func (s *ClubService) GenerateKidsMembershipNo() (string, error) {
     kidsMembershipNo := ""
-    const query = `SELECT GENERATE_KIDS_MEMBERSHIP() AS KIDS_MEMBERSHIP_NUMBER FROM DUAL`
+    query := `SELECT GENERATE_KIDS_MEMBERSHIP() AS KIDS_MEMBERSHIP_NUMBER FROM DUAL`
     err := s.db.GetContext(s.ctx, &kidsMembershipNo, query)
     if err != nil {
         utils.LogError(err)
@@ -1667,9 +2086,9 @@ func (s *ClubService) ExistsGoldenPearlAboutUs() (bool, error) {
     return count == 1, nil
 }
 
-func (s * ClubService) GenerateGoldenMembershipNo() (string, error) {
+func (s *ClubService) GenerateGoldenMembershipNo() (string, error) {
     goldenMembershipNo := ""
-    const query = `SELECT GENERATE_GOLDEN_MEMBERSHIP() AS GOLDEN_MEMBERSHIP_NUMBER FROM DUAL`
+    query := `SELECT GENERATE_GOLDEN_MEMBERSHIP() AS GOLDEN_MEMBERSHIP_NUMBER FROM DUAL`
     err := s.db.GetContext(s.ctx, &goldenMembershipNo, query)
     if err != nil {
         utils.LogError(err)
@@ -1681,8 +2100,6 @@ func (s * ClubService) GenerateGoldenMembershipNo() (string, error) {
 func (s *ClubService) ExistsLittleKidsByPrn(docNumber string) (bool, error) {
     return false, nil
 }
-
-
 
 func buildLittleKidsActivitiesKeywordConditions(keyword string, keyword2 string, keyword3 string) ([]string, []interface{}) {
     var (
@@ -1712,7 +2129,7 @@ func buildGoldenPearlActivitiesKeywordConditions(keyword string, keyword2 string
     )
 
     if keyword != "" {
-        conds = append(conds, `LOWER(gca.GOLDEN_ACTIVITY_CODE) LIKE :keyword OR LOWER(gca.GOLDEN_ACTIVITY_NAME) LIKE :keyword)`)
+        conds = append(conds, `(LOWER(gca.GOLDEN_ACTIVITY_CODE) LIKE :keyword OR LOWER(gca.GOLDEN_ACTIVITY_NAME) LIKE :keyword)`)
         args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
     }
     if keyword2 != "" {
@@ -1722,6 +2139,76 @@ func buildGoldenPearlActivitiesKeywordConditions(keyword string, keyword2 string
     if keyword3 != "" {
         conds = append(conds, `TRUNC(gca.ACTIVITY_END_DATETIME) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
         args = append(args, sql.Named("keyword3", keyword3))
+    }
+    return conds, args
+}
+
+func buildLittleKidsAttendeesKeywordConditions(kidsActivityId int64, keyword string, keyword2 string) ([]string, []interface{}) {
+    var (
+        conds []string
+        args  []interface{}
+    )
+
+    if keyword != "" {
+        conds = append(conds, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
+        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+    }
+    if keyword2 != "" {
+        conds = append(conds, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
+        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+    }
+    conds = append(conds, `kcap.KIDS_ACTIVITY_ID = :kidsActivityId`)
+    args = append(args, sql.Named("kidsActivityId", kidsActivityId))
+    return conds, args
+}
+
+func buildGoldenPearlAttendeesKeywordConditions(goldenActivityId int64, keyword string, keyword2 string) ([]string, []interface{}) {
+    var (
+        conds []string
+        args  []interface{}
+    )
+
+    if keyword != "" {
+        conds = append(conds, `(LOWER(gcm.GOLDEN_PRN) LIKE :keyword OR LOWER(gcm.GOLDEN_NAME) LIKE :keyword)`)
+        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+    }
+    if keyword2 != "" {
+        conds = append(conds, `(LOWER(gcm.NOK_PRN) LIKE :keyword2 OR LOWER(gcm.NOK_NAME) LIKE :keyword2)`)
+        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+    }
+    return conds, args
+}
+
+func buildLittleKidsMembershipKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+    var (
+        conds []string
+        args  []interface{}
+    )
+
+    if keyword != "" {
+        conds = append(conds, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
+        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+    }
+    if keyword2 != "" {
+        conds = append(conds, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
+        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+    }
+    return conds, args
+}
+
+func buildGoldenPearlMembershipKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+    var (
+        conds []string
+        args  []interface{}
+    )
+
+    if keyword != "" {
+        conds = append(conds, `(LOWER(gcm.GOLDEN_PRN) LIKE :keyword OR LOWER(gcm.GOLDEN_NAME) LIKE :keyword)`)
+        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+    }
+    if keyword2 != "" {
+        conds = append(conds, `(LOWER(gcm.NOK_PRN) LIKE :keyword2 OR LOWER(gcm.NOK_NAME) LIKE :keyword2)`)
+        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
     }
     return conds, args
 }

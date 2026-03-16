@@ -1,6 +1,8 @@
 package userPackage
 
 import (
+    "vesaliusm/utils"
+
     "github.com/guregu/null/v6"
 )
 
@@ -82,41 +84,41 @@ type UserPackage struct {
 
 func (o *UserPackage) Set() {
     if !o.OrderedDateTime.Valid {
-        o.OrderedDateTime.String = "-"
+        o.OrderedDateTime = utils.NewNullString("-")
     }
 
     if !o.PurchasedDateTime.Valid {
-        o.PurchasedDateTime.String = "-"
+        o.PurchasedDateTime = utils.NewNullString("-")
     }
 
     if !o.BookedDateTime.Valid {
-        o.BookedDateTime.String = "-"
+        o.BookedDateTime = utils.NewNullString("-")
     }
 
     if !o.RedeemedDateTime.Valid {
-        o.RedeemedDateTime.String = "-"
+        o.RedeemedDateTime = utils.NewNullString("-")
     }
 
     if !o.CancelledDateTime.Valid {
-        o.CancelledDateTime.String = "-"
+        o.CancelledDateTime = utils.NewNullString("-")
     }
 
     if !o.ExpiredDateTime.Valid {
-        o.ExpiredDateTime.String = "-"
+        o.ExpiredDateTime = utils.NewNullString("-")
     }
 }
 
 func (o *UserPackage) SetMobile() {
     if o.PackageStatus.String == "Ordered" {
-        o.PackageStatus.String = "Awaiting Payment"
+        o.PackageStatus = utils.NewNullString("Awaiting Payment")
     }
 
     if !o.PaymentTransDate.Valid {
-        o.PaymentTransDate.String = "-"
+        o.PaymentTransDate = utils.NewNullString("-")
     }
 
     if !o.PaymentAmountCollected.Valid {
-        o.PaymentAmountCollected.String = "-"
+        o.PaymentAmountCollected = utils.NewNullString("-")
     }
 
     if o.PaymentGatewayV.String == "1" {
@@ -126,57 +128,57 @@ func (o *UserPackage) SetMobile() {
     }
 
     if !o.AppointmentDateTime.Valid {
-        o.AppointmentDateTime.String = "-"
+        o.AppointmentDateTime = utils.NewNullString("-")
     }
 
     if !o.PurchasedDateTime.Valid {
-        o.PurchasedDateTime.String = "-"
+        o.PurchasedDateTime = utils.NewNullString("-")
     }
 
     if !o.RedeemedDateTime.Valid {
-        o.RedeemedDateTime.String = "-"
+        o.RedeemedDateTime = utils.NewNullString("-")
     }
 
     if !o.CancelledDateTime.Valid {
-        o.CancelledDateTime.String = "-"
+        o.CancelledDateTime = utils.NewNullString("-")
     }
 
     if !o.ExpiredDateTime.Valid {
-        o.ExpiredDateTime.String = "-"
+        o.ExpiredDateTime = utils.NewNullString("-")
     }
 }
 
 func (o *UserPackage) SetWebadmin() {
     if !o.OrderedDateTime.Valid {
-        o.OrderedDateTime.String = "-"
+        o.OrderedDateTime = utils.NewNullString("-")
     }
 
     if !o.PurchasedDateTime.Valid {
-        o.PurchasedDateTime.String = "-"
+        o.PurchasedDateTime = utils.NewNullString("-")
     }
 
     if !o.BookedDateTime.Valid {
-        o.BookedDateTime.String = "-"
+        o.BookedDateTime = utils.NewNullString("-")
     }
 
     if !o.RedeemedDateTime.Valid {
-        o.RedeemedDateTime.String = "-"
+        o.RedeemedDateTime = utils.NewNullString("-")
     }
 
     if !o.CancelledDateTime.Valid {
-        o.CancelledDateTime.String = "-"
+        o.CancelledDateTime = utils.NewNullString("-")
     }
 
     if !o.ExpiredDateTime.Valid {
-        o.ExpiredDateTime.String = "-"
+        o.ExpiredDateTime = utils.NewNullString("-")
     }
 
     if !o.AppointmentDateTime.Valid {
-        o.AppointmentDateTime.String = "-"
+        o.AppointmentDateTime = utils.NewNullString("-")
     }
 
     if !o.PaymentRequestNo.Valid {
-        o.PaymentRequestNo.String = "-"
+        o.PaymentRequestNo = utils.NewNullString("-")
     }
 
     if o.PaymentGatewayV.String == "1" {
@@ -186,11 +188,11 @@ func (o *UserPackage) SetWebadmin() {
     }
 
     if !o.PaymentTransDate.Valid {
-        o.PaymentTransDate.String = "-"
+        o.PaymentTransDate = utils.NewNullString("-")
     }
 
     if !o.PaymentUrl.Valid {
-        o.PaymentUrl.String = "-"
+        o.PaymentUrl = utils.NewNullString("-")
     }
 }
 

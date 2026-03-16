@@ -1,6 +1,8 @@
 package clubs
 
 import (
+    "vesaliusm/utils"
+
     "github.com/guregu/null/v6"
 )
 
@@ -62,111 +64,111 @@ type LittleExplorersKidsMembership struct {
 
 func (o *LittleExplorersKidsMembership) SetWebAdmin() {
     if !o.KidsPrn.Valid {
-        o.KidsPrn.String = "-"
+        o.KidsPrn = utils.NewNullString("-")
     }
 
     if !o.GuardianPrn.Valid {
-        o.GuardianPrn.String = "-"
+        o.GuardianPrn = utils.NewNullString("-")
     }
 }
 
 func (o *LittleExplorersKidsMembership) Set() {
     if !o.KidsPrn.Valid {
-        o.KidsPrn.String = "-"
+        o.KidsPrn = utils.NewNullString("-")
     }
 
     if !o.KidsDob.Valid {
-        o.KidsDob.String = "-"
+        o.KidsDob = utils.NewNullString("-")
     }
 
     if !o.KidsEmail.Valid {
-        o.KidsEmail.String = "-"
+        o.KidsEmail = utils.NewNullString("-")
     }
 
     if !o.GuardianDob.Valid {
-        o.GuardianDob.String = "-"
+        o.GuardianDob = utils.NewNullString("-")
     }
 
     if !o.GuardianHomeContact.Valid {
-        o.GuardianHomeContact.String = "-"
+        o.GuardianHomeContact = utils.NewNullString("-")
     }
 
     if !o.GuardianMobileContact.Valid {
-        o.GuardianMobileContact.String = "-"
+        o.GuardianMobileContact = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress1.Valid {
-        o.GuardianAddress1.String = "-"
+        o.GuardianAddress1 = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress2.Valid {
-        o.GuardianAddress2.String = "-"
+        o.GuardianAddress2 = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress3.Valid {
-        o.GuardianAddress3.String = "-"
+        o.GuardianAddress3 = utils.NewNullString("-")
     }
 
     if !o.GuardianPostCode.Valid {
-        o.GuardianPostCode.String = "-"
+        o.GuardianPostCode = utils.NewNullString("-")
     }
 
     if !o.GuardianState.Valid {
-        o.GuardianState.String = "-"
+        o.GuardianState = utils.NewNullString("-")
     }
 
     if !o.GuardianCountryCode.Valid {
-        o.GuardianCountryCode.String = "-"
+        o.GuardianCountryCode = utils.NewNullString("-")
     }
 }
 
 func (o *LittleExplorersKidsMembership) SetAttendees() {
     if !o.KidsPrn.Valid {
-        o.KidsPrn.String = "-"
+        o.KidsPrn = utils.NewNullString("-")
     }
 
     if !o.KidsDob.Valid {
-        o.KidsDob.String = "-"
+        o.KidsDob = utils.NewNullString("-")
     }
 
     if !o.KidsEmail.Valid {
-        o.KidsEmail.String = "-"
+        o.KidsEmail = utils.NewNullString("-")
     }
 
     if !o.GuardianPrn.Valid {
-        o.GuardianPrn.String = "-"
+        o.GuardianPrn = utils.NewNullString("-")
     }
 
     if !o.GuardianHomeContact.Valid {
-        o.GuardianHomeContact.String = "-"
+        o.GuardianHomeContact = utils.NewNullString("-")
     }
 
     if !o.GuardianMobileContact.Valid {
-        o.GuardianMobileContact.String = "-"
+        o.GuardianMobileContact = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress1.Valid {
-        o.GuardianAddress1.String = "-"
+        o.GuardianAddress1 = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress2.Valid {
-        o.GuardianAddress2.String = "-"
+        o.GuardianAddress2 = utils.NewNullString("-")
     }
 
     if !o.GuardianAddress3.Valid {
-        o.GuardianAddress3.String = "-"
+        o.GuardianAddress3 = utils.NewNullString("-")
     }
 
     if !o.GuardianPostCode.Valid {
-        o.GuardianPostCode.String = "-"
+        o.GuardianPostCode = utils.NewNullString("-")
     }
 
     if !o.GuardianState.Valid {
-        o.GuardianState.String = "-"
+        o.GuardianState = utils.NewNullString("-")
     }
 
     if !o.GuardianCountryCode.Valid {
-        o.GuardianCountryCode.String = "-"
+        o.GuardianCountryCode = utils.NewNullString("-")
     }
 }
 
@@ -214,115 +216,115 @@ type GoldenPearlMembership struct {
 
 func (o *GoldenPearlMembership) SetWebAdmin() {
     if !o.GoldenPrn.Valid {
-        o.GoldenPrn.String = "-"
+        o.GoldenPrn = utils.NewNullString("-")
     }
 
     if !o.NokPrn.Valid {
-        o.NokPrn.String = "-"
+        o.NokPrn = utils.NewNullString("-")
     }
 }
 
 func (o *GoldenPearlMembership) Set() {
     if !o.GoldenPrn.Valid {
-        o.GoldenPrn.String = "-"
+        o.GoldenPrn = utils.NewNullString("-")
     }
 
     if !o.GoldenDob.Valid {
-        o.GoldenDob.String = "-"
+        o.GoldenDob = utils.NewNullString("-")
     }
 
     if !o.GoldenEmail.Valid {
-        o.GoldenEmail.String = "-"
+        o.GoldenEmail = utils.NewNullString("-")
     }
 
     if !o.NokPrn.Valid {
-        o.NokPrn.String = "-"
+        o.NokPrn = utils.NewNullString("-")
     }
 
     if !o.NokDob.Valid {
-        o.NokDob.String = "-"
+        o.NokDob = utils.NewNullString("-")
     }
 
     if !o.NokHomeContact.Valid {
-        o.GoldenDob.String = "-"
+        o.NokHomeContact = utils.NewNullString("-")
     }
 
     if !o.NokMobileContact.Valid {
-        o.GoldenDob.String = "-"
+        o.NokMobileContact = utils.NewNullString("-")
     }
 
     if !o.NokAddress1.Valid {
-        o.NokAddress1.String = "-"
+        o.NokAddress1 = utils.NewNullString("-")
     }
 
     if !o.NokAddress2.Valid {
-        o.NokAddress2.String = "-"
+        o.NokAddress2 = utils.NewNullString("-")
     }
 
     if !o.NokAddress3.Valid {
-        o.NokAddress3.String = "-"
+        o.NokAddress3 = utils.NewNullString("-")
     }
 
     if !o.NokPostCode.Valid {
-        o.NokPostCode.String = "-"
+        o.NokPostCode = utils.NewNullString("-")
     }
 
     if !o.NokState.Valid {
-        o.NokState.String = "-"
+        o.NokState = utils.NewNullString("-")
     }
 
     if !o.NokCountryCode.Valid {
-        o.NokCountryCode.String = "-"
+        o.NokCountryCode = utils.NewNullString("-")
     }
 }
 
 func (o *GoldenPearlMembership) SetAttendees() {
     if o.GoldenPrn.Valid {
-        o.GoldenPrn.String = "-"
+        o.GoldenPrn = utils.NewNullString("-")
     }
 
     if !o.GoldenDob.Valid {
-        o.GoldenDob.String = "-"
+        o.GoldenDob = utils.NewNullString("-")
     }
 
     if !o.GoldenEmail.Valid {
-        o.GoldenEmail.String = "-"
+        o.GoldenEmail = utils.NewNullString("-")
     }
 
     if !o.NokPrn.Valid {
-        o.NokPrn.String = "-"
+        o.NokPrn = utils.NewNullString("-")
     }
 
     if !o.NokHomeContact.Valid {
-        o.GoldenDob.String = "-"
+        o.NokHomeContact = utils.NewNullString("-")
     }
 
     if !o.NokMobileContact.Valid {
-        o.GoldenDob.String = "-"
+        o.NokMobileContact = utils.NewNullString("-")
     }
 
     if !o.NokAddress1.Valid {
-        o.NokAddress1.String = "-"
+        o.NokAddress1 = utils.NewNullString("-")
     }
 
     if !o.NokAddress2.Valid {
-        o.NokAddress2.String = "-"
+        o.NokAddress2 = utils.NewNullString("-")
     }
 
     if !o.NokAddress3.Valid {
-        o.NokAddress3.String = "-"
+        o.NokAddress3 = utils.NewNullString("-")
     }
 
     if !o.NokPostCode.Valid {
-        o.NokPostCode.String = "-"
+        o.NokPostCode = utils.NewNullString("-")
     }
 
     if !o.NokState.Valid {
-        o.NokState.String = "-"
+        o.NokState = utils.NewNullString("-")
     }
 
     if !o.NokCountryCode.Valid {
-        o.NokCountryCode.String = "-"
+        o.NokCountryCode = utils.NewNullString("-")
     }
 }
 
@@ -380,11 +382,11 @@ type LittleExplorersKidsActivity struct {
 
 func (o *LittleExplorersKidsActivity) Set() {
     if !o.ActivityEndDateTime.Valid {
-        o.ActivityEndDateTime.String = "-"
+        o.ActivityEndDateTime = utils.NewNullString("-")
     }
 
     if !o.ActivityTnc.Valid {
-        o.ActivityTnc.String = "-"
+        o.ActivityTnc = utils.NewNullString("-")
     }
 }
 
@@ -410,10 +412,10 @@ type GoldenPearlActivity struct {
 
 func (o *GoldenPearlActivity) Set() {
     if !o.ActivityEndDateTime.Valid {
-        o.ActivityEndDateTime.String = "-"
+        o.ActivityEndDateTime = utils.NewNullString("-")
     }
 
     if !o.ActivityTnc.Valid {
-        o.ActivityTnc.String = "-"
+        o.ActivityTnc = utils.NewNullString("-")
     }
 }

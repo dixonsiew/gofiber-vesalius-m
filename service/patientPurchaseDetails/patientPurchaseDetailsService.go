@@ -311,7 +311,7 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
 }
 
 func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.UserPackage) error {
-    const query = `
+    query := `
         INSERT INTO PATIENT_PURCHASE_DETAILS (
             PATIENT_PRN, PATIENT_NAME, PACKAGE_ID,
             PACKAGE_STATUS, PACKAGE_PAYMENT_ID, ORDERED_DATETIME

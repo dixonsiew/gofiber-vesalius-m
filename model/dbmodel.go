@@ -1,10 +1,11 @@
 package model
 
 import (
-    "strconv"
+	"strconv"
+	"vesaliusm/utils"
 
-    "github.com/guregu/null/v6"
-    "github.com/nleeper/goment"
+	"github.com/guregu/null/v6"
+	"github.com/nleeper/goment"
 )
 
 type Wayfinding struct {
@@ -253,25 +254,25 @@ func (o *ApplicationUserFamily) Set() {
         o.IsPatient = false
     }
     if !o.Relationship.Valid {
-        o.Relationship.String = "-"
+        o.Relationship = utils.NewNullString("-")
     }
     if !o.NokPrn.Valid {
-        o.NokPrn.String = "-"
+        o.NokPrn = utils.NewNullString("-")
     }
     if !o.NricPassport.Valid {
-        o.NricPassport.String = "-"
+        o.NricPassport = utils.NewNullString("-")
     }
     if !o.Dob.Valid {
-        o.Dob.String = "-"
+        o.Dob = utils.NewNullString("-")
     }
     if !o.Nationality.Valid {
-        o.Nationality.String = "-"
+        o.Nationality = utils.NewNullString("-")
     }
     if !o.ContactNumber.Valid {
-        o.ContactNumber.String = "-"
+        o.ContactNumber = utils.NewNullString("-")
     }
     if !o.Address.Valid {
-        o.Address.String = "-"
+        o.Address = utils.NewNullString("-")
     }
     if o.IsActiveV.String == "Y" {
         o.IsActive = true
@@ -279,10 +280,10 @@ func (o *ApplicationUserFamily) Set() {
         o.IsActive = false
     }
     if !o.MaritalStatus.Valid {
-        o.MaritalStatus.String = "-"
+        o.MaritalStatus = utils.NewNullString("-")
     }
     if !o.Email.Valid {
-        o.Email.String = "-"
+        o.Email = utils.NewNullString("-")
     }
     if o.IsKidsExplorerV.String == "Y" {
         o.IsKidsExplorer = true
@@ -374,13 +375,13 @@ func (o *ApplicationUserFamily) SetFromFamilyMember(m ApplicationUser) {
 
 func (o *ApplicationUser) Set() {
     if !o.Email.Valid {
-        o.Email.String = "-"
+        o.Email = utils.NewNullString("-")
     }
     if !o.Race.Valid {
-        o.Race.String = "-"
+        o.Race = utils.NewNullString("-")
     }
     if !o.ContactNumber.Valid {
-        o.ContactNumber.String = "-"
+        o.ContactNumber = utils.NewNullString("-")
     }
     if o.FirstTimeLoginV.Int32 == 1 {
         o.FirstTimeLogin = true
@@ -698,12 +699,12 @@ type GeneralNotification struct {
 func (o *GeneralNotification) Set() {
     if o.StartDate.Valid {
         g, _ := goment.New(o.StartDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.StartDate.String = g.Format("DD/MM/YYYY")
+        o.StartDate = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
 
     if o.EndDate.Valid {
         g, _ := goment.New(o.EndDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.EndDate.String = g.Format("DD/MM/YYYY")
+        o.EndDate = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
 }
 

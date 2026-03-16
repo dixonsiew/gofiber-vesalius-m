@@ -23,7 +23,7 @@ func NewAssignBranchService(db *sqlx.DB, ctx context.Context, branchService *bra
 }
 
 func (s *AssignBranchService) FindAllPrimary(userId int64) ([]model.AssignBranch, error) {
-    const query = `SELECT * FROM ASSIGN_BRANCH WHERE USER_ID = :userId ORDER BY ASSIGN_BRANCH_ID ASC`
+    query := `SELECT * FROM ASSIGN_BRANCH WHERE USER_ID = :userId ORDER BY ASSIGN_BRANCH_ID ASC`
     list := make([]model.AssignBranch, 0)
     err := s.db.SelectContext(s.ctx, &list, query, userId)
     if err != nil {
@@ -52,7 +52,7 @@ func (s *AssignBranchService) FindAllByUserId(userId int64) ([]model.AssignBranc
 }
 
 func (s *AssignBranchService) FindAllByAdminId(adminId int64) ([]model.AssignBranch, error) {
-    const query = `SELECT * FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId ORDER BY ASSIGN_BRANCH_ID ASC`
+    query := `SELECT * FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId ORDER BY ASSIGN_BRANCH_ID ASC`
     list := make([]model.AssignBranch, 0)
     err := s.db.SelectContext(s.ctx, &list, query, adminId)
     if err != nil {
@@ -63,7 +63,7 @@ func (s *AssignBranchService) FindAllByAdminId(adminId int64) ([]model.AssignBra
 }
 
 func (s *AssignBranchService) DeleteByUserIdNBranchIdNPRN(userId int64, branchId int64, prn string) error {
-    const query = `DELETE FROM ASSIGN_BRANCH WHERE PRN = :prn AND USER_ID = :userId AND BRANCH_ID = :branchId`
+    query := `DELETE FROM ASSIGN_BRANCH WHERE PRN = :prn AND USER_ID = :userId AND BRANCH_ID = :branchId`
     _, err := s.db.ExecContext(s.ctx, query, prn, userId, branchId)
     if err != nil {
         utils.LogError(err)
@@ -73,7 +73,7 @@ func (s *AssignBranchService) DeleteByUserIdNBranchIdNPRN(userId int64, branchId
 }
 
 func (s *AssignBranchService) ExistsByPRNinAssignBranch(prn string) (bool, error) {
-    const query = `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM ASSIGN_BRANCH WHERE PRN = :prn)`
+    query := `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM ASSIGN_BRANCH WHERE PRN = :prn)`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, prn)
     if err != nil {
@@ -84,7 +84,7 @@ func (s *AssignBranchService) ExistsByPRNinAssignBranch(prn string) (bool, error
 }
 
 func (s *AssignBranchService) ExistsByUserIdNBranchIdNPRNinAssignBranch(userId int64, branchId int64, prn string) (bool, error) {
-    const query = `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM ASSIGN_BRANCH WHERE USER_ID = :userId AND BRANCH_ID = :branchId AND PRN = :prn)`
+    query := `SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS (SELECT 1 FROM ASSIGN_BRANCH WHERE USER_ID = :userId AND BRANCH_ID = :branchId AND PRN = :prn)`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, prn)
     if err != nil {

@@ -376,7 +376,7 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
 }
 
 func (s *NovaDoctorService) FindAllHSMcrAndName() ([]model.NovaDoctor, error) {
-    const query = `
+    query := `
         SELECT DOCTOR_ID, MCR, NAME
         FROM NOVA_DOCTOR
         WHERE IS_FOR_PACKAGE = 'Y'
@@ -528,7 +528,7 @@ func (s *NovaDoctorService) ListByKeywordGuest(keyword string, page string, limi
 }
 
 func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
-    const query = `
+    query := `
         SELECT COUNT(nd.DOCTOR_ID)
         FROM NOVA_DOCTOR nd
         WHERE nd.IS_FOR_PACKAGE = 'N'
@@ -552,7 +552,7 @@ func (s *NovaDoctorService) CountByKeyword(keyword string) (int, error) {
 }
 
 func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorId int) (bool, error) {
-    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr AND DOCTOR_ID <> :doctorId`
+    query := `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr AND DOCTOR_ID <> :doctorId`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, mcr, doctorId)
     if err != nil {
@@ -563,7 +563,7 @@ func (s *NovaDoctorService) ExistsByOtherMcr(mcr string, doctorId int) (bool, er
 }
 
 func (s *NovaDoctorService) ExistsByMcr(mcr string) (bool, error) {
-    const query = `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr`
+    query := `SELECT COUNT(DOCTOR_ID) FROM NOVA_DOCTOR WHERE MCR = :mcr`
     var count int
     err := s.db.GetContext(s.ctx, &count, query, mcr)
     if err != nil {
@@ -1027,7 +1027,7 @@ func (s *NovaDoctorService) findAllNovaSpecialtyMap(q *sqlx.DB) (map[int64]model
 }
 
 func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_CLINIC_HOURS (
             CLINIC_HOUR_ID, BY_APPOINTMENT_ONLY, DAY_END_TIME,
             DAY_OF_THE_WEEK, DAY_START_TIME, DISPLAY_SEQUENCE, DOCTOR_ID
@@ -1055,7 +1055,7 @@ func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.N
 }
 
 func (s *NovaDoctorService) saveDoctorClinicLocationTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_CLINIC_LOCATION (
             CLINIC_LOCATION_ID, DOCTOR_ID, LOCATION, BUILDING
         ) VALUES (DR_CLINIC_LOCATION_SEQ.NEXTVAL, :doctorId, :location, :building)
@@ -1120,7 +1120,7 @@ func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.N
 }
 
 func (s *NovaDoctorService) saveDoctorContactsTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_CONTACT (
             CONTACT_ID, CONTACT_TYPE, CONTACT_VALUE, DISPLAY_SEQUENCE, DOCTOR_ID
         ) VALUES (DR_CONTACT_SEQ.NEXTVAL, :contactType, :contactValue, :displaySequence, :doctorId)
@@ -1141,7 +1141,7 @@ func (s *NovaDoctorService) saveDoctorContactsTx(tx *sqlx.Tx, doctor *model.Nova
 }
 
 func (s *NovaDoctorService) saveDoctorQualificationsTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_QUALIFICATIONS (
             QUALIFICATION_ID, DISPLAY_SEQUENCE, DOCTOR_ID, QUALIFICATION
         ) VALUES (DR_QUALIFICATIONS_SEQ.NEXTVAL, :displaySequence, :doctorId, :qualification)
@@ -1161,7 +1161,7 @@ func (s *NovaDoctorService) saveDoctorQualificationsTx(tx *sqlx.Tx, doctor *mode
 }
 
 func (s *NovaDoctorService) saveDoctorSpecialitiesTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_SPECIALITIES (
             SPECIALITIES_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPECIALITIES, SUBSPECIALTY
         ) VALUES (DOCTOR_SPECIALITIES_ID_SEQ.NEXTVAL, :displaySequence, :doctorId, :specialities, :subspecialty)
@@ -1182,7 +1182,7 @@ func (s *NovaDoctorService) saveDoctorSpecialitiesTx(tx *sqlx.Tx, doctor *model.
 }
 
 func (s *NovaDoctorService) saveDoctorSpecialtyTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_SPECIALTY (
             DOCTOR_SPECIALTY_ID, DOCTOR_ID, PRIMARY_SPECIALTY, SPECIALTY_ID
         ) VALUES (DR_SPECIALTIES_SEQ.NEXTVAL, :doctorId, :primarySpecialty, :specialtyId)
@@ -1206,7 +1206,7 @@ func (s *NovaDoctorService) saveDoctorSpecialtyTx(tx *sqlx.Tx, doctor *model.Nov
 }
 
 func (s *NovaDoctorService) saveDoctorSpokenLanguageTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
-    const query = `
+    query := `
         INSERT INTO NOVA_DOCTOR_SPOKEN_LANGUAGE (
             SPOKEN_LANGUAGE_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPOKEN_LANGUAGE
         ) VALUES (DR_SPOKEN_LANGUAGE_SEQ.NEXTVAL, :displaySequence, :doctorId, :spokenLanguage)

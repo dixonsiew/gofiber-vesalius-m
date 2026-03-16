@@ -194,10 +194,10 @@ func (s *AdminUserService) ListAuditLog(page string, limit string) (*model.Paged
 
 func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.AdminAuditLog, error) {
     m := map[string]string{
-        "EVENT_ADMIN_EMAIL": "au.EMAIL AS EVENT_ADMIN_EMAIL",
+        "apal.EVENT_ADMIN_EMAIL": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "", m) + `
+        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "apal.", m) + `, au.EMAIL AS EVENT_ADMIN_EMAIL
          FROM ADMIN_PORTAL_AUDIT_LOG apal
          JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID
          ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
@@ -263,10 +263,11 @@ func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, o
     args = append(args, sql.Named("limit", limit))
 
     m := map[string]string{
-        "EVENT_ADMIN_EMAIL": "au.EMAIL AS EVENT_ADMIN_EMAIL",
+        "apal.EVENT_ADMIN_EMAIL": "",
     }
     base := `
-        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "", m) + ` FROM ADMIN_PORTAL_AUDIT_LOG apal
+        SELECT ` + utils.GetDbColsWithReplace(model.AdminAuditLog{}, "apal.", m) + `, au.EMAIL AS EVENT_ADMIN_EMAIL 
+        FROM ADMIN_PORTAL_AUDIT_LOG apal
         JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID
     `
     query := base + whereClause(conditions) +
