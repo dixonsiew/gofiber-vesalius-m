@@ -24,5 +24,6 @@ func (c *ClubsController) registerRoutes(router fiber.Router) {
     api.Get("/littlekids/membership/all", c.GetAllLittleKidsMemberships)
     api.Post("/littlekids/membership/all", c.SearchAllLittleKidsMembership)
     api.Get("/littlekids/my-activity/all", c.GetAllUserLittleKidsActivities)
+    api.Post("/littlekids/activity", c.CreateLittleKidsActivity)
     api.Get("/goldenpearl/about-us", c.GetGoldenPearlAboutUs)
 }

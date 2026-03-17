@@ -509,8 +509,46 @@ func (cr *ClubsController) ParticipateLittleKidsActivity(c fiber.Ctx) error {
     })
 }
 
+// ParticipateLittleKidsActivity
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.LittleExplorersKidsActivityDto true "LittleExplorersKidsActivityDto"
+// @Success 200
+// @Router /clubs/littlekids/activity [post]
 func (cr *ClubsController) CreateLittleKidsActivity(c fiber.Ctx) error {
-    
+    _, user, err := middleware.ValidateToken(c)
+    if err != nil {
+        return err
+    }
+
+    data := new(dto.LittleExplorersKidsActivityDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    maxParticipant, _ := strconv.ParseInt(data.ActivityMaxParticipant, 10, 32)
+
+    var o clubs.LittleExplorersKidsActivity
+    o.KidsActivityCode = utils.NewNullString(data.KidsActivityCode)
+    o.KidsActivityName = utils.NewNullString(data.KidsActivityName)
+    o.KidsActivityDesc = utils.NewNullString(data.KidsActivityDesc)
+    o.KidsActivityImage = utils.NewNullString(data.KidsActivityImage)
+    o.ActivityStartDateTime = utils.NewNullString(data.ActivityStartDateTime)
+    o.ActivityEndDateTime = utils.NewNullString(data.ActivityEndDateTime)
+    o.ActivityMaxParticipant = utils.NewInt32(int32(maxParticipant))
+    o.ActivityTnc = utils.NewNullString(data.ActivityTnc)
+    o.ActivityDisplayOrder = utils.NewNullString(data.ActivityDisplayOrder)
+
+    err = cr.clubService.SaveLittleKidsActivity(o, user.UserId.Int64)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Little Kids Activity created",
+    })
 }
 
 // GetGoldenPearlAboutUs

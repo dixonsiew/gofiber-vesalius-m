@@ -116,6 +116,10 @@ func NewNullString(s string) null.String {
     return null.NewString(s, true)
 }
 
+func NewInt32(i int32) null.Int32 {
+    return null.NewInt32(i, true)
+}
+
 func NewInt64(i int64) null.Int64 {
     return null.NewInt(i, true)
 }
