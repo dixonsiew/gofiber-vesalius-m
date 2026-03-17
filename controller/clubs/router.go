@@ -7,23 +7,52 @@ import (
 )
 
 func SetupRoutes(router fiber.Router) {
-    clubController := NewClubsController()
-    clubController.registerRoutes(router)
+    api := router.Group("/clubs")
+    clubsLittleKidsController := NewClubsLittleKidsController()
+    clubsLittleKidsController.registerRoutes(api)
+
+    clubsGoldenPearlController := NewClubsGoldenPearlController()
+    clubsGoldenPearlController.registerRoutes(api)
 }
 
-func (c *ClubsController) registerRoutes(router fiber.Router) {
-    api := router.Group("/clubs")
-    api.Post("/littlekids/activity/participate", c.ParticipateLittleKidsActivity)
+func (c *ClubsLittleKidsController) registerRoutes(router fiber.Router) {
+    api := router.Group("/littlekids")
+    api.Post("/activity/participate", c.ParticipateLittleKidsActivity)
+    api.Get("/activity/all", c.GetAllLittleKidsActivities)
+    api.Get("/activity/all/mobile/:isHome", c.GetAllAppLittleKidsActivities)
+    api.Get("/activity/:activityId", c.GetLittleKidsActivityById)
+    api.Get("/about-us", c.GetLittleKidsAboutUs)
+
     api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
-    api.Post("/littlekids/membership", c.CreateLittleKidsMembership)
-    api.Post("/littlekids/membership/webadmin", c.CreateLittleKidsMembershipViaWebportal)
-    api.Get("/littlekids/membership/:membershipId", c.GetLittleKidsMembershipById)
-    api.Get("/littlekids/membership/all/mobile", c.GetAllAppLittleKidsMemberships)
-    api.Get("/littlekids/membership/export/all", c.GetAllExportLittleKidsMembership)
-    api.Post("/littlekids/membership/export/search", c.GetSearchExportLittleKidsMembership)
-    api.Get("/littlekids/membership/all", c.GetAllLittleKidsMemberships)
-    api.Post("/littlekids/membership/all", c.SearchAllLittleKidsMembership)
-    api.Get("/littlekids/my-activity/all", c.GetAllUserLittleKidsActivities)
-    api.Post("/littlekids/activity", c.CreateLittleKidsActivity)
-    api.Get("/goldenpearl/about-us", c.GetGoldenPearlAboutUs)
+    api.Post("/membership", c.CreateLittleKidsMembership)
+    api.Get("/membership/:membershipId", c.GetLittleKidsMembershipById)
+    api.Get("/membership/all/mobile", c.GetAllAppLittleKidsMemberships)
+    api.Get("/membership/export/all", c.GetAllExportLittleKidsMembership)
+    api.Post("/membership/export/search", c.GetSearchExportLittleKidsMembership)
+    api.Get("/membership/all", c.GetAllLittleKidsMemberships)
+    api.Post("/membership/all", c.SearchAllLittleKidsMembership)
+    api.Get("/my-activity/all", c.GetAllUserLittleKidsActivities)
+    api.Post("/activity", c.CreateLittleKidsActivity)
+    api.Get("/activity/export/all", c.GetAllExportLittleKidsActivity)
+    api.Post("/activity/export/search", c.GetSearchExportLittleKidsActivity)
+    api.Post("/activity/all", c.SearchAllLittleKidsActivities)
+    api.Get("/activity/attendees/:activityId/export/all", c.GetAllExportLittleKidsAttendees)
+    api.Post("/activity/attendees/:activityId/export/search", c.GetSearchExportLittleKidsAttendees)
+    api.Get("/activity/attendees/:activityId", c.GetLittleKidsActivityAttendeesById)
+    api.Post("/activity/attendees/:activityId", c.SearchAllLittleKidsAttendees)
+    api.Get("/activity/name/:activityId", c.GetLittleKidsActivityNameById)
+    
+    api.Use(middleware.JWTProtected, middleware.ValidateAdminUser)
+    api.Post("/membership/webadmin", c.CreateLittleKidsMembershipViaWebportal)
+    api.Put("/activity/:activityId", c.UpdateLittleKidsActivity)
+    api.Post("/about-us", c.CreateLittleKidsAboutUs)
+    api.Put("/about-us/:kidsClubId", c.UpdateLittleKidsAboutUs)
+}
+
+func (c *ClubsGoldenPearlController) registerRoutes(router fiber.Router) {
+    api := router.Group("/goldenpearl")
+    api.Get("/about-us", c.GetGoldenPearlAboutUs)
+
+    api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
+    api.Post("/membership", c.CreateGoldenPearlMembership)
 }

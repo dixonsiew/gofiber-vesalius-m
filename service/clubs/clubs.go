@@ -2270,6 +2270,10 @@ func (s *ClubService) ExistsLittleKidsByPrn(docNumber string) (bool, error) {
     return false, nil
 }
 
+func (s *ClubService) ExistsGoldenPearlByPrn(docNumber string) (bool, error) {
+    return false, nil
+}
+
 func buildLittleKidsActivitiesKeywordConditions(keyword string, keyword2 string, keyword3 string) ([]string, []interface{}) {
     var (
         conds []string

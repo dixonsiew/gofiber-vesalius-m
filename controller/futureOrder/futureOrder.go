@@ -1,21 +1,21 @@
 package futureOrder
 
 import (
-    "fmt"
-    "vesaliusm/service/futureOrder"
-    "vesaliusm/utils"
+	"strconv"
+	"vesaliusm/service/futureOrder"
+	"vesaliusm/utils"
 
-    "github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3"
 )
 
 type FutureOrderController struct {
-    futureOrderService *futureOrder.FutureOrderService
+	futureOrderService *futureOrder.FutureOrderService
 }
 
 func NewFutureOrderController() *FutureOrderController {
-    return &FutureOrderController{
-        futureOrderService: futureOrder.FutureOrderSvc,
-    }
+	return &FutureOrderController{
+		futureOrderService: futureOrder.FutureOrderSvc,
+	}
 }
 
 // GetAllFutureOrder
@@ -29,15 +29,15 @@ func NewFutureOrderController() *FutureOrderController {
 // @Success 200 {array} futureOrder.FutureOrder
 // @Router /future-order/all/{prn} [get]
 func (cr *FutureOrderController) GetAllFutureOrder(c fiber.Ctx) error {
-    prn := c.Query("prn", "")
-    page := c.Query("_page", "1")
-    limit := c.Query("_limit", "10")
-    m, err := cr.futureOrderService.List(prn, page, limit)
-    if err != nil {
-        return err
-    }
+	prn := c.Query("prn", "")
+	page := c.Query("_page", "1")
+	limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+	m, err := cr.futureOrderService.List(prn, page, limit)
+	if err != nil {
+		return err
+	}
 
-    c.Set(utils.X_TOTAL_COUNT, fmt.Sprintf("%d", m.Total))
-    c.Set(utils.X_TOTAL_PAGE, fmt.Sprintf("%d", m.TotalPages))
-    return c.JSON(m.List)
+	c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+	c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+	return c.JSON(m.List)
 }
