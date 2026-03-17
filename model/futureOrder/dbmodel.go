@@ -1,6 +1,8 @@
 package futureOrder
 
 import (
+    "vesaliusm/utils"
+
     "github.com/guregu/null/v6"
 )
 
@@ -15,6 +17,6 @@ type FutureOrder struct {
 
 func (o *FutureOrder) Set() {
     if o.PlanType.String != "DATE" {
-        o.PerformDate.String = "Next Visit"
+        o.PerformDate = utils.NewNullString("Next Visit")
     }
 }

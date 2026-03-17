@@ -40,12 +40,12 @@ func (s *AssignBranchService) FindAllByUserId(userId int64) ([]model.AssignBranc
     }
 
     for i := range list {
-        b, err := s.branchService.FindByBranchId(list[i].BranchID.Int64)
+        b, err := s.branchService.FindByBranchId(list[i].BranchId.Int64)
         if err != nil {
             return nil, err
         }
-        b.Passcode.String = ""
-        b.Url.String = ""
+        b.Passcode = utils.NewNullString("")
+        b.Url = utils.NewNullString("")
         list[i].Branch = b
     }
     return list, nil

@@ -695,6 +695,37 @@
                 }
             }
         },
+        "/clubs/littlekids/membership": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/common/country/list": {
             "get": {
                 "produces": [
@@ -1427,6 +1458,100 @@
                     "items": {
                         "$ref": "#/definitions/dto.CheckPackageDto"
                     }
+                }
+            }
+        },
+        "dto.LittleExplorersKidsMembershipDto": {
+            "type": "object",
+            "required": [
+                "guardianDob",
+                "guardianDocNumber",
+                "guardianDocType",
+                "guardianEmail",
+                "guardianGender",
+                "guardianName",
+                "guardianNationality",
+                "kidsDob",
+                "kidsDocNumber",
+                "kidsDocType",
+                "kidsGender",
+                "kidsName",
+                "kidsNationality",
+                "preferredLanguage",
+                "relationship"
+            ],
+            "properties": {
+                "guardianAddress1": {
+                    "type": "string"
+                },
+                "guardianAddress2": {
+                    "type": "string"
+                },
+                "guardianAddress3": {
+                    "type": "string"
+                },
+                "guardianCountryCode": {
+                    "type": "string"
+                },
+                "guardianDob": {
+                    "type": "string"
+                },
+                "guardianDocNumber": {
+                    "type": "string"
+                },
+                "guardianDocType": {
+                    "type": "string"
+                },
+                "guardianEmail": {
+                    "type": "string"
+                },
+                "guardianGender": {
+                    "type": "string"
+                },
+                "guardianHomeContact": {
+                    "type": "string"
+                },
+                "guardianMobileContact": {
+                    "type": "string"
+                },
+                "guardianName": {
+                    "type": "string"
+                },
+                "guardianNationality": {
+                    "type": "string"
+                },
+                "guardianPostCode": {
+                    "type": "string"
+                },
+                "guardianState": {
+                    "type": "string"
+                },
+                "kidsDob": {
+                    "type": "string"
+                },
+                "kidsDocNumber": {
+                    "type": "string"
+                },
+                "kidsDocType": {
+                    "type": "string"
+                },
+                "kidsEmail": {
+                    "type": "string"
+                },
+                "kidsGender": {
+                    "type": "string"
+                },
+                "kidsName": {
+                    "type": "string"
+                },
+                "kidsNationality": {
+                    "type": "string"
+                },
+                "preferredLanguage": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
                 }
             }
         },

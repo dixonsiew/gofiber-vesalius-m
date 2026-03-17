@@ -24,7 +24,7 @@ type WayFindingBuildings struct {
 }
 
 type WayFindingFloors struct {
-    FloorID           null.Int64  `json:"floorId" db:"FLOOR_DISPLAY_ORDER" swaggertype:"integer"`
+    FloorId           null.Int64  `json:"floorId" db:"FLOOR_DISPLAY_ORDER" swaggertype:"integer"`
     FloorDisplayOrder null.Int32  `json:"floorDisplayOrder" db:"FLOOR_DISPLAY_ORDER" swaggertype:"integer"`
     FloorCode         null.String `json:"floorCode" db:"FLOOR_CODE" swaggertype:"string"`
     FloorName         null.String `json:"floorName" db:"FLOOR_NAME" swaggertype:"string"`
@@ -32,7 +32,7 @@ type WayFindingFloors struct {
 }
 
 type WayFindingLocations struct {
-    LocationID           null.Int64  `json:"location_id" db:"LOCATION_ID" swaggertype:"integer"`
+    LocationId           null.Int64  `json:"location_id" db:"LOCATION_ID" swaggertype:"integer"`
     LocationIDMobile     null.Int64  `json:"locationId" db:"LOCATION_ID" swaggertype:"integer"`
     LocationBuilding     null.String `json:"locationBuilding" db:"LOCATION_BUILDING_CODE" swaggertype:"string"`
     LocationBuildingCode null.String `json:"locationBuildingCode" db:"LOCATION_BUILDING_CODE" swaggertype:"string"`
@@ -46,23 +46,23 @@ type WayFindingLocations struct {
 }
 
 type WayFindingLocationTypes struct {
-    LocationTypeID           null.Int64  `json:"locationTypeId" db:"LOCATION_TYPE_DISPLAY_ORDER" swaggertype:"integer"`
+    LocationTypeId           null.Int64  `json:"locationTypeId" db:"LOCATION_TYPE_DISPLAY_ORDER" swaggertype:"integer"`
     LocationTypeDisplayOrder null.Int32  `json:"locationTypeDisplayOrder" db:"LOCATION_TYPE_DISPLAY_ORDER" swaggertype:"integer"`
     LocationTypeCode         null.String `json:"locationTypeCode" db:"LOCATION_TYPE_CODE" swaggertype:"string"`
     LocationTypeName         null.String `json:"locationTypeName" db:"LOCATION_TYPE_NAME" swaggertype:"string"`
 }
 
 type WayFindingRoutes struct {
-    RouteID               null.Int64  `json:"route_id" db:"ROUTE_ID" swaggertype:"integer"`
+    RouteId               null.Int64  `json:"route_id" db:"ROUTE_ID" swaggertype:"integer"`
     RouteIDMobile         null.Int64  `json:"routeId" db:"ROUTE_ID" swaggertype:"integer"`
-    RouteFromLocationID   null.Int64  `json:"routeFromLocationId" db:"ROUTE_FROM_LOC_ID" swaggertype:"integer"`
+    RouteFromLocationId   null.Int64  `json:"routeFromLocationId" db:"ROUTE_FROM_LOC_ID" swaggertype:"integer"`
     FromFloorCode         null.String `json:"fromFloorCode" db:"FROM_FLOOR_CODE" swaggertype:"string"`
     FromTypeCode          null.String `json:"fromTypeCode" db:"FROM_TYPE_CODE" swaggertype:"string"`
     FromCode              null.String `json:"fromCode" db:"FROM_CODE" swaggertype:"string"`
     FromName              null.String `json:"fromName" db:"FROM_NAME" swaggertype:"string"`
     RouteFromBuildingCode null.String `json:"routeFromBuildingCode" db:"FROM_BUILDING_CODE" swaggertype:"string"`
     RouteFromBuildingName null.String `json:"routeFromBuildingName" db:"FROM_BUILDING_NAME" swaggertype:"string"`
-    RouteToLocationID     null.Int64  `json:"routeToLocationId" db:"ROUTE_TO_LOC_ID" swaggertype:"integer"`
+    RouteToLocationId     null.Int64  `json:"routeToLocationId" db:"ROUTE_TO_LOC_ID" swaggertype:"integer"`
     ToFloorCode           null.String `json:"toFloorCode" db:"TO_FLOOR_CODE" swaggertype:"string"`
     ToTypeCode            null.String `json:"toTypeCode" db:"TO_TYPE_CODE" swaggertype:"string"`
     ToCode                null.String `json:"toCode" db:"TO_CODE" swaggertype:"string"`
@@ -161,23 +161,23 @@ type Nationality struct {
 }
 
 type Branch struct {
-    BranchID   null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
+    BranchId   null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
     BranchName null.String `json:"branchName" db:"BRANCH_NAME" swaggertype:"string"`
     Passcode   null.String `json:"passcode" db:"PASSCODE" swaggertype:"string"`
     Url        null.String `json:"url" db:"URL" swaggertype:"string"`
 }
 
 type AssignBranch struct {
-    AssignBranchID null.Int64  `json:"assignBranchId" db:"ASSIGN_BRANCH_ID" swaggertype:"integer"`
-    AdminID        null.Int64  `json:"adminId" db:"ADMIN_ID" swaggertype:"integer"`
+    AssignBranchId null.Int64  `json:"assignBranchId" db:"ASSIGN_BRANCH_ID" swaggertype:"integer"`
+    AdminId        null.Int64  `json:"adminId" db:"ADMIN_ID" swaggertype:"integer"`
     Prn            null.String `json:"prn" db:"PRN" swaggertype:"string"`
-    UserID         null.Int64  `json:"userId" db:"USER_ID" swaggertype:"integer"`
-    BranchID       null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
+    UserId         null.Int64  `json:"userId" db:"USER_ID" swaggertype:"integer"`
+    BranchId       null.Int64  `json:"branchId" db:"BRANCH_ID" swaggertype:"integer"`
     Branch         *Branch     `json:"branch"`
 }
 
 type AdminUser struct {
-    AdminID       null.Int64     `json:"admin_id" db:"ADMIN_ID" swaggertype:"integer"`
+    AdminId       null.Int64     `json:"admin_id" db:"ADMIN_ID" swaggertype:"integer"`
     Username      null.String    `json:"username" db:"USERNAME" swaggertype:"string"`
     Email         null.String    `json:"email" db:"EMAIL" swaggertype:"string"`
     Password      null.String    `json:"-" db:"PASSWORD" swaggertype:"string"`
@@ -193,14 +193,14 @@ type AdminUser struct {
     Passport      null.String    `json:"passport" db:"PASSPORT" swaggertype:"string"`
     Nationality   null.String    `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
     Role          null.String    `json:"role" db:"ROLE" swaggertype:"string"`
-    UserGroupID   null.Int64     `json:"userGroupId" db:"USER_GROUP_ID" swaggertype:"integer"`
+    UserGroupId   null.Int64     `json:"userGroupId" db:"USER_GROUP_ID" swaggertype:"integer"`
     UserGroupName null.String    `json:"userGroupName" db:"USER_GROUP_NAME" swaggertype:"string"`
     AdminBranches []AssignBranch `json:"adminBranches"`
 }
 
 type PatientNOK struct {
     PatientPRN      null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
-    NOKID           null.String `json:"nokId" db:"NOK_ID" swaggertype:"string"`
+    NOKId           null.String `json:"nokId" db:"NOK_ID" swaggertype:"string"`
     IsPatient       null.String `json:"isPatient" db:"IS_PATIENT" swaggertype:"string"`
     NOKFullname     null.String `json:"nokFullname" db:"NOK_FULLNAME" swaggertype:"string"`
     NOKRelationship null.String `json:"nokRelationship" db:"NOK_RELATIONSHIP" swaggertype:"string"`
@@ -218,8 +218,8 @@ type PatientNOK struct {
 }
 
 type ApplicationUserFamily struct {
-    AufID           null.Int64  `json:"auf_id" db:"AUF_ID" swaggertype:"integer"`
-    UserID          null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
+    AufId           null.Int64  `json:"auf_id" db:"AUF_ID" swaggertype:"integer"`
+    UserId          null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
     PatientPrn      null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
     NokRefNumberV   null.String `json:"-" db:"NOK_REF_NUMBER" swaggertype:"string"`
     IsPatientV      null.String `json:"-" db:"IS_PATIENT" swaggertype:"string"`
@@ -298,7 +298,7 @@ func (o *ApplicationUserFamily) Set() {
 }
 
 type ApplicationUser struct {
-    UserID               null.Int64     `json:"user_id" db:"USER_ID" swaggertype:"integer"`
+    UserId               null.Int64     `json:"user_id" db:"USER_ID" swaggertype:"integer"`
     Username             null.String    `json:"username" db:"USERNAME" swaggertype:"string"`
     Email                null.String    `json:"email" db:"EMAIL" swaggertype:"string"`
     IsKidsExplorer       null.String    `json:"isKidsExplorer" db:"IS_KIDS_EXPLORER" swaggertype:"string"`
@@ -330,8 +330,8 @@ type ApplicationUser struct {
     FirstTimeBiometric   bool           `json:"firstTimeBiometric"`
     Role                 null.String    `json:"role" db:"ROLE" swaggertype:"string"`
     MasterPrn            null.String    `json:"masterPrn" db:"MASTER_PRN" swaggertype:"string"`
-    PlayerID             null.String    `json:"playerId" db:"PLAYER_ID" swaggertype:"string"`
-    MachineID            null.String    `json:"machineId" db:"MACHINE_ID" swaggertype:"string"`
+    PlayerId             null.String    `json:"playerId" db:"PLAYER_ID" swaggertype:"string"`
+    MachineId            null.String    `json:"machineId" db:"MACHINE_ID" swaggertype:"string"`
     RegistrationDateTime null.String    `json:"registration_date_time" db:"REGISTRATION_DATE_TIME" swaggertype:"string"`
     InactiveFlag         null.String    `json:"inactive" db:"INACTIVE_FLAG" swaggertype:"string"`
     IsLoggedIn           null.Int64     `json:"isLoggedIn" db:"IS_LOGGED_IN" swaggertype:"integer"`
@@ -340,27 +340,27 @@ type ApplicationUser struct {
     DocNoSignup          null.String    `json:"docNoSignUp" db:"DOC_NO_SIGNUP" swaggertype:"string"`
     FullnameSignup       null.String    `json:"fullNameSignUp" db:"FULLNAME_SIGNUP" swaggertype:"string"`
     UserBranches         []AssignBranch `json:"userBranches"`
-    SessionID            null.String    `json:"sessionId" db:"SESSION_ID" swaggertype:"string"`
+    SessionId            null.String    `json:"sessionId" db:"SESSION_ID" swaggertype:"string"`
 }
 
 func (o *ApplicationUserFamily) SetFromFamilyMember(m ApplicationUser) {
-    o.AufID.Int64 = 0
-    o.UserID.Int64 = m.UserID.Int64
+    o.AufId = utils.NewInt64(0)
+    o.UserId = utils.NewInt64(m.UserId.Int64)
     o.NokRefNumber = 0
     o.IsPatient = true
-    o.Fullname.String = m.FirstName.String
-    o.Relationship.String = "Self"
-    o.NokPrn.String = m.MasterPrn.String
-    o.NricPassport.String = "-"
-    o.DocNumber.String = "-"
-    o.Dob.String = "-"
-    o.Gender.String = m.Sex.String
-    o.Nationality.String = "-"
-    o.ContactNumber.String = "-"
-    o.Address.String = "-"
+    o.Fullname = utils.NewNullString(m.FirstName.String)
+    o.Relationship = utils.NewNullString("Self")
+    o.NokPrn = utils.NewNullString(m.MasterPrn.String)
+    o.NricPassport = utils.NewNullString("-")
+    o.DocNumber = utils.NewNullString("-")
+    o.Dob = utils.NewNullString("-")
+    o.Gender = utils.NewNullString(m.Sex.String)
+    o.Nationality = utils.NewNullString("-")
+    o.ContactNumber = utils.NewNullString("-")
+    o.Address = utils.NewNullString("-")
     o.IsActive = true
-    o.MaritalStatus.String = "-"
-    o.Email.String = "-"
+    o.MaritalStatus = utils.NewNullString("-")
+    o.Email = utils.NewNullString("-")
     if m.IsKidsExplorer.String == "Y" {
         o.IsKidsExplorer = true
     } else {
@@ -396,8 +396,8 @@ func (o *ApplicationUser) Set() {
 }
 
 type DoctorPatientAppointment struct {
-    DoctorPatientApptID null.Int64  `json:"doctor_patient_appt_id" db:"DOCTOR_PATIENT_APPT_ID" swaggertype:"integer"`
-    DoctorID            null.Int64  `json:"doctor_id" db:"DOCTOR_ID" swaggertype:"integer"`
+    DoctorPatientApptId null.Int64  `json:"doctor_patient_appt_id" db:"DOCTOR_PATIENT_APPT_ID" swaggertype:"integer"`
+    DoctorId            null.Int64  `json:"doctor_id" db:"DOCTOR_ID" swaggertype:"integer"`
     DoctorName          null.String `json:"doctorName" db:"DOCTOR_NAME" swaggertype:"string"`
     DoctorSpecialty     null.String `json:"doctorSpecialty" db:"DOCTOR_SPECIALTY" swaggertype:"string"`
     ApptStatus          null.String `json:"apptStatus" db:"APPT_STATUS" swaggertype:"string"`
@@ -414,37 +414,37 @@ type DoctorPatientAppointment struct {
 }
 
 type GroupModulePermission struct {
-    PermissionID   null.Int64  `json:"permissionId" db:"PERMISSION_ID" swaggertype:"integer"`
+    PermissionId   null.Int64  `json:"permissionId" db:"PERMISSION_ID" swaggertype:"integer"`
     PermissionName null.String `json:"permissionName" db:"PERMISSION_NAME" swaggertype:"string"`
 }
 
 type UserGroupModules struct {
-    ModuleID   null.Int64  `json:"moduleId" db:"MODULE_ID" swaggertype:"integer"`
+    ModuleId   null.Int64  `json:"moduleId" db:"MODULE_ID" swaggertype:"integer"`
     ModuleName null.String `json:"moduleName" db:"MODULE_NAME" swaggertype:"string"`
 }
 
 type UserGroupModulePermission struct {
-    UserGroupModulePermissionID null.Int64 `json:"userGroupModulePermissionId" db:"USR_GRP_MOD_PERM_ID" swaggertype:"integer"`
-    UserGroupID                 null.Int64 `json:"userGroupId" db:"USER_GROUP_ID" swaggertype:"integer"`
-    ModuleID                    null.Int64 `json:"moduleId" db:"MODULE_ID" swaggertype:"integer"`
-    PermissionID                null.Int64 `json:"permissionId" db:"PERMISSION_ID" swaggertype:"integer"`
+    UserGroupModulePermissionId null.Int64 `json:"userGroupModulePermissionId" db:"USR_GRP_MOD_PERM_ID" swaggertype:"integer"`
+    UserGroupId                 null.Int64 `json:"userGroupId" db:"USER_GROUP_ID" swaggertype:"integer"`
+    ModuleId                    null.Int64 `json:"moduleId" db:"MODULE_ID" swaggertype:"integer"`
+    PermissionId                null.Int64 `json:"permissionId" db:"PERMISSION_ID" swaggertype:"integer"`
 }
 
 type UserGroup struct {
-    GroupID       null.Int64                  `json:"groupId" db:"GROUP_ID" swaggertype:"integer"`
+    GroupId       null.Int64                  `json:"groupId" db:"GROUP_ID" swaggertype:"integer"`
     UserGroupName null.String                 `json:"userGroupName" db:"USER_GROUP_NAME" swaggertype:"string"`
     DateCreated   null.String                 `json:"dateCreated" db:"DATE_CREATED" swaggertype:"string"`
     Permissions   []UserGroupModulePermission `json:"permissions"`
 }
 
 type UserGroupDetails struct {
-    UserGroupID   int                         `json:"userGroupId"`
+    UserGroupId   int                         `json:"userGroupId"`
     UserGroupName string                      `json:"userGroupName"`
     Permissions   []UserGroupModulePermission `json:"permission"`
 }
 
 type AllUserGroupDetails struct {
-    UserGroupID     int                         `json:"userGroupId"`
+    UserGroupId     int                         `json:"userGroupId"`
     UserGroupName   string                      `json:"userGroupName"`
     DateCreated     string                      `json:"dateCreated"`
     SelectedModules []string                    `json:"selectedModules"`
@@ -453,37 +453,37 @@ type AllUserGroupDetails struct {
 }
 
 type NovaDoctorSpokenLanguage struct {
-    SpokenLanguageID null.Int64  `json:"spokenLanguageId" db:"SPOKEN_LANGUAGE_ID" swaggertype:"integer"`
-    DoctorID         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    SpokenLanguageId null.Int64  `json:"spokenLanguageId" db:"SPOKEN_LANGUAGE_ID" swaggertype:"integer"`
+    DoctorId         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     DisplaySequence  null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     SpokenLanguage   null.String `json:"spokenLanguage" db:"SPOKEN_LANGUAGE" swaggertype:"string"`
 }
 
 type NovaDoctorQualifications struct {
-    QualificationID null.Int64  `json:"qualificationId" db:"QUALIFICATION_ID" swaggertype:"integer"`
-    DoctorID        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    QualificationId null.Int64  `json:"qualificationId" db:"QUALIFICATION_ID" swaggertype:"integer"`
+    DoctorId        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     DisplaySequence null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     Qualification   null.String `json:"qualification" db:"QUALIFICATION" swaggertype:"string"`
 }
 
 type NovaDoctorSpecialities struct {
-    SpecialitiesID  null.Int64  `json:"specialitiesId" db:"SPECIALITIES_ID" swaggertype:"integer"`
-    DoctorID        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    SpecialitiesId  null.Int64  `json:"specialitiesId" db:"SPECIALITIES_ID" swaggertype:"integer"`
+    DoctorId        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     DisplaySequence null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     Specialities    null.String `json:"specialities" db:"SPECIALITIES" swaggertype:"string"`
     Subspecialty    null.String `json:"subspecialty" db:"SUBSPECIALTY" swaggertype:"string"`
 }
 
 type NovaDoctorClinicLocation struct {
-    ClinicLocationID null.Int64  `json:"clinicLocationId" db:"CLINIC_LOCATION_ID" swaggertype:"integer"`
-    DoctorID         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    ClinicLocationId null.Int64  `json:"clinicLocationId" db:"CLINIC_LOCATION_ID" swaggertype:"integer"`
+    DoctorId         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     Location         null.String `json:"location" db:"LOCATION" swaggertype:"string"`
     Building         null.String `json:"building" db:"BUILDING" swaggertype:"string"`
 }
 
 type NovaDoctorClinicHours struct {
-    ClinicHourID       null.Int64  `json:"clinicHourId" db:"CLINIC_HOUR_ID" swaggertype:"integer"`
-    DoctorID           null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    ClinicHourId       null.Int64  `json:"clinicHourId" db:"CLINIC_HOUR_ID" swaggertype:"integer"`
+    DoctorId           null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     DisplaySequence    null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     DayOfTheWeek       null.String `json:"dayOfTheWeek" db:"DAY_OF_THE_WEEK" swaggertype:"string"`
     DayStartTime       null.String `json:"dayStartTime" db:"DAY_START_TIME" swaggertype:"string"`
@@ -497,8 +497,8 @@ func (o *NovaDoctorClinicHours) Set() {
 }
 
 type NovaDoctorAppointment struct {
-    DoctorApptSlotID null.Int64  `json:"doctorApptSlotId" db:"DOCTOR_APPT_SLOT_ID" swaggertype:"integer"`
-    DoctorID         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    DoctorApptSlotId null.Int64  `json:"doctorApptSlotId" db:"DOCTOR_APPT_SLOT_ID" swaggertype:"integer"`
+    DoctorId         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     ApptDayOfWeek    null.String `json:"apptDayOfWeek" db:"DAY_OF_WEEK" swaggertype:"string"`
     ApptSlotType     null.String `json:"apptSlotType" db:"SLOT_TYPE" swaggertype:"string"`
     ApptSessionType  null.String `json:"apptSessionType" db:"SESSION_TYPE" swaggertype:"string"`
@@ -509,23 +509,23 @@ type NovaDoctorAppointment struct {
 }
 
 type NovaDoctorContact struct {
-    ContactID       null.Int64  `json:"contactId" db:"CONTACT_ID" swaggertype:"integer"`
-    DoctorID        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    ContactId       null.Int64  `json:"contactId" db:"CONTACT_ID" swaggertype:"integer"`
+    DoctorId        null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
     DisplaySequence null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
     ContactType     null.String `json:"contactType" db:"CONTACT_TYPE" swaggertype:"string"`
     ContactValue    null.String `json:"contactValue" db:"CONTACT_VALUE" swaggertype:"string"`
 }
 
 type NovaSpecialty struct {
-    SpecialtyID   null.Int64  `json:"specialtyId" db:"SPECIALTY_ID" swaggertype:"integer"`
+    SpecialtyId   null.Int64  `json:"specialtyId" db:"SPECIALTY_ID" swaggertype:"integer"`
     SpecialtyCode null.String `json:"specialtyCode" db:"SPECIALTY_CODE" swaggertype:"string"`
     SpecialtyDesc null.String `json:"specialtyDesc" db:"SPECIALTY_DESC" swaggertype:"string"`
 }
 
 type NovaDoctorSpecialty struct {
-    DoctorSpecialtyID null.Int64     `json:"doctorSpecialtyId" db:"DOCTOR_SPECIALTY_ID" swaggertype:"integer"`
-    DoctorID          null.Int64     `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
-    SpecialtyID       null.Int64     `json:"specialtyId" db:"SPECIALTY_ID" swaggertype:"integer"`
+    DoctorSpecialtyId null.Int64     `json:"doctorSpecialtyId" db:"DOCTOR_SPECIALTY_ID" swaggertype:"integer"`
+    DoctorId          null.Int64     `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    SpecialtyId       null.Int64     `json:"specialtyId" db:"SPECIALTY_ID" swaggertype:"integer"`
     PrimarySpecialtyV null.Int32     `json:"-" db:"PRIMARY_SPECIALTY" swaggertype:"integer"`
     PrimarySpecialty  bool           `json:"primarySpecialty"`
     Specialty         *NovaSpecialty `json:"specialty"`
@@ -592,7 +592,7 @@ type VesaliusPastApptInfo struct {
 }
 
 type PatientAppointment struct {
-    DoctorID             int                        `json:"doctor_id"`
+    DoctorId             int                        `json:"doctor_id"`
     MCR                  string                     `json:"mcr" db:"MCR"`
     Name                 string                     `json:"name" db:"NAME"`
     Image                string                     `json:"image" db:"IMAGE"`
@@ -603,7 +603,7 @@ type PatientAppointment struct {
 }
 
 type PatientPastAppointment struct {
-    DoctorID             int                        `json:"doctor_id"`
+    DoctorId             int                        `json:"doctor_id"`
     MCR                  string                     `json:"mcr"`
     Name                 string                     `json:"name"`
     Image                string                     `json:"image"`
@@ -623,7 +623,7 @@ type NovaDoctorAppointmentLists struct {
 }
 
 type NovaDoctor struct {
-    DoctorID                  null.Int64                 `json:"doctor_id" db:"DOCTOR_ID" swaggertype:"integer"`
+    DoctorId                  null.Int64                 `json:"doctor_id" db:"DOCTOR_ID" swaggertype:"integer"`
     MCR                       null.String                `json:"mcr" db:"MCR" swaggertype:"string"`
     Name                      null.String                `json:"name" db:"NAME" swaggertype:"string"`
     Gender                    null.String                `json:"gender" db:"GENDER" swaggertype:"string"`
@@ -653,8 +653,8 @@ type ColumnMap struct {
 }
 
 type OnesignalNotification struct {
-    NotificationID          null.Int64  `json:"notification_id" db:"NOTIFICATION_ID" swaggertype:"integer"`
-    UserID                  null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
+    NotificationId          null.Int64  `json:"notification_id" db:"NOTIFICATION_ID" swaggertype:"integer"`
+    UserId                  null.Int64  `json:"user_id" db:"USER_ID" swaggertype:"integer"`
     VisitType               null.String `json:"visitType" db:"VISIT_TYPE" swaggertype:"string"`
     AccountNo               null.String `json:"accountNo" db:"ACCOUNT_NO" swaggertype:"string"`
     NotificationTitle       null.String `json:"notificationTitle" db:"NOTIFICATION_TITLE" swaggertype:"string"`
@@ -666,11 +666,11 @@ type OnesignalNotification struct {
     IsSeen                  bool        `json:"isSeen"`
     DateCreate              null.String `json:"dateCreate" db:"DATE_SENT" swaggertype:"string"`
     DateSent                string      `json:"dateSent"`
-    GuestPlayerID           string      `json:"guestPlayerId"`
+    GuestPlayerId           string      `json:"guestPlayerId"`
     DateCreate2             null.String `json:"-" db:"DATE_CREATE" swaggertype:"string"`
     DateSeen                null.String `json:"-" db:"DATE_SEEN" swaggertype:"string"`
     OneSignalMsg            null.String `json:"-" db:"ONESIGNAL_MSG" swaggertype:"string"`
-    OneSignalNotificationID null.String `json:"-" db:"ONESIGNAL_NOTIFICATION_ID" swaggertype:"string"`
+    OneSignalNotificationId null.String `json:"-" db:"ONESIGNAL_NOTIFICATION_ID" swaggertype:"string"`
 }
 
 func (o *OnesignalNotification) Set() {
@@ -682,7 +682,7 @@ func (o *OnesignalNotification) Set() {
 }
 
 type GeneralNotification struct {
-    NotificationMasterID null.Int64  `json:"notification_master_id" db:"NOTIFICATION_MASTER_ID" swaggertype:"integer"`
+    NotificationMasterId null.Int64  `json:"notification_master_id" db:"NOTIFICATION_MASTER_ID" swaggertype:"integer"`
     NotificationTitle    null.String `json:"notificationTitle" db:"NOTIFICATION_TITLE" swaggertype:"string"`
     ShortMessage         null.String `json:"shortMessage" db:"SHORT_MESSAGE" swaggertype:"string"`
     FullMessage          null.String `json:"fullMessage" db:"FULL_MESSAGE" swaggertype:"string"`
@@ -709,7 +709,7 @@ func (o *GeneralNotification) Set() {
 }
 
 type MobileUserAuditLog struct {
-    AuditID     null.Int64  `json:"audit_id" db:"AUDIT_ID" swaggertype:"integer"`
+    AuditId     null.Int64  `json:"audit_id" db:"AUDIT_ID" swaggertype:"integer"`
     Prn         null.String `json:"prn" db:"PRN" swaggertype:"string"`
     Username    null.String `json:"username" db:"USERNAME" swaggertype:"string"`
     PatientName null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
@@ -732,7 +732,7 @@ type EmailMaster struct {
 }
 
 type AdminAuditLog struct {
-    EventID          null.Int64  `json:"event_id" db:"EVENT_ID" swaggertype:"integer"`
+    EventId          null.Int64  `json:"event_id" db:"EVENT_ID" swaggertype:"integer"`
     EventDateTime    null.String `json:"eventDateTime" db:"EVENT_DATE_TIME" swaggertype:"string"`
     EventAdminID     null.Int64  `json:"eventAdminId" db:"EVENT_ADMIN_ID" swaggertype:"integer"`
     EventAdminEmail  null.String `json:"eventAdminEmail" db:"EVENT_ADMIN_EMAIL" swaggertype:"string"`

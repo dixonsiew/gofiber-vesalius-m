@@ -8,7 +8,7 @@ type SearchPurchaseHistoryDto struct {
 }
 
 type CheckPackageDto struct {
-    PackageID         int64 `json:"package_id" validate:"required,number"`
+    PackageId         int64 `json:"package_id" validate:"required,number"`
     QuantityPurchased int   `json:"quantityPurchased" validate:"required,number"`
 }
 
@@ -43,7 +43,7 @@ type GuestPackagePaymentDto struct {
 type UserPackageDto struct {
     PatientPrn        string  `json:"patientPrn" validate:"required"`
     PatientName       string  `json:"patientName" validate:"required"`
-    PackageID         int64   `json:"package_id" validate:"required,number"`
+    PackageId         int64   `json:"package_id" validate:"required,number"`
     PackageName       string  `json:"packageName" validate:"required"`
     PackagePrice      float64 `json:"packagePrice" validate:"required,number"`
     QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,number"`
@@ -52,7 +52,7 @@ type UserPackageDto struct {
 type GuestPackageDto struct {
     PatientPrn        string  `json:"patientPrn" validate:"required"`
     PatientName       string  `json:"patientName" validate:"required"`
-    PackageID         int64   `json:"package_id" validate:"required,number"`
+    PackageId         int64   `json:"package_id" validate:"required,number"`
     PackageName       string  `json:"packageName" validate:"required"`
     PackagePrice      float64 `json:"packagePrice" validate:"required"`
     QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,number"`

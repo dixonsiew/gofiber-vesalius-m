@@ -96,7 +96,7 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
         sql.Named("targetCity", o.TargetCity.String),
         sql.Named("targetState", o.TargetState.String),
         sql.Named("adminId", adminId),
-        sql.Named("notification_master_id", o.NotificationMasterID.Int64),
+        sql.Named("notification_master_id", o.NotificationMasterId.Int64),
     )
     if err != nil {
         utils.LogError(err)

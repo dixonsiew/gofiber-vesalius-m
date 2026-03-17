@@ -116,6 +116,10 @@ func NewNullString(s string) null.String {
     return null.NewString(s, true)
 }
 
+func NewInt64(i int64) null.Int64 {
+    return null.NewInt(i, true)
+}
+
 func BindNValidate(c fiber.Ctx, out any) error {
     if err := c.Bind().Body(out); err != nil {
         if validationErrors, ok := err.(validator.ValidationErrors); ok {

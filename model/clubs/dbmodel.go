@@ -21,7 +21,7 @@ type GoldenPearlMyActivity struct {
 }
 
 type LittleExplorersKidsMembership struct {
-    KidsMembershipID       null.Int64  `json:"kidsMembershipID" db:"KIDS_MEMBERSHIP_ID" swaggertype:"integer"`
+    KidsMembershipId       null.Int64  `json:"kidsMembershipID" db:"KIDS_MEMBERSHIP_ID" swaggertype:"integer"`
     KidsMembershipNumber   null.String `json:"kidsMembershipNumber" db:"KIDS_MEMBERSHIP_NUMBER" swaggertype:"string"`
     KidsMembershipJoinDate null.String `json:"kidsMembershipJoinDate" db:"KIDS_MEMBERSHIP_JOIN_DATE" swaggertype:"string"`
     KidsPrn                null.String `json:"kidsPrn" db:"KIDS_PRN" swaggertype:"string"`
@@ -173,7 +173,7 @@ func (o *LittleExplorersKidsMembership) SetAttendees() {
 }
 
 type GoldenPearlMembership struct {
-    GoldenMembershipID       null.Int64  `json:"golden_membership_id" db:"GOLDEN_MEMBERSHIP_ID" swaggertype:"integer"`
+    GoldenMembershipId       null.Int64  `json:"golden_membership_id" db:"GOLDEN_MEMBERSHIP_ID" swaggertype:"integer"`
     GoldenMembershipNumber   null.String `json:"goldenMembershipNumber" db:"GOLDEN_MEMBERSHIP_NUMBER" swaggertype:"string"`
     GoldenMembershipJoinDate null.String `json:"goldenMembershipJoinDate" db:"GOLDEN_MEMBERSHIP_JOIN_DATE" swaggertype:"string"`
     GoldenPrn                null.String `json:"goldenPrn" db:"GOLDEN_PRN" swaggertype:"string"`
@@ -329,7 +329,7 @@ func (o *GoldenPearlMembership) SetAttendees() {
 }
 
 type LittleExplorersKidsAboutUs struct {
-    KidsClubID          null.Int64  `json:"kids_club_id" db:"KIDS_CLUB_ID" swaggertype:"integer"`
+    KidsClubId          null.Int64  `json:"kids_club_id" db:"KIDS_CLUB_ID" swaggertype:"integer"`
     KidsClubTitle       null.String `json:"kidsClubTitle" db:"KIDS_CLUB_TITLE" swaggertype:"string"`
     KidsClubDesc        null.String `json:"kidsClubDesc" db:"KIDS_CLUB_DESC" swaggertype:"string"`
     KidsClubImage       null.String `json:"kidsClubImage" db:"KIDS_CLUB_IMG" swaggertype:"string"`
@@ -338,7 +338,7 @@ type LittleExplorersKidsAboutUs struct {
 }
 
 type GoldenPearlAboutUs struct {
-    GoldenClubID      null.Int64  `json:"golden_club_id" db:"GOLDEN_CLUB_ID" swaggertype:"integer"`
+    GoldenClubId      null.Int64  `json:"golden_club_id" db:"GOLDEN_CLUB_ID" swaggertype:"integer"`
     GoldenClubTitle   null.String `json:"goldenClubTitle" db:"GOLDEN_CLUB_TITLE" swaggertype:"string"`
     GoldenClubDesc    null.String `json:"goldenClubDesc" db:"GOLDEN_CLUB_DESC" swaggertype:"string"`
     GoldenClubImage   null.String `json:"goldenClubImage" db:"GOLDEN_CLUB_IMG" swaggertype:"string"`
@@ -347,21 +347,21 @@ type GoldenPearlAboutUs struct {
 }
 
 type LittleExplorersKidsActvParticipation struct {
-    KidsActvParticipationID int    `json:"kids_actv_participation_id"`
-    KidsActivityID          int    `json:"kidsActivityId"`
-    KidsMembershipID        int    `json:"kidsMembershipId"`
+    KidsActvParticipationId int    `json:"kids_actv_participation_id"`
+    KidsActivityId          int    `json:"kidsActivityId"`
+    KidsMembershipId        int    `json:"kidsMembershipId"`
     ActivityDateTime        string `json:"activityDateTime"`
 }
 
 type GoldenPearlActvParticipation struct {
-    GoldenActvParticipationID int    `json:"golden_actv_participation_id"`
-    GoldenActivityID          int    `json:"goldenActivityId"`
-    GoldenMembershipID        int    `json:"goldenMembershipId"`
+    GoldenActvParticipationId int    `json:"golden_actv_participation_id"`
+    GoldenActivityId          int    `json:"goldenActivityId"`
+    GoldenMembershipId        int    `json:"goldenMembershipId"`
     ActivityDateTime          string `json:"activityDateTime"`
 }
 
 type LittleExplorersKidsActivity struct {
-    KidsActivityID              null.Int64  `json:"kids_activity_id" db:"KIDS_ACTIVITY_ID" swaggertype:"integer"`
+    KidsActivityId              null.Int64  `json:"kids_activity_id" db:"KIDS_ACTIVITY_ID" swaggertype:"integer"`
     KidsActivityCode            null.String `json:"kidsActivityCode" db:"KIDS_ACTIVITY_CODE" swaggertype:"string"`
     KidsActivityName            null.String `json:"kidsActivityName" db:"KIDS_ACTIVITY_NAME" swaggertype:"string"`
     KidsActivityDesc            null.String `json:"kidsActivityDesc" db:"KIDS_ACTIVITY_DESC" swaggertype:"string"`
@@ -391,7 +391,7 @@ func (o *LittleExplorersKidsActivity) Set() {
 }
 
 type GoldenPearlActivity struct {
-    GoldenActivityID       null.Int64  `json:"golden_activity_id" db:"GOLDEN_ACTIVITY_ID" swaggertype:"integer"`
+    GoldenActivityId       null.Int64  `json:"golden_activity_id" db:"GOLDEN_ACTIVITY_ID" swaggertype:"integer"`
     GoldenActivityCode     null.String `json:"goldenActivityCode" db:"GOLDEN_ACTIVITY_CODE" swaggertype:"string"`
     GoldenActivityName     null.String `json:"goldenActivityName" db:"GOLDEN_ACTIVITY_NAME" swaggertype:"string"`
     GoldenActivityDesc     null.String `json:"goldenActivityDesc" db:"GOLDEN_ACTIVITY_DESC" swaggertype:"string"`

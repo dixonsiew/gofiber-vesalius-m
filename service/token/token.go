@@ -27,9 +27,9 @@ func NewTokenService() *TokenService {
 func (s *TokenService) GenerateAccessToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email.String,
-        "sessionId": user.SessionID.String,
+        "sessionId": user.SessionId.String,
         "type":      "1",
-        "subject":   fmt.Sprintf("%d", user.UserID.Int64),
+        "subject":   fmt.Sprintf("%d", user.UserId.Int64),
         "exp":       time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -45,9 +45,9 @@ func (s *TokenService) GenerateAccessToken(user model.ApplicationUser) (string, 
 func (s *TokenService) GenerateRefreshToken(user model.ApplicationUser) (string, error) {
     claims := jwt.MapClaims{
         "username":  user.Email.String,
-        "sessionId": user.SessionID.String,
+        "sessionId": user.SessionId.String,
         "type":      "1",
-        "subject":   fmt.Sprintf("%d", user.UserID.Int64),
+        "subject":   fmt.Sprintf("%d", user.UserId.Int64),
         "exp":       time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

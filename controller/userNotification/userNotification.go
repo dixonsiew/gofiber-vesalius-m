@@ -40,7 +40,7 @@ func (cr *UserNotificationController) GetUnseenNotificationCount(c fiber.Ctx) er
         return middleware.Unauthorized(c)
     }
 
-    count, err := cr.applicationUserNotificationService.CountUnseenByUserId(user.UserID.Int64)
+    count, err := cr.applicationUserNotificationService.CountUnseenByUserId(user.UserId.Int64)
     if err != nil {
         return err
     }
@@ -69,7 +69,7 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.applicationUserNotificationService.ListByUserId(user.UserID.Int64, page, limit)
+    m, err := cr.applicationUserNotificationService.ListByUserId(user.UserId.Int64, page, limit)
     if err != nil {
         return err
     }

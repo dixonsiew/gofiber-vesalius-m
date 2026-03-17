@@ -26,3 +26,33 @@ type LittleExplorersKidsMembershipDto struct {
     Relationship          string `json:"relationship" validate:"required"`
     PreferredLanguage     string `json:"preferredLanguage" validate:"required"`
 }
+
+type LittleExplorersKidsAboutUsDto struct {
+    KidsClubTitle       string `json:"kidsClubTitle" validate:"required"`
+    KidsClubDesc        string `json:"kidsClubDesc" validate:"required"`
+    KidsClubImage       string `json:"kidsClubImage"`
+    KidsClubTnc         string `json:"kidsClubTnc"`
+    KidsClubPartnerLink string `json:"kidsClubPartnerLink"`
+}
+
+type KidsActvParticipationDto struct {
+    KidsActivityId   int    `json:"kidsActivityId" validate:"required"`
+    KidsMembershipId int    `json:"kidsMembershipId" validate:"required"`
+    ActivityDateTime string `json:"activityDateTime" validate:"required"`
+}
+
+type LittleExplorersKidsActvParticipationDto struct {
+    KidsActvParticipation []KidsActvParticipationDto `json:"kidsActvParticipation" validate:"required"`
+}
+
+type LittleExplorersKidsActivityDto struct {
+    KidsActivityCode        string `json:"kidsActivityCode" validate:"required"`
+    KidsActivityName        string `json:"kidsActivityName" validate:"required"`
+    KidsActivityDesc        string `json:"kidsActivityDesc" validate:"required"`
+    KidsActivityImage       string `json:"kidsActivityImage"`
+    ActivityStartDateTime   string `json:"activityStartDateTime" validate:"required"`
+    ActivityEndDateTime     string `json:"activityEndDateTime"`
+    ActivityMaxParticipant  string `json:"activityMaxParticipant" validate:"required"`
+    ActivityTnc             string `json:"activityTnc"`
+    ActivityDisplayOrder    string `json:"activityDisplayOrder" validate:"required"`
+}

@@ -395,21 +395,21 @@ func (s *AdminUserService) FindWithAssignBranchByAdminId(adminId int64) (*model.
         return nil, err
     }
 
-    ablist, err := s.assignBranchSvc.FindAllByAdminId(o.AdminID.Int64)
+    ablist, err := s.assignBranchSvc.FindAllByAdminId(o.AdminId.Int64)
     if err != nil {
         return nil, err
     }
 
     for i := range ablist {
-        b, err := s.branchSvc.FindByBranchId(ablist[i].BranchID.Int64)
+        b, err := s.branchSvc.FindByBranchId(ablist[i].BranchId.Int64)
         if err != nil {
             return nil, err
         }
-        b.Passcode.String = ""
-        b.Url.String = ""
+        b.Passcode = utils.NewNullString("")
+        b.Url = utils.NewNullString("")
         ablist[i].Branch = b
     }
-    o.Password.String = ""
+    o.Password = utils.NewNullString("")
     o.AdminBranches = ablist
     return o, nil
 }
@@ -475,13 +475,13 @@ func (s *AdminUserService) SaveResetPassword(o *model.AdminUser) error {
     query := `UPDATE ADMIN_USER SET PASSWORD = :pw WHERE ADMIN_ID = :adminId`
     _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
-        sql.Named("adminId", o.AdminID.Int64),
+        sql.Named("adminId", o.AdminId.Int64),
     )
     if err != nil {
         utils.LogError(err)
         return err
     }
-    o.Password.String = newPwd
+    o.Password = utils.NewNullString(newPwd)
     return err
 }
 
@@ -494,7 +494,7 @@ func (s *AdminUserService) SavePassword(o *model.AdminUser) error {
     query := `UPDATE ADMIN_USER SET PASSWORD = :pw WHERE ADMIN_ID = :adminId`
     _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
-        sql.Named("adminId", o.AdminID.Int64),
+        sql.Named("adminId", o.AdminId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -504,7 +504,7 @@ func (s *AdminUserService) SavePassword(o *model.AdminUser) error {
 
 func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) error {
     newPwd := getRandomStr(6)
-    o.Password.String = newPwd
+    o.Password = utils.NewNullString(newPwd)
     hashedPwd, err := bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
     if err != nil {
         utils.LogError(err)
@@ -535,7 +535,7 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
         sql.Named("last_name", o.LastName.String),
         sql.Named("password", string(hashedPwd)),
         sql.Named("role", o.Role.String),
-        sql.Named("user_group_id", o.UserGroupID.Int64),
+        sql.Named("user_group_id", o.UserGroupId.Int64),
         sql.Named("user_group_name", o.UserGroupName.String),
         sql.Named("username", o.Username.String),
         go_ora.Out{Dest: &adminId},
@@ -545,11 +545,11 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
         return err
     }
 
-    o.AdminID.Int64, _ = adminId.Int64()
+    o.AdminId.Int64, _ = adminId.Int64()
 
     for _, adminBranchId := range adminBranchIds {
         _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,
-            sql.Named("adminId", o.AdminID.Int64),
+            sql.Named("adminId", o.AdminId.Int64),
             sql.Named("branchId", adminBranchId),
         )
         if err != nil {
@@ -566,7 +566,7 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
 }
 
 func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) error {
-    _, err := s.db.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`, o.AdminID.Int64)
+    _, err := s.db.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`, o.AdminId.Int64)
     if err != nil {
         utils.LogError(err)
         return err
@@ -574,7 +574,7 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
 
     for _, adminBranchId := range adminBranchIds {
         _, err = s.db.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,
-            sql.Named("adminId", o.AdminID.Int64),
+            sql.Named("adminId", o.AdminId.Int64),
             sql.Named("branchId", adminBranchId),
         )
         if err != nil {
@@ -587,9 +587,9 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
         sql.Named("first_name", o.FirstName.String),
         sql.Named("last_name", o.LastName.String),
         sql.Named("role", o.Role.String),
-        sql.Named("user_group_id", o.UserGroupID.Int64),
+        sql.Named("user_group_id", o.UserGroupId.Int64),
         sql.Named("user_group_name", o.UserGroupName.String),
-        sql.Named("admin_id", o.AdminID.Int64),
+        sql.Named("admin_id", o.AdminId.Int64),
     )
     if err != nil {
         utils.LogError(err)

@@ -40,7 +40,7 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
     cartResult := make([]interface{}, 0)
 
     for _, pkg := range data.Package {
-        r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageID, pkg.QuantityPurchased)
+        r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageId, pkg.QuantityPurchased)
         if err != nil {
             return err
         }
@@ -79,7 +79,7 @@ func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
 
     page := c.Query("_page", "1")
     limit := c.Query("_limit", "10")
-    m, err := cr.patientPurchaseDetailsService.ListByPrn(user.UserID.Int64, page, limit)
+    m, err := cr.patientPurchaseDetailsService.ListByPrn(user.UserId.Int64, page, limit)
     if err != nil {
         return err
     }

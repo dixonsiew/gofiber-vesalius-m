@@ -53,6 +53,73 @@ definitions:
     required:
     - package
     type: object
+  dto.LittleExplorersKidsMembershipDto:
+    properties:
+      guardianAddress1:
+        type: string
+      guardianAddress2:
+        type: string
+      guardianAddress3:
+        type: string
+      guardianCountryCode:
+        type: string
+      guardianDob:
+        type: string
+      guardianDocNumber:
+        type: string
+      guardianDocType:
+        type: string
+      guardianEmail:
+        type: string
+      guardianGender:
+        type: string
+      guardianHomeContact:
+        type: string
+      guardianMobileContact:
+        type: string
+      guardianName:
+        type: string
+      guardianNationality:
+        type: string
+      guardianPostCode:
+        type: string
+      guardianState:
+        type: string
+      kidsDob:
+        type: string
+      kidsDocNumber:
+        type: string
+      kidsDocType:
+        type: string
+      kidsEmail:
+        type: string
+      kidsGender:
+        type: string
+      kidsName:
+        type: string
+      kidsNationality:
+        type: string
+      preferredLanguage:
+        type: string
+      relationship:
+        type: string
+    required:
+    - guardianDob
+    - guardianDocNumber
+    - guardianDocType
+    - guardianEmail
+    - guardianGender
+    - guardianName
+    - guardianNationality
+    - kidsDob
+    - kidsDocNumber
+    - kidsDocType
+    - kidsGender
+    - kidsName
+    - kidsNationality
+    - preferredLanguage
+    - relationship
+    type: object
   dto.LoginDto:
     properties:
       fromAdmin:
@@ -949,6 +1016,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/clubs.GoldenPearlAboutUs'
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/littlekids/membership:
+    post:
+      parameters:
+      - description: LittleExplorersKidsMembershipDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LittleExplorersKidsMembershipDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       security:
       - BearerAuth: []
       tags:

@@ -35,18 +35,19 @@ func NewClubService(db *sqlx.DB, ctx context.Context, dbrs *sqlx.DB, ctxrs conte
     }
 }
 
-func (s *ClubService) FindLittleKidsMembershipById(kidsMembershipId int64) ([]clubs.LittleExplorersKidsMembership, error) {
+func (s *ClubService) FindLittleKidsMembershipById(kidsMembershipId int64) (*clubs.LittleExplorersKidsMembership, error) {
     query := `SELECT * FROM KIDS_CLUB_MEMBERSHIP WHERE KIDS_MEMBERSHIP_ID = :kidsMembershipId`
-    list := make([]clubs.LittleExplorersKidsMembership, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, kidsMembershipId)
+    var o clubs.LittleExplorersKidsMembership
+    err := s.db.GetContext(s.ctx, &o, query, kidsMembershipId)
     if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, err
+        }
         utils.LogError(err)
         return nil, err
     }
-    for i := range list {
-        list[i].Set()
-    }
-    return list, nil
+    o.Set()
+    return &o, err
 }
 
 func (s *ClubService) FindGoldenPearlMembershipById(goldenMembershipId int64) (*clubs.GoldenPearlMembership, error) {
@@ -78,11 +79,11 @@ func (s *ClubService) findGuestLittleKidsMembershipByIc(identificationNumber str
     o.Set()
     if o.KidsMembershipJoinDate.Valid {
         g, _ := goment.New(o.KidsMembershipJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.KidsMembershipJoinDate.String = g.Format("DD/MM/YYYY HH:mm")
+        o.KidsMembershipJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     if o.KidsDob.Valid {
         g, _ := goment.New(o.KidsDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.KidsDob.String = g.Format("DD/MM/YYYY")
+        o.KidsDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
     return &o, err
 }
@@ -101,11 +102,11 @@ func (s *ClubService) FindGuestGoldenPearlMembershipByIc(identificationNumber st
     o.Set()
     if o.GoldenMembershipJoinDate.Valid {
         g, _ := goment.New(o.GoldenMembershipJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.GoldenMembershipJoinDate.String = g.Format("DD/MM/YYYY HH:mm")
+        o.GoldenMembershipJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     if o.GoldenDob.Valid {
         g, _ := goment.New(o.GoldenDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.GoldenDob.String = g.Format("DD/MM/YYYY")
+        o.GoldenDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
     return &o, nil
 }
@@ -124,11 +125,11 @@ func (s *ClubService) FindLittleKidsMembershipByMembershipId(membershipId int64)
     o.SetWebAdmin()
     if o.KidsDob.Valid {
         g, _ := goment.New(o.KidsDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.KidsDob.String = g.Format("DD/MM/YYYY")
+        o.KidsDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
     if o.GuardianDob.Valid {
         g, _ := goment.New(o.GuardianDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.GuardianDob.String = g.Format("DD/MM/YYYY")
+        o.GuardianDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
     return &o, nil
 }
@@ -147,11 +148,11 @@ func (s *ClubService) FindGoldenPearlMembershipByMembershipId(membershipId int64
     o.SetWebAdmin()
     if o.GoldenDob.Valid {
         g, _ := goment.New(o.GoldenDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.GoldenDob.String = g.Format("DD/MM/YYYY HH:mm")
+        o.GoldenDob = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     if o.NokDob.Valid {
         g, _ := goment.New(o.NokDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.NokDob.String = g.Format("DD/MM/YYYY")
+        o.NokDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
     return &o, nil
 }
@@ -398,7 +399,7 @@ func (s *ClubService) UpdateLittleKidsMembershipViaWebportal(o clubs.LittleExplo
         sql.Named("relationship", o.Relationship.String),
         sql.Named("preferredLanguage", o.PreferredLanguage.String),
         sql.Named("adminId", adminId),
-        sql.Named("kids_membership_id", o.KidsMembershipID.Int64),
+        sql.Named("kids_membership_id", o.KidsMembershipId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -649,7 +650,7 @@ func (s *ClubService) UpdateGoldenPearlMembershipViaWebportal(o clubs.GoldenPear
         sql.Named("relationship", o.Relationship.String),
         sql.Named("preferredLanguage", o.PreferredLanguage.String),
         sql.Named("adminId", adminId),
-        sql.Named("golden_membership_id", o.GoldenMembershipID.Int64),
+        sql.Named("golden_membership_id", o.GoldenMembershipId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -706,6 +707,7 @@ func (s *ClubService) FindLittleKidsActivityNameById(activityId int64) (*clubs.L
         utils.LogError(err)
         return nil, err
     }
+    o.Set()
     return &o, nil
 }
 
@@ -728,13 +730,14 @@ func (s *ClubService) FindLittleKidsActivitiesByActivityId(activityId int64) (*c
         utils.LogError(err)
         return nil, err
     }
+    o.Set()
     if o.ActivityStartDateTime.Valid {
         g, _ := goment.New(o.ActivityStartDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.ActivityStartDateTime.String = g.Format("DD/MM/YYYY HH:mm")
+        o.ActivityStartDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     if o.ActivityEndDateTime.Valid && o.ActivityEndDateTime.String != "-" {
         g, _ := goment.New(o.ActivityEndDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.ActivityEndDateTime.String = g.Format("DD/MM/YYYY HH:mm")
+        o.ActivityEndDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     return &o, nil
 }
@@ -749,11 +752,11 @@ func (s *ClubService) FindGoldenPearlActivitiesByActivityId(activityId int64) (*
     }
     if o.ActivityStartDateTime.Valid {
         g, _ := goment.New(o.ActivityStartDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.ActivityStartDateTime.String = g.Format("DD/MM/YYYY HH:mm")
+        o.ActivityStartDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     if o.ActivityEndDateTime.Valid && o.ActivityEndDateTime.String != "-" {
         g, _ := goment.New(o.ActivityEndDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
-        o.ActivityEndDateTime.String = g.Format("DD/MM/YYYY HH:mm")
+        o.ActivityEndDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
     }
     return &o, nil
 }
@@ -780,8 +783,8 @@ func (s *ClubService) ParticipateLittleKidsActivity(o []clubs.LittleExplorersKid
     for i := range o {
         ap := o[i]
         _, err = tx.ExecContext(s.ctx, query,
-            sql.Named("kidsActivityId", ap.KidsActivityID),
-            sql.Named("kidsMembershipId", ap.KidsMembershipID),
+            sql.Named("kidsActivityId", ap.KidsActivityId),
+            sql.Named("kidsMembershipId", ap.KidsMembershipId),
             sql.Named("activityDateTime", ap.ActivityDateTime),
         )
         if err != nil {
@@ -813,8 +816,8 @@ func (s *ClubService) ParticipateGoldenPearlActivity(o []clubs.GoldenPearlActvPa
     for i := range o {
         ap := o[i]
         _, err = tx.ExecContext(s.ctx, query,
-            sql.Named("goldenActivityId", ap.GoldenActivityID),
-            sql.Named("goldenMembershipId", ap.GoldenMembershipID),
+            sql.Named("goldenActivityId", ap.GoldenActivityId),
+            sql.Named("goldenMembershipId", ap.GoldenMembershipId),
             sql.Named("activityDateTime", ap.ActivityDateTime),
         )
         if err != nil {
@@ -915,7 +918,7 @@ func (s *ClubService) UpdateLittleKidsActivity(o clubs.LittleExplorersKidsActivi
         sql.Named("activityTnc", o.ActivityTnc.String),
         sql.Named("activityDisplayOrder", o.ActivityDisplayOrder.String),
         sql.Named("adminId", adminId),
-        sql.Named("kids_activity_id", o.KidsActivityID.Int64),
+        sql.Named("kids_activity_id", o.KidsActivityId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -951,7 +954,7 @@ func (s *ClubService) UpdateGoldenPearlActivity(o clubs.GoldenPearlActivity, adm
         sql.Named("activityTnc", o.ActivityTnc.String),
         sql.Named("activityDisplayOrder", o.ActivityDisplayOrder.String),
         sql.Named("adminId", adminId),
-        sql.Named("golden_activity_id", o.GoldenActivityID.Int64),
+        sql.Named("golden_activity_id", o.GoldenActivityId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -1035,7 +1038,7 @@ func (s *ClubService) UpdateLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs
         sql.Named("kidsClubTnc", o.KidsClubTnc.String),
         sql.Named("kidsClubPartnerLink", o.KidsClubPartnerLink.String),
         sql.Named("adminId", adminId),
-        sql.Named("kids_club_id", o.KidsClubID.Int64),
+        sql.Named("kids_club_id", o.KidsClubId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -1063,7 +1066,7 @@ func (s *ClubService) UpdateGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, admin
         sql.Named("goldenClubTnc", o.GoldenClubTnc.String),
         sql.Named("goldenClubExtLink", o.GoldenClubExtLink.String),
         sql.Named("adminId", adminId),
-        sql.Named("golden_club_id", o.GoldenClubID.Int64),
+        sql.Named("golden_club_id", o.GoldenClubId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -1095,8 +1098,11 @@ func (s *ClubService) FindGoldenPearlAboutUs() (*clubs.GoldenPearlAboutUs, error
 }
 
 func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHome bool) ([]clubs.LittleExplorersKidsActivity, error) {
+    m := map[string]string{
+        "kca.ATTENDEES": "",
+    }
     query := `
-        SELECT kca.*, (SELECT COUNT(*) 
+        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
@@ -1111,7 +1117,7 @@ func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHo
     `
     if isHome {
         query = `
-            SELECT kca.*, (SELECT COUNT(*) 
+            SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
             FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
             WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
             FROM KIDS_CLUB_ACTIVITY kca
@@ -1153,8 +1159,11 @@ func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHo
 }
 
 func (s *ClubService) FindAllAppGoldenPearlActivities(offset int, limit int, isHome bool) ([]clubs.GoldenPearlActivity, error) {
+    m := map[string]string{
+        "gca.ATTENDEES": "",
+    }
     query := `
-        SELECT gca.*, (SELECT COUNT(*) 
+        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
@@ -1168,7 +1177,7 @@ func (s *ClubService) FindAllAppGoldenPearlActivities(offset int, limit int, isH
     `
     if isHome {
         query = `
-            SELECT gca.*, (SELECT COUNT(*) 
+            SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
             FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
             WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
             FROM GOLDEN_CLUB_ACTIVITY gca
@@ -1286,9 +1295,25 @@ func (s *ClubService) FindAllUserGoldenPearlActivities(userId int64) ([]clubs.Go
     return list, nil
 }
 
+func (s *ClubService) FindAllAppLittleKidsMemberships(userId int64) ([]clubs.LittleExplorersKidsMembership, error) {
+    /* patient, err := s.applicationUserService.FindByUserId(userId, s.db)
+    if err != nil {
+        return nil, err
+    } */
+
+    return nil, nil
+}
+
+func (s *ClubService) FindAllAppGoldenPearlMemberships(userId int64) ([]clubs.GoldenPearlMembership, error) {
+    return nil, nil
+}
+
 func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
+    m := map[string]string{
+        "kcm.ACTIVITY_DATE_TIME": "",
+    }
     query := `
-        SELECT kcm.*, kcap.ACTIVITY_DATE_TIME
+        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m) + `, kcap.ACTIVITY_DATE_TIME
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
         WHERE kcap.KIDS_ACTIVITY_ID = :kidsActivityId
@@ -1312,8 +1337,11 @@ func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset in
 }
 
 func (s *ClubService) FindAllGoldenPearlAttendees(goldenActivityId int64, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
+    m := map[string]string{
+        "gcm.ACTIVITY_DATE_TIME": "",
+    }
     query := `
-        SELECT gcm.*, gcap.ACTIVITY_DATE_TIME
+        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
         WHERE gcap.GOLDEN_ACTIVITY_ID = :goldenActivityId
@@ -1772,6 +1800,103 @@ func (s *ClubService) CountGoldenPearlMembershipByKeyword(keyword string, keywor
     return count, nil
 }
 
+func (s *ClubService) FindAllLittleKidsActivitiesForExcel() ([]clubs.LittleExplorersKidsActivity, error) {
+    m := map[string]string{
+        "kca.ATTENDEES": "",
+    }
+    query := `
+        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
+        FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
+        WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
+        FROM KIDS_CLUB_ACTIVITY kca
+        ORDER BY ACTIVITY_START_DATETIME
+    `
+    list := make([]clubs.LittleExplorersKidsActivity, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+        if list[i].ActivityStartDateTime.Valid {
+            g, _ := goment.New(list[i].ActivityStartDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].ActivityStartDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].ActivityEndDateTime.Valid && list[i].ActivityEndDateTime.String != "-" {
+            g, _ := goment.New(list[i].ActivityEndDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].ActivityEndDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindAllGoldenPearlActivitiesForExcel() ([]clubs.GoldenPearlActivity, error) {
+    m := map[string]string{
+        "gca.ATTENDEES": "",
+    }
+    query := `
+        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
+        FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
+        WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
+        FROM GOLDEN_CLUB_ACTIVITY gca
+        ORDER BY ACTIVITY_START_DATETIME
+    `
+    list := make([]clubs.GoldenPearlActivity, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+        if list[i].ActivityStartDateTime.Valid {
+            g, _ := goment.New(list[i].ActivityStartDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].ActivityStartDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].ActivityEndDateTime.Valid && list[i].ActivityEndDateTime.String != "-" {
+            g, _ := goment.New(list[i].ActivityEndDateTime.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].ActivityEndDateTime = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindAllGoldenPearlAttendeesForExcel(goldenActivityId int64) ([]clubs.GoldenPearlMembership, error) {
+    m := map[string]string{
+        "gcm.ACTIVITY_DATE_TIME": "",
+    }
+    query := `
+        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
+        FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
+        JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
+        WHERE gcap.GOLDEN_ACTIVITY_ID = :goldenActivityId
+        ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC
+    `
+    list := make([]clubs.GoldenPearlMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].SetAttendees()
+        if list[i].ActivityJoinDate.Valid {
+            g, _ := goment.New(list[i].ActivityJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].ActivityJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].GoldenMembershipJoinDate.Valid {
+            g, _ := goment.New(list[i].GoldenMembershipJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].GoldenMembershipJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].GoldenDob.Valid {
+            g, _ := goment.New(list[i].GoldenDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].GoldenDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
+        }
+    }
+    return list, nil
+}
+
 func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
     conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, keyword, keyword2)
     args = append(args, sql.Named("offset", offset))
@@ -1874,6 +1999,50 @@ func (s *ClubService) FindGoldenPearlMembershipByKeyword(keyword string, keyword
     }
     for i := range list {
         list[i].Set()
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindAllLittleKidsMembershipForExcel() ([]clubs.LittleExplorersKidsMembership, error) {
+    query := `SELECT ` + utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, "") + ` FROM KIDS_CLUB_MEMBERSHIP ORDER BY KIDS_MEMBERSHIP_NUMBER DESC`
+    list := make([]clubs.LittleExplorersKidsMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+        if list[i].KidsMembershipJoinDate.Valid {
+            g, _ := goment.New(list[i].KidsMembershipJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].KidsMembershipJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].KidsDob.Valid {
+            g, _ := goment.New(list[i].KidsDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].KidsDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
+        }
+    }
+    return list, nil
+}
+
+func (s *ClubService) FindAllGoldenPearlMembershipForExcel() ([]clubs.GoldenPearlMembership, error) {
+    query := `SELECT ` + utils.GetDbCols(clubs.GoldenPearlMembership{}, "") + ` FROM GOLDEN_CLUB_MEMBERSHIP ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC`
+    list := make([]clubs.GoldenPearlMembership, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+        if list[i].GoldenMembershipJoinDate.Valid {
+            g, _ := goment.New(list[i].GoldenMembershipJoinDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].GoldenMembershipJoinDate = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+        if list[i].GoldenDob.Valid {
+            g, _ := goment.New(list[i].GoldenDob.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].GoldenDob = utils.NewNullString(g.Format("DD/MM/YYYY"))
+        }
     }
     return list, nil
 }

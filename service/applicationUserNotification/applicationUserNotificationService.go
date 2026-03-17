@@ -29,7 +29,7 @@ func (s *ApplicationUserNotificationService) Save(o *model.OnesignalNotification
         (:user_id, :notification_title, :msg_type, :short_message, :full_message, :visit_type, :account_no)
     `
     _, err := s.db.ExecContext(s.ctx, query,
-        sql.Named("user_id", o.UserID.Int64),
+        sql.Named("user_id", o.UserId.Int64),
         sql.Named("notification_title", o.NotificationTitle.String),
         sql.Named("msg_type", o.MsgType.String),
         sql.Named("short_message", o.ShortMessage.String),

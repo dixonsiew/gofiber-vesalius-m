@@ -28,7 +28,7 @@ func (s *TokenAdminService) GenerateAccessToken(user model.AdminUser) (string, e
     claims := jwt.MapClaims{
         "username": user.Email.String,
         "type":     "0",
-        "subject":  fmt.Sprintf("%d", user.AdminID.Int64),
+        "subject":  fmt.Sprintf("%d", user.AdminId.Int64),
         "exp":      time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -45,7 +45,7 @@ func (s *TokenAdminService) GenerateRefreshToken(user model.AdminUser) (string, 
     claims := jwt.MapClaims{
         "username": user.Email.String,
         "type":     "0",
-        "subject":  fmt.Sprintf("%d", user.AdminID.Int64),
+        "subject":  fmt.Sprintf("%d", user.AdminId.Int64),
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

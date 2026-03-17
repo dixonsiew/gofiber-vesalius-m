@@ -5,6 +5,7 @@ import (
     "vesaliusm/model"
     "vesaliusm/service/applicationUser"
     applicationuserService "vesaliusm/service/applicationUser"
+    "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -39,7 +40,7 @@ func (s *AuthService) AuthenticateUser(data dto.LoginDto) (*model.ApplicationUse
     }
 
     if data.PlayerId != "" {
-        err := s.applicationUserService.UpdatePlayerId(data.PlayerId, user.UserID.Int64, nil)
+        err := s.applicationUserService.UpdatePlayerId(data.PlayerId, user.UserId.Int64, nil)
         if err != nil {
             return user, err
         }
@@ -51,7 +52,7 @@ func (s *AuthService) AuthenticateUser(data dto.LoginDto) (*model.ApplicationUse
     }
 
     if data.MachineId != "" {
-        err := s.applicationUserService.UpdateMachineId(data.MachineId, user.UserID.Int64, nil)
+        err := s.applicationUserService.UpdateMachineId(data.MachineId, user.UserId.Int64, nil)
         if err != nil {
             return user, err
         }
@@ -61,11 +62,11 @@ func (s *AuthService) AuthenticateUser(data dto.LoginDto) (*model.ApplicationUse
         return user, fiber.NewError(fiber.StatusBadRequest, "Your account is not activated")
     }
 
-    sessionId, err := s.applicationUserService.SaveSessionId(user.UserID.Int64, nil)
+    sessionId, err := s.applicationUserService.SaveSessionId(user.UserId.Int64, nil)
     if sessionId == "" {
         return nil, err
     }
 
-    user.SessionID.String = sessionId
+    user.SessionId = utils.NewNullString(sessionId)
     return user, nil
 }

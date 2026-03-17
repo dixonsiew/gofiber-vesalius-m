@@ -45,7 +45,7 @@ func (cr *AdminController) GetAdmin(c fiber.Ctx) error {
         return err
     }
 
-    admin, err := cr.adminUserService.FindWithAssignBranchByAdminId(user.AdminID.Int64)
+    admin, err := cr.adminUserService.FindWithAssignBranchByAdminId(user.AdminId.Int64)
     if err != nil {
         return err
     }
@@ -418,18 +418,18 @@ func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusNotFound, "User not found")
     }
 
-    o.Address.String = data.Address
-    o.ContactNumber.String = data.ContactNumber
-    o.Dob.String = data.Dob
-    o.FirstName.String = data.FirstName
-    o.LastName.String = data.LastName
-    o.MasterPrn.String = data.Prn
-    o.MiddleName.String = data.MiddleName
-    o.Nationality.String = data.Nationality
-    o.Passport.String = data.Passport
-    o.Resident.String = data.Resident
-    o.Sex.String = data.Sex
-    o.Title.String = data.Title
+    o.Address = utils.NewNullString(data.Address)
+    o.ContactNumber = utils.NewNullString(data.ContactNumber)
+    o.Dob = utils.NewNullString(data.Dob)
+    o.FirstName = utils.NewNullString(data.FirstName)
+    o.LastName = utils.NewNullString(data.LastName)
+    o.MasterPrn = utils.NewNullString(data.Prn)
+    o.MiddleName = utils.NewNullString(data.MiddleName)
+    o.Nationality = utils.NewNullString(data.Nationality)
+    o.Passport = utils.NewNullString(data.Passport)
+    o.Resident = utils.NewNullString(data.Resident)
+    o.Sex = utils.NewNullString(data.Sex)
+    o.Title = utils.NewNullString(data.Title)
     cr.applicationUserService.SaveUserBranch(int64(data.BranchId), o)
 
     // TODO: Implement link user PRN logic
@@ -472,7 +472,7 @@ func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "New Password is not allowed to be the same with Old Password")
     }
 
-    user.Password.String = data.NewPassword
+    user.Password = utils.NewNullString(data.NewPassword)
     // err = adminUserService.SavePassword(user)
     // if err != nil {
     //     return err
@@ -499,11 +499,11 @@ func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
     }
 
     o := new(model.AdminUser)
-    o.Username.String = data.Email
-    o.Email.String = data.Email
-    o.FirstName.String = data.FirstName
-    o.LastName.String = data.LastName
-    o.UserGroupID.Int64 = data.UserGroupId
+    o.Username = utils.NewNullString(data.Email)
+    o.Email = utils.NewNullString(data.Email)
+    o.FirstName = utils.NewNullString(data.FirstName)
+    o.LastName = utils.NewNullString(data.LastName)
+    o.UserGroupId = utils.NewInt64(data.UserGroupId)
 
     return nil
 }
@@ -527,7 +527,7 @@ func (cr *AdminController) DeleteAdmin(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusNotFound, "User not found")
     }
 
-    err = cr.adminUserService.Delete(o.AdminID.Int64)
+    err = cr.adminUserService.Delete(o.AdminId.Int64)
     if err != nil {
         return err
     }
@@ -560,7 +560,7 @@ func (cr *AdminController) ResetSignUpUserByEmail(c fiber.Ctx) error {
         return err
     }
 
-    err = cr.applicationUserService.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    err = cr.applicationUserService.ResetUserSignup(user.UserId.Int64, user.MasterPrn.String)
     if err != nil {
         return err
     }
@@ -593,7 +593,7 @@ func (cr *AdminController) ResetSignUpUserByMobile(c fiber.Ctx) error {
         return err
     }
 
-    err = cr.applicationUserService.ResetUserSignup(user.UserID.Int64, user.MasterPrn.String)
+    err = cr.applicationUserService.ResetUserSignup(user.UserId.Int64, user.MasterPrn.String)
     if err != nil {
         return err
     }
@@ -689,7 +689,7 @@ func (cr *AdminController) SelfResetPassword(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "The email address you entered does not exist in our system")
     }
 
-    ab, err := cr.assignBranchService.FindAllByUserId(o.UserID.Int64)
+    ab, err := cr.assignBranchService.FindAllByUserId(o.UserId.Int64)
     if err != nil {
         return err
     }
@@ -699,7 +699,7 @@ func (cr *AdminController) SelfResetPassword(c fiber.Ctx) error {
     }
 
     i := slices.IndexFunc(ab, func(item model.AssignBranch) bool {
-        return strconv.FormatInt(item.BranchID.Int64, 10) == branchId
+        return strconv.FormatInt(item.BranchId.Int64, 10) == branchId
     })
 
     if i < 0 {

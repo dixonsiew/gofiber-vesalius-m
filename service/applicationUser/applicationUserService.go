@@ -310,15 +310,15 @@ func (s *ApplicationUserService) FindWithAssignBranchByUserId(userId int64) (*mo
     }
 
     for i := range ablist {
-        b, err := s.branchService.FindByBranchId(ablist[i].BranchID.Int64)
+        b, err := s.branchService.FindByBranchId(ablist[i].BranchId.Int64)
         if err != nil {
             return nil, err
         }
-        b.Passcode.String = ""
-        b.Url.String = ""
+        b.Passcode = utils.NewNullString("")
+        b.Url = utils.NewNullString("")
         ablist[i].Branch = b
     }
-    o.Password.String = ""
+    o.Password = utils.NewNullString("")
     o.UserBranches = ablist
     return o, nil
 }
@@ -329,21 +329,21 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
         return nil, err
     }
 
-    ablist, err := s.assignBranchService.FindAllByUserId(o.UserID.Int64)
+    ablist, err := s.assignBranchService.FindAllByUserId(o.UserId.Int64)
     if err != nil {
         return nil, err
     }
 
     for i := range ablist {
-        b, err := s.branchService.FindByBranchId(ablist[i].BranchID.Int64)
+        b, err := s.branchService.FindByBranchId(ablist[i].BranchId.Int64)
         if err != nil {
             return nil, err
         }
-        b.Passcode.String = ""
-        b.Url.String = ""
+        b.Passcode = utils.NewNullString("")
+        b.Url = utils.NewNullString("")
         ablist[i].Branch = b
     }
-    o.Password.String = ""
+    o.Password = utils.NewNullString("")
     o.UserBranches = ablist
     return o, nil
 }
@@ -462,7 +462,7 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
         sql.Named("resident", o.Resident.String),
         sql.Named("sex", o.Sex.String),
         sql.Named("title", o.Title.String),
-        sql.Named("user_id", o.UserID.Int64),
+        sql.Named("user_id", o.UserId.Int64),
     )
     if err != nil {
         return err
@@ -472,7 +472,7 @@ func (s *ApplicationUserService) SaveUserBranch(branchId int64, o *model.Applica
     insertQuery := `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`
     _, err = tx.ExecContext(s.ctx, insertQuery,
         sql.Named("prn", o.MasterPrn.String),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
         sql.Named("branchId", branchId),
     )
     if err != nil {
@@ -503,7 +503,7 @@ func (s *ApplicationUserService) Update(o *model.ApplicationUser) error {
         sql.Named("resident", o.Resident.String),
         sql.Named("sex", o.Sex.String),
         sql.Named("title", o.Title.String),
-        sql.Named("user_id", o.UserID.Int64),
+        sql.Named("user_id", o.UserId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -622,19 +622,19 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
         sql.Named("verification_code", verificationCode),
         nil,
         sql.Named("race", o.Race.String),
-        sql.Named("player_id", o.PlayerID.String),
+        sql.Named("player_id", o.PlayerId.String),
         go_ora.Out{Dest: &userId},
     )
     if err != nil {
         return err
     }
 
-    o.UserID.Int64, _ = userId.Int64()
+    o.UserId.Int64, _ = userId.Int64()
 
     // Insert into ASSIGN_BRANCH
     _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
         sql.Named("prn", o.MasterPrn.String),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
         sql.Named("branchId", branchId),
     )
     if err != nil {
@@ -750,21 +750,21 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
         sql.Named("inactive", o.InactiveFlag.String),
         sql.Named("firstTimeLogin", firstTimeLogin),
         sql.Named("firstTimeBiometric", firstTimeBiometric),
-        sql.Named("player_id", o.PlayerID.String),
+        sql.Named("player_id", o.PlayerId.String),
         sql.Named("cityState", o.CityState.String),
         sql.Named("postalCode", o.Postcode.String),
         sql.Named("country", o.Country.String),
         sql.Named("signInType", o.SignInType.Int32),
         sql.Named("fullNameSignUp", o.FullnameSignup.String),
         sql.Named("docNoSignUp", o.DocNoSignup.String),
-        sql.Named("user_id", o.UserID.Int64),
+        sql.Named("user_id", o.UserId.Int64),
     )
     if err != nil {
         return err
     }
 
     // Update ASSIGN_BRANCH
-    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = :prn WHERE USER_ID = :userId`, o.MasterPrn.String, o.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = :prn WHERE USER_ID = :userId`, o.MasterPrn.String, o.UserId.Int64)
     if err != nil {
         return err
     }
@@ -841,7 +841,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         sql.Named("role", o.Role.String),
         sql.Named("username", o.Username.String),
         sql.Named("verification_code", verificationCode),
-        sql.Named("player_id", o.PlayerID.String),
+        sql.Named("player_id", o.PlayerId.String),
         sql.Named("signInType", o.SignInType.Int32),
         sql.Named("fullNameSignUp", o.FullnameSignup.String),
         sql.Named("docNoSignUp", o.DocNoSignup.String),
@@ -851,11 +851,11 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         return 0, err
     }
 
-    o.UserID.Int64, _ = userId.Int64()
+    o.UserId.Int64, _ = userId.Int64()
 
     _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
         sql.Named("prn", o.MasterPrn.String),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
         sql.Named("branchId", branchId),
     )
     if err != nil {
@@ -867,7 +867,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         utils.LogError(err)
         return -1, err
     }
-    return o.UserID.Int64, err
+    return o.UserId.Int64, err
 }
 
 func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) error {
@@ -880,7 +880,7 @@ func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) err
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
     _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -888,7 +888,7 @@ func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) err
     }
     // Store new plain password in o.Password? The original sets o.password = newPwd but doesn't save it.
     // We'll just return the new password via o.Password for later use.
-    o.Password.String = newPwd
+    o.Password = utils.NewNullString(newPwd)
     return err
 }
 
@@ -900,7 +900,7 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
     query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :userId`
     _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -910,11 +910,11 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
 
 func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUser) error {
     code := getRandomStr(6)
-    o.VerificationCode.String = code
+    o.VerificationCode = utils.NewNullString(code)
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query,
         sql.Named("verificationCode", code),
-        sql.Named("userId", o.UserID.Int64),
+        sql.Named("userId", o.UserId.Int64),
     )
     if err != nil {
         utils.LogError(err)
@@ -1028,15 +1028,15 @@ func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, 
     }()
 
     query := `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0, FIRST_TIME_BIOMETRIC = 0 WHERE USER_ID = :userId`
-    _, err = tx.ExecContext(s.ctx, query, o.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, query, o.UserId.Int64)
     if err != nil {
         return false, err
     }
-    sessionID, err := s.SaveSessionId(o.UserID.Int64, s.db)
+    sessionID, err := s.SaveSessionId(o.UserId.Int64, s.db)
     if err != nil {
         return false, err
     }
-    o.SessionID.String = sessionID
+    o.SessionId = utils.NewNullString(sessionID)
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
@@ -1047,7 +1047,7 @@ func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, 
 
 func (s *ApplicationUserService) VerifyUser(o *model.ApplicationUser) (bool, error) {
     query := `UPDATE APPLICATION_USER SET FIRST_TIME_LOGIN = 0 WHERE USER_ID = :userId`
-    _, err := s.db.ExecContext(s.ctx, query, o.UserID.Int64)
+    _, err := s.db.ExecContext(s.ctx, query, o.UserId.Int64)
     if err != nil {
         utils.LogError(err)
     }
@@ -1105,12 +1105,12 @@ func (s *ApplicationUserService) DeleteUserAccount(user *model.ApplicationUser, 
             DOC_NO_SIGNUP = NULL
         WHERE USER_ID = :userId
     `
-    _, err = tx.ExecContext(s.ctx, updateUserQuery, user.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, updateUserQuery, user.UserId.Int64)
     if err != nil {
         return err
     }
 
-    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = NULL WHERE USER_ID = :userId`, user.UserID.Int64)
+    _, err = tx.ExecContext(s.ctx, `UPDATE ASSIGN_BRANCH SET PRN = NULL WHERE USER_ID = :userId`, user.UserId.Int64)
     if err != nil {
         return err
     }
@@ -1218,10 +1218,10 @@ func (s *ApplicationUserService) ValidateCredentials(user *model.ApplicationUser
 }
 
 func (s *ApplicationUserService) ValidateCredentials2(user *model.ApplicationUser, password string) bool {
-    if user.MachineID.String == "" {
+    if user.MachineId.String == "" {
         return false
     }
-    err := bcrypt.CompareHashAndPassword([]byte(user.MachineID.String), []byte(password))
+    err := bcrypt.CompareHashAndPassword([]byte(user.MachineId.String), []byte(password))
     return err == nil
 }
 
