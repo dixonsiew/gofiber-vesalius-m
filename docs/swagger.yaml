@@ -15,6 +15,126 @@ definitions:
       goldenClubTnc:
         type: string
     type: object
+  clubs.GoldenPearlActivity:
+    properties:
+      activityAttendees:
+        type: integer
+      activityDisplayOrder:
+        type: string
+      activityEndDateTime:
+        type: string
+      activityEndDateTimeCalendar:
+        type: string
+      activityEndDateTimeExcel:
+        type: string
+      activityMaxParticipant:
+        type: integer
+      activitySeatsAvailable:
+        type: integer
+      activityStartDateTime:
+        type: string
+      activityStartDateTimeExcel:
+        description: Excel export fields (not stored in DB)
+        type: string
+      activityTnc:
+        type: string
+      golden_activity_id:
+        type: integer
+      goldenActivityCode:
+        type: string
+      goldenActivityDesc:
+        type: string
+      goldenActivityImage:
+        type: string
+      goldenActivityName:
+        type: string
+    type: object
+  clubs.GoldenPearlMembership:
+    properties:
+      activityJoinDate:
+        description: Fields used in attendee contexts
+        type: string
+      activityJoinDateExcel:
+        description: Excel-specific fields (not stored in DB)
+        type: string
+      golden_membership_id:
+        type: integer
+      goldenDob:
+        type: string
+      goldenDobExcel:
+        type: string
+      goldenDocNumber:
+        type: string
+      goldenDocType:
+        type: string
+      goldenEmail:
+        type: string
+      goldenGender:
+        type: string
+      goldenMembershipJoinDate:
+        type: string
+      goldenMembershipJoinDateExcel:
+        type: string
+      goldenMembershipNumber:
+        type: string
+      goldenName:
+        type: string
+      goldenNationality:
+        type: string
+      goldenPrn:
+        type: string
+      isActive:
+        type: string
+      nokAddress1:
+        type: string
+      nokAddress2:
+        type: string
+      nokAddress3:
+        type: string
+      nokCountryCode:
+        type: string
+      nokDob:
+        type: string
+      nokDobExcel:
+        type: string
+      nokDocNumber:
+        type: string
+      nokDocType:
+        type: string
+      nokEmail:
+        type: string
+      nokGender:
+        type: string
+      nokHomeContact:
+        type: string
+      nokMobileContact:
+        type: string
+      nokName:
+        type: string
+      nokNationality:
+        type: string
+      nokPostCode:
+        type: string
+      nokPrn:
+        type: string
+      nokState:
+        type: string
+      preferredLanguage:
+        type: string
+      relationship:
+        type: string
+    type: object
+  clubs.GoldenPearlMyActivity:
+    properties:
+      activityDateTime:
+        type: string
+      goldenActivityName:
+        type: string
+      goldenMembershipNumber:
+        type: string
+      goldenName:
+        type: string
+    type: object
   clubs.LittleExplorersKidsAboutUs:
     properties:
       kids_club_id:
@@ -187,6 +307,70 @@ definitions:
         type: array
     required:
     - package
+    type: object
+  dto.GoldenActvParticipationDto:
+    properties:
+      activityDateTime:
+        type: string
+      goldenActivityId:
+        type: integer
+      goldenMembershipId:
+        type: integer
+    required:
+    - activityDateTime
+    - goldenActivityId
+    - goldenMembershipId
+    type: object
+  dto.GoldenPearlAboutUsDto:
+    properties:
+      goldenClubDesc:
+        type: string
+      goldenClubExtLink:
+        type: string
+      goldenClubImage:
+        type: string
+      goldenClubTitle:
+        type: string
+      goldenClubTnc:
+        type: string
+    required:
+    - goldenClubDesc
+    - goldenClubTitle
+    type: object
+  dto.GoldenPearlActivityDto:
+    properties:
+      activityDisplayOrder:
+        type: string
+      activityEndDateTime:
+        type: string
+      activityMaxParticipant:
+        type: string
+      activityStartDateTime:
+        type: string
+      activityTnc:
+        type: string
+      goldenActivityCode:
+        type: string
+      goldenActivityDesc:
+        type: string
+      goldenActivityImage:
+        type: string
+      goldenActivityName:
+        type: string
+    required:
+    - activityDisplayOrder
+    - activityMaxParticipant
+    - activityStartDateTime
+    - goldenActivityCode
+    - goldenActivityDesc
+    - goldenActivityName
+    type: object
+  dto.GoldenPearlActvParticipationDto:
+    properties:
+      goldenActvParticipation:
+        items:
+          $ref: '#/definitions/dto.GoldenActvParticipationDto'
+        type: array
     type: object
   dto.GoldenPearlMembershipDto:
     properties:
@@ -1295,6 +1479,325 @@ paths:
             $ref: '#/definitions/clubs.GoldenPearlAboutUs'
       tags:
       - Clubs
+    post:
+      parameters:
+      - description: GoldenPearlAboutUsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlAboutUsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity:
+    post:
+      parameters:
+      - description: GoldenPearlActivityDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlActivityDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/{activityId}:
+    get:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.GoldenPearlActivity'
+      tags:
+      - Clubs
+    put:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      - description: GoldenPearlActivityDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlActivityDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      tags:
+      - Clubs
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword3Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/all/mobile/{isHome}:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/attendees/{activityId}:
+    get:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+    post:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/attendees/{activityId}/export/all:
+    get:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/attendees/{activityId}/export/search:
+    post:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword3Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/name/{activityId}:
+    get:
+      parameters:
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.GoldenPearlActivity'
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/activity/participate:
+    post:
+      parameters:
+      - description: GoldenPearlActvParticipationDto
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlActvParticipationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Clubs
   /clubs/goldenpearl/membership:
     post:
       parameters:
@@ -1313,8 +1816,122 @@ paths:
       - BearerAuth: []
       tags:
       - Clubs
-  /clubs/goldenpearl/testadmin:
+  /clubs/goldenpearl/membership/{membershipId}:
     get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.GoldenPearlMembership'
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/membership/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/membership/all/mobile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/membership/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/membership/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/membership/webadmin:
+    post:
+      parameters:
+      - description: GoldenPearlMembershipDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlMembershipDto'
       produces:
       - application/json
       responses:
@@ -1324,13 +1941,40 @@ paths:
       - BearerAuth: []
       tags:
       - Clubs
-  /clubs/goldenpearl/testuser:
+  /clubs/goldenpearl/membership/webadmin/{membershipId}:
+    put:
+      parameters:
+      - description: membershipId
+        in: path
+        name: membershipId
+        required: true
+        type: string
+      - description: GoldenPearlMembershipDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlMembershipDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/goldenpearl/my-activity/all:
     get:
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMyActivity'
+            type: array
       security:
       - BearerAuth: []
       tags:
@@ -1421,8 +2065,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/clubs.LittleExplorersKidsActivity'
       tags:
       - Clubs
     put:
@@ -1850,6 +2492,29 @@ paths:
       - description: LittleExplorersKidsMembershipDto
         in: body
         name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LittleExplorersKidsMembershipDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Clubs
+  /clubs/littlekids/membership/webadmin/{membershipId}:
+    put:
+      parameters:
+      - description: membershipId
+        in: path
+        name: membershipId
+        required: true
+        type: string
+      - description: LittleExplorersKidsMembershipDto
+        in: body
+        name: data
         required: true
         schema:
           $ref: '#/definitions/dto.LittleExplorersKidsMembershipDto'

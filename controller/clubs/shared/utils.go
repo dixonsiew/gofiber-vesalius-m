@@ -1,10 +1,10 @@
-package clubs
+package shared
 
 import (
     "github.com/nleeper/goment"
 )
 
-func littleKidsEligibleAge(dob string) bool {
+func LittleKidsEligibleAge(dob string) bool {
     // only 12 years old and below
     // subtract another 1 day because same date of 12 years back is invalid because of hour/min differences
     now, _ := goment.New()
@@ -19,7 +19,7 @@ func littleKidsEligibleAge(dob string) bool {
     return dobDate.IsAfter(minDate)
 }
 
-func goldenPearlEligibleAge(dob string) bool {
+func GoldenPearlEligibleAge(dob string) bool {
     // only 60 years old and above
     now, _ := goment.New()
     minDate := now.Subtract(60, "years")

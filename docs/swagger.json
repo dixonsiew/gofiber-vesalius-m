@@ -688,6 +688,529 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlAboutUsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlAboutUsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlActivityDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlActivityDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/attendees/{activityId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/attendees/{activityId}/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/attendees/{activityId}/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/name/{activityId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/participate": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlActvParticipationDto",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlActvParticipationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/activity/{activityId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "GoldenPearlActivityDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlActivityDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/clubs/goldenpearl/membership": {
@@ -721,7 +1244,7 @@
                 }
             }
         },
-        "/clubs/goldenpearl/testadmin": {
+        "/clubs/goldenpearl/membership/all": {
             "get": {
                 "security": [
                     {
@@ -733,6 +1256,177 @@
                 ],
                 "tags": [
                     "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership/all/mobile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership/webadmin": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlMembershipDto"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -741,7 +1435,45 @@
                 }
             }
         },
-        "/clubs/goldenpearl/testuser": {
+        "/clubs/goldenpearl/membership/webadmin/{membershipId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "membershipId",
+                        "name": "membershipId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "GoldenPearlMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership/{membershipId}": {
             "get": {
                 "security": [
                     {
@@ -756,7 +1488,36 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/my-activity/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMyActivity"
+                            }
+                        }
                     }
                 }
             }
@@ -1323,10 +2084,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
-                        }
+                        "description": "OK"
                     }
                 }
             },
@@ -1589,6 +2347,44 @@
                     {
                         "description": "LittleExplorersKidsMembershipDto",
                         "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/webadmin/{membershipId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "membershipId",
+                        "name": "membershipId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LittleExplorersKidsMembershipDto",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -2339,6 +3135,186 @@
                 }
             }
         },
+        "clubs.GoldenPearlActivity": {
+            "type": "object",
+            "properties": {
+                "activityAttendees": {
+                    "type": "integer"
+                },
+                "activityDisplayOrder": {
+                    "type": "string"
+                },
+                "activityEndDateTime": {
+                    "type": "string"
+                },
+                "activityEndDateTimeCalendar": {
+                    "type": "string"
+                },
+                "activityEndDateTimeExcel": {
+                    "type": "string"
+                },
+                "activityMaxParticipant": {
+                    "type": "integer"
+                },
+                "activitySeatsAvailable": {
+                    "type": "integer"
+                },
+                "activityStartDateTime": {
+                    "type": "string"
+                },
+                "activityStartDateTimeExcel": {
+                    "description": "Excel export fields (not stored in DB)",
+                    "type": "string"
+                },
+                "activityTnc": {
+                    "type": "string"
+                },
+                "goldenActivityCode": {
+                    "type": "string"
+                },
+                "goldenActivityDesc": {
+                    "type": "string"
+                },
+                "goldenActivityImage": {
+                    "type": "string"
+                },
+                "goldenActivityName": {
+                    "type": "string"
+                },
+                "golden_activity_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "clubs.GoldenPearlMembership": {
+            "type": "object",
+            "properties": {
+                "activityJoinDate": {
+                    "description": "Fields used in attendee contexts",
+                    "type": "string"
+                },
+                "activityJoinDateExcel": {
+                    "description": "Excel-specific fields (not stored in DB)",
+                    "type": "string"
+                },
+                "goldenDob": {
+                    "type": "string"
+                },
+                "goldenDobExcel": {
+                    "type": "string"
+                },
+                "goldenDocNumber": {
+                    "type": "string"
+                },
+                "goldenDocType": {
+                    "type": "string"
+                },
+                "goldenEmail": {
+                    "type": "string"
+                },
+                "goldenGender": {
+                    "type": "string"
+                },
+                "goldenMembershipJoinDate": {
+                    "type": "string"
+                },
+                "goldenMembershipJoinDateExcel": {
+                    "type": "string"
+                },
+                "goldenMembershipNumber": {
+                    "type": "string"
+                },
+                "goldenName": {
+                    "type": "string"
+                },
+                "goldenNationality": {
+                    "type": "string"
+                },
+                "goldenPrn": {
+                    "type": "string"
+                },
+                "golden_membership_id": {
+                    "type": "integer"
+                },
+                "isActive": {
+                    "type": "string"
+                },
+                "nokAddress1": {
+                    "type": "string"
+                },
+                "nokAddress2": {
+                    "type": "string"
+                },
+                "nokAddress3": {
+                    "type": "string"
+                },
+                "nokCountryCode": {
+                    "type": "string"
+                },
+                "nokDob": {
+                    "type": "string"
+                },
+                "nokDobExcel": {
+                    "type": "string"
+                },
+                "nokDocNumber": {
+                    "type": "string"
+                },
+                "nokDocType": {
+                    "type": "string"
+                },
+                "nokEmail": {
+                    "type": "string"
+                },
+                "nokGender": {
+                    "type": "string"
+                },
+                "nokHomeContact": {
+                    "type": "string"
+                },
+                "nokMobileContact": {
+                    "type": "string"
+                },
+                "nokName": {
+                    "type": "string"
+                },
+                "nokNationality": {
+                    "type": "string"
+                },
+                "nokPostCode": {
+                    "type": "string"
+                },
+                "nokPrn": {
+                    "type": "string"
+                },
+                "nokState": {
+                    "type": "string"
+                },
+                "preferredLanguage": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
+                }
+            }
+        },
+        "clubs.GoldenPearlMyActivity": {
+            "type": "object",
+            "properties": {
+                "activityDateTime": {
+                    "type": "string"
+                },
+                "goldenActivityName": {
+                    "type": "string"
+                },
+                "goldenMembershipNumber": {
+                    "type": "string"
+                },
+                "goldenName": {
+                    "type": "string"
+                }
+            }
+        },
         "clubs.LittleExplorersKidsAboutUs": {
             "type": "object",
             "properties": {
@@ -2595,6 +3571,100 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.CheckPackageDto"
+                    }
+                }
+            }
+        },
+        "dto.GoldenActvParticipationDto": {
+            "type": "object",
+            "required": [
+                "activityDateTime",
+                "goldenActivityId",
+                "goldenMembershipId"
+            ],
+            "properties": {
+                "activityDateTime": {
+                    "type": "string"
+                },
+                "goldenActivityId": {
+                    "type": "integer"
+                },
+                "goldenMembershipId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GoldenPearlAboutUsDto": {
+            "type": "object",
+            "required": [
+                "goldenClubDesc",
+                "goldenClubTitle"
+            ],
+            "properties": {
+                "goldenClubDesc": {
+                    "type": "string"
+                },
+                "goldenClubExtLink": {
+                    "type": "string"
+                },
+                "goldenClubImage": {
+                    "type": "string"
+                },
+                "goldenClubTitle": {
+                    "type": "string"
+                },
+                "goldenClubTnc": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GoldenPearlActivityDto": {
+            "type": "object",
+            "required": [
+                "activityDisplayOrder",
+                "activityMaxParticipant",
+                "activityStartDateTime",
+                "goldenActivityCode",
+                "goldenActivityDesc",
+                "goldenActivityName"
+            ],
+            "properties": {
+                "activityDisplayOrder": {
+                    "type": "string"
+                },
+                "activityEndDateTime": {
+                    "type": "string"
+                },
+                "activityMaxParticipant": {
+                    "type": "string"
+                },
+                "activityStartDateTime": {
+                    "type": "string"
+                },
+                "activityTnc": {
+                    "type": "string"
+                },
+                "goldenActivityCode": {
+                    "type": "string"
+                },
+                "goldenActivityDesc": {
+                    "type": "string"
+                },
+                "goldenActivityImage": {
+                    "type": "string"
+                },
+                "goldenActivityName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GoldenPearlActvParticipationDto": {
+            "type": "object",
+            "properties": {
+                "goldenActvParticipation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GoldenActvParticipationDto"
                     }
                 }
             }

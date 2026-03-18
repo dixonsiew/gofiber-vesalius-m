@@ -1,8 +1,9 @@
-package clubs
+package littleKids
 
 import (
     "strconv"
     "strings"
+    u "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
@@ -55,7 +56,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := littleKidsEligibleAge(data.KidsDob)
+    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
@@ -188,7 +189,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := littleKidsEligibleAge(data.KidsDob)
+    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
@@ -291,7 +292,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
 // @Security BearerAuth
 // @Param        membershipId               path        string  true  "membershipId"
 // @Param        data                       body        dto.LittleExplorersKidsMembershipDto  true  "LittleExplorersKidsMembershipDto"
-// @Success 200 {object} fiber.Map
+// @Success 200
 // @Router /clubs/littlekids/membership/webadmin/{membershipId} [put]
 func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
@@ -307,7 +308,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         return err
     }
 
-    eligibleAge := littleKidsEligibleAge(data.KidsDob)
+    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
@@ -974,7 +975,7 @@ func (cr *ClubsLittleKidsController) GetLittleKidsActivityNameById(c fiber.Ctx) 
 // @Tags Clubs
 // @Produce json
 // @Param         activityId   path        string                true   "activityId"
-// @Success 200 {object} clubs.LittleExplorersKidsActivity
+// @Success 200
 // @Router /clubs/littlekids/activity/{activityId} [get]
 func (cr *ClubsLittleKidsController) GetLittleKidsActivityById(c fiber.Ctx) error {
     activityId := c.Params("activityId")

@@ -2349,6 +2349,8 @@ func buildGoldenPearlAttendeesKeywordConditions(goldenActivityId int64, keyword 
         conds = append(conds, `(LOWER(gcm.NOK_PRN) LIKE :keyword2 OR LOWER(gcm.NOK_NAME) LIKE :keyword2)`)
         args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
     }
+    conds = append(conds, `gcap.GOLDEN_ACTIVITY_ID = :goldenActivityId`)
+    args = append(args, sql.Named("goldenActivityId", goldenActivityId))
     return conds, args
 }
 

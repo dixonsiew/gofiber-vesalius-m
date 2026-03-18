@@ -406,8 +406,8 @@ type GoldenPearlActivity struct {
     ActivityEndDateTimeCalendar string `json:"activityEndDateTimeCalendar"`
 
     // Excel export fields (not stored in DB)
-    ActivityStartDateTimeExcel null.String `json:"activityStartDateTimeExcel"`
-    ActivityEndDateTimeExcel   null.String `json:"activityEndDateTimeExcel"`
+    ActivityStartDateTimeExcel string `json:"activityStartDateTimeExcel"`
+    ActivityEndDateTimeExcel   string `json:"activityEndDateTimeExcel"`
 }
 
 func (o *GoldenPearlActivity) Set() {

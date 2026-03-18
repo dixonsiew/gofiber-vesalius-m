@@ -1,9 +1,9 @@
-package clubs
+package goldenPearl
 
 import (
-    // "fmt"
     "strconv"
     "strings"
+    u "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
@@ -11,7 +11,7 @@ import (
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
-    // "github.com/nleeper/goment"
+    "github.com/nleeper/goment"
 )
 
 type ClubsGoldenPearlController struct {
@@ -56,7 +56,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := goldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
@@ -187,7 +187,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := goldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
@@ -304,7 +304,7 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
         return err
     }
 
-    eligibleAge := goldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
@@ -643,6 +643,359 @@ func (cr ClubsGoldenPearlController) CreateGoldenPearlActivity(c fiber.Ctx) erro
 
     return c.JSON(fiber.Map{
         "message": "Golden Pearl Activity created",
+    })
+}
+
+// UpdateGoldenPearlActivity
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param        activityId      path      string                             true  "activityId"
+// @Param        request         body      dto.GoldenPearlActivityDto true  "GoldenPearlActivityDto"
+// @Success 200
+// @Router /clubs/goldenpearl/activity/{activityId} [put]
+func (cr *ClubsGoldenPearlController) UpdateGoldenPearlActivity(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    data := new(dto.GoldenPearlActivityDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    maxParticipant, _ := strconv.ParseInt(data.ActivityMaxParticipant, 10, 32)
+
+    var o clubs.GoldenPearlActivity
+    o.GoldenActivityId = utils.NewInt64(iactivityId)
+    o.GoldenActivityCode = utils.NewNullString(data.GoldenActivityCode)
+    o.GoldenActivityName = utils.NewNullString(data.GoldenActivityName)
+    o.GoldenActivityDesc = utils.NewNullString(data.GoldenActivityDesc)
+    o.GoldenActivityImage = utils.NewNullString(data.GoldenActivityImage)
+    o.ActivityStartDateTime = utils.NewNullString(data.ActivityStartDateTime)
+    o.ActivityEndDateTime = utils.NewNullString(data.ActivityEndDateTime)
+    o.ActivityMaxParticipant = utils.NewInt32(int32(maxParticipant))
+    o.ActivityTnc = utils.NewNullString(data.ActivityTnc)
+    o.ActivityDisplayOrder = utils.NewNullString(data.ActivityDisplayOrder)
+
+    err = cr.clubService.UpdateGoldenPearlActivity(o, user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Golden Pearl Activity updated",
+    })
+}
+
+// GetAllExportGoldenPearlActivity
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/export/all [get]
+func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlActivity(c fiber.Ctx) error {
+    return nil
+}
+
+// GetSearchExportGoldenPearlActivity
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param keyword body dto.SearchKeyword3Dto false "Search"
+// @Success 200 {array} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/export/search [post]
+func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber.Ctx) error {
+    var data fiber.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+    
+    return nil
+}
+
+// GetAllGoldenPearlActivities
+//
+// @Tags Clubs
+// @Produce json
+// @Param        _page             query       string  false  "_page"  default:"1"
+// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Success 200 {array} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/all [get]
+func (cr *ClubsGoldenPearlController) GetAllGoldenPearlActivities(c fiber.Ctx) error {
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.clubService.ListGoldenPearlActivities(page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// GetAllAppGoldenPearlActivities
+//
+// @Tags Clubs
+// @Produce json
+// @Param         _page        query       string                false  "_page"  default:"1"
+// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         isHome       path        string                true   "isHome"
+// @Success 200 {array} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/all/mobile/{isHome} [get]
+func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    isHome := c.Params("isHome")
+    m, err := cr.clubService.ListAppGoldenPearlActivities(isHome == "1", page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// SearchAllGoldenPearlActivities
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param         _page        query       string                false  "_page"  default:"1"
+// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
+// @Success 200 {array} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/all [post]
+func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlActivities(c fiber.Ctx) error {
+    var data fiber.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    var (
+        key  string
+        key2 string
+        key3 string
+    )
+    if keyword, ok := data["keyword"]; ok {
+        key = keyword.(string)
+        if key != "" {
+            key = "%" + key + "%"
+        }
+    }
+    if keyword, ok := data["keyword2"]; ok {
+        key2 = keyword.(string)
+        if key2 != "" {
+            if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+                return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
+            }
+        }
+    }
+    if keyword, ok := data["keyword3"]; ok {
+        key3 = keyword.(string)
+        if key3 != "" {
+            if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+                return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
+            }
+        }
+    }
+
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.clubService.ListGoldenPearlActivitiesByKeyword(key, key2, key3, page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// GetAllExportGoldenPearlAttendees
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param        activityId      path      string                             true  "activityId"
+// @Success 200 {array} clubs.GoldenPearlMembership
+// @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/all [get]
+func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlAttendees(c fiber.Ctx) error {
+    return nil
+}
+
+// GetSearchExportGoldenPearlAttendees
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param        activityId      path      string                             true  "activityId"
+// @Success 200 {array} clubs.GoldenPearlMembership
+// @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/search [post]
+func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlAttendees(c fiber.Ctx) error {
+    return nil
+}
+
+// GetGoldenPearlActivityAttendeesById
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param         activityId      path     string                true   "activityId"
+// @Param         _page           query    string                false  "_page"  default:"1"
+// @Param         _limit          query    string                false  "_limit" default:"10"
+// @Success 200 {array} clubs.GoldenPearlMembership
+// @Router /clubs/goldenpearl/activity/attendees/{activityId} [get]
+func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityAttendeesById(c fiber.Ctx) error {
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.clubService.ListGoldenPearlActivityAttendees(iactivityId, page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// SearchAllGoldenPearlAttendees
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param         activityId      path     string                true   "activityId"
+// @Param         _page           query    string                false  "_page"  default:"1"
+// @Param         _limit          query    string                false  "_limit" default:"10"
+// @Success 200 {array} clubs.GoldenPearlMembership
+// @Router /clubs/goldenpearl/activity/attendees/{activityId} [post]
+func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx) error {
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+
+    var data fiber.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    var (
+        key  string
+        key2 string
+    )
+    if keyword, ok := data["keyword"]; ok {
+        key = keyword.(string)
+        if key != "" {
+            key = "%" + key + "%"
+        }
+    }
+    if keyword, ok := data["keyword2"]; ok {
+        key2 = keyword.(string)
+        if key2 != "" {
+            key2 = "%" + key2 + "%"
+        }
+    }
+
+    m, err := cr.clubService.ListGoldenPearlAttendeesByKeyword(iactivityId, key, key2, page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// GetGoldenPearlActivityNameById
+//
+// @Tags Clubs
+// @Produce json
+// @Security BearerAuth
+// @Param         activityId   path        string                true   "activityId"
+// @Success 200 {object} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/name/{activityId} [get]
+func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityNameById(c fiber.Ctx) error {
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    o, err := cr.clubService.FindGoldenPearlActivityNameById(iactivityId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// GetGoldenPearlActivityById
+//
+// @Tags Clubs
+// @Produce json
+// @Param         activityId   path        string                true   "activityId"
+// @Success 200 {object} clubs.GoldenPearlActivity
+// @Router /clubs/goldenpearl/activity/{activityId} [get]
+func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityById(c fiber.Ctx) error {
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    o, err := cr.clubService.FindGoldenPearlActivitiesByActivityId(iactivityId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// CreateGoldenPearlAboutUs
+//
+// @Tags Clubs
+// @Produce json
+// @Param request body dto.GoldenPearlAboutUsDto true "GoldenPearlAboutUsDto"
+// @Success 200
+// @Router /clubs/goldenpearl/about-us [post]
+func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    data := new(dto.GoldenPearlAboutUsDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    b, err := cr.clubService.ExistsGoldenPearlAboutUs()
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, "Already setup Golden Pearl - About Us previously")
+    }
+
+    var o clubs.GoldenPearlAboutUs
+    o.GoldenClubTitle = utils.NewNullString(data.GoldenClubTitle)
+    o.GoldenClubDesc = utils.NewNullString(data.GoldenClubDesc)
+    o.GoldenClubImage = utils.NewNullString(data.GoldenClubImage)
+    o.GoldenClubTnc = utils.NewNullString(data.GoldenClubTnc)
+    o.GoldenClubExtLink = utils.NewNullString(data.GoldenClubExtLink)
+
+    goldenClubId, err :=cr.clubService.SaveGoldenPearlAboutUs(o, user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message":      "Golden Pearl About Us created",
+        "golden_club_id": goldenClubId,
     })
 }
 
