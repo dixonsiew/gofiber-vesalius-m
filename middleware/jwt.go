@@ -4,10 +4,9 @@ import (
     "fmt"
     "strconv"
     "strings"
-    "vesaliusm/database"
     "vesaliusm/model"
-    adminUserService "vesaliusm/service/adminUser"
-    applicationuserService "vesaliusm/service/applicationUser"
+    "vesaliusm/service/adminUser"
+    "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
 
     jwtware "github.com/gofiber/contrib/v3/jwt"
@@ -16,8 +15,8 @@ import (
     "github.com/golang-jwt/jwt/v5"
 )
 
-var adminUserSvc *adminUserService.AdminUserService = adminUserService.NewAdminUserService(database.GetDb(), database.GetCtx())
-var applicationUserSvc *applicationuserService.ApplicationUserService = applicationuserService.NewApplicationUserService(database.GetDb(), database.GetCtx())
+var adminUserService *adminUser.AdminUserService = adminUser.AdminUserSvc
+var applicationUserService *applicationUser.ApplicationUserService = applicationUser.ApplicationUserSvc
 
 func JWTProtected(c fiber.Ctx) error {
     return jwtware.New(jwtware.Config{
@@ -73,7 +72,7 @@ func ValidateToken(c fiber.Ctx) (int64, *model.ApplicationUser, error) {
         return id, nil, err
     }
 
-    user, err := applicationUserSvc.FindByUserId(id, nil)
+    user, err := applicationUserService.FindByUserId(id, nil)
     if err != nil || user == nil {
         return id, user, err
     }
@@ -87,12 +86,44 @@ func ValidateAdminToken(c fiber.Ctx) (int64, *model.AdminUser, error) {
         return id, nil, err
     }
 
-    user, err := adminUserSvc.FindByAdminId(id)
+    user, err := adminUserService.FindByAdminId(id)
     if err != nil || user == nil {
         return id, user, err
     }
 
     return id, user, nil
+}
+
+func ValidateUser(c fiber.Ctx) error {
+    _, id, types, sessionId, err := DecodeToken(c)
+    if err != nil || (types != "1" && types != "0") {
+        return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+    }
+
+    switch types {
+    case "1":
+        user, err := applicationUserService.FindByUserId(id, nil)
+        if err != nil || user == nil {
+            return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+        }
+
+        if user.SessionId.String == "" {
+            return fiber.NewError(fiber.StatusUnauthorized, "The system has detected your account is no longer valid. Please sign in again.")
+        }
+
+        if sessionId != "" {
+            userSession, err := applicationUserService.FindByUserIdSessionId(user.UserId.Int64, sessionId)
+            if err != nil || userSession == nil {
+                return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
+            }
+        }
+
+        return c.Next()
+    case "0":
+        return c.Next()
+    }
+    
+    return nil
 }
 
 func ValidateAppUser(c fiber.Ctx) error {
@@ -101,7 +132,7 @@ func ValidateAppUser(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
 
-    user, err := applicationUserSvc.FindByUserId(id, nil)
+    user, err := applicationUserService.FindByUserId(id, nil)
     if err != nil || user == nil {
         return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
     }
@@ -111,7 +142,7 @@ func ValidateAppUser(c fiber.Ctx) error {
     }
 
     if sessionId != "" {
-        userSession, err := applicationUserSvc.FindByUserIdSessionId(user.UserId.Int64, sessionId)
+        userSession, err := applicationUserService.FindByUserIdSessionId(user.UserId.Int64, sessionId)
         if err != nil || userSession == nil {
             return fiber.NewError(fiber.StatusUnauthorized, "The system has detected you have signed in using another device. Please sign in again.")
         }

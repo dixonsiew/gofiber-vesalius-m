@@ -681,6 +681,518 @@ const docTemplate = `{
         },
         "/clubs/goldenpearl/about-us": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.GoldenPearlAboutUs"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/membership": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/testadmin": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/testuser": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/about-us": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsAboutUs"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsAboutUsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsAboutUsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/about-us/{kidsClubId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "kidsClubId",
+                        "name": "kidsClubId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LittleExplorersKidsAboutUsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsAboutUsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsActivityDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsActivityDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/attendees/:activityId/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/attendees/{activityId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/attendees/{activityId}/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/export/all": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -696,8 +1208,168 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/clubs.GoldenPearlAboutUs"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                            }
                         }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/name/{activityId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/participate": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsActvParticipationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsActvParticipationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/activity/{activityId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsActivity"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LittleExplorersKidsActivityDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsActivityDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -729,6 +1401,269 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/all/mobile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/webadmin": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/membership/{membershipId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "membershipId",
+                        "name": "membershipId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
+                        }
+                    }
+                }
+            }
+        },
+        "/clubs/littlekids/my-activity/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.LittleExplorersKidsMyActivity"
+                            }
+                        }
                     }
                 }
             }
@@ -1411,6 +2346,209 @@ const docTemplate = `{
                 }
             }
         },
+        "clubs.LittleExplorersKidsAboutUs": {
+            "type": "object",
+            "properties": {
+                "kidsClubDesc": {
+                    "type": "string"
+                },
+                "kidsClubImage": {
+                    "type": "string"
+                },
+                "kidsClubPartnerLink": {
+                    "type": "string"
+                },
+                "kidsClubTitle": {
+                    "type": "string"
+                },
+                "kidsClubTnc": {
+                    "type": "string"
+                },
+                "kids_club_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "clubs.LittleExplorersKidsActivity": {
+            "type": "object",
+            "properties": {
+                "activityAttendees": {
+                    "type": "integer"
+                },
+                "activityDisplayOrder": {
+                    "type": "string"
+                },
+                "activityEndDateTime": {
+                    "type": "string"
+                },
+                "activityEndDateTimeCalendar": {
+                    "type": "string"
+                },
+                "activityEndDateTimeExcel": {
+                    "type": "string"
+                },
+                "activityMaxParticipant": {
+                    "type": "integer"
+                },
+                "activitySeatsAvailable": {
+                    "type": "integer"
+                },
+                "activityStartDateTime": {
+                    "type": "string"
+                },
+                "activityStartDateTimeExcel": {
+                    "description": "Excel fields - not in DB, used for export",
+                    "type": "string"
+                },
+                "activityTnc": {
+                    "type": "string"
+                },
+                "kidsActivityCode": {
+                    "type": "string"
+                },
+                "kidsActivityDesc": {
+                    "type": "string"
+                },
+                "kidsActivityImage": {
+                    "type": "string"
+                },
+                "kidsActivityName": {
+                    "type": "string"
+                },
+                "kids_activity_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "clubs.LittleExplorersKidsMembership": {
+            "type": "object",
+            "properties": {
+                "activityJoinDate": {
+                    "description": "Fields used in some contexts (e.g., attendee export)",
+                    "type": "string"
+                },
+                "activityJoinDateExcel": {
+                    "description": "Excel-specific fields (not stored in DB)",
+                    "type": "string"
+                },
+                "guardianAddress1": {
+                    "type": "string"
+                },
+                "guardianAddress2": {
+                    "type": "string"
+                },
+                "guardianAddress3": {
+                    "type": "string"
+                },
+                "guardianCountryCode": {
+                    "type": "string"
+                },
+                "guardianDob": {
+                    "type": "string"
+                },
+                "guardianDobExcel": {
+                    "type": "string"
+                },
+                "guardianDocNumber": {
+                    "type": "string"
+                },
+                "guardianDocType": {
+                    "type": "string"
+                },
+                "guardianEmail": {
+                    "type": "string"
+                },
+                "guardianGender": {
+                    "type": "string"
+                },
+                "guardianHomeContact": {
+                    "type": "string"
+                },
+                "guardianMobileContact": {
+                    "type": "string"
+                },
+                "guardianName": {
+                    "type": "string"
+                },
+                "guardianNationality": {
+                    "type": "string"
+                },
+                "guardianPostCode": {
+                    "type": "string"
+                },
+                "guardianPrn": {
+                    "type": "string"
+                },
+                "guardianState": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "string"
+                },
+                "kidsDob": {
+                    "type": "string"
+                },
+                "kidsDobExcel": {
+                    "type": "string"
+                },
+                "kidsDocNumber": {
+                    "type": "string"
+                },
+                "kidsDocType": {
+                    "type": "string"
+                },
+                "kidsEmail": {
+                    "type": "string"
+                },
+                "kidsGender": {
+                    "type": "string"
+                },
+                "kidsMembershipID": {
+                    "type": "integer"
+                },
+                "kidsMembershipJoinDate": {
+                    "type": "string"
+                },
+                "kidsMembershipJoinDateExcel": {
+                    "type": "string"
+                },
+                "kidsMembershipNumber": {
+                    "type": "string"
+                },
+                "kidsName": {
+                    "type": "string"
+                },
+                "kidsNationality": {
+                    "type": "string"
+                },
+                "kidsPrn": {
+                    "type": "string"
+                },
+                "preferredLanguage": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
+                }
+            }
+        },
+        "clubs.LittleExplorersKidsMyActivity": {
+            "type": "object",
+            "properties": {
+                "activityDateTime": {
+                    "type": "string"
+                },
+                "kidsActivityName": {
+                    "type": "string"
+                },
+                "kidsMembershipNumber": {
+                    "type": "string"
+                },
+                "kidsName": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AdminPortalLogDto": {
             "type": "object",
             "required": [
@@ -1464,6 +2602,197 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.CheckPackageDto"
+                    }
+                }
+            }
+        },
+        "dto.GoldenPearlMembershipDto": {
+            "type": "object",
+            "required": [
+                "goldenDob",
+                "goldenDocNumber",
+                "goldenDocType",
+                "goldenGender",
+                "goldenName",
+                "goldenNationality",
+                "nokDob",
+                "nokDocNumber",
+                "nokDocType",
+                "nokEmail",
+                "nokGender",
+                "nokName",
+                "nokNationality",
+                "preferredLanguage",
+                "relationship"
+            ],
+            "properties": {
+                "goldenDob": {
+                    "type": "string"
+                },
+                "goldenDocNumber": {
+                    "type": "string"
+                },
+                "goldenDocType": {
+                    "type": "string"
+                },
+                "goldenEmail": {
+                    "type": "string"
+                },
+                "goldenGender": {
+                    "type": "string"
+                },
+                "goldenName": {
+                    "type": "string"
+                },
+                "goldenNationality": {
+                    "type": "string"
+                },
+                "nokAddress1": {
+                    "type": "string"
+                },
+                "nokAddress2": {
+                    "type": "string"
+                },
+                "nokAddress3": {
+                    "type": "string"
+                },
+                "nokCountryCode": {
+                    "type": "string"
+                },
+                "nokDob": {
+                    "type": "string"
+                },
+                "nokDocNumber": {
+                    "type": "string"
+                },
+                "nokDocType": {
+                    "type": "string"
+                },
+                "nokEmail": {
+                    "type": "string"
+                },
+                "nokGender": {
+                    "type": "string"
+                },
+                "nokHomeContact": {
+                    "type": "string"
+                },
+                "nokMobileContact": {
+                    "type": "string"
+                },
+                "nokName": {
+                    "type": "string"
+                },
+                "nokNationality": {
+                    "type": "string"
+                },
+                "nokPostCode": {
+                    "type": "string"
+                },
+                "nokState": {
+                    "type": "string"
+                },
+                "preferredLanguage": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.KidsActvParticipationDto": {
+            "type": "object",
+            "required": [
+                "activityDateTime",
+                "kidsActivityId",
+                "kidsMembershipId"
+            ],
+            "properties": {
+                "activityDateTime": {
+                    "type": "string"
+                },
+                "kidsActivityId": {
+                    "type": "integer"
+                },
+                "kidsMembershipId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.LittleExplorersKidsAboutUsDto": {
+            "type": "object",
+            "required": [
+                "kidsClubDesc",
+                "kidsClubTitle"
+            ],
+            "properties": {
+                "kidsClubDesc": {
+                    "type": "string"
+                },
+                "kidsClubImage": {
+                    "type": "string"
+                },
+                "kidsClubPartnerLink": {
+                    "type": "string"
+                },
+                "kidsClubTitle": {
+                    "type": "string"
+                },
+                "kidsClubTnc": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LittleExplorersKidsActivityDto": {
+            "type": "object",
+            "required": [
+                "activityDisplayOrder",
+                "activityMaxParticipant",
+                "activityStartDateTime",
+                "kidsActivityCode",
+                "kidsActivityDesc",
+                "kidsActivityName"
+            ],
+            "properties": {
+                "activityDisplayOrder": {
+                    "type": "string"
+                },
+                "activityEndDateTime": {
+                    "type": "string"
+                },
+                "activityMaxParticipant": {
+                    "type": "string"
+                },
+                "activityStartDateTime": {
+                    "type": "string"
+                },
+                "activityTnc": {
+                    "type": "string"
+                },
+                "kidsActivityCode": {
+                    "type": "string"
+                },
+                "kidsActivityDesc": {
+                    "type": "string"
+                },
+                "kidsActivityImage": {
+                    "type": "string"
+                },
+                "kidsActivityName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LittleExplorersKidsActvParticipationDto": {
+            "type": "object",
+            "required": [
+                "kidsActvParticipation"
+            ],
+            "properties": {
+                "kidsActvParticipation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.KidsActvParticipationDto"
                     }
                 }
             }
@@ -1698,6 +3027,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword2": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SearchKeyword3Dto": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                },
+                "keyword2": {
+                    "type": "string"
+                },
+                "keyword3": {
                     "type": "string"
                 }
             }
