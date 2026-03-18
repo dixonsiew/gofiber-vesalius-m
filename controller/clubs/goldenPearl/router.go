@@ -40,4 +40,5 @@ func (c *ClubsGoldenPearlController) registerRoutes(router fiber.Router) {
     api.Post("/activity/attendees/:activityId", c.SearchAllGoldenPearlAttendees)
     api.Get("/activity/name/:activityId", c.GetGoldenPearlActivityNameById)
     api.Post("/about-us", c.CreateGoldenPearlAboutUs)
+    api.Put("/about-us/:goldenPearlId", c.UpdateGoldenPearlAboutUs)
 }

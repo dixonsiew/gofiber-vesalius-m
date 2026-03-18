@@ -999,6 +999,55 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) erro
     })
 }
 
+// UpdateGoldenPearlAboutUs
+//
+// @Tags Clubs
+// @Produce json
+// @Param goldenPearlId path int true "goldenPearlId"
+// @Param request body dto.GoldenPearlAboutUsDto true "GoldenPearlAboutUsDto"
+// @Success 200
+// @Router /clubs/goldenpearl/about-us/{goldenPearlId} [put]
+func (cr *ClubsGoldenPearlController) UpdateGoldenPearlAboutUs(c fiber.Ctx) error {
+    goldenPearlId := c.Params("goldenPearlId")
+    igoldenPearlId, _ := strconv.ParseInt(goldenPearlId, 10, 64)
+
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    data := new(dto.GoldenPearlAboutUsDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    b, err := cr.clubService.ExistsGoldenPearlAboutUs()
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl - About us does not exist")
+    }
+
+    var o clubs.GoldenPearlAboutUs
+    o.GoldenClubId = utils.NewInt64(igoldenPearlId)
+    o.GoldenClubTitle = utils.NewNullString(data.GoldenClubTitle)
+    o.GoldenClubDesc = utils.NewNullString(data.GoldenClubDesc)
+    o.GoldenClubImage = utils.NewNullString(data.GoldenClubImage)
+    o.GoldenClubTnc = utils.NewNullString(data.GoldenClubTnc)
+    o.GoldenClubExtLink = utils.NewNullString(data.GoldenClubExtLink)
+
+    err = cr.clubService.UpdateGoldenPearlAboutUs(o, user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Golden Pearl About Us updated",
+    })
+}
+
 // GetGoldenPearlAboutUs
 //
 // @Tags Clubs
