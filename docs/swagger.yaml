@@ -324,6 +324,33 @@ definitions:
     required:
     - package
     type: object
+  dto.DynamicEmailMasterDto:
+    properties:
+      emailFor:
+        type: string
+      emailFunctionName:
+        type: string
+      emailModule:
+        type: string
+      emailRecipient:
+        type: string
+      emailSender:
+        type: string
+      emailSenderName:
+        type: string
+      emailSubject:
+        type: string
+      emailTemplate:
+        type: string
+    required:
+    - emailFor
+    - emailFunctionName
+    - emailModule
+    - emailSender
+    - emailSenderName
+    - emailSubject
+    - emailTemplate
+    type: object
   dto.GoldenActvParticipationDto:
     properties:
       activityDateTime:
@@ -754,6 +781,29 @@ definitions:
     required:
     - signInType
     - username
+    type: object
+  dto.NotificationSettingDto:
+    properties:
+      notificationCode:
+        type: string
+      notificationParam1:
+        type: integer
+      notificationParam2:
+        type: integer
+    required:
+    - notificationCode
+    - notificationParam1
+    - notificationParam2
+    type: object
+  dto.ParamSettingDto:
+    properties:
+      paramCode:
+        type: string
+      paramValue:
+        type: integer
+    required:
+    - paramCode
+    - paramValue
     type: object
   dto.PostChangePasswordDto:
     properties:
@@ -1237,6 +1287,44 @@ definitions:
       telCode:
         type: string
     type: object
+  model.CronjobHistory:
+    properties:
+      cronjobExpression:
+        type: string
+      cronjobExpressionDesc:
+        type: string
+      cronjobName:
+        type: string
+      cronjobNameDesc:
+        type: string
+      cronjobStatus:
+        type: string
+      endDate:
+        type: string
+      remarks:
+        type: string
+      startDate:
+        type: string
+    type: object
+  model.DynamicEmailMaster:
+    properties:
+      emailFor:
+        type: string
+      emailFunctionName:
+        type: string
+      emailModule:
+        type: string
+      emailRecipient:
+        type: string
+      emailSender:
+        type: string
+      emailSenderName:
+        type: string
+      emailSubject:
+        type: string
+      emailTemplate:
+        type: string
+    type: object
   model.GeneralNotification:
     properties:
       endDate:
@@ -1297,6 +1385,199 @@ definitions:
       nationality:
         type: string
     type: object
+  model.NotificationSetting:
+    properties:
+      notificationCode:
+        type: string
+      notificationDesc:
+        type: string
+      notificationParam1:
+        type: integer
+      notificationParam2:
+        type: integer
+    type: object
+  model.NovaDoctor:
+    properties:
+      allowAppointment:
+        type: string
+      consultantType:
+        type: string
+      displaySequence:
+        type: integer
+      doctor_id:
+        type: integer
+      doctorAppointment:
+        items:
+          $ref: '#/definitions/model.NovaDoctorAppointment'
+        type: array
+      doctorClinicHours:
+        items:
+          $ref: '#/definitions/model.NovaDoctorClinicHours'
+        type: array
+      doctorClinicLocation:
+        items:
+          $ref: '#/definitions/model.NovaDoctorClinicLocation'
+        type: array
+      doctorContact:
+        items:
+          $ref: '#/definitions/model.NovaDoctorContact'
+        type: array
+      doctorQualifications:
+        items:
+          $ref: '#/definitions/model.NovaDoctorQualifications'
+        type: array
+      doctorSpecialities:
+        items:
+          $ref: '#/definitions/model.NovaDoctorSpecialities'
+        type: array
+      doctorSpecialty:
+        items:
+          $ref: '#/definitions/model.NovaDoctorSpecialty'
+        type: array
+      doctorSpokenLanguage:
+        items:
+          $ref: '#/definitions/model.NovaDoctorSpokenLanguage'
+        type: array
+      gender:
+        type: string
+      image:
+        type: string
+      isForPackage:
+        type: string
+      mcr:
+        type: string
+      name:
+        type: string
+      nationality:
+        type: string
+      qualifications:
+        type: string
+      registrationNum:
+        type: string
+      resizeImage:
+        type: string
+      showMakeAppointmentButton:
+        type: string
+    type: object
+  model.NovaDoctorAppointment:
+    properties:
+      apptDayOfWeek:
+        type: string
+      apptEndTime:
+        type: string
+      apptMaxSlots:
+        type: integer
+      apptSessionType:
+        type: string
+      apptSlotType:
+        type: string
+      apptStartTime:
+        type: string
+      displaySequence:
+        type: integer
+      doctorApptSlotId:
+        type: integer
+      doctorId:
+        type: integer
+    type: object
+  model.NovaDoctorClinicHours:
+    properties:
+      byAppointmentOnly:
+        type: boolean
+      clinicHourId:
+        type: integer
+      dayEndTime:
+        type: string
+      dayOfTheWeek:
+        type: string
+      dayStartTime:
+        type: string
+      displaySequence:
+        type: integer
+      doctorId:
+        type: integer
+    type: object
+  model.NovaDoctorClinicLocation:
+    properties:
+      building:
+        type: string
+      clinicLocationId:
+        type: integer
+      doctorId:
+        type: integer
+      location:
+        type: string
+    type: object
+  model.NovaDoctorContact:
+    properties:
+      contactId:
+        type: integer
+      contactType:
+        type: string
+      contactValue:
+        type: string
+      displaySequence:
+        type: integer
+      doctorId:
+        type: integer
+    type: object
+  model.NovaDoctorQualifications:
+    properties:
+      displaySequence:
+        type: integer
+      doctorId:
+        type: integer
+      qualification:
+        type: string
+      qualificationId:
+        type: integer
+    type: object
+  model.NovaDoctorSpecialities:
+    properties:
+      displaySequence:
+        type: integer
+      doctorId:
+        type: integer
+      specialities:
+        type: string
+      specialitiesId:
+        type: integer
+      subspecialty:
+        type: string
+    type: object
+  model.NovaDoctorSpecialty:
+    properties:
+      doctorId:
+        type: integer
+      doctorSpecialtyId:
+        type: integer
+      primarySpecialty:
+        type: boolean
+      specialty:
+        $ref: '#/definitions/model.NovaSpecialty'
+      specialtyId:
+        type: integer
+    type: object
+  model.NovaDoctorSpokenLanguage:
+    properties:
+      displaySequence:
+        type: integer
+      doctorId:
+        type: integer
+      spokenLanguage:
+        type: string
+      spokenLanguageId:
+        type: integer
+    type: object
+  model.NovaSpecialty:
+    properties:
+      specialtyCode:
+        type: string
+      specialtyDesc:
+        type: string
+      specialtyId:
+        type: integer
+    type: object
   model.OnesignalNotification:
     properties:
       accountNo:
@@ -1324,6 +1605,68 @@ definitions:
       user_id:
         type: integer
       visitType:
+        type: string
+    type: object
+  model.ParamSetting:
+    properties:
+      paramCode:
+        type: string
+      paramDesc:
+        type: string
+      paramValue:
+        type: integer
+    type: object
+  model.StatisticAppointment:
+    properties:
+      month:
+        type: string
+      totalCancelled:
+        type: string
+      totalChanged:
+        type: string
+      totalConfirmed:
+        type: string
+      year:
+        type: string
+    type: object
+  model.StatisticMobileClubs:
+    properties:
+      month:
+        type: string
+      totalJoin:
+        type: string
+      year:
+        type: string
+    type: object
+  model.StatisticMobileFeedback:
+    properties:
+      month:
+        type: string
+      totalFeedbacks:
+        type: string
+      year:
+        type: string
+    type: object
+  model.StatisticMobilePackage:
+    properties:
+      expired:
+        type: string
+      month:
+        type: string
+      purchased:
+        type: string
+      redeemed:
+        type: string
+      year:
+        type: string
+    type: object
+  model.StatisticMobileRegistration:
+    properties:
+      month:
+        type: string
+      totalRegistrations:
+        type: string
+      year:
         type: string
     type: object
   userPackage.UserPackage:
@@ -3011,6 +3354,117 @@ paths:
       - BearerAuth: []
       tags:
       - Future Order
+  /guest/clubs/littlekids/about-us:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.LittleExplorersKidsAboutUs'
+      tags:
+      - Guest
+  /guest/notification/all/{playerId}:
+    get:
+      parameters:
+      - description: playerId
+        in: path
+        name: playerId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.OnesignalNotification'
+            type: array
+      tags:
+      - Guest
+  /guest/notification/seen/{notificationId}/{playerId}:
+    get:
+      parameters:
+      - description: notificationId
+        in: path
+        name: notificationId
+        required: true
+        type: string
+      - description: playerId
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/vesalius/getAllDoctorInformation/{branchId}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Guest
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Guest
   /login:
     post:
       parameters:
@@ -3353,6 +3807,154 @@ paths:
       - BearerAuth: []
       tags:
       - Logistic
+  /maintenance/cronjob-history/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CronjobHistory'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/cronjob-history/search/{cronjobName}:
+    post:
+      parameters:
+      - description: cronjobName
+        in: path
+        name: cronjobName
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CronjobHistory'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/dynamic-email-master/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DynamicEmailMaster'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/dynamic-email-master/search:
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DynamicEmailMaster'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/dynamic-email-master/update:
+    post:
+      parameters:
+      - description: DynamicEmailMasterDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DynamicEmailMasterDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/dynamic-email-master/view/{emailFunctionName}:
+    get:
+      parameters:
+      - description: emailFunctionName
+        in: path
+        name: emailFunctionName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DynamicEmailMaster'
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
   /maintenance/hospital-profile/all:
     get:
       parameters:
@@ -3411,7 +4013,7 @@ paths:
       parameters:
       - description: HospitalProfileDto
         in: body
-        name: data
+        name: request
         required: true
         schema:
           $ref: '#/definitions/dto.HospitalProfileDto'
@@ -3420,6 +4022,238 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/notification-setting/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NotificationSetting'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/notification-setting/search:
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NotificationSetting'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/notification-setting/update:
+    post:
+      parameters:
+      - description: NotificationSettingDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NotificationSettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/param-setting/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ParamSetting'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/param-setting/search:
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ParamSetting'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/param-setting/update:
+    post:
+      parameters:
+      - description: ParamSettingDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ParamSettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic-appointment/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticAppointment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic/mobile/clubs/goldenpearl:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticMobileClubs'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic/mobile/clubs/kids:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticMobileClubs'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic/mobile/feedback/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticMobileFeedback'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic/mobile/package/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticMobilePackage'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/statistic/mobile/registration/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.StatisticMobileRegistration'
+            type: array
       security:
       - BearerAuth: []
       tags:

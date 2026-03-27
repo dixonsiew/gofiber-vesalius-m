@@ -241,7 +241,7 @@ func (cr *MaintenanceController) SearchAllNotificationSettings(c fiber.Ctx) erro
 // @Produce json
 // @Security BearerAuth
 // @Param        request        body        dto.NotificationSettingDto  true  "NotificationSettingDto"
-// @Success 200 {object} fiber.Map
+// @Success 200
 // @Router /maintenance/notification-setting/update [post]
 func (cr *MaintenanceController) UpdateNotificationSetting(c fiber.Ctx) error {
     data := new(dto.NotificationSettingDto)

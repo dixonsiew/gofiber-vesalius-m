@@ -2667,6 +2667,180 @@ const docTemplate = `{
                 }
             }
         },
+        "/guest/clubs/littlekids/about-us": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsAboutUs"
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/notification/all/{playerId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "playerId",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.OnesignalNotification"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/notification/seen/{notificationId}/{playerId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "notificationId",
+                        "name": "notificationId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "playerId",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/vesalius/getAllDoctorInformation/{branchId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "produces": [
@@ -3238,6 +3412,252 @@ const docTemplate = `{
                 }
             }
         },
+        "/maintenance/cronjob-history/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CronjobHistory"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/cronjob-history/search/{cronjobName}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cronjobName",
+                        "name": "cronjobName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CronjobHistory"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/dynamic-email-master/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DynamicEmailMaster"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/dynamic-email-master/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DynamicEmailMaster"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/dynamic-email-master/update": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "description": "DynamicEmailMasterDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DynamicEmailMasterDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/maintenance/dynamic-email-master/view/{emailFunctionName}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "emailFunctionName",
+                        "name": "emailFunctionName",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DynamicEmailMaster"
+                        }
+                    }
+                }
+            }
+        },
         "/maintenance/hospital-profile/all": {
             "get": {
                 "security": [
@@ -3342,7 +3762,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "HospitalProfileDto",
-                        "name": "data",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -3353,6 +3773,400 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/maintenance/notification-setting/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NotificationSetting"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/notification-setting/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NotificationSetting"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/notification-setting/update": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "description": "NotificationSettingDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.NotificationSettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/maintenance/param-setting/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ParamSetting"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/param-setting/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ParamSetting"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/param-setting/update": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "description": "ParamSettingDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ParamSettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic-appointment/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticAppointment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic/mobile/clubs/goldenpearl": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticMobileClubs"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic/mobile/clubs/kids": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticMobileClubs"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic/mobile/feedback/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticMobileFeedback"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic/mobile/package/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticMobilePackage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/statistic/mobile/registration/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.StatisticMobileRegistration"
+                            }
+                        }
                     }
                 }
             }
@@ -4929,6 +5743,44 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DynamicEmailMasterDto": {
+            "type": "object",
+            "required": [
+                "emailFor",
+                "emailFunctionName",
+                "emailModule",
+                "emailSender",
+                "emailSenderName",
+                "emailSubject",
+                "emailTemplate"
+            ],
+            "properties": {
+                "emailFor": {
+                    "type": "string"
+                },
+                "emailFunctionName": {
+                    "type": "string"
+                },
+                "emailModule": {
+                    "type": "string"
+                },
+                "emailRecipient": {
+                    "type": "string"
+                },
+                "emailSender": {
+                    "type": "string"
+                },
+                "emailSenderName": {
+                    "type": "string"
+                },
+                "emailSubject": {
+                    "type": "string"
+                },
+                "emailTemplate": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.GoldenActvParticipationDto": {
             "type": "object",
             "required": [
@@ -5546,6 +6398,40 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
+        "dto.NotificationSettingDto": {
+            "type": "object",
+            "required": [
+                "notificationCode",
+                "notificationParam1",
+                "notificationParam2"
+            ],
+            "properties": {
+                "notificationCode": {
+                    "type": "string"
+                },
+                "notificationParam1": {
+                    "type": "integer"
+                },
+                "notificationParam2": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ParamSettingDto": {
+            "type": "object",
+            "required": [
+                "paramCode",
+                "paramValue"
+            ],
+            "properties": {
+                "paramCode": {
+                    "type": "string"
+                },
+                "paramValue": {
+                    "type": "integer"
                 }
             }
         },
@@ -6277,6 +7163,64 @@ const docTemplate = `{
                 }
             }
         },
+        "model.CronjobHistory": {
+            "type": "object",
+            "properties": {
+                "cronjobExpression": {
+                    "type": "string"
+                },
+                "cronjobExpressionDesc": {
+                    "type": "string"
+                },
+                "cronjobName": {
+                    "type": "string"
+                },
+                "cronjobNameDesc": {
+                    "type": "string"
+                },
+                "cronjobStatus": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "remarks": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.DynamicEmailMaster": {
+            "type": "object",
+            "properties": {
+                "emailFor": {
+                    "type": "string"
+                },
+                "emailFunctionName": {
+                    "type": "string"
+                },
+                "emailModule": {
+                    "type": "string"
+                },
+                "emailRecipient": {
+                    "type": "string"
+                },
+                "emailSender": {
+                    "type": "string"
+                },
+                "emailSenderName": {
+                    "type": "string"
+                },
+                "emailSubject": {
+                    "type": "string"
+                },
+                "emailTemplate": {
+                    "type": "string"
+                }
+            }
+        },
         "model.GeneralNotification": {
             "type": "object",
             "properties": {
@@ -6369,6 +7313,301 @@ const docTemplate = `{
                 }
             }
         },
+        "model.NotificationSetting": {
+            "type": "object",
+            "properties": {
+                "notificationCode": {
+                    "type": "string"
+                },
+                "notificationDesc": {
+                    "type": "string"
+                },
+                "notificationParam1": {
+                    "type": "integer"
+                },
+                "notificationParam2": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctor": {
+            "type": "object",
+            "properties": {
+                "allowAppointment": {
+                    "type": "string"
+                },
+                "consultantType": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorAppointment": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorAppointment"
+                    }
+                },
+                "doctorClinicHours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorClinicHours"
+                    }
+                },
+                "doctorClinicLocation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorClinicLocation"
+                    }
+                },
+                "doctorContact": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorContact"
+                    }
+                },
+                "doctorQualifications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorQualifications"
+                    }
+                },
+                "doctorSpecialities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorSpecialities"
+                    }
+                },
+                "doctorSpecialty": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorSpecialty"
+                    }
+                },
+                "doctorSpokenLanguage": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorSpokenLanguage"
+                    }
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "isForPackage": {
+                    "type": "string"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "qualifications": {
+                    "type": "string"
+                },
+                "registrationNum": {
+                    "type": "string"
+                },
+                "resizeImage": {
+                    "type": "string"
+                },
+                "showMakeAppointmentButton": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.NovaDoctorAppointment": {
+            "type": "object",
+            "properties": {
+                "apptDayOfWeek": {
+                    "type": "string"
+                },
+                "apptEndTime": {
+                    "type": "string"
+                },
+                "apptMaxSlots": {
+                    "type": "integer"
+                },
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "apptSlotType": {
+                    "type": "string"
+                },
+                "apptStartTime": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorApptSlotId": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctorClinicHours": {
+            "type": "object",
+            "properties": {
+                "byAppointmentOnly": {
+                    "type": "boolean"
+                },
+                "clinicHourId": {
+                    "type": "integer"
+                },
+                "dayEndTime": {
+                    "type": "string"
+                },
+                "dayOfTheWeek": {
+                    "type": "string"
+                },
+                "dayStartTime": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctorClinicLocation": {
+            "type": "object",
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "clinicLocationId": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.NovaDoctorContact": {
+            "type": "object",
+            "properties": {
+                "contactId": {
+                    "type": "integer"
+                },
+                "contactType": {
+                    "type": "string"
+                },
+                "contactValue": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctorQualifications": {
+            "type": "object",
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                },
+                "qualification": {
+                    "type": "string"
+                },
+                "qualificationId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctorSpecialities": {
+            "type": "object",
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                },
+                "specialities": {
+                    "type": "string"
+                },
+                "specialitiesId": {
+                    "type": "integer"
+                },
+                "subspecialty": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.NovaDoctorSpecialty": {
+            "type": "object",
+            "properties": {
+                "doctorId": {
+                    "type": "integer"
+                },
+                "doctorSpecialtyId": {
+                    "type": "integer"
+                },
+                "primarySpecialty": {
+                    "type": "boolean"
+                },
+                "specialty": {
+                    "$ref": "#/definitions/model.NovaSpecialty"
+                },
+                "specialtyId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaDoctorSpokenLanguage": {
+            "type": "object",
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorId": {
+                    "type": "integer"
+                },
+                "spokenLanguage": {
+                    "type": "string"
+                },
+                "spokenLanguageId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.NovaSpecialty": {
+            "type": "object",
+            "properties": {
+                "specialtyCode": {
+                    "type": "string"
+                },
+                "specialtyDesc": {
+                    "type": "string"
+                },
+                "specialtyId": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.OnesignalNotification": {
             "type": "object",
             "properties": {
@@ -6409,6 +7648,102 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "visitType": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ParamSetting": {
+            "type": "object",
+            "properties": {
+                "paramCode": {
+                    "type": "string"
+                },
+                "paramDesc": {
+                    "type": "string"
+                },
+                "paramValue": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.StatisticAppointment": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "string"
+                },
+                "totalCancelled": {
+                    "type": "string"
+                },
+                "totalChanged": {
+                    "type": "string"
+                },
+                "totalConfirmed": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.StatisticMobileClubs": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "string"
+                },
+                "totalJoin": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.StatisticMobileFeedback": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "string"
+                },
+                "totalFeedbacks": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.StatisticMobilePackage": {
+            "type": "object",
+            "properties": {
+                "expired": {
+                    "type": "string"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "purchased": {
+                    "type": "string"
+                },
+                "redeemed": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.StatisticMobileRegistration": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "string"
+                },
+                "totalRegistrations": {
+                    "type": "string"
+                },
+                "year": {
                     "type": "string"
                 }
             }
