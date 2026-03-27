@@ -14,7 +14,7 @@ func SetupRoutes(router fiber.Router) {
 func (c *UserNotificationController) registerRoutes(router fiber.Router) {
     api := router.Group("/notification")
     
-    api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
+    api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/unseen/count", c.GetUnseenNotificationCount)
     api.Get("/all", c.GetNotificationList)
     api.Get("/:notificationId", c.GetNotificationById)

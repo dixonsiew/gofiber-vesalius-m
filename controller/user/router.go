@@ -18,7 +18,7 @@ func (c *UserController) registerRoutes(router fiber.Router) {
     api.Post("/verify-email", c.VerifyUserEmail)
     api.Post("/verify-smstac", c.VerifyUserSmsTac)
     
-    api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
+    api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/all", c.GetAllUsers)
     api.Get("/notification/unseen/count", c.GetOldAppUnseenNotificationCount)
     api.Get("/notification/list", c.GetOldAppNotificationLists)

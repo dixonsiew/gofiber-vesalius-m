@@ -35,7 +35,7 @@ func NewLogisticController() *LogisticController {
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LogisticSetupDto true "LogisticSetupDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/setup [post]
 func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 	data := new(dto.LogisticSetupDto)
@@ -63,7 +63,7 @@ func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 
 	result := fiber.Map{"message": "Logistic Arrangement Setup created"}
 	if setup != nil {
-		result["logisticSetupId"] = setup.LogisticSetupID.Int64
+		result["logisticSetupId"] = setup.LogisticSetupId.Int64
 	}
 
 	return c.JSON(result)
@@ -76,7 +76,7 @@ func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 // @Security BearerAuth
 // @Param logisticSetupId path string true "LogisticSetupId"
 // @Param request body dto.LogisticSetupDto true "LogisticSetupDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/setup/{logisticSetupId} [put]
 func (cr *LogisticController) UpdateLogisticSetup(c fiber.Ctx) error {
 	setupID, err := strconv.ParseInt(c.Params("logisticSetupId"), 10, 64)
@@ -131,7 +131,7 @@ func (cr *LogisticController) GetLogisticSetup(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LogisticSlotsDto true "LogisticSlotsDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/slot [post]
 func (cr *LogisticController) CreateLogisticSlot(c fiber.Ctx) error {
 	data := new(dto.LogisticSlotsDto)
@@ -182,7 +182,7 @@ func (cr *LogisticController) GetAllAppLogisticSlots(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/slot/all [get]
 func (cr *LogisticController) GetAllLogisticSlots(c fiber.Ctx) error {
 	lx, err := cr.logisticService.FindAllSlots()
@@ -199,7 +199,7 @@ func (cr *LogisticController) GetAllLogisticSlots(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LogisticRequestDto true "LogisticRequestDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/request [post]
 func (cr *LogisticController) CreateLogisticRequest(c fiber.Ctx) error {
 	data := new(dto.LogisticRequestDto)
@@ -371,7 +371,7 @@ func (cr *LogisticController) GetLogisticRequestByID(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LogisticRequestStatusDto true "LogisticRequestStatusDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/request/status [post]
 func (cr *LogisticController) UpdateAppLogisticRequestStatus(c fiber.Ctx) error {
 	data := new(dto.LogisticRequestStatusDto)
@@ -412,7 +412,7 @@ func (cr *LogisticController) UpdateAppLogisticRequestStatus(c fiber.Ctx) error 
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LogisticRequestStatusDto true "LogisticRequestStatusDto"
-// @Success 200 {object} fiber.Map
+// @Success 200 {object} map[string]interface{}
 // @Router /logistic/request/status/webadmin [post]
 func (cr *LogisticController) UpdateLogisticRequestStatus(c fiber.Ctx) error {
 	data := new(dto.LogisticRequestStatusDto)
@@ -545,7 +545,7 @@ func (cr *LogisticController) sendLogisticExportFile(c fiber.Ctx, list []logisti
 			row.CompanionDob.String,
 			row.CompanionDocType.String,
 			row.CompanionDocNumber.String,
-			row.RelationshipRequester.String,
+			row.RelationshipToRequester.String,
 			row.FlightAirlineName.String,
 			row.FlightNumber.String,
 			row.FlightArrivalDate.String,
