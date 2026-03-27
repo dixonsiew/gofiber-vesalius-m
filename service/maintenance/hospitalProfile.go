@@ -117,7 +117,7 @@ func (s *MaintenanceService) FindHospitalProfilesByKeyword(keyword string, offse
     return list, nil
 }
 
-func (s *MaintenanceService) UpdateHospitalProfileByDescName(data dto.HospitalProfileDto) error {
+func (s *MaintenanceService) UpdateHospitalProfileByDescName(data *dto.HospitalProfileDto) error {
     query := `UPDATE HOSPITAL_PROFILE SET PROFILE_VALUE = :profileVal WHERE PROFILE_DESC = :profileDesc`
     _, err := s.db.ExecContext(s.ctx, query, 
         sql.Named("profileVal", data.ProfileValue),

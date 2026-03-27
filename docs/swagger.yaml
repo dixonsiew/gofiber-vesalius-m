@@ -455,6 +455,16 @@ definitions:
     - preferredLanguage
     - relationship
     type: object
+  dto.HospitalProfileDto:
+    properties:
+      profileDesc:
+        type: string
+      profileValue:
+        type: string
+    required:
+    - profileDesc
+    - profileValue
+    type: object
   dto.KidsActvParticipationDto:
     properties:
       activityDateTime:
@@ -609,6 +619,119 @@ definitions:
     required:
     - password
     - username
+    type: object
+  dto.LogisticRequestDto:
+    properties:
+      companionDob:
+        type: string
+      companionDocNumber:
+        type: string
+      companionDocType:
+        type: string
+      companionName:
+        type: string
+      dateCreate:
+        type: string
+      dateUpdate:
+        type: string
+      flightAirlineName:
+        type: string
+      flightArrivalDate:
+        type: string
+      flightArrivalTime:
+        type: string
+      flightNumber:
+        type: string
+      primaryDoctor:
+        type: string
+      relationshipToRequester:
+        type: string
+      requestedPickupDate:
+        type: string
+      requestedPickupTime:
+        type: string
+      requesterDob:
+        type: string
+      requesterDocNumber:
+        type: string
+      requesterDocType:
+        type: string
+      requesterEmail:
+        type: string
+      requesterName:
+        type: string
+      requesterNationality:
+        type: string
+      requesterPrn:
+        type: string
+      visitWithCompanion:
+        type: string
+    required:
+    - flightAirlineName
+    - flightArrivalDate
+    - flightArrivalTime
+    - flightNumber
+    - primaryDoctor
+    - requestedPickupDate
+    - requestedPickupTime
+    - requesterDocNumber
+    - requesterDocType
+    - requesterEmail
+    - requesterName
+    - requesterNationality
+    - visitWithCompanion
+    type: object
+  dto.LogisticRequestStatusDto:
+    properties:
+      requestNumber:
+        type: string
+      status:
+        type: string
+    required:
+    - requestNumber
+    - status
+    type: object
+  dto.LogisticSetupDto:
+    properties:
+      logisticSetupValue:
+        type: string
+    required:
+    - logisticSetupValue
+    type: object
+  dto.LogisticSlotDto:
+    properties:
+      dayOfWeek:
+        type: string
+      displaySequence:
+        type: integer
+      maxSlots:
+        type: integer
+      pickUpTime:
+        type: string
+    required:
+    - dayOfWeek
+    - maxSlots
+    - pickUpTime
+    type: object
+  dto.LogisticSlotMobileDto:
+    properties:
+      flightArrivalDate:
+        type: string
+      flightArrivalTime:
+        type: string
+      withCompanion:
+        type: boolean
+    required:
+    - flightArrivalDate
+    - flightArrivalTime
+    - withCompanion
+    type: object
+  dto.LogisticSlotsDto:
+    properties:
+      logisticSlots:
+        items:
+          $ref: '#/definitions/dto.LogisticSlotDto'
+        type: array
     type: object
   dto.NewLoginDto:
     properties:
@@ -777,6 +900,107 @@ definitions:
       planType:
         type: string
       prn:
+        type: string
+    type: object
+  logistic.LogisticRequest:
+    properties:
+      adminDateUpdate:
+        type: string
+      adminDateUpdateExcel:
+        type: string
+      adminUpdate:
+        type: string
+      companionDob:
+        type: string
+      companionDocNumber:
+        type: string
+      companionDocType:
+        type: string
+      companionName:
+        type: string
+      dateCreate:
+        type: string
+      dateCreateExcel:
+        type: string
+      displayCancelBtn:
+        type: boolean
+      flightAirlineName:
+        type: string
+      flightArrivalDate:
+        type: string
+      flightArrivalDateExcel:
+        type: string
+      flightArrivalTime:
+        type: string
+      flightNumber:
+        type: string
+      logistic_request_id:
+        type: integer
+      logisticRequestNumber:
+        type: string
+      logisticRequestStatus:
+        type: string
+      primaryDoctor:
+        type: string
+      primaryDoctorName:
+        type: string
+      relationshipToRequester:
+        type: string
+      requestedPickupDate:
+        type: string
+      requestedPickupDateExcel:
+        type: string
+      requestedPickupDay:
+        type: string
+      requestedPickupTime:
+        type: string
+      requesterDob:
+        type: string
+      requesterDocNumber:
+        type: string
+      requesterDocType:
+        type: string
+      requesterEmail:
+        type: string
+      requesterName:
+        type: string
+      requesterNationality:
+        type: string
+      requesterPrn:
+        type: string
+      userDateUpdate:
+        type: string
+      userDateUpdateExcel:
+        type: string
+      userUpdate:
+        type: string
+      visitWithCompanion:
+        type: string
+    type: object
+  logistic.LogisticSetup:
+    properties:
+      logistic_setup_id:
+        type: string
+      logisticSetupCode:
+        type: string
+      logisticSetupValue:
+        type: string
+    type: object
+  logistic.LogisticSlot:
+    properties:
+      availableSlots:
+        type: integer
+      dayOfWeek:
+        type: string
+      displaySequence:
+        type: integer
+      logistic_slot_id:
+        type: integer
+      maxSlots:
+        type: integer
+      pickUpDate:
+        type: string
+      pickUpTime:
         type: string
     type: object
   model.AdminAuditLog:
@@ -1038,6 +1262,13 @@ definitions:
       targetNationality:
         type: string
       targetState:
+        type: string
+    type: object
+  model.HospitalProfile:
+    properties:
+      profileDesc:
+        type: string
+      profileValue:
         type: string
     type: object
   model.MobileUserAuditLog:
@@ -2812,6 +3043,387 @@ paths:
           description: OK
       tags:
       - Auth
+  /logistic/request:
+    post:
+      parameters:
+      - description: LogisticRequestDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/{requestId}:
+    get:
+      parameters:
+      - description: RequestId
+        in: path
+        name: requestId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/logistic.LogisticRequest'
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticRequest'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticRequest'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/all/mobile:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticRequest'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticRequest'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/export/search:
+    post:
+      parameters:
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticRequest'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/status:
+    post:
+      parameters:
+      - description: LogisticRequestStatusDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticRequestStatusDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/request/status/webadmin:
+    post:
+      parameters:
+      - description: LogisticRequestStatusDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticRequestStatusDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/setup:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/logistic.LogisticSetup'
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+    post:
+      parameters:
+      - description: LogisticSetupDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticSetupDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/setup/{logisticSetupId}:
+    put:
+      parameters:
+      - description: LogisticSetupId
+        in: path
+        name: logisticSetupId
+        required: true
+        type: string
+      - description: LogisticSetupDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticSetupDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/slot:
+    post:
+      parameters:
+      - description: LogisticSlotsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticSlotsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/slot/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /logistic/slot/all/mobile:
+    post:
+      parameters:
+      - description: LogisticSlotMobileDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LogisticSlotMobileDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/logistic.LogisticSlot'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Logistic
+  /maintenance/hospital-profile/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.HospitalProfile'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/hospital-profile/search:
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.HospitalProfile'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/hospital-profile/update:
+    post:
+      parameters:
+      - description: HospitalProfileDto
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.HospitalProfileDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
   /my-family:
     get:
       parameters:

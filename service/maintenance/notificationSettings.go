@@ -116,7 +116,7 @@ func (s *MaintenanceService) FindNotificationSettingsByKeyword(keyword string, o
     return list, nil
 }
 
-func (s *MaintenanceService) UpdateNotificationSettingByNotificationCode(data dto.NotificationSettingDto) error {
+func (s *MaintenanceService) UpdateNotificationSettingByNotificationCode(data *dto.NotificationSettingDto) error {
     query := `UPDATE NOTIFICATION_SETTINGS SET NOTIFICATION_PARAM_1 = :p1, NOTIFICATION_PARAM_2 = :p2 WHERE NOTIFICATION_CODE = :p3`
     _, err := s.db.ExecContext(s.ctx, query, data.NotificationParam1, data.NotificationParam2, data.NotificationCode)
     if err != nil {

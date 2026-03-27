@@ -56,7 +56,7 @@ func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Already setup Logistic Arrangement previously")
 	}
 
-	setup, err := cr.logisticService.CreateSetup(*data, admin.AdminId.Int64)
+	setup, err := cr.logisticService.CreateSetup(data, admin.AdminId.Int64)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (cr *LogisticController) UpdateLogisticSetup(c fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Logistic Arrangement Setup does not exist")
 	}
 
-	err = cr.logisticService.UpdateSetup(setupID, *data, admin.AdminId.Int64)
+	err = cr.logisticService.UpdateSetup(setupID, data, admin.AdminId.Int64)
 	if err != nil {
 		return err
 	}
@@ -144,7 +144,7 @@ func (cr *LogisticController) CreateLogisticSlot(c fiber.Ctx) error {
 		return err
 	}
 
-	err = cr.logisticService.ReplaceSlots(*data, admin.AdminId.Int64)
+	err = cr.logisticService.ReplaceSlots(data, admin.AdminId.Int64)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (cr *LogisticController) GetAllAppLogisticSlots(c fiber.Ctx) error {
 		return err
 	}
 
-	lx, err := cr.logisticService.FindAppSlots(*data)
+	lx, err := cr.logisticService.FindAppSlots(data)
 	if err != nil {
 		return err
 	}
@@ -213,7 +213,7 @@ func (cr *LogisticController) CreateLogisticRequest(c fiber.Ctx) error {
 		return err
 	}
 
-	request, err := cr.logisticService.CreateRequest(*data)
+	request, err := cr.logisticService.CreateRequest(data)
 	if err != nil {
 		return err
 	}

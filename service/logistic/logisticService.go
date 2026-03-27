@@ -46,7 +46,7 @@ func (s *LogisticService) ExistsSetup() (bool, error) {
 	return count == 1, nil
 }
 
-func (s *LogisticService) CreateSetup(data dto.LogisticSetupDto, adminID int64) (*logisticModel.LogisticSetup, error) {
+func (s *LogisticService) CreateSetup(data *dto.LogisticSetupDto, adminID int64) (*logisticModel.LogisticSetup, error) {
 	tx, err := s.db.BeginTxx(s.ctx, nil)
 	if err != nil {
 		utils.LogError(err)
@@ -81,7 +81,7 @@ func (s *LogisticService) CreateSetup(data dto.LogisticSetupDto, adminID int64) 
 	return s.FindSetup()
 }
 
-func (s *LogisticService) UpdateSetup(setupID int64, data dto.LogisticSetupDto, adminID int64) error {
+func (s *LogisticService) UpdateSetup(setupID int64, data *dto.LogisticSetupDto, adminID int64) error {
 	_, err := s.db.ExecContext(s.ctx, `
 		UPDATE LOGISTIC_ARRANGEMENT_SETUP SET
 			LOGISTIC_SETUP_VALUE = :setupValue,
@@ -122,7 +122,7 @@ func (s *LogisticService) FindSetup() (*logisticModel.LogisticSetup, error) {
 	return &setup, nil
 }
 
-func (s *LogisticService) ReplaceSlots(data dto.LogisticSlotsDto, adminID int64) error {
+func (s *LogisticService) ReplaceSlots(data *dto.LogisticSlotsDto, adminID int64) error {
 	tx, err := s.db.BeginTxx(s.ctx, nil)
 	if err != nil {
 		utils.LogError(err)
@@ -169,7 +169,7 @@ func (s *LogisticService) ReplaceSlots(data dto.LogisticSlotsDto, adminID int64)
 	return err
 }
 
-func (s *LogisticService) FindAppSlots(data dto.LogisticSlotMobileDto) ([]logisticModel.LogisticSlot, error) {
+func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logisticModel.LogisticSlot, error) {
 	query := `
 		SELECT
 			DAY_OF_WEEK,
@@ -257,7 +257,7 @@ func (s *LogisticService) FindAppSlots(data dto.LogisticSlotMobileDto) ([]logist
 	if data.WithCompanion {
 		filtered := make([]logisticModel.LogisticSlot, 0, len(slots))
 		for _, slot := range slots {
-			if slot.AvailableSlots.Int64 <= 1 {
+			if slot.AvailableSlots.Int32 <= 1 {
 				continue
 			}
 			filtered = append(filtered, slot)
@@ -300,7 +300,7 @@ func (s *LogisticService) FindAllSlots() ([]logisticModel.LogisticSlot, error) {
 	return slots, err
 }
 
-func (s *LogisticService) CreateRequest(data dto.LogisticRequestDto) (*logisticModel.LogisticRequest, error) {
+func (s *LogisticService) CreateRequest(data *dto.LogisticRequestDto) (*logisticModel.LogisticRequest, error) {
 	requestDate, err := time.Parse("02/01/2006", data.RequestedPickupDate)
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Wrong date format")
@@ -312,28 +312,28 @@ func (s *LogisticService) CreateRequest(data dto.LogisticRequestDto) (*logisticM
 	}
 
 	request := &logisticModel.LogisticRequest{
-		LogisticRequestNumber: null.NewString(requestNumber, true),
-		RequesterPrn:          utils.NewNullString(data.RequesterPrn),
-		RequesterName:         utils.NewNullString(data.RequesterName),
-		RequesterDob:          utils.NewNullString(data.RequesterDob),
-		RequesterDocType:      utils.NewNullString(data.RequesterDocType),
-		RequesterDocNumber:    utils.NewNullString(data.RequesterDocNumber),
-		RequesterNationality:  utils.NewNullString(data.RequesterNationality),
-		RequesterEmail:        utils.NewNullString(data.RequesterEmail),
-		PrimaryDoctor:         utils.NewNullString(data.PrimaryDoctor),
-		VisitWithCompanion:    utils.NewNullString(data.VisitWithCompanion),
-		CompanionName:         utils.NewNullString(data.CompanionName),
-		CompanionDob:          utils.NewNullString(data.CompanionDob),
-		CompanionDocType:      utils.NewNullString(data.CompanionDocType),
-		CompanionDocNumber:    utils.NewNullString(data.CompanionDocNumber),
-		RelationshipRequester: utils.NewNullString(data.RelationshipToRequester),
-		FlightAirlineName:     utils.NewNullString(data.FlightAirlineName),
-		FlightNumber:          utils.NewNullString(data.FlightNumber),
-		FlightArrivalDate:     utils.NewNullString(data.FlightArrivalDate),
-		FlightArrivalTime:     utils.NewNullString(data.FlightArrivalTime),
-		RequestedPickupDate:   utils.NewNullString(data.RequestedPickupDate),
-		RequestedPickupTime:   utils.NewNullString(data.RequestedPickupTime),
-		RequestedPickupDay:    utils.NewNullString(requestDate.Weekday().String()),
+		LogisticRequestNumber:   null.NewString(requestNumber, true),
+		RequesterPrn:            utils.NewNullString(data.RequesterPrn),
+		RequesterName:           utils.NewNullString(data.RequesterName),
+		RequesterDob:            utils.NewNullString(data.RequesterDob),
+		RequesterDocType:        utils.NewNullString(data.RequesterDocType),
+		RequesterDocNumber:      utils.NewNullString(data.RequesterDocNumber),
+		RequesterNationality:    utils.NewNullString(data.RequesterNationality),
+		RequesterEmail:          utils.NewNullString(data.RequesterEmail),
+		PrimaryDoctor:           utils.NewNullString(data.PrimaryDoctor),
+		VisitWithCompanion:      utils.NewNullString(data.VisitWithCompanion),
+		CompanionName:           utils.NewNullString(data.CompanionName),
+		CompanionDob:            utils.NewNullString(data.CompanionDob),
+		CompanionDocType:        utils.NewNullString(data.CompanionDocType),
+		CompanionDocNumber:      utils.NewNullString(data.CompanionDocNumber),
+		RelationshipToRequester: utils.NewNullString(data.RelationshipToRequester),
+		FlightAirlineName:       utils.NewNullString(data.FlightAirlineName),
+		FlightNumber:            utils.NewNullString(data.FlightNumber),
+		FlightArrivalDate:       utils.NewNullString(data.FlightArrivalDate),
+		FlightArrivalTime:       utils.NewNullString(data.FlightArrivalTime),
+		RequestedPickupDate:     utils.NewNullString(data.RequestedPickupDate),
+		RequestedPickupTime:     utils.NewNullString(data.RequestedPickupTime),
+		RequestedPickupDay:      utils.NewNullString(requestDate.Weekday().String()),
 	}
 
 	_, err = s.db.ExecContext(s.ctx, `
@@ -398,7 +398,7 @@ func (s *LogisticService) CreateRequest(data dto.LogisticRequestDto) (*logisticM
 		sql.Named("companionDob", request.CompanionDob.String),
 		sql.Named("companionDocType", request.CompanionDocType.String),
 		sql.Named("companionDocNumber", request.CompanionDocNumber.String),
-		sql.Named("relationshipToRequester", request.RelationshipRequester.String),
+		sql.Named("relationshipToRequester", request.RelationshipToRequester.String),
 		sql.Named("flightAirlineName", request.FlightAirlineName.String),
 		sql.Named("flightNumber", request.FlightNumber.String),
 		sql.Named("flightArrivalDate", request.FlightArrivalDate.String),

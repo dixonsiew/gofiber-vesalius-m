@@ -130,7 +130,7 @@ func (s *MaintenanceService) ViewDynamicEmailSettingByFunctionName(functionName 
     return &o, err
 }
 
-func (s *MaintenanceService) UpdateDynamicEmailSettingByFunctionName(data dto.DynamicEmailMasterDto) error {
+func (s *MaintenanceService) UpdateDynamicEmailSettingByFunctionName(data *dto.DynamicEmailMasterDto) error {
     query := `
         UPDATE EMAIL_MASTER SET 
           EMAIL_MODULE = :emmod,

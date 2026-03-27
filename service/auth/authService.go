@@ -22,7 +22,7 @@ func NewAuthService() *AuthService {
     }
 }
 
-func (s *AuthService) AuthenticateUserV2(data dto.NewLoginDto) (*model.ApplicationUser, error) {
+func (s *AuthService) AuthenticateUserV2(data *dto.NewLoginDto) (*model.ApplicationUser, error) {
     valid := false
     user, err := s.applicationUserService.FindByUsername(data.Username, nil)
     if err != nil {
@@ -73,7 +73,7 @@ func (s *AuthService) AuthenticateUserV2(data dto.NewLoginDto) (*model.Applicati
     return user, nil
 }
 
-func (s *AuthService) AuthenticateUser(data dto.LoginDto) (*model.ApplicationUser, error) {
+func (s *AuthService) AuthenticateUser(data *dto.LoginDto) (*model.ApplicationUser, error) {
     valid := false
     user, err := s.applicationUserService.FindByUsername(data.Username, nil)
     if err != nil {

@@ -79,6 +79,10 @@ func (o *LogisticRequest) Set() {
 	}
 }
 
+func (o *LogisticRequest) SetApp() {
+	o.Set()
+}
+
 func (o *LogisticRequest) SetWebAdmin() {
 	if !o.RequesterPrn.Valid {
 		o.RequesterPrn = utils.NewNullString("-")
@@ -106,5 +110,17 @@ func (o *LogisticRequest) SetWebAdmin() {
 
 	if !o.AdminDateUpdate.Valid {
 		o.AdminDateUpdate = utils.NewNullString("-")
+	}
+}
+
+func (o *LogisticRequest) ToMap() utils.Map {
+	return utils.Map{
+		"logisticRequestNumber": o.LogisticRequestNumber.String,
+		"requesterPrn":          o.RequesterPrn.String,
+		"requesterName":         o.RequesterName.String,
+		"visitWithCompanion":    o.VisitWithCompanion.String,
+		"companionName":         o.CompanionName.String,
+		"requestedPickupDate":   o.RequestedPickupDate.String,
+		"requestedPickupTime":   o.RequestedPickupTime.String,
 	}
 }

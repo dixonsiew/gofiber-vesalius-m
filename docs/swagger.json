@@ -2712,6 +2712,644 @@
                 }
             }
         },
+        "/logistic/request": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticRequestDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticRequestDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticRequest"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/all/mobile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/status": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticRequestStatusDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticRequestStatusDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/status/webadmin": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticRequestStatusDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticRequestStatusDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/request/{requestId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "RequestId",
+                        "name": "requestId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/logistic.LogisticRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/setup": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/logistic.LogisticSetup"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticSetupDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticSetupDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/setup/{logisticSetupId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LogisticSetupId",
+                        "name": "logisticSetupId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LogisticSetupDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticSetupDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/slot": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticSlotsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticSlotsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/slot/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/logistic/slot/all/mobile": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logistic"
+                ],
+                "parameters": [
+                    {
+                        "description": "LogisticSlotMobileDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LogisticSlotMobileDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticSlot"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/hospital-profile/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.HospitalProfile"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/hospital-profile/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.HospitalProfile"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/hospital-profile/update": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "description": "HospitalProfileDto",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.HospitalProfileDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/my-family": {
             "get": {
                 "security": [
@@ -4472,6 +5110,21 @@
                 }
             }
         },
+        "dto.HospitalProfileDto": {
+            "type": "object",
+            "required": [
+                "profileDesc",
+                "profileValue"
+            ],
+            "properties": {
+                "profileDesc": {
+                    "type": "string"
+                },
+                "profileValue": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.KidsActvParticipationDto": {
             "type": "object",
             "required": [
@@ -4691,6 +5344,170 @@
                 "username": {
                     "type": "string",
                     "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
+        "dto.LogisticRequestDto": {
+            "type": "object",
+            "required": [
+                "flightAirlineName",
+                "flightArrivalDate",
+                "flightArrivalTime",
+                "flightNumber",
+                "primaryDoctor",
+                "requestedPickupDate",
+                "requestedPickupTime",
+                "requesterDocNumber",
+                "requesterDocType",
+                "requesterEmail",
+                "requesterName",
+                "requesterNationality",
+                "visitWithCompanion"
+            ],
+            "properties": {
+                "companionDob": {
+                    "type": "string"
+                },
+                "companionDocNumber": {
+                    "type": "string"
+                },
+                "companionDocType": {
+                    "type": "string"
+                },
+                "companionName": {
+                    "type": "string"
+                },
+                "dateCreate": {
+                    "type": "string"
+                },
+                "dateUpdate": {
+                    "type": "string"
+                },
+                "flightAirlineName": {
+                    "type": "string"
+                },
+                "flightArrivalDate": {
+                    "type": "string"
+                },
+                "flightArrivalTime": {
+                    "type": "string"
+                },
+                "flightNumber": {
+                    "type": "string"
+                },
+                "primaryDoctor": {
+                    "type": "string"
+                },
+                "relationshipToRequester": {
+                    "type": "string"
+                },
+                "requestedPickupDate": {
+                    "type": "string"
+                },
+                "requestedPickupTime": {
+                    "type": "string"
+                },
+                "requesterDob": {
+                    "type": "string"
+                },
+                "requesterDocNumber": {
+                    "type": "string"
+                },
+                "requesterDocType": {
+                    "type": "string"
+                },
+                "requesterEmail": {
+                    "type": "string"
+                },
+                "requesterName": {
+                    "type": "string"
+                },
+                "requesterNationality": {
+                    "type": "string"
+                },
+                "requesterPrn": {
+                    "type": "string"
+                },
+                "visitWithCompanion": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LogisticRequestStatusDto": {
+            "type": "object",
+            "required": [
+                "requestNumber",
+                "status"
+            ],
+            "properties": {
+                "requestNumber": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LogisticSetupDto": {
+            "type": "object",
+            "required": [
+                "logisticSetupValue"
+            ],
+            "properties": {
+                "logisticSetupValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LogisticSlotDto": {
+            "type": "object",
+            "required": [
+                "dayOfWeek",
+                "maxSlots",
+                "pickUpTime"
+            ],
+            "properties": {
+                "dayOfWeek": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "maxSlots": {
+                    "type": "integer"
+                },
+                "pickUpTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LogisticSlotMobileDto": {
+            "type": "object",
+            "required": [
+                "flightArrivalDate",
+                "flightArrivalTime",
+                "withCompanion"
+            ],
+            "properties": {
+                "flightArrivalDate": {
+                    "type": "string"
+                },
+                "flightArrivalTime": {
+                    "type": "string"
+                },
+                "withCompanion": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.LogisticSlotsDto": {
+            "type": "object",
+            "properties": {
+                "logisticSlots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.LogisticSlotDto"
+                    }
                 }
             }
         },
@@ -4941,6 +5758,159 @@
                     "type": "string"
                 },
                 "prn": {
+                    "type": "string"
+                }
+            }
+        },
+        "logistic.LogisticRequest": {
+            "type": "object",
+            "properties": {
+                "adminDateUpdate": {
+                    "type": "string"
+                },
+                "adminDateUpdateExcel": {
+                    "type": "string"
+                },
+                "adminUpdate": {
+                    "type": "string"
+                },
+                "companionDob": {
+                    "type": "string"
+                },
+                "companionDocNumber": {
+                    "type": "string"
+                },
+                "companionDocType": {
+                    "type": "string"
+                },
+                "companionName": {
+                    "type": "string"
+                },
+                "dateCreate": {
+                    "type": "string"
+                },
+                "dateCreateExcel": {
+                    "type": "string"
+                },
+                "displayCancelBtn": {
+                    "type": "boolean"
+                },
+                "flightAirlineName": {
+                    "type": "string"
+                },
+                "flightArrivalDate": {
+                    "type": "string"
+                },
+                "flightArrivalDateExcel": {
+                    "type": "string"
+                },
+                "flightArrivalTime": {
+                    "type": "string"
+                },
+                "flightNumber": {
+                    "type": "string"
+                },
+                "logisticRequestNumber": {
+                    "type": "string"
+                },
+                "logisticRequestStatus": {
+                    "type": "string"
+                },
+                "logistic_request_id": {
+                    "type": "integer"
+                },
+                "primaryDoctor": {
+                    "type": "string"
+                },
+                "primaryDoctorName": {
+                    "type": "string"
+                },
+                "relationshipToRequester": {
+                    "type": "string"
+                },
+                "requestedPickupDate": {
+                    "type": "string"
+                },
+                "requestedPickupDateExcel": {
+                    "type": "string"
+                },
+                "requestedPickupDay": {
+                    "type": "string"
+                },
+                "requestedPickupTime": {
+                    "type": "string"
+                },
+                "requesterDob": {
+                    "type": "string"
+                },
+                "requesterDocNumber": {
+                    "type": "string"
+                },
+                "requesterDocType": {
+                    "type": "string"
+                },
+                "requesterEmail": {
+                    "type": "string"
+                },
+                "requesterName": {
+                    "type": "string"
+                },
+                "requesterNationality": {
+                    "type": "string"
+                },
+                "requesterPrn": {
+                    "type": "string"
+                },
+                "userDateUpdate": {
+                    "type": "string"
+                },
+                "userDateUpdateExcel": {
+                    "type": "string"
+                },
+                "userUpdate": {
+                    "type": "string"
+                },
+                "visitWithCompanion": {
+                    "type": "string"
+                }
+            }
+        },
+        "logistic.LogisticSetup": {
+            "type": "object",
+            "properties": {
+                "logisticSetupCode": {
+                    "type": "string"
+                },
+                "logisticSetupValue": {
+                    "type": "string"
+                },
+                "logistic_setup_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "logistic.LogisticSlot": {
+            "type": "object",
+            "properties": {
+                "availableSlots": {
+                    "type": "integer"
+                },
+                "dayOfWeek": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "logistic_slot_id": {
+                    "type": "integer"
+                },
+                "maxSlots": {
+                    "type": "integer"
+                },
+                "pickUpDate": {
+                    "type": "string"
+                },
+                "pickUpTime": {
                     "type": "string"
                 }
             }
@@ -5337,6 +6307,17 @@
                     "type": "string"
                 },
                 "targetState": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.HospitalProfile": {
+            "type": "object",
+            "properties": {
+                "profileDesc": {
+                    "type": "string"
+                },
+                "profileValue": {
                     "type": "string"
                 }
             }

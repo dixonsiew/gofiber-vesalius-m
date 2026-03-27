@@ -97,7 +97,7 @@ func (cr *AuthController) Login(c fiber.Ctx) error {
             "role":             user.Role,
         })
     } else {
-        user, err := cr.authService.AuthenticateUser(*data)
+        user, err := cr.authService.AuthenticateUser(data)
         if err != nil {
             return err
         }
@@ -186,7 +186,7 @@ func (cr *AuthController) NewLogin(c fiber.Ctx) error {
     }
 
     if data.SignInType == 2 {
-        user, err := cr.authService.AuthenticateUserV2(*data)
+        user, err := cr.authService.AuthenticateUserV2(data)
         if err != nil {
             return err
         }

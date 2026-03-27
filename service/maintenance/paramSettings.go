@@ -116,7 +116,7 @@ func (s *MaintenanceService) FindParamSettingsByKeyword(keyword string, offset i
     return list, nil
 }
 
-func (s *MaintenanceService) UpdateParamSettingByParamCode(data dto.ParamSettingDto) error {
+func (s *MaintenanceService) UpdateParamSettingByParamCode(data *dto.ParamSettingDto) error {
     query := `UPDATE PARAM_SETTINGS SET PARAM_VALUE = :pVal WHERE PARAM_CODE = :pCode`
     _, err := s.db.ExecContext(s.ctx, query, 
         sql.Named("pVal", data.ParamValue),
