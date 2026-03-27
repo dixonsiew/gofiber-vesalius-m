@@ -34,5 +34,6 @@ func (c *MaintenanceController) registerRoutes(router fiber.Router) {
     api.Get("/statistic-mobile/registration/all", c.GetAllStatisticMobileRegistrations)
     api.Get("/statistic-mobile/feedback/all", c.GetAllStatisticMobileFeedbacks)
     api.Get("/statistic-mobile/package/all", c.GetAllStatisticMobilePackages)
-    api.Get("/statistic-mobile/clubs/kids/all", c.GetAllStatisticMobileClubsKids)
+    api.Get("/statistic-mobile/clubs/kids", c.GetAllStatisticMobileClubsKids)
+    api.Get("/statistic-mobile/clubs/goldenpearl", c.GetAllStatisticMobileClubsGoldenPearl)
 }

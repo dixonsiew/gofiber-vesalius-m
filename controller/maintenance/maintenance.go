@@ -490,10 +490,26 @@ func (cr *MaintenanceController) GetAllStatisticMobilePackages(c fiber.Ctx) erro
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} model.StatisticMobileClubsKid
+// @Success 200 {array} model.StatisticMobileClubs
 // @Router /maintenance/statistic/mobile/clubs/kids [get]
 func (cr *MaintenanceController) GetAllStatisticMobileClubsKids(c fiber.Ctx) error {
     lx, err := cr.maintenanceService.GetAllStatisticMobileClubsKids()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetAllStatisticMobileClubsGoldenPearl
+//
+// @Tags Maintenance
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.StatisticMobileClubs
+// @Router /maintenance/statistic/mobile/clubs/goldenpearl [get]
+func (cr *MaintenanceController) GetAllStatisticMobileClubsGoldenPearl(c fiber.Ctx) error {
+    lx, err := cr.maintenanceService.GetAllStatisticMobileClubsGoldenPearl()
     if err != nil {
         return err
     }
