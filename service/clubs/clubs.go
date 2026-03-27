@@ -1076,7 +1076,8 @@ func (s *ClubService) UpdateGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, admin
 }
 
 func (s *ClubService) FindLittleKidsAboutUs() (*clubs.LittleExplorersKidsAboutUs, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.LittleExplorersKidsAboutUs{}, "") + ` FROM KIDS_CLUB_INFO`
+    query := `SELECT * FROM KIDS_CLUB_INFO`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.LittleExplorersKidsAboutUs{}, ""), 1)
     var o clubs.LittleExplorersKidsAboutUs
     err := s.db.GetContext(s.ctx, &o, query)
     if err != nil {
@@ -1087,7 +1088,8 @@ func (s *ClubService) FindLittleKidsAboutUs() (*clubs.LittleExplorersKidsAboutUs
 }
 
 func (s *ClubService) FindGoldenPearlAboutUs() (*clubs.GoldenPearlAboutUs, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.GoldenPearlAboutUs{}, "") + ` FROM GOLDEN_CLUB_INFO`
+    query := `SELECT * FROM GOLDEN_CLUB_INFO`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.GoldenPearlAboutUs{}, ""), 1)
     var o clubs.GoldenPearlAboutUs
     err := s.db.GetContext(s.ctx, &o, query)
     if err != nil {
@@ -1102,7 +1104,7 @@ func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHo
         "kca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
+        SELECT kca.*, (SELECT COUNT(*) 
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
@@ -1117,7 +1119,7 @@ func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHo
     `
     if isHome {
         query = `
-            SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
+            SELECT kca.*, (SELECT COUNT(*) 
             FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
             WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
             FROM KIDS_CLUB_ACTIVITY kca
@@ -1130,6 +1132,7 @@ func (s *ClubService) FindAllAppLittleKidsActivities(offset int, limit int, isHo
             FETCH FIRST 5 ROWS ONLY
         `
     }
+    query = strings.Replace(query, "kca.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m), 1)
     list := make([]clubs.LittleExplorersKidsActivity, 0)
     var err error
     if isHome {
@@ -1163,7 +1166,7 @@ func (s *ClubService) FindAllAppGoldenPearlActivities(offset int, limit int, isH
         "gca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
+        SELECT gca.*, (SELECT COUNT(*) 
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
@@ -1177,7 +1180,7 @@ func (s *ClubService) FindAllAppGoldenPearlActivities(offset int, limit int, isH
     `
     if isHome {
         query = `
-            SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
+            SELECT gca.*, (SELECT COUNT(*) 
             FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
             WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
             FROM GOLDEN_CLUB_ACTIVITY gca
@@ -1190,6 +1193,7 @@ func (s *ClubService) FindAllAppGoldenPearlActivities(offset int, limit int, isH
             FETCH FIRST 5 ROWS ONLY
         `
     }
+    query = strings.Replace(query, "gca.*", utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m), 1)
     list := make([]clubs.GoldenPearlActivity, 0)
     var err error
     if isHome {
@@ -1313,13 +1317,14 @@ func (s *ClubService) FindAllLittleKidsAttendees(kidsActivityId int64, offset in
         "kcm.ACTIVITY_DATE_TIME": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m) + `, kcap.ACTIVITY_DATE_TIME
+        SELECT kcm.*, kcap.ACTIVITY_DATE_TIME
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
         WHERE kcap.KIDS_ACTIVITY_ID = :kidsActivityId
         ORDER BY KIDS_MEMBERSHIP_NUMBER DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "kcm.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m), 1)
     list := make([]clubs.LittleExplorersKidsMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query,
         sql.Named("kidsActivityId", kidsActivityId),
@@ -1341,13 +1346,14 @@ func (s *ClubService) FindAllGoldenPearlAttendees(goldenActivityId int64, offset
         "gcm.ACTIVITY_DATE_TIME": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
+        SELECT gcm.*, gcap.ACTIVITY_DATE_TIME
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
         WHERE gcap.GOLDEN_ACTIVITY_ID = :goldenActivityId
         ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "gcm.*", utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m), 1)
     list := make([]clubs.GoldenPearlMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query,
         sql.Named("goldenActivityId", goldenActivityId),
@@ -1365,8 +1371,8 @@ func (s *ClubService) FindAllGoldenPearlAttendees(goldenActivityId int64, offset
 }
 
 func (s *ClubService) FindAllLittleKidsMemberships(offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, "") + ` 
-        FROM KIDS_CLUB_MEMBERSHIP ORDER BY KIDS_MEMBERSHIP_NUMBER DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query := `SELECT * FROM KIDS_CLUB_MEMBERSHIP ORDER BY KIDS_MEMBERSHIP_NUMBER DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, ""), 1)
     list := make([]clubs.LittleExplorersKidsMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -1380,8 +1386,8 @@ func (s *ClubService) FindAllLittleKidsMemberships(offset int, limit int) ([]clu
 }
 
 func (s *ClubService) FindAllGoldenPearlMemberships(offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.GoldenPearlMembership{}, "") + ` 
-        FROM GOLDEN_CLUB_MEMBERSHIP ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query := `SELECT * FROM GOLDEN_CLUB_MEMBERSHIP ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.GoldenPearlMembership{}, ""), 1)
     list := make([]clubs.GoldenPearlMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -1399,13 +1405,14 @@ func (s *ClubService) FindAllLittleKidsActivities(offset int, limit int) ([]club
         "kca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
+        SELECT kca.*, (SELECT COUNT(*) 
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
         ORDER BY ACTIVITY_START_DATETIME DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "kca.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m), 1)
     list := make([]clubs.LittleExplorersKidsActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -1423,13 +1430,14 @@ func (s *ClubService) FindAllGoldenPearlActivities(offset int, limit int) ([]clu
         "gca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
+        SELECT gca.*, (SELECT COUNT(*) 
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
         ORDER BY ACTIVITY_START_DATETIME DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "gca.*", utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m), 1)
     list := make([]clubs.GoldenPearlActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -1805,12 +1813,13 @@ func (s *ClubService) FindAllLittleKidsActivitiesForExcel() ([]clubs.LittleExplo
         "kca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*) 
+        SELECT kca.*, (SELECT COUNT(*) 
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
         ORDER BY ACTIVITY_START_DATETIME
     `
+    query = strings.Replace(query, "kca.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m), 1)
     list := make([]clubs.LittleExplorersKidsActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -1836,12 +1845,13 @@ func (s *ClubService) FindAllGoldenPearlActivitiesForExcel() ([]clubs.GoldenPear
         "gca.ATTENDEES": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*) 
+        SELECT gca.*, (SELECT COUNT(*) 
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
         ORDER BY ACTIVITY_START_DATETIME
     `
+    query = strings.Replace(query, "gca.*", utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m), 1)
     list := make([]clubs.GoldenPearlActivity, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -1867,12 +1877,13 @@ func (s *ClubService) FindAllGoldenPearlAttendeesForExcel(goldenActivityId int64
         "gcm.ACTIVITY_DATE_TIME": "",
     }
     query := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
+        SELECT gcm.*, gcap.ACTIVITY_DATE_TIME
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
         WHERE gcap.GOLDEN_ACTIVITY_ID = :goldenActivityId
         ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC
     `
+    query = strings.Replace(query, "gcm.*", utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m), 1)
     list := make([]clubs.GoldenPearlMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -1906,10 +1917,11 @@ func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, key
         "kcm.ACTIVITY_DATE_TIME": "",
     }
     base := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m) + `, kcap.ACTIVITY_DATE_TIME
+        SELECT kcm.*, kcap.ACTIVITY_DATE_TIME
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
     `
+    base = strings.Replace(base, "kcm.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m), 1)
     
     query := base + whereClause(conditions) +
         ` ORDER BY kcm.KIDS_MEMBERSHIP_NUMBER DESC 
@@ -1936,10 +1948,11 @@ func (s *ClubService) FindGoldenPearlAttendeesByKeyword(goldenActivityId int64, 
         "gcm.ACTIVITY_DATE_TIME": "",
     }
     base := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m) + `, gcap.ACTIVITY_DATE_TIME
+        SELECT gcm.*, gcap.ACTIVITY_DATE_TIME
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         JOIN GOLDEN_CLUB_MEMBERSHIP gcm ON gcap.GOLDEN_MEMBERSHIP_ID = gcm.GOLDEN_MEMBERSHIP_ID
     `
+    base = strings.Replace(base, "gcm.*", utils.GetDbColsWithReplace(clubs.GoldenPearlMembership{}, "gcm.", m), 1)
 
     query := base + whereClause(conditions) +
         ` ORDER BY gcm.GOLDEN_MEMBERSHIP_NUMBER DESC 
@@ -2004,7 +2017,8 @@ func (s *ClubService) FindGoldenPearlMembershipByKeyword(keyword string, keyword
 }
 
 func (s *ClubService) FindAllLittleKidsMembershipForExcel() ([]clubs.LittleExplorersKidsMembership, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, "") + ` FROM KIDS_CLUB_MEMBERSHIP ORDER BY KIDS_MEMBERSHIP_NUMBER DESC`
+    query := `SELECT * FROM KIDS_CLUB_MEMBERSHIP ORDER BY KIDS_MEMBERSHIP_NUMBER DESC`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, ""), 1)
     list := make([]clubs.LittleExplorersKidsMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -2026,7 +2040,8 @@ func (s *ClubService) FindAllLittleKidsMembershipForExcel() ([]clubs.LittleExplo
 }
 
 func (s *ClubService) FindAllGoldenPearlMembershipForExcel() ([]clubs.GoldenPearlMembership, error) {
-    query := `SELECT ` + utils.GetDbCols(clubs.GoldenPearlMembership{}, "") + ` FROM GOLDEN_CLUB_MEMBERSHIP ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC`
+    query := `SELECT * FROM GOLDEN_CLUB_MEMBERSHIP ORDER BY GOLDEN_MEMBERSHIP_NUMBER DESC`
+    query = strings.Replace(query, "*", utils.GetDbCols(clubs.GoldenPearlMembership{}, ""), 1)
     list := make([]clubs.GoldenPearlMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -2182,11 +2197,13 @@ func (s *ClubService) FindLittleKidsActivitiesByKeyword(keyword string, keyword2
         "kca.ATTENDEES": "",
     }
     base := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m) + `, (SELECT COUNT(*)
+        SELECT kca.*, (SELECT COUNT(*)
         FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
         WHERE kcap.KIDS_ACTIVITY_ID = kca.KIDS_ACTIVITY_ID) AS ATTENDEES
         FROM KIDS_CLUB_ACTIVITY kca
     `
+    base = strings.Replace(base, "kca.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsActivity{}, "kca.", m), 1)
+
     query := base + whereClause(conditions) +
         ` ORDER BY kca.ACTIVITY_START_DATETIME DESC 
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
@@ -2212,11 +2229,13 @@ func (s *ClubService) FindGoldenPearlActivitiesByKeyword(keyword string, keyword
         "gca.ATTENDEES": "",
     }
     base := `
-        SELECT ` + utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m) + `, (SELECT COUNT(*)
+        SELECT gca.*, (SELECT COUNT(*)
         FROM GOLDEN_CLUB_ACTV_PARTICIPATION gcap
         WHERE gcap.GOLDEN_ACTIVITY_ID = gca.GOLDEN_ACTIVITY_ID) AS ATTENDEES
         FROM GOLDEN_CLUB_ACTIVITY gca
     `
+    base = strings.Replace(base, "gca.*", utils.GetDbColsWithReplace(clubs.GoldenPearlActivity{}, "gca.", m), 1)
+
     query := base + whereClause(conditions) +
         ` ORDER BY gca.ACTIVITY_START_DATETIME DESC 
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`

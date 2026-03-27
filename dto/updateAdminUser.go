@@ -13,7 +13,7 @@ type PostUpdateAdminUserDto struct {
     Passport       string  `json:"passport"`
     Nationality    string  `json:"nationality"`
     Email          string  `json:"email" validate:"required,email"`
-    UserGroupID    int64   `json:"userGroupId" validate:"required"`
+    UserGroupId    int64   `json:"userGroupId" validate:"required,numeric"`
     UserGroupName  string  `json:"userGroupName,omitempty"`
-    AdminBranchIDs []int64 `json:"adminBranchIds"`
+    AdminBranchIds []int64 `json:"adminBranchIds"`
 }

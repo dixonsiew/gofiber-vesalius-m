@@ -1,0 +1,734 @@
+{
+  "version": "7.7.6",
+  "timestamp": 1690300881163,
+  "projects": [
+    {
+      "name": "vesalius geo",
+      "documents": [
+        {
+          "type": "project",
+          "folderIds": [],
+          "name": "vesalius geo",
+          "selectedEnvironmentId": "fb57091c-ae4d-4b52-a6bf-2e15ca1f2043",
+          "selectedFolderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "selectedSidebarTab": 0,
+          "selectedTabId": "7f49d891-0cf9-4607-9205-f9c61cc8031c",
+          "sidebarWidth": 0.18489583333333334,
+          "createdAt": 1690002656446,
+          "updatedAt": 1690045639606,
+          "id": "d76364b5-a1a3-4a82-a446-c02e23651fb9",
+          "selectedRequestId": "c1b0ebdf-9553-4da4-964b-5a952c7d22ba",
+          "sidebarView": "requests"
+        },
+        {
+          "type": "tab",
+          "title": "Welcome",
+          "view": "Welcome",
+          "createdAt": 1690002656574,
+          "updatedAt": 1690002656574,
+          "id": "0f9c5b0f-ced9-498a-b5f8-466061fb2a53"
+        },
+        {
+          "type": "tab",
+          "title": "Add Service",
+          "view": "AddService",
+          "createdAt": 1690002693484,
+          "updatedAt": 1690002693484,
+          "id": "77acb7f5-e83f-4aa9-8a23-00a666c061ab"
+        },
+        {
+          "type": "service",
+          "name": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfc",
+          "url": "http://192.168.200.215/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc?wsdl",
+          "language": "wsdl",
+          "definition": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wsdl:definitions xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:ax29=\"http://rpc.xml.coldfusion/xsd\" xmlns:ns=\"http://ws.apache.org/axis2\" xmlns:wsaw=\"http://www.w3.org/2006/05/addressing/wsdl\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\" xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\" xmlns:ns1=\"http://org.apache.axis2/xsd\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" targetNamespace=\"http://ws.apache.org/axis2\">\n    <wsdl:types>\n        <xs:schema xmlns:ax210=\"http://rpc.xml.coldfusion/xsd\" attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://ws.apache.org/axis2\">\n            <xs:import namespace=\"http://rpc.xml.coldfusion/xsd\"/>\n            <xs:element name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"CFCInvocationException\" nillable=\"true\" type=\"ax29:CFCInvocationException\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"getNextAvailableSlots\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"token_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"prn\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"personid\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"company_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"specialty_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"start_date\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"start_time\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"case_type\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"mcr\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"getNextAvailableSlotsResponse\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"return\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:complexType name=\"document\">\n                <xs:sequence>\n                    <xs:any/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n        <xs:schema attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://rpc.xml.coldfusion/xsd\">\n            <xs:complexType name=\"CFCInvocationException\">\n                <xs:sequence/>\n            </xs:complexType>\n            <xs:complexType name=\"StructDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"entries\" nillable=\"true\" type=\"ax29:EntryDelegate\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"EntryDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"key\" nillable=\"true\" type=\"xs:anyType\"/>\n                    <xs:element minOccurs=\"0\" name=\"value\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"QueryBean\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"columnList\" nillable=\"true\" type=\"xs:string\"/>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"data\" nillable=\"true\" type=\"ax29:ArrayOfObject\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayOfObject\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"DocumentDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"document\" nillable=\"true\" type=\"ns:document\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n    </wsdl:types>\n    <wsdl:message name=\"getNextAvailableSlotsRequest\">\n        <wsdl:part name=\"parameters\" element=\"ns:getNextAvailableSlots\"/>\n    </wsdl:message>\n    <wsdl:message name=\"getNextAvailableSlotsResponse\">\n        <wsdl:part name=\"parameters\" element=\"ns:getNextAvailableSlotsResponse\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\">\n        <wsdl:part name=\"parameters\" element=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\"/>\n    </wsdl:message>\n    <wsdl:portType name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcPortType\">\n        <wsdl:operation name=\"getNextAvailableSlots\">\n            <wsdl:input message=\"ns:getNextAvailableSlotsRequest\" wsaw:Action=\"urn:getNextAvailableSlots\"/>\n            <wsdl:output message=\"ns:getNextAvailableSlotsResponse\" wsaw:Action=\"urn:getNextAvailableSlotsResponse\"/>\n            <wsdl:fault message=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\" name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\" wsaw:Action=\"urn:getNextAvailableSlotsihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\"/>\n        </wsdl:operation>\n    </wsdl:portType>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcPortType\">\n        <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"getNextAvailableSlots\">\n            <soap:operation soapAction=\"urn:getNextAvailableSlots\" style=\"document\"/>\n            <wsdl:input>\n                <soap:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\">\n                <soap:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap12Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcPortType\">\n        <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"getNextAvailableSlots\">\n            <soap12:operation soapAction=\"urn:getNextAvailableSlots\" style=\"document\"/>\n            <wsdl:input>\n                <soap12:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap12:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\">\n                <soap12:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:service name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfc\">\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcHttpSoap11Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding\">\n            <soap:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc\"/>\n        </wsdl:port>\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcHttpSoap12Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap12Binding\">\n            <soap12:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc\"/>\n        </wsdl:port>\n    </wsdl:service>\n</wsdl:definitions>",
+          "collapsed": false,
+          "createdAt": 1690002701120,
+          "updatedAt": 1690002701120,
+          "id": "b1ee5626-2d2b-49c9-856d-53e77183db3c"
+        },
+        {
+          "type": "folder",
+          "name": "My Folder",
+          "description": null,
+          "collapsed": false,
+          "selectedEnvironmentId": null,
+          "requestIds": [],
+          "createdAt": 1690002705516,
+          "updatedAt": 1690002705516,
+          "id": "ccc3522f-150f-4b24-8658-e528dbc3344f"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap12Binding_getNextAvailableSlots2",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getNextAvailableSlots>\n            <axi:token_number>2207224561009</axi:token_number>\n            <axi:prn>20-000110</axi:prn>\n            <axi:personid></axi:personid>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:specialty_code>EYE</axi:specialty_code>\n            <axi:start_date>25-Jul-2023</axi:start_date>\n            <axi:start_time>07:00</axi:start_time>\n            <axi:case_type>FU</axi:case_type>\n            <axi:mcr>36451,NSR:130242</axi:mcr>\n        </axi:getNextAvailableSlots>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": {
+            "contentType": "text/xml;charset=UTF-8",
+            "headers": [
+              {
+                "name": "content-encoding",
+                "value": "gzip"
+              },
+              {
+                "name": "content-length",
+                "value": "707"
+              },
+              {
+                "name": "content-type",
+                "value": "text/xml;charset=UTF-8"
+              },
+              {
+                "name": "date",
+                "value": "Sat, 22 Jul 2023 05:25:24 GMT"
+              },
+              {
+                "name": "server",
+                "value": "Microsoft-IIS/8.5"
+              },
+              {
+                "name": "vary",
+                "value": "Accept-Encoding"
+              },
+              {
+                "name": "x-powered-by",
+                "value": "ASP.NET"
+              }
+            ],
+            "responseText": "<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><ns:getNextAvailableSlotsResponse xmlns:ns=\"http://ws.apache.org/axis2\"><ns:return>&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?>\n&lt;Result>\n  &lt;Slot>\n    &lt;SlotNumber>22925&lt;/SlotNumber>\n    &lt;Date>25-Jul-2023&lt;/Date>\n    &lt;Day>TUESDAY&lt;/Day>\n    &lt;StartTime>07:30&lt;/StartTime>\n    &lt;EndTime>07:35&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Slot>\n  &lt;Slot>\n    &lt;SlotNumber>22926&lt;/SlotNumber>\n    &lt;Date>25-Jul-2023&lt;/Date>\n    &lt;Day>TUESDAY&lt;/Day>\n    &lt;StartTime>13:15&lt;/StartTime>\n    &lt;EndTime>13:20&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Slot>\n  &lt;Slot>\n    &lt;SlotNumber>22927&lt;/SlotNumber>\n    &lt;Date>26-Jul-2023&lt;/Date>\n    &lt;Day>WEDNESDAY&lt;/Day>\n    &lt;StartTime>07:30&lt;/StartTime>\n    &lt;EndTime>07:35&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Slot>\n  &lt;Slot>\n    &lt;SlotNumber>22928&lt;/SlotNumber>\n    &lt;Date>26-Jul-2023&lt;/Date>\n    &lt;Day>WEDNESDAY&lt;/Day>\n    &lt;StartTime>13:00&lt;/StartTime>\n    &lt;EndTime>13:05&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Slot>\n  &lt;Slot>\n    &lt;SlotNumber>22929&lt;/SlotNumber>\n    &lt;Date>27-Jul-2023&lt;/Date>\n    &lt;Day>THURSDAY&lt;/Day>\n    &lt;StartTime>07:30&lt;/StartTime>\n    &lt;EndTime>07:35&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Slot>\n&lt;/Result>\n</ns:return></ns:getNextAvailableSlotsResponse></soapenv:Body></soapenv:Envelope>",
+            "statusCode": 200,
+            "statusText": "OK",
+            "duration": 250,
+            "size": "2.4 KB",
+            "sentRequest": {
+              "id": "0553ecb0-b43b-43a4-a267-9c9a029c092f",
+              "method": "POST",
+              "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc",
+              "headers": {
+                "Content-Type": "text/xml; charset=utf-8",
+                "SOAPAction": "urn:getNextAvailableSlots"
+              },
+              "data": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getNextAvailableSlots>\n            <axi:token_number>2207224561009</axi:token_number>\n            <axi:prn>20-000110</axi:prn>\n            <axi:personid></axi:personid>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:specialty_code>EYE</axi:specialty_code>\n            <axi:start_date>25-Jul-2023</axi:start_date>\n            <axi:start_time>07:00</axi:start_time>\n            <axi:case_type>FU</axi:case_type>\n            <axi:mcr>36451,NSR:130242</axi:mcr>\n        </axi:getNextAvailableSlots>\n    </x:Body>\n</x:Envelope>",
+              "multipart": null
+            }
+          },
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 0,
+          "resPanelSize": 1,
+          "spec": "wsdl",
+          "serviceId": "b1ee5626-2d2b-49c9-856d-53e77183db3c",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap12Binding_getNextAvailableSlots",
+          "saved": false,
+          "createdAt": 1690002707316,
+          "updatedAt": 1690004391803,
+          "id": "0553ecb0-b43b-43a4-a267-9c9a029c092f",
+          "_inProgress": false
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getNextAvailableSlots",
+          "type": "requestHeader",
+          "requestId": "0553ecb0-b43b-43a4-a267-9c9a029c092f",
+          "createdAt": 1690002707348,
+          "updatedAt": 1690002707348,
+          "id": "678c6522-7593-451b-9ae2-4573a59101eb"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "0553ecb0-b43b-43a4-a267-9c9a029c092f",
+          "createdAt": 1690002707348,
+          "updatedAt": 1690002707348,
+          "id": "906aa9a5-3d95-4231-8c8d-4c7f3a77baf6"
+        },
+        {
+          "type": "service",
+          "name": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfc",
+          "url": "http://192.168.200.215/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc?wsdl",
+          "language": "wsdl",
+          "definition": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wsdl:definitions xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:ax27=\"http://rpc.xml.coldfusion/xsd\" xmlns:ns=\"http://ws.apache.org/axis2\" xmlns:wsaw=\"http://www.w3.org/2006/05/addressing/wsdl\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\" xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\" xmlns:ns1=\"http://org.apache.axis2/xsd\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" targetNamespace=\"http://ws.apache.org/axis2\">\n    <wsdl:types>\n        <xs:schema xmlns:ax28=\"http://rpc.xml.coldfusion/xsd\" attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://ws.apache.org/axis2\">\n            <xs:import namespace=\"http://rpc.xml.coldfusion/xsd\"/>\n            <xs:element name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"CFCInvocationException\" nillable=\"true\" type=\"ax28:CFCInvocationException\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"getFutureAppointment\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"prn\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"company_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"token_number\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"getFutureAppointmentResponse\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"return\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:complexType name=\"document\">\n                <xs:sequence>\n                    <xs:any/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n        <xs:schema attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://rpc.xml.coldfusion/xsd\">\n            <xs:complexType name=\"CFCInvocationException\">\n                <xs:sequence/>\n            </xs:complexType>\n            <xs:complexType name=\"StructDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"entries\" nillable=\"true\" type=\"ax27:EntryDelegate\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"EntryDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"key\" nillable=\"true\" type=\"xs:anyType\"/>\n                    <xs:element minOccurs=\"0\" name=\"value\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"QueryBean\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"columnList\" nillable=\"true\" type=\"xs:string\"/>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"data\" nillable=\"true\" type=\"ax27:ArrayOfObject\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayOfObject\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"DocumentDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"document\" nillable=\"true\" type=\"ns:document\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n    </wsdl:types>\n    <wsdl:message name=\"getFutureAppointmentRequest\">\n        <wsdl:part name=\"parameters\" element=\"ns:getFutureAppointment\"/>\n    </wsdl:message>\n    <wsdl:message name=\"getFutureAppointmentResponse\">\n        <wsdl:part name=\"parameters\" element=\"ns:getFutureAppointmentResponse\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\">\n        <wsdl:part name=\"parameters\" element=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\"/>\n    </wsdl:message>\n    <wsdl:portType name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcPortType\">\n        <wsdl:operation name=\"getFutureAppointment\">\n            <wsdl:input message=\"ns:getFutureAppointmentRequest\" wsaw:Action=\"urn:getFutureAppointment\"/>\n            <wsdl:output message=\"ns:getFutureAppointmentResponse\" wsaw:Action=\"urn:getFutureAppointmentResponse\"/>\n            <wsdl:fault message=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\" name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\" wsaw:Action=\"urn:getFutureAppointmentihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\"/>\n        </wsdl:operation>\n    </wsdl:portType>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcPortType\">\n        <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"getFutureAppointment\">\n            <soap:operation soapAction=\"urn:getFutureAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\">\n                <soap:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap12Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcPortType\">\n        <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"getFutureAppointment\">\n            <soap12:operation soapAction=\"urn:getFutureAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap12:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap12:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\">\n                <soap12:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:service name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfc\">\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcHttpSoap11Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding\">\n            <soap:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc\"/>\n        </wsdl:port>\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcHttpSoap12Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap12Binding\">\n            <soap12:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc\"/>\n        </wsdl:port>\n    </wsdl:service>\n</wsdl:definitions>",
+          "collapsed": false,
+          "createdAt": 1690002758051,
+          "updatedAt": 1690002758051,
+          "id": "abfd8d90-c28c-418c-bac5-169302ce3261"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment2",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getFutureAppointment>\n            <axi:prn>?</axi:prn>\n            <axi:company_code>?</axi:company_code>\n            <axi:token_number>?</axi:token_number>\n        </axi:getFutureAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "abfd8d90-c28c-418c-bac5-169302ce3261",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment",
+          "saved": false,
+          "createdAt": 1690002769523,
+          "updatedAt": 1690002769523,
+          "id": "a93957d8-420c-4151-981c-4090fa9ba76d"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getFutureAppointment",
+          "type": "requestHeader",
+          "requestId": "a93957d8-420c-4151-981c-4090fa9ba76d",
+          "createdAt": 1690002769547,
+          "updatedAt": 1690002769547,
+          "id": "101eeaef-d157-4851-9b10-686b2fd3a0a8"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "a93957d8-420c-4151-981c-4090fa9ba76d",
+          "createdAt": 1690002769547,
+          "updatedAt": 1690002769547,
+          "id": "3aeee442-cc82-414e-8c1b-9e586eff19d3"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment3",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getFutureAppointment>\n            <axi:prn>20-000110</axi:prn>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:token_number>2207224561009</axi:token_number>\n        </axi:getFutureAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": {
+            "contentType": "text/xml;charset=UTF-8",
+            "headers": [
+              {
+                "name": "content-encoding",
+                "value": "gzip"
+              },
+              {
+                "name": "content-length",
+                "value": "603"
+              },
+              {
+                "name": "content-type",
+                "value": "text/xml;charset=UTF-8"
+              },
+              {
+                "name": "date",
+                "value": "Sat, 22 Jul 2023 05:13:50 GMT"
+              },
+              {
+                "name": "server",
+                "value": "Microsoft-IIS/8.5"
+              },
+              {
+                "name": "vary",
+                "value": "Accept-Encoding"
+              },
+              {
+                "name": "x-powered-by",
+                "value": "ASP.NET"
+              }
+            ],
+            "responseText": "<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><ns:getFutureAppointmentResponse xmlns:ns=\"http://ws.apache.org/axis2\"><ns:return>&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?>\n&lt;Result>\n  &lt;Appointment>\n    &lt;AppointmentNumber>2248&lt;/AppointmentNumber>\n    &lt;Date>29-Jul-2023&lt;/Date>\n    &lt;Day>SATURDAY&lt;/Day>\n    &lt;StartTime>07:30&lt;/StartTime>\n    &lt;EndTime>07:35&lt;/EndTime>\n    &lt;DoctorMCR>36451,NSR:130242&lt;/DoctorMCR>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;SpecialtyCode>EYE&lt;/SpecialtyCode>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CompanyCode>IHP&lt;/CompanyCode>\n    &lt;CaseType>FU&lt;/CaseType>\n  &lt;/Appointment>\n&lt;/Result>\n</ns:return></ns:getFutureAppointmentResponse></soapenv:Body></soapenv:Envelope>",
+            "statusCode": 200,
+            "statusText": "OK",
+            "duration": 140,
+            "size": "935 bytes",
+            "sentRequest": {
+              "id": "a2caf642-bf76-40ca-86de-adc79cb7b48a",
+              "method": "POST",
+              "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc",
+              "headers": {
+                "Content-Type": "text/xml; charset=utf-8",
+                "SOAPAction": "urn:getFutureAppointment"
+              },
+              "data": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getFutureAppointment>\n            <axi:prn>20-000110</axi:prn>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:token_number>2207224561009</axi:token_number>\n        </axi:getFutureAppointment>\n    </x:Body>\n</x:Envelope>",
+              "multipart": null
+            }
+          },
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 0,
+          "resPanelSize": 1,
+          "spec": "wsdl",
+          "serviceId": "abfd8d90-c28c-418c-bac5-169302ce3261",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment",
+          "saved": false,
+          "createdAt": 1690002774659,
+          "updatedAt": 1690002843768,
+          "id": "a2caf642-bf76-40ca-86de-adc79cb7b48a",
+          "_inProgress": false
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "a2caf642-bf76-40ca-86de-adc79cb7b48a",
+          "createdAt": 1690002774688,
+          "updatedAt": 1690002774688,
+          "id": "4bf0639f-4614-4418-835c-351f7b626b55"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getFutureAppointment",
+          "type": "requestHeader",
+          "requestId": "a2caf642-bf76-40ca-86de-adc79cb7b48a",
+          "createdAt": 1690002774688,
+          "updatedAt": 1690002774688,
+          "id": "848484e8-50e3-4e5e-8372-e8dd074bfaa0"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap12Binding_getFutureAppointment4",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getFutureAppointment>\n            <axi:prn>?</axi:prn>\n            <axi:company_code>?</axi:company_code>\n            <axi:token_number>?</axi:token_number>\n        </axi:getFutureAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "abfd8d90-c28c-418c-bac5-169302ce3261",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap12Binding_getFutureAppointment",
+          "saved": false,
+          "createdAt": 1690003783683,
+          "updatedAt": 1690003783683,
+          "id": "19555036-7e3a-47d8-909d-d71b8e99fc0a"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getFutureAppointment",
+          "type": "requestHeader",
+          "requestId": "19555036-7e3a-47d8-909d-d71b8e99fc0a",
+          "createdAt": 1690003783720,
+          "updatedAt": 1690003783720,
+          "id": "b8abc296-8365-4001-9753-c6fa523634fd"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "19555036-7e3a-47d8-909d-d71b8e99fc0a",
+          "createdAt": 1690003783720,
+          "updatedAt": 1690003783720,
+          "id": "fc7d6cf4-2aef-4372-b03e-2c9e67964489"
+        },
+        {
+          "type": "service",
+          "name": "ihp_uat.web_services.APPOINTMENT.makeAppointment.cfc",
+          "url": "http://192.168.200.215/ihp_uat/web_services/APPOINTMENT/makeAppointment.cfc?wsdl",
+          "language": "wsdl",
+          "definition": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wsdl:definitions xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:ns=\"http://ws.apache.org/axis2\" xmlns:ax211=\"http://rpc.xml.coldfusion/xsd\" xmlns:wsaw=\"http://www.w3.org/2006/05/addressing/wsdl\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\" xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\" xmlns:ns1=\"http://org.apache.axis2/xsd\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" targetNamespace=\"http://ws.apache.org/axis2\">\n    <wsdl:types>\n        <xs:schema xmlns:ax212=\"http://rpc.xml.coldfusion/xsd\" attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://ws.apache.org/axis2\">\n            <xs:import namespace=\"http://rpc.xml.coldfusion/xsd\"/>\n            <xs:element name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"CFCInvocationException\" nillable=\"true\" type=\"ax212:CFCInvocationException\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"MakeAppointment\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"prn\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"slot_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"company_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"case_type\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"token_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"reason_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"remark\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"MakeAppointmentResponse\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"return\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:complexType name=\"document\">\n                <xs:sequence>\n                    <xs:any/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n        <xs:schema attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://rpc.xml.coldfusion/xsd\">\n            <xs:complexType name=\"CFCInvocationException\">\n                <xs:sequence/>\n            </xs:complexType>\n            <xs:complexType name=\"StructDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"entries\" nillable=\"true\" type=\"ax211:EntryDelegate\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"EntryDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"key\" nillable=\"true\" type=\"xs:anyType\"/>\n                    <xs:element minOccurs=\"0\" name=\"value\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"QueryBean\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"columnList\" nillable=\"true\" type=\"xs:string\"/>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"data\" nillable=\"true\" type=\"ax211:ArrayOfObject\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayOfObject\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"DocumentDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"document\" nillable=\"true\" type=\"ns:document\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n    </wsdl:types>\n    <wsdl:message name=\"MakeAppointmentRequest\">\n        <wsdl:part name=\"parameters\" element=\"ns:MakeAppointment\"/>\n    </wsdl:message>\n    <wsdl:message name=\"MakeAppointmentResponse\">\n        <wsdl:part name=\"parameters\" element=\"ns:MakeAppointmentResponse\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\">\n        <wsdl:part name=\"parameters\" element=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\"/>\n    </wsdl:message>\n    <wsdl:portType name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcPortType\">\n        <wsdl:operation name=\"MakeAppointment\">\n            <wsdl:input message=\"ns:MakeAppointmentRequest\" wsaw:Action=\"urn:MakeAppointment\"/>\n            <wsdl:output message=\"ns:MakeAppointmentResponse\" wsaw:Action=\"urn:MakeAppointmentResponse\"/>\n            <wsdl:fault message=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\" name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\" wsaw:Action=\"urn:MakeAppointmentihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\"/>\n        </wsdl:operation>\n    </wsdl:portType>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap11Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcPortType\">\n        <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"MakeAppointment\">\n            <soap:operation soapAction=\"urn:MakeAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\">\n                <soap:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap12Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcPortType\">\n        <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"MakeAppointment\">\n            <soap12:operation soapAction=\"urn:MakeAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap12:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap12:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\">\n                <soap12:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:service name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfc\">\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcHttpSoap11Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap11Binding\">\n            <soap:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/makeAppointment.cfc\"/>\n        </wsdl:port>\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcHttpSoap12Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap12Binding\">\n            <soap12:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/makeAppointment.cfc\"/>\n        </wsdl:port>\n    </wsdl:service>\n</wsdl:definitions>",
+          "collapsed": false,
+          "createdAt": 1690005859563,
+          "updatedAt": 1690005859563,
+          "id": "6040c0dc-677c-4033-a289-e1374959cf88"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap11Binding_MakeAppointment5",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/makeAppointment.cfc",
+          "method": "GET",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:MakeAppointment>\n            <axi:prn>20-000110</axi:prn>\n            <axi:slot_number>22985</axi:slot_number>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:case_type>FU</axi:case_type>\n            <axi:token_number>2207224561009</axi:token_number>\n            <axi:reason_code></axi:reason_code>\n            <axi:remark></axi:remark>\n        </axi:MakeAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": {
+            "contentType": "text/xml;charset=UTF-8",
+            "headers": [
+              {
+                "name": "content-encoding",
+                "value": "gzip"
+              },
+              {
+                "name": "content-length",
+                "value": "622"
+              },
+              {
+                "name": "content-type",
+                "value": "text/xml;charset=UTF-8"
+              },
+              {
+                "name": "date",
+                "value": "Sat, 22 Jul 2023 06:07:58 GMT"
+              },
+              {
+                "name": "server",
+                "value": "Microsoft-IIS/8.5"
+              },
+              {
+                "name": "vary",
+                "value": "Accept-Encoding"
+              },
+              {
+                "name": "x-powered-by",
+                "value": "ASP.NET"
+              }
+            ],
+            "responseText": "<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><ns:MakeAppointmentResponse xmlns:ns=\"http://ws.apache.org/axis2\"><ns:return>&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?>\n&lt;Result>\n  &lt;AppointmentBookingConfirmation>\n    &lt;AppointmentStatus>CONFIRMED&lt;/AppointmentStatus>\n    &lt;AppointmentNumber>2250&lt;/AppointmentNumber>\n    &lt;Date>25-Jul-2023&lt;/Date>\n    &lt;Day>TUESDAY&lt;/Day>\n    &lt;StartTime>07:30&lt;/StartTime>\n    &lt;EndTime>07:40&lt;/EndTime>\n    &lt;DoctorName>KR VZNERRZ NZREEM NEZH&lt;/DoctorName>\n    &lt;ReferredBy>SELF&lt;/ReferredBy>\n    &lt;Specialty>OPHTHALMOLOGY&lt;/Specialty>\n    &lt;Clinic>5th Floor Clinic&lt;/Clinic>\n    &lt;Room>5.5&lt;/Room>\n    &lt;CaseType>FU&lt;/CaseType>\n    &lt;ReasonCode>&lt;/ReasonCode>\n    &lt;Remark>&lt;/Remark>\n  &lt;/AppointmentBookingConfirmation>\n&lt;/Result>\n</ns:return></ns:MakeAppointmentResponse></soapenv:Body></soapenv:Envelope>",
+            "statusCode": 200,
+            "statusText": "OK",
+            "duration": 236,
+            "size": "989 bytes",
+            "sentRequest": {
+              "id": "7e536f8d-b4ed-4eb1-bf33-3eddf8a008b3",
+              "method": "POST",
+              "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/makeAppointment.cfc",
+              "headers": {
+                "Content-Type": "text/xml; charset=utf-8",
+                "SOAPAction": "urn:MakeAppointment"
+              },
+              "data": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:MakeAppointment>\n            <axi:prn>20-000110</axi:prn>\n            <axi:slot_number>22980</axi:slot_number>\n            <axi:company_code>IHP</axi:company_code>\n            <axi:case_type>FU</axi:case_type>\n            <axi:token_number>2207224561009</axi:token_number>\n            <axi:reason_code></axi:reason_code>\n            <axi:remark></axi:remark>\n        </axi:MakeAppointment>\n    </x:Body>\n</x:Envelope>",
+              "multipart": null
+            }
+          },
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "6040c0dc-677c-4033-a289-e1374959cf88",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.makeAppointment.cfcSoap11Binding_MakeAppointment",
+          "saved": false,
+          "createdAt": 1690005870986,
+          "updatedAt": 1690012909216,
+          "id": "7e536f8d-b4ed-4eb1-bf33-3eddf8a008b3",
+          "_inProgress": false,
+          "responseView": "body"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:MakeAppointment",
+          "type": "requestHeader",
+          "requestId": "7e536f8d-b4ed-4eb1-bf33-3eddf8a008b3",
+          "createdAt": 1690005871011,
+          "updatedAt": 1690005871011,
+          "id": "b015511f-11c1-472e-966c-9cae9f9890f7"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "7e536f8d-b4ed-4eb1-bf33-3eddf8a008b3",
+          "createdAt": 1690005871011,
+          "updatedAt": 1690005871011,
+          "id": "fbc0ce89-6df4-4edd-ae27-745dc8a593de"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment6",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getFutureAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getFutureAppointment>\n            <axi:prn>?</axi:prn>\n            <axi:company_code>?</axi:company_code>\n            <axi:token_number>?</axi:token_number>\n        </axi:getFutureAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "abfd8d90-c28c-418c-bac5-169302ce3261",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getFutureAppointment.cfcSoap11Binding_getFutureAppointment",
+          "saved": false,
+          "createdAt": 1690005942510,
+          "updatedAt": 1690005942510,
+          "id": "e9be91ce-cafd-4084-838f-76156f2403e7"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "e9be91ce-cafd-4084-838f-76156f2403e7",
+          "createdAt": 1690005942552,
+          "updatedAt": 1690005942552,
+          "id": "6d1a6050-3ffa-4e01-9b8f-499cd9320774"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getFutureAppointment",
+          "type": "requestHeader",
+          "requestId": "e9be91ce-cafd-4084-838f-76156f2403e7",
+          "createdAt": 1690005942552,
+          "updatedAt": 1690005942552,
+          "id": "a7d6f23a-959a-4451-af1f-a57f06e5a589"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding_getNextAvailableSlots7",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getNextAvailableSlots>\n            <axi:token_number>?</axi:token_number>\n            <axi:prn>?</axi:prn>\n            <axi:personid>?</axi:personid>\n            <axi:company_code>?</axi:company_code>\n            <axi:specialty_code>?</axi:specialty_code>\n            <axi:start_date>?</axi:start_date>\n            <axi:start_time>?</axi:start_time>\n            <axi:case_type>?</axi:case_type>\n            <axi:mcr>?</axi:mcr>\n        </axi:getNextAvailableSlots>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "b1ee5626-2d2b-49c9-856d-53e77183db3c",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding_getNextAvailableSlots",
+          "saved": false,
+          "createdAt": 1690005952959,
+          "updatedAt": 1690005952959,
+          "id": "ca346545-a1ee-4613-878d-607d53d8f3c9"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "ca346545-a1ee-4613-878d-607d53d8f3c9",
+          "createdAt": 1690005952984,
+          "updatedAt": 1690005952984,
+          "id": "689d908f-8835-4f66-b257-b0c1433f76a1"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getNextAvailableSlots",
+          "type": "requestHeader",
+          "requestId": "ca346545-a1ee-4613-878d-607d53d8f3c9",
+          "createdAt": 1690005952984,
+          "updatedAt": 1690005952984,
+          "id": "743d8ccd-faf2-4a26-ad1f-c58188accd6a"
+        },
+        {
+          "type": "tab",
+          "title": "Import",
+          "view": "Importer",
+          "createdAt": 1690010903436,
+          "updatedAt": 1690010903436,
+          "id": "ff65c7b9-1ed2-4128-908a-af6425e2cc4e"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding_getNextAvailableSlots8",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/getNextAvailableSlots.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:getNextAvailableSlots>\n            <axi:token_number>?</axi:token_number>\n            <axi:prn>?</axi:prn>\n            <axi:personid>?</axi:personid>\n            <axi:company_code>?</axi:company_code>\n            <axi:specialty_code>?</axi:specialty_code>\n            <axi:start_date>?</axi:start_date>\n            <axi:start_time>?</axi:start_time>\n            <axi:case_type>?</axi:case_type>\n            <axi:mcr>?</axi:mcr>\n        </axi:getNextAvailableSlots>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 0,
+          "resPanelSize": 1,
+          "spec": "wsdl",
+          "serviceId": "b1ee5626-2d2b-49c9-856d-53e77183db3c",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.getNextAvailableSlots.cfcSoap11Binding_getNextAvailableSlots",
+          "saved": false,
+          "createdAt": 1690011119680,
+          "updatedAt": 1690011129659,
+          "id": "edcf8601-255f-4e6b-93cc-a49c32bc011a"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:getNextAvailableSlots",
+          "type": "requestHeader",
+          "requestId": "edcf8601-255f-4e6b-93cc-a49c32bc011a",
+          "createdAt": 1690011119714,
+          "updatedAt": 1690011119714,
+          "id": "0701bccd-1fc9-4bb6-b5d1-056e21663464"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "edcf8601-255f-4e6b-93cc-a49c32bc011a",
+          "createdAt": 1690011119714,
+          "updatedAt": 1690011119714,
+          "id": "62ee4d37-6309-4f7b-867d-0df4e45bcce3"
+        },
+        {
+          "type": "service",
+          "name": "ihp_uat.web_services.APPOINTMENT.changeAppointment.cfc",
+          "url": "http://192.168.200.215/ihp_uat/web_services/APPOINTMENT/changeAppointment.cfc?wsdl",
+          "language": "wsdl",
+          "definition": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wsdl:definitions xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:ax213=\"http://rpc.xml.coldfusion/xsd\" xmlns:ns=\"http://ws.apache.org/axis2\" xmlns:wsaw=\"http://www.w3.org/2006/05/addressing/wsdl\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\" xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\" xmlns:ns1=\"http://org.apache.axis2/xsd\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" targetNamespace=\"http://ws.apache.org/axis2\">\n    <wsdl:types>\n        <xs:schema xmlns:ax214=\"http://rpc.xml.coldfusion/xsd\" attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://ws.apache.org/axis2\">\n            <xs:import namespace=\"http://rpc.xml.coldfusion/xsd\"/>\n            <xs:element name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"CFCInvocationException\" nillable=\"true\" type=\"ax214:CFCInvocationException\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"ChangeAppointment\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"prn\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"appointment_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"company_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"slot_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"token_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"reason\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"ChangeAppointmentResponse\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"return\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:complexType name=\"document\">\n                <xs:sequence>\n                    <xs:any/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n        <xs:schema attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://rpc.xml.coldfusion/xsd\">\n            <xs:complexType name=\"CFCInvocationException\">\n                <xs:sequence/>\n            </xs:complexType>\n            <xs:complexType name=\"StructDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"entries\" nillable=\"true\" type=\"ax213:EntryDelegate\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"EntryDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"key\" nillable=\"true\" type=\"xs:anyType\"/>\n                    <xs:element minOccurs=\"0\" name=\"value\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"QueryBean\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"columnList\" nillable=\"true\" type=\"xs:string\"/>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"data\" nillable=\"true\" type=\"ax213:ArrayOfObject\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayOfObject\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"DocumentDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"document\" nillable=\"true\" type=\"ns:document\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n    </wsdl:types>\n    <wsdl:message name=\"ChangeAppointmentRequest\">\n        <wsdl:part name=\"parameters\" element=\"ns:ChangeAppointment\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ChangeAppointmentResponse\">\n        <wsdl:part name=\"parameters\" element=\"ns:ChangeAppointmentResponse\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\">\n        <wsdl:part name=\"parameters\" element=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\"/>\n    </wsdl:message>\n    <wsdl:portType name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcPortType\">\n        <wsdl:operation name=\"ChangeAppointment\">\n            <wsdl:input message=\"ns:ChangeAppointmentRequest\" wsaw:Action=\"urn:ChangeAppointment\"/>\n            <wsdl:output message=\"ns:ChangeAppointmentResponse\" wsaw:Action=\"urn:ChangeAppointmentResponse\"/>\n            <wsdl:fault message=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\" name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\" wsaw:Action=\"urn:ChangeAppointmentihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\"/>\n        </wsdl:operation>\n    </wsdl:portType>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap11Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcPortType\">\n        <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"ChangeAppointment\">\n            <soap:operation soapAction=\"urn:ChangeAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\">\n                <soap:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap12Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcPortType\">\n        <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"ChangeAppointment\">\n            <soap12:operation soapAction=\"urn:ChangeAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap12:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap12:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\">\n                <soap12:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:service name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfc\">\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcHttpSoap11Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap11Binding\">\n            <soap:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/changeAppointment.cfc\"/>\n        </wsdl:port>\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcHttpSoap12Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap12Binding\">\n            <soap12:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/changeAppointment.cfc\"/>\n        </wsdl:port>\n    </wsdl:service>\n</wsdl:definitions>",
+          "collapsed": false,
+          "createdAt": 1690016160895,
+          "updatedAt": 1690016160895,
+          "id": "78efac7d-087a-452e-bbfd-b578393d1ccd"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap11Binding_ChangeAppointment9",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/changeAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:ChangeAppointment>\n            <axi:prn>?</axi:prn>\n            <axi:appointment_number>?</axi:appointment_number>\n            <axi:company_code>?</axi:company_code>\n            <axi:slot_number>?</axi:slot_number>\n            <axi:token_number>?</axi:token_number>\n            <axi:reason>?</axi:reason>\n        </axi:ChangeAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "78efac7d-087a-452e-bbfd-b578393d1ccd",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.changeAppointment.cfcSoap11Binding_ChangeAppointment",
+          "saved": false,
+          "createdAt": 1690016174478,
+          "updatedAt": 1690016174478,
+          "id": "40babe49-9d57-4068-b8db-988f5048add4"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:ChangeAppointment",
+          "type": "requestHeader",
+          "requestId": "40babe49-9d57-4068-b8db-988f5048add4",
+          "createdAt": 1690016174502,
+          "updatedAt": 1690016174502,
+          "id": "0cb3ebdd-142b-47bf-8a3d-8ea3a23d4e57"
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "40babe49-9d57-4068-b8db-988f5048add4",
+          "createdAt": 1690016174502,
+          "updatedAt": 1690016174502,
+          "id": "3a8d25fb-8524-483a-be19-9805eb17cf56"
+        },
+        {
+          "type": "service",
+          "name": "ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfc",
+          "url": "http://192.168.200.215/ihp_uat/web_services/APPOINTMENT/cancelAppointment.cfc?wsdl",
+          "language": "wsdl",
+          "definition": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wsdl:definitions xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:ns=\"http://ws.apache.org/axis2\" xmlns:wsaw=\"http://www.w3.org/2006/05/addressing/wsdl\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\" xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\" xmlns:ns1=\"http://org.apache.axis2/xsd\" xmlns:ax219=\"http://rpc.xml.coldfusion/xsd\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\" targetNamespace=\"http://ws.apache.org/axis2\">\n    <wsdl:types>\n        <xs:schema xmlns:ax220=\"http://rpc.xml.coldfusion/xsd\" attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://ws.apache.org/axis2\">\n            <xs:import namespace=\"http://rpc.xml.coldfusion/xsd\"/>\n            <xs:element name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"CFCInvocationException\" nillable=\"true\" type=\"ax219:CFCInvocationException\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"CancelAppointment\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"prn\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"appointment_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"company_code\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"token_number\" nillable=\"true\" type=\"xs:string\"/>\n                        <xs:element minOccurs=\"0\" name=\"reason\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:element name=\"CancelAppointmentResponse\">\n                <xs:complexType>\n                    <xs:sequence>\n                        <xs:element minOccurs=\"0\" name=\"return\" nillable=\"true\" type=\"xs:string\"/>\n                    </xs:sequence>\n                </xs:complexType>\n            </xs:element>\n            <xs:complexType name=\"document\">\n                <xs:sequence>\n                    <xs:any/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n        <xs:schema attributeFormDefault=\"qualified\" elementFormDefault=\"qualified\" targetNamespace=\"http://rpc.xml.coldfusion/xsd\">\n            <xs:complexType name=\"CFCInvocationException\">\n                <xs:sequence/>\n            </xs:complexType>\n            <xs:complexType name=\"StructDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"entries\" nillable=\"true\" type=\"ax219:EntryDelegate\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"EntryDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"key\" nillable=\"true\" type=\"xs:anyType\"/>\n                    <xs:element minOccurs=\"0\" name=\"value\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"QueryBean\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"columnList\" nillable=\"true\" type=\"xs:string\"/>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"data\" nillable=\"true\" type=\"ax219:ArrayOfObject\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayOfObject\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"DocumentDelegate\">\n                <xs:sequence>\n                    <xs:element minOccurs=\"0\" name=\"document\" nillable=\"true\" type=\"ns:document\"/>\n                </xs:sequence>\n            </xs:complexType>\n            <xs:complexType name=\"ArrayDelegate\">\n                <xs:sequence>\n                    <xs:element maxOccurs=\"unbounded\" minOccurs=\"0\" name=\"array\" nillable=\"true\" type=\"xs:anyType\"/>\n                </xs:sequence>\n            </xs:complexType>\n        </xs:schema>\n    </wsdl:types>\n    <wsdl:message name=\"CancelAppointmentRequest\">\n        <wsdl:part name=\"parameters\" element=\"ns:CancelAppointment\"/>\n    </wsdl:message>\n    <wsdl:message name=\"CancelAppointmentResponse\">\n        <wsdl:part name=\"parameters\" element=\"ns:CancelAppointmentResponse\"/>\n    </wsdl:message>\n    <wsdl:message name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\">\n        <wsdl:part name=\"parameters\" element=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\"/>\n    </wsdl:message>\n    <wsdl:portType name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcPortType\">\n        <wsdl:operation name=\"CancelAppointment\">\n            <wsdl:input message=\"ns:CancelAppointmentRequest\" wsaw:Action=\"urn:CancelAppointment\"/>\n            <wsdl:output message=\"ns:CancelAppointmentResponse\" wsaw:Action=\"urn:CancelAppointmentResponse\"/>\n            <wsdl:fault message=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\" name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\" wsaw:Action=\"urn:CancelAppointmentihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\"/>\n        </wsdl:operation>\n    </wsdl:portType>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap11Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcPortType\">\n        <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"CancelAppointment\">\n            <soap:operation soapAction=\"urn:CancelAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\">\n                <soap:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:binding name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap12Binding\" type=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcPortType\">\n        <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\" style=\"document\"/>\n        <wsdl:operation name=\"CancelAppointment\">\n            <soap12:operation soapAction=\"urn:CancelAppointment\" style=\"document\"/>\n            <wsdl:input>\n                <soap12:body use=\"literal\"/>\n            </wsdl:input>\n            <wsdl:output>\n                <soap12:body use=\"literal\"/>\n            </wsdl:output>\n            <wsdl:fault name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\">\n                <soap12:fault use=\"literal\" name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcCFCInvocationException\"/>\n            </wsdl:fault>\n        </wsdl:operation>\n    </wsdl:binding>\n    <wsdl:service name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfc\">\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcHttpSoap11Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap11Binding\">\n            <soap:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/cancelAppointment.cfc\"/>\n        </wsdl:port>\n        <wsdl:port name=\"ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcHttpSoap12Endpoint\" binding=\"ns:ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap12Binding\">\n            <soap12:address location=\"http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/cancelAppointment.cfc\"/>\n        </wsdl:port>\n    </wsdl:service>\n</wsdl:definitions>",
+          "collapsed": false,
+          "createdAt": 1690017849343,
+          "updatedAt": 1690017849343,
+          "id": "9d082f83-5094-44d5-85e4-5a0e355a2d13"
+        },
+        {
+          "type": "request",
+          "projectId": null,
+          "folderId": "ccc3522f-150f-4b24-8658-e528dbc3344f",
+          "name": "ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap11Binding_CancelAppointment10",
+          "url": "http://192.168.200.215:80/ihp_uat/web_services/APPOINTMENT/cancelAppointment.cfc",
+          "method": "POST",
+          "bodyType": "xml",
+          "bodyXml": "<x:Envelope\n    xmlns:x=\"http://schemas.xmlsoap.org/soap/envelope/\"\n    xmlns:axi=\"http://ws.apache.org/axis2\">\n    <x:Header/>\n    <x:Body>\n        <axi:CancelAppointment>\n            <axi:prn>?</axi:prn>\n            <axi:appointment_number>?</axi:appointment_number>\n            <axi:company_code>?</axi:company_code>\n            <axi:token_number>?</axi:token_number>\n            <axi:reason>?</axi:reason>\n        </axi:CancelAppointment>\n    </x:Body>\n</x:Envelope>",
+          "bodyJson": "",
+          "bodyText": "",
+          "authType": null,
+          "response": null,
+          "reqTabIndex": 0,
+          "resTabIndex": 0,
+          "description": null,
+          "reqPanelSize": 1,
+          "resPanelSize": 0,
+          "spec": "wsdl",
+          "serviceId": "9d082f83-5094-44d5-85e4-5a0e355a2d13",
+          "operationId": "ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap11Binding_CancelAppointment",
+          "saved": false,
+          "createdAt": 1690017854653,
+          "updatedAt": 1690045631338,
+          "id": "c1b0ebdf-9553-4da4-964b-5a952c7d22ba",
+          "previewMode": false
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/xml; charset=utf-8",
+          "type": "requestHeader",
+          "requestId": "c1b0ebdf-9553-4da4-964b-5a952c7d22ba",
+          "createdAt": 1690017854682,
+          "updatedAt": 1690017854682,
+          "id": "2df3953b-85f9-4db8-8afa-f508c535293f"
+        },
+        {
+          "type": "tab",
+          "requestId": "c1b0ebdf-9553-4da4-964b-5a952c7d22ba",
+          "title": "ihp_uat.web_services.APPOINTMENT.cancelAppointment.cfcSoap11Binding_CancelAppointment10",
+          "view": "HttpClient",
+          "createdAt": 1690017854682,
+          "updatedAt": 1690017854682,
+          "id": "7f49d891-0cf9-4607-9205-f9c61cc8031c"
+        },
+        {
+          "enabled": true,
+          "name": "SOAPAction",
+          "value": "urn:CancelAppointment",
+          "type": "requestHeader",
+          "requestId": "c1b0ebdf-9553-4da4-964b-5a952c7d22ba",
+          "createdAt": 1690017854682,
+          "updatedAt": 1690017854682,
+          "id": "c331922d-4580-4a52-9221-9952d5b20791"
+        }
+      ]
+    }
+  ]
+}

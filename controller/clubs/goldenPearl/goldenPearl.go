@@ -8,6 +8,7 @@ import (
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
     clubsSvc "vesaliusm/service/clubs"
+    "vesaliusm/service/mail"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
@@ -16,11 +17,13 @@ import (
 
 type ClubsGoldenPearlController struct {
     clubService *clubsSvc.ClubService
+    mailService *mail.MailService
 }
 
 func NewClubsGoldenPearlController() *ClubsGoldenPearlController {
     return &ClubsGoldenPearlController{
         clubService: clubsSvc.ClubSvc,
+        mailService: mail.MailSvc,
     }
 }
 
@@ -77,11 +80,11 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -130,20 +133,28 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         return err
     }
 
-    emailPrm := map[string]interface{}{
+    emailPrm := utils.Map{
         "goldenName": o.GoldenName.String,
         "email":      "",
     }
     if o.GoldenEmail.Valid {
         emailPrm["email"] = o.GoldenEmail.String
-
+        go func() {
+            cr.mailService.SendGoldenPearl(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
     if o.NokEmail.Valid {
         emailPrm["email"] = o.NokEmail.String
-
+        go func() {
+            cr.mailService.SendGoldenPearl(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
+
+    go func() {
+        cr.mailService.SendGoldenPearl(emailPrm)
+    }()
 
     return c.JSON(fiber.Map{
         "message": "Golden Pearl Membership created",
@@ -208,11 +219,11 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -261,20 +272,28 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         return err
     }
 
-    emailPrm := map[string]interface{}{
+    emailPrm := utils.Map{
         "goldenName": o.GoldenName.String,
         "email":      "",
     }
     if o.GoldenEmail.Valid {
         emailPrm["email"] = o.GoldenEmail.String
-
+        go func() {
+            cr.mailService.SendGoldenPearl(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
     if o.NokEmail.Valid {
         emailPrm["email"] = o.NokEmail.String
-
+        go func() {
+            cr.mailService.SendGoldenPearl(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
+
+    go func() {
+        cr.mailService.SendGoldenPearl(emailPrm)
+    }()
 
     return c.JSON(fiber.Map{
         "message": "Golden Pearl Membership created",
@@ -325,11 +344,11 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -436,26 +455,18 @@ func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlMembership(c fiber.
 // @Success 200 {array} clubs.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/export/search [post]
 func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlMembership(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     return nil
@@ -492,26 +503,18 @@ func (cr *ClubsGoldenPearlController) GetAllGoldenPearlMemberships(c fiber.Ctx) 
 // @Success 200 {array} clubs.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/all [post]
 func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlMembership(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     page := c.Query("_page", "1")
@@ -581,17 +584,22 @@ func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx
             return err
         }
 
-        emailPrm := map[string]interface{}{
+        emailPrm := utils.Map{
             "activityName": activity.GoldenActivityName,
             "memberName":   goldenMember.GoldenName,
             "email":        "",
         }
-
         if goldenMember.GoldenEmail.Valid {
             emailPrm["email"] = goldenMember.GoldenEmail.String
-
+            go func() {
+                cr.mailService.SendClubsEventRegistrationToMember(emailPrm)
+            }()
             emailPrm["email"] = ""
         }
+
+        go func() {
+            cr.mailService.SendClubsEventRegistrationToIH(emailPrm)
+        }()
     }
 
     err := cr.clubService.ParticipateGoldenPearlActivity(actvParticipation)
@@ -775,36 +783,25 @@ func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlActivities(c fiber.Ctx
 // @Success 200 {array} clubs.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/all [post]
 func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlActivities(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-        key3 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
         }
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
-            }
-        }
-    }
-    if keyword, ok := data["keyword3"]; ok {
-        key3 = keyword.(string)
-        if key3 != "" {
-            if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
-            }
+    if key3 != "" {
+        if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
         }
     }
 
@@ -885,26 +882,18 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx)
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
 
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     m, err := cr.clubService.ListGoldenPearlAttendeesByKeyword(iactivityId, key, key2, page, limit)

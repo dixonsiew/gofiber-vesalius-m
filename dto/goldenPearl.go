@@ -39,8 +39,8 @@ type GoldenPearlAboutUsDto struct {
 }
 
 type GoldenActvParticipationDto struct {
-    GoldenActivityId   int    `json:"goldenActivityId"   validate:"required"`
-    GoldenMembershipId int    `json:"goldenMembershipId" validate:"required"`
+    GoldenActivityId   int    `json:"goldenActivityId"   validate:"required,numeric"`
+    GoldenMembershipId int    `json:"goldenMembershipId" validate:"required,numeric"`
     ActivityDateTime   string `json:"activityDateTime"   validate:"required"`
 }
 

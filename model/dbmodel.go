@@ -105,7 +105,7 @@ type CronjobHistory struct {
     StartDate             null.String `json:"startDate" db:"START_DATE" swaggertype:"string"`
     EndDate               null.String `json:"endDate" db:"END_DATE" swaggertype:"string"`
     CronjobStatus         null.String `json:"cronjobStatus" db:"CRONJOB_STATUS" swaggertype:"string"`
-    Remarks               null.String `json:"remarks" db:"REMARKS"`
+    Remarks               null.String `json:"remarks" db:"REMARKS" swaggertype:"string"`
 }
 
 type DynamicEmailMaster struct {
@@ -214,7 +214,11 @@ type PatientNOK struct {
     RefNo           null.Int64  `json:"refNo" db:"REF_NO" swaggertype:"integer"`
     MaritalStatus   null.String `json:"maritalStatus" db:"NOK_MARITAL" swaggertype:"string"`
     Email           null.String `json:"email" db:"NOK_EMAIL" swaggertype:"string"`
-    NRICPassport    null.String `json:"nricPassport" db:"NRIC_PASSPORT" swaggertype:"string"`
+    NRICPassport    null.String `json:"nricPassport" swaggertype:"string"`
+}
+
+func (o *PatientNOK) Set(s string) {
+    o.NRICPassport = utils.NewNullString(s)
 }
 
 type ApplicationUserFamily struct {

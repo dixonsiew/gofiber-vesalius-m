@@ -3,6 +3,7 @@ package applicationUserNotification
 import (
     "context"
     "database/sql"
+    "strings"
     "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
@@ -90,11 +91,12 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
         db = conn
     }
     query := `
-        SELECT ` + utils.GetDbCols(model.OnesignalNotification{}, "") + ` FROM APPLICATION_USER_NOTIFICATION 
+        SELECT * FROM APPLICATION_USER_NOTIFICATION 
         WHERE USER_ID = :userId AND DATE_SENT IS NOT NULL
         ORDER BY DATE_SENT DESC 
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "*", utils.GetDbCols(model.OnesignalNotification{}, ""), 1)
     list := make([]model.OnesignalNotification, 0)
     err := db.SelectContext(s.ctx, &list, query, userId, offset, limit)
     if err != nil {
@@ -108,7 +110,8 @@ func (s *ApplicationUserNotificationService) FindAllByUserId(userId int64, offse
 }
 
 func (s *ApplicationUserNotificationService) FindByNotificationId(notificationId int64) (*model.OnesignalNotification, error) {
-    query := `SELECT ` + utils.GetDbCols(model.OnesignalNotification{}, "") + ` FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`
+    query := `SELECT * FROM APPLICATION_USER_NOTIFICATION WHERE NOTIFICATION_ID = :notificationId`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.OnesignalNotification{}, ""), 1)
     var o model.OnesignalNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationId)
     if err != nil {

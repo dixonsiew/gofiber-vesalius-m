@@ -13,6 +13,7 @@ func SetupRoutes(router fiber.Router) {
 
 func (c *FutureOrderController) registerRoutes(router fiber.Router) {
     api := router.Group("/future-order")
+    
     api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
     api.Get("/all/:prn", c.GetAllFutureOrder)
 }

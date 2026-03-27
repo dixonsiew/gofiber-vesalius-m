@@ -257,7 +257,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "AdminPortalLogDto Request",
+                        "description": "AdminPortalLogDto",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -374,12 +374,43 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "PostLinkUserPrnDto Request",
+                        "description": "PostChangePasswordDto",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.PostChangePasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/change-signin-type": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "ChangeSignInTypeDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ChangeSignInTypeDto"
                         }
                     }
                 ],
@@ -405,7 +436,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "PostChangeUserPasswordDto Request",
+                        "description": "PostChangeUserPasswordDto",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -494,13 +525,42 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "PostLinkUserPrnDto Request",
+                        "description": "PostLinkUserPrnDto",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.PostLinkUserPrnDto"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/resend-user-signup-email/{email}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -704,6 +764,39 @@ const docTemplate = `{
                     "Clubs"
                 ],
                 "parameters": [
+                    {
+                        "description": "GoldenPearlAboutUsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlAboutUsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/clubs/goldenpearl/about-us/{goldenPearlId}": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clubs"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "goldenPearlId",
+                        "name": "goldenPearlId",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "GoldenPearlAboutUsDto",
                         "name": "request",
@@ -2600,6 +2693,175 @@ const docTemplate = `{
                 }
             }
         },
+        "/login/v2": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "description": "New Login Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.NewLoginDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/my-family": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MyFamily"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_self",
+                        "name": "_self",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_isForAppt",
+                        "name": "_isForAppt",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUserFamily"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/my-family/all/{userId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MyFamily"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_self",
+                        "name": "_self",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_isForAppt",
+                        "name": "_isForAppt",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUserFamily"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/my-family/familyId/{familyId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MyFamily"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FamilyId",
+                        "name": "familyId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ApplicationUserFamily"
+                        }
+                    }
+                }
+            }
+        },
         "/notification/all": {
             "get": {
                 "security": [
@@ -2783,6 +3045,29 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/model.Branch"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ApplicationUser"
                         }
                     }
                 }
@@ -2977,6 +3262,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/active-user/{userId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user/add-machine-id": {
             "post": {
                 "security": [
@@ -2992,7 +3306,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "AddMachineId Request",
+                        "description": "AddMachineId",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -3033,6 +3347,52 @@ const docTemplate = `{
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUser"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -3088,6 +3448,221 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/branches": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AssignBranch"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/change-password": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostChangePasswordDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostChangePasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/delete-account": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/disable-firsttime-bio": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/inactive-user/{userId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/notification/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.OnesignalNotification"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/notification/unseen/count": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/set-new-password": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostUserSetNewPasswordDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostUserSetNewPasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user/update-playerid/{playerId}": {
             "post": {
                 "security": [
@@ -3108,6 +3683,116 @@ const docTemplate = `{
                         "name": "playerId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/userId/{userId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ApplicationUser"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/verify": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "UserEmailVerificationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserEmailVerificationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/verify-email": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "UserEmailVerificationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserEmailVerificationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/verify-smstac": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "UserMobileVerificationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserMobileVerificationDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -3553,6 +4238,30 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ChangeSignInTypeDto": {
+            "type": "object",
+            "required": [
+                "signInType",
+                "user_id"
+            ],
+            "properties": {
+                "signInEmailAddress": {
+                    "type": "string"
+                },
+                "signInEmailPassword": {
+                    "type": "string"
+                },
+                "signInMobileNumber": {
+                    "type": "string"
+                },
+                "signInType": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.CheckPackageDto": {
             "type": "object",
             "required": [
@@ -3992,6 +4701,37 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.NewLoginDto": {
+            "type": "object",
+            "required": [
+                "signInType",
+                "username"
+            ],
+            "properties": {
+                "fromBiometric": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "machineId": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "default": "Abcd1234"
+                },
+                "playerId": {
+                    "type": "string"
+                },
+                "signInType": {
+                    "type": "integer",
+                    "default": 2
+                },
+                "username": {
+                    "type": "string",
+                    "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
         "dto.PostChangePasswordDto": {
             "type": "object",
             "required": [
@@ -4090,6 +4830,25 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PostUserSetNewPasswordDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "verificationCode"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "verificationCode": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.SearchKeyword2Dto": {
             "type": "object",
             "properties": {
@@ -4136,6 +4895,36 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword4": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserEmailVerificationDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "verificationCode"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "verificationCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserMobileVerificationDto": {
+            "type": "object",
+            "required": [
+                "mobileNo",
+                "tac"
+            ],
+            "properties": {
+                "mobileNo": {
+                    "type": "string"
+                },
+                "tac": {
                     "type": "string"
                 }
             }
@@ -4385,6 +5174,71 @@ const docTemplate = `{
                 },
                 "verificationCode": {
                     "type": "string"
+                }
+            }
+        },
+        "model.ApplicationUserFamily": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "auf_id": {
+                    "type": "integer"
+                },
+                "contactNumber": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "docNumber": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "isGoldenPearl": {
+                    "type": "boolean"
+                },
+                "isKidsExplorer": {
+                    "type": "boolean"
+                },
+                "isPatient": {
+                    "type": "boolean"
+                },
+                "maritalStatus": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "nokRefNumber": {
+                    "type": "integer"
+                },
+                "nricPassport": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

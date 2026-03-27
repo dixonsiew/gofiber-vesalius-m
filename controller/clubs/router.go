@@ -1,8 +1,8 @@
 package clubs
 
 import (
-    "vesaliusm/controller/clubs/goldenpearl"
-	"vesaliusm/controller/clubs/littlekids"
+    "vesaliusm/controller/clubs/goldenPearl"
+	"vesaliusm/controller/clubs/littleKids"
 
     "github.com/gofiber/fiber/v3"
 )

@@ -11,4 +11,5 @@ func SetupRoutes(router fiber.Router) {
 
 func (c *AuthController) registerRoutes(router fiber.Router) {
     router.Post("/login", c.Login)
+    router.Post("/login/v2", c.NewLogin)
 }

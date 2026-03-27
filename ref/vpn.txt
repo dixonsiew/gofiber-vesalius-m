@@ -1,0 +1,4 @@
+Sophos Connect VPN (IHP-UAT ONSITE)
+user : nova-kiancheong.lam
+pass : Nova@123
+Remote IP : 192.168.200.46 - administrator / P@ssw0rd

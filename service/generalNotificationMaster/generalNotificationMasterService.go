@@ -3,6 +3,7 @@ package generalNotificationMaster
 import (
     "context"
     "database/sql"
+    "strings"
     "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
@@ -105,7 +106,8 @@ func (s *GeneralNotificationMasterService) Update(o *model.GeneralNotification, 
 }
 
 func (s *GeneralNotificationMasterService) FindByNotificationMasterId(notificationMasterId int64) (*model.GeneralNotification, error) {
-    query := `SELECT ` + utils.GetDbCols(model.GeneralNotification{}, "") + ` FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notification_master_id`
+    query := `SELECT * FROM GENERAL_NOTIFICATION_MASTER WHERE NOTIFICATION_MASTER_ID = :notification_master_id`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.GeneralNotification{}, ""), 1)
     var o model.GeneralNotification
     err := s.db.GetContext(s.ctx, &o, query, notificationMasterId)
     if err != nil {
@@ -156,9 +158,10 @@ func (s *GeneralNotificationMasterService) FindAll(offset int, limit int, conn *
         db = conn
     }
     query := `
-        SELECT ` + utils.GetDbCols(model.GeneralNotification{}, "") + ` FROM GENERAL_NOTIFICATION_MASTER
+        SELECT * FROM GENERAL_NOTIFICATION_MASTER
         ORDER BY DATE_CREATE DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "*", utils.GetDbCols(model.GeneralNotification{}, ""), 1)
     list := make([]model.GeneralNotification, 0)
     err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {

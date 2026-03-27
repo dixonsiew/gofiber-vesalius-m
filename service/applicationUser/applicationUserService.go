@@ -4,7 +4,6 @@ import (
     "context"
     "database/sql"
     "fmt"
-    "math/rand"
     "strings"
     "vesaliusm/database"
     "vesaliusm/model"
@@ -66,8 +65,8 @@ func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) (
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") +
-        ` FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     list := make([]model.ApplicationUser, 0)
     err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -146,13 +145,13 @@ func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit
         db = s.db
     }
     query := `
-        SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "au.") +
-        ` FROM APPLICATION_USER au
+        SELECT au.* FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
         OR au.MASTER_PRN LIKE :key OR LOWER(au.EMAIL) LIKE :key)
         AND INACTIVE_FLAG = 'N'
         ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.Replace(query, "au.*", utils.GetDbCols(model.ApplicationUser{}, "au."), 1)
     users := make([]model.ApplicationUser, 0)
     err := db.SelectContext(s.ctx, &users, query,
         sql.Named("key", strings.ToLower(keyword)),
@@ -208,7 +207,8 @@ func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (
 }
 
 func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId string) (*model.ApplicationUser, error) {
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
+    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId AND SESSION_ID = :sessionId`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := s.db.GetContext(s.ctx, &o, query, userId, sessionId)
     if err != nil {
@@ -227,7 +227,8 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE USER_ID = :userId`
+    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := db.GetContext(s.ctx, &o, query, userId)
     if err != nil {
@@ -246,7 +247,8 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
+    query := `SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := db.GetContext(s.ctx, &o, query, username)
     if err != nil {
@@ -265,7 +267,8 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
+    query := `SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := db.GetContext(s.ctx, &o, query, email)
     if err != nil {
@@ -284,7 +287,8 @@ func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.Ap
     if db == nil {
         db = s.db
     }
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
+    query := `SELECT * FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := db.GetContext(s.ctx, &o, query, prn)
     if err != nil {
@@ -349,8 +353,8 @@ func (s *ApplicationUserService) FindWithAssignBranchByEmail(email string) (*mod
 }
 
 func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") +
-        ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`
+    query := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE USER_ID = :userId)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AssignBranch{}, ""), 1)
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, userId)
     if err != nil {
@@ -364,8 +368,8 @@ func (s *ApplicationUserService) FindAssignBranchByUserId(userId int64, branchId
 }
 
 func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
-    query := `SELECT ` + utils.GetDbCols(model.AssignBranch{}, "") +
-        ` FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`
+    query := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND USER_ID IN (SELECT USER_ID FROM APPLICATION_USER WHERE EMAIL = :email)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AssignBranch{}, ""), 1)
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, email)
     if err != nil {
@@ -381,7 +385,8 @@ func (s *ApplicationUserService) FindAssignBranchByEmail(email string, branchId 
 func (s *ApplicationUserService) FindByOtherPRN(prn string, userId int64) (*model.ApplicationUser, error) {
     // Original query: SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :1 AND ab.PRN = :2)
     // Note: 'ab.PRN' likely missing table alias, but we'll replicate.
-    query := `SELECT ` + utils.GetDbCols(model.ApplicationUser{}, "") + ` FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`
+    query := `SELECT * FROM APPLICATION_USER WHERE USER_ID IN (SELECT USER_ID FROM ASSIGN_BRANCH WHERE USER_ID <> :userId AND PRN = :prn)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
     err := s.db.GetContext(s.ctx, &o, query, userId, prn)
     if err != nil {
@@ -574,7 +579,7 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
         utils.LogError(err)
         return err
     }
-    verificationCode := getRandomStr(6)
+    verificationCode := utils.GetRandomStr(6)
 
     tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
@@ -654,7 +659,7 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
             return err
         }
     }
-    verificationCode := getRandomStr(6)
+    verificationCode := utils.GetRandomStr(6)
 
     // Convert bool to Y/N
     isGoldenPearl := "N"
@@ -781,7 +786,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
             return 0, err
         }
     }
-    verificationCode := getRandomStr(6)
+    verificationCode := utils.GetRandomStr(6)
     firstTimeLogin := 0
     if o.FirstTimeLoginV.Valid && o.FirstTimeLoginV.Int32 == 1 {
         firstTimeLogin = 1
@@ -871,7 +876,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
 }
 
 func (s *ApplicationUserService) SaveResetPassword(o *model.ApplicationUser) error {
-    newPwd := getRandomStr(6)
+    newPwd := utils.GetRandomStr(6)
     hashedPwd, err := bcrypt.GenerateFromPassword([]byte(newPwd), saltRounds)
     if err != nil {
         utils.LogError(err)
@@ -909,7 +914,7 @@ func (s *ApplicationUserService) SavePassword(o *model.ApplicationUser) error {
 }
 
 func (s *ApplicationUserService) GenerateVerificationCode(o *model.ApplicationUser) error {
-    code := getRandomStr(6)
+    code := utils.GetRandomStr(6)
     o.VerificationCode = utils.NewNullString(code)
     query := `UPDATE APPLICATION_USER SET VERIFICATION_CODE = :verificationCode WHERE USER_ID = :userId`
     _, err := s.db.ExecContext(s.ctx, query,
@@ -1198,15 +1203,6 @@ func (s *ApplicationUserService) SetLogout(userId int64) error {
         utils.LogError(err)
     }
     return err
-}
-
-func getRandomStr(length int) string {
-    const charset = "0123456789"
-    b := make([]byte, length)
-    for i := range b {
-        b[i] = charset[rand.Intn(len(charset))]
-    }
-    return string(b)
 }
 
 func (s *ApplicationUserService) ValidateCredentials(user *model.ApplicationUser, password string) bool {

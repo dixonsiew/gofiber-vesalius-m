@@ -8,6 +8,7 @@ import (
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
     clubsSvc "vesaliusm/service/clubs"
+    "vesaliusm/service/mail"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
@@ -16,11 +17,13 @@ import (
 
 type ClubsLittleKidsController struct {
     clubService *clubsSvc.ClubService
+    mailService *mail.MailService
 }
 
 func NewClubsLittleKidsController() *ClubsLittleKidsController {
     return &ClubsLittleKidsController{
         clubService: clubsSvc.ClubSvc,
+        mailService: mail.MailSvc,
     }
 }
 
@@ -77,11 +80,11 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -132,20 +135,28 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         return err
     }
 
-    emailPrm := map[string]interface{}{
+    emailPrm := utils.Map{
         "kidsName": o.KidsName.String,
         "email":    "",
     }
     if o.KidsEmail.Valid {
         emailPrm["email"] = o.KidsEmail.String
-
+        go func() {
+            cr.mailService.SendLittleKids(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
     if o.GuardianEmail.Valid {
         emailPrm["email"] = o.GuardianEmail.String
-
+        go func() {
+            cr.mailService.SendLittleKids(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
+
+    go func() {
+        cr.mailService.SendLittleKids(emailPrm)
+    }()
 
     return c.JSON(fiber.Map{
         "message": "Little Explorers Kids Membership created",
@@ -210,11 +221,11 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -265,20 +276,28 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         return err
     }
 
-    emailPrm := map[string]interface{}{
+    emailPrm := utils.Map{
         "kidsName": o.KidsName.String,
         "email":    "",
     }
     if o.KidsEmail.Valid {
         emailPrm["email"] = o.KidsEmail.String
-
+        go func() {
+            cr.mailService.SendLittleKids(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
     if o.GuardianEmail.Valid {
         emailPrm["email"] = o.GuardianEmail.String
-
+        go func() {
+            cr.mailService.SendLittleKids(emailPrm)
+        }()
         emailPrm["email"] = ""
     }
+
+    go func() {
+        cr.mailService.SendLittleKids(emailPrm)
+    }()
 
     return c.JSON(fiber.Map{
         "message": "Little Explorers Kids Membership created",
@@ -329,11 +348,11 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -442,26 +461,18 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsMembership(c fiber.Ct
 // @Success 200 {array} clubs.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     return nil
@@ -500,26 +511,18 @@ func (cr *ClubsLittleKidsController) GetAllLittleKidsMemberships(c fiber.Ctx) er
 // @Success 200 {array} clubs.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/all [post]
 func (cr *ClubsLittleKidsController) SearchAllLittleKidsMembership(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     page := c.Query("_page", "1")
@@ -587,15 +590,22 @@ func (cr *ClubsLittleKidsController) ParticipateLittleKidsActivity(c fiber.Ctx) 
             return err
         }
 
-        emailPrm := map[string]string{
+        emailPrm := utils.Map{
             "activityName": activity.KidsActivityName.String,
             "memberName":   kidsMember.KidsName.String,
             "email":        "",
         }
         if kidsMember.KidsEmail.Valid {
             emailPrm["email"] = kidsMember.KidsEmail.String
+            go func() {
+                cr.mailService.SendClubsEventRegistrationToMember(emailPrm)
+            }()
             emailPrm["email"] = ""
         }
+
+        go func() {
+            cr.mailService.SendClubsEventRegistrationToIH(emailPrm)
+        }()
     }
 
     err := cr.clubService.ParticipateLittleKidsActivity(actvParticipation)
@@ -716,36 +726,25 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsActivity(c fiber.Ctx)
 // @Success 200 {array} clubs.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-        key3 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
         }
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
-            }
-        }
-    }
-    if keyword, ok := data["keyword3"]; ok {
-        key3 = keyword.(string)
-        if key3 != "" {
-            if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
-            }
+    if key3 != "" {
+        if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
         }
     }
 
@@ -807,36 +806,25 @@ func (cr *ClubsLittleKidsController) GetAllAppLittleKidsActivities(c fiber.Ctx) 
 // @Success 200 {array} clubs.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/all [post]
 func (cr *ClubsLittleKidsController) SearchAllLittleKidsActivities(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-        key3 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
         }
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
-            }
-        }
-    }
-    if keyword, ok := data["keyword3"]; ok {
-        key3 = keyword.(string)
-        if key3 != "" {
-            if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
-            }
+    if key3 != "" {
+        if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
         }
     }
 
@@ -919,26 +907,18 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) e
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
 
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
 
-    var (
-        key  string
-        key2 string
-    )
-    if keyword, ok := data["keyword"]; ok {
-        key = keyword.(string)
-        if key != "" {
-            key = "%" + key + "%"
-        }
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
     }
-    if keyword, ok := data["keyword2"]; ok {
-        key2 = keyword.(string)
-        if key2 != "" {
-            key2 = "%" + key2 + "%"
-        }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
     }
 
     m, err := cr.clubService.ListLittleKidsAttendeesByKeyword(iactivityId, key, key2, page, limit)

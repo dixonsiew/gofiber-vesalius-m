@@ -1,19 +1,22 @@
 package utils
 
 import (
-	"fmt"
-	"os"
-	"reflect"
-	"strings"
-	"time"
+    "fmt"
+    "math/rand"
+    "os"
+    "reflect"
+    "strings"
+    "time"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/go-resty/resty/v2"
-	"github.com/gofiber/fiber/v3"
-	"github.com/guregu/null/v6"
-	"github.com/rs/zerolog"
-	"github.com/ztrue/tracerr"
+    "github.com/go-playground/validator/v10"
+    "github.com/go-resty/resty/v2"
+    "github.com/gofiber/fiber/v3"
+    "github.com/guregu/null/v6"
+    "github.com/rs/zerolog"
+    "github.com/ztrue/tracerr"
 )
+
+type Map map[string]any
 
 type StructValidator struct {
     Xvalidate *validator.Validate
@@ -39,6 +42,10 @@ func SetLogger(runLogFile *os.File) {
     Logger = zerolog.New(multi).Level(zerolog.ErrorLevel).With().Timestamp().Caller().Logger()
 
     iLogger = zerolog.New(os.Stdout).Level(zerolog.DebugLevel).With().Timestamp().Logger()
+}
+
+func GetR() *resty.Request {
+    return client.R()
 }
 
 func GetDbColsWithReplace(s interface{}, prefix string, m map[string]string) string {
@@ -180,6 +187,31 @@ func GetErrors(errs []error) string {
     }
 
     return strings.Join(ls, "|")
+}
+
+func (m Map) GetString(key string) string {
+    s := ""
+    val, ok := m[key]
+    if !ok {
+        return s
+    }
+
+    r, ok := val.(string)
+    if !ok {
+        return s
+    }
+
+    return r
+
+}
+
+func GetRandomStr(length int) string {
+    const charset = "0123456789"
+    b := make([]byte, length)
+    for i := range b {
+        b[i] = charset[rand.Intn(len(charset))]
+    }
+    return string(b)
 }
 
 func CatchPanic(funcName string) {

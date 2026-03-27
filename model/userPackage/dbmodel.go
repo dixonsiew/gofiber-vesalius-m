@@ -148,7 +148,7 @@ func (o *UserPackage) SetMobile() {
     }
 }
 
-func (o *UserPackage) SetWebadmin() {
+func (o *UserPackage) SetWebAdmin() {
     if !o.OrderedDateTime.Valid {
         o.OrderedDateTime = utils.NewNullString("-")
     }

@@ -8,8 +8,8 @@ type SearchPurchaseHistoryDto struct {
 }
 
 type CheckPackageDto struct {
-    PackageId         int64 `json:"package_id" validate:"required,number"`
-    QuantityPurchased int   `json:"quantityPurchased" validate:"required,number"`
+    PackageId         int64 `json:"package_id" validate:"required,numeric"`
+    QuantityPurchased int   `json:"quantityPurchased" validate:"required,numeric"`
 }
 
 type UserPackagePaymentDto struct {
@@ -43,19 +43,19 @@ type GuestPackagePaymentDto struct {
 type UserPackageDto struct {
     PatientPrn        string  `json:"patientPrn" validate:"required"`
     PatientName       string  `json:"patientName" validate:"required"`
-    PackageId         int64   `json:"package_id" validate:"required,number"`
+    PackageId         int64   `json:"package_id" validate:"required,numeric"`
     PackageName       string  `json:"packageName" validate:"required"`
-    PackagePrice      float64 `json:"packagePrice" validate:"required,number"`
-    QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,number"`
+    PackagePrice      float64 `json:"packagePrice" validate:"required,numeric"`
+    QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,numeric"`
 }
 
 type GuestPackageDto struct {
     PatientPrn        string  `json:"patientPrn" validate:"required"`
     PatientName       string  `json:"patientName" validate:"required"`
-    PackageId         int64   `json:"package_id" validate:"required,number"`
+    PackageId         int64   `json:"package_id" validate:"required,numeric"`
     PackageName       string  `json:"packageName" validate:"required"`
-    PackagePrice      float64 `json:"packagePrice" validate:"required"`
-    QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,number"`
+    PackagePrice      float64 `json:"packagePrice" validate:"required,numeric"`
+    QuantityPurchased int     `json:"quantityPurchased" validate:"required,min=0,numeric"`
 }
 
 type CheckPackageExpiryMaxpurchaseDto struct {

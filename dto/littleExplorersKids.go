@@ -36,8 +36,8 @@ type LittleExplorersKidsAboutUsDto struct {
 }
 
 type KidsActvParticipationDto struct {
-    KidsActivityId   int    `json:"kidsActivityId" validate:"required"`
-    KidsMembershipId int    `json:"kidsMembershipId" validate:"required"`
+    KidsActivityId   int    `json:"kidsActivityId" validate:"required,numeric"`
+    KidsMembershipId int    `json:"kidsMembershipId" validate:"required,numeric"`
     ActivityDateTime string `json:"activityDateTime" validate:"required"`
 }
 

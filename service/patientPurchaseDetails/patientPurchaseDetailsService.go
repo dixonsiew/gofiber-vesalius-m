@@ -64,19 +64,14 @@ func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 
     return count, nil
 }
 
-func (s *PatientPurchaseDetailsService) ListByPrn(userId int64, page string, limit string) (*model.PagedList, error) {
-    user, err := s.applicationuserService.FindByUserId(userId, s.db)
-    if err != nil {
-        return nil, err
-    }
-    prn := user.MasterPrn.String
-    total, err := s.CountByPrn(prn)
+func (s *PatientPurchaseDetailsService) ListByUserId(userId int64, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByUserId(userId)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllByPrn(prn, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindAllByUserId(userId, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
@@ -88,10 +83,10 @@ func (s *PatientPurchaseDetailsService) ListByPrn(userId int64, page string, lim
     }, nil
 }
 
-func (s *PatientPurchaseDetailsService) CountByPrn(prn string) (int, error) {
-    query := `SELECT COUNT(PATIENT_PURCHASE_ID) FROM PATIENT_PURCHASE_DETAILS WHERE PATIENT_PRN = :prn`
+func (s *PatientPurchaseDetailsService) CountByUserId(userId int64) (int, error) {
+    query := `SELECT COUNT(PATIENT_PURCHASE_ID) FROM PATIENT_PURCHASE_DETAILS WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId)`
     var count int
-    err := s.db.GetContext(s.ctx, &count, query, prn)
+    err := s.db.GetContext(s.ctx, &count, query, userId)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -135,14 +130,16 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
     args = append(args, sql.Named("limit", limit))
 
     base := `
-        SELECT ` +
-        getPatientPurchaseDetailsCols("ppd.") + `, ` +
-        getHospitalPackageCols("hp.") + `, ` +
-        getPackagePaymentDetailsCols("ppd2.") + `
+        SELECT ppd.*, hp.*, ppd2.*
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
     `
+    base = strings.NewReplacer(
+        "ppd.*", getPatientPurchaseDetailsCols("ppd."),
+        "hp.*", getHospitalPackageCols("hp."),
+        "ppd2.*", getPackagePaymentDetailsCols("ppd2."),
+    ).Replace(base)
     query := base + whereClause(conditions) +
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
@@ -161,7 +158,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
             utils.LogError(err)
             return nil, err
         }
-        o.SetWebadmin()
+        o.SetWebAdmin()
         list = append(list, o)
     }
     return list, nil
@@ -169,10 +166,7 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
 
 func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
-        SELECT ` +
-        getPatientPurchaseDetailsCols("ppd.") + `, ` +
-        getHospitalPackageCols("hp.") + `, ` +
-        getPackagePaymentDetailsCols("ppd2.") + `
+        SELECT ppd.*, hp.*, ppd2.*
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -180,6 +174,11 @@ func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPa
         ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
+    query = strings.NewReplacer(
+        "ppd.*", getPatientPurchaseDetailsCols("ppd."),
+        "hp.*", getHospitalPackageCols("hp."),
+        "ppd2.*", getPackagePaymentDetailsCols("ppd2."),
+    ).Replace(query)
     list := make([]userPackage.UserPackage, 0)
     err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
@@ -187,7 +186,7 @@ func (s *PatientPurchaseDetailsService) FindAll(offset int, limit int) ([]userPa
         return list, err
     }
     for i := range list {
-        list[i].SetWebadmin()
+        list[i].SetWebAdmin()
     }
     return list, nil
 }
@@ -230,7 +229,7 @@ func (s *PatientPurchaseDetailsService) FindAllByPaymentId(paymentId int64) ([]u
     return list, nil
 }
 
-func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, limit int) ([]userPackage.UserPackage, error) {
+func (s *PatientPurchaseDetailsService) FindAllByUserId(userId int64, offset int, limit int) ([]userPackage.UserPackage, error) {
     query := `
         SELECT
           ppd.PACKAGE_PURCHASE_NO, 
@@ -262,12 +261,12 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
           GROUP BY PACKAGE_PURCHASE_NO
         ) 
         ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
-        WHERE ppd.PATIENT_PRN = :prn
+        WHERE ppd.PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId)
         ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC 
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     list := make([]userPackage.UserPackage, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, prn, offset, limit)
+    err := s.db.SelectContext(s.ctx, &list, query, userId, offset, limit)
     if err != nil {
         utils.LogError(err)
         return list, err
@@ -281,10 +280,7 @@ func (s *PatientPurchaseDetailsService) FindAllByPrn(prn string, offset int, lim
 func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*userPackage.UserPackage, error) {
     var o userPackage.UserPackage
     query := `
-        SELECT ` +
-        getPatientPurchaseDetailsCols("ppd.") + `, ` +
-        getHospitalPackageCols("hp.") + `, ` +
-        getPackagePaymentDetailsCols("ppd2.") + `, ndpa.DATE_APPT
+        SELECT ppd.*, hp.*, ppd2.*, ndpa.DATE_APPT
         FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID
         JOIN PACKAGE_PAYMENT_DETAILS ppd2 ON ppd.PACKAGE_PAYMENT_ID = ppd2.PACKAGE_PAYMENT_ID
@@ -298,6 +294,11 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
         ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
         WHERE ppd.PATIENT_PURCHASE_ID = :purchaseId
     `
+    query = strings.NewReplacer(
+        "ppd.*", getPatientPurchaseDetailsCols("ppd."),
+        "hp.*", getHospitalPackageCols("hp."),
+        "ppd2.*", getPackagePaymentDetailsCols("ppd2."),
+    ).Replace(query)
     err := s.db.GetContext(s.ctx, &o, query, purchaseId)
     if err != nil {
         if err == sql.ErrNoRows {
@@ -306,7 +307,7 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
         utils.LogError(err)
         return nil, err
     }
-    o.SetWebadmin()
+    o.SetWebAdmin()
     return &o, nil
 }
 

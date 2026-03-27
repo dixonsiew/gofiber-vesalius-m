@@ -13,6 +13,7 @@ func SetupRoutes(router fiber.Router) {
 
 func (c *UserPackageController) registerRoutes(router fiber.Router) {
     api := router.Group("/user-package")
+    
     api.Use(middleware.JWTProtected, middleware.ValidateAppUser)
     api.Post("/check/expiry-maxpurchase", c.CheckPackageExpiryMaxpurchase)
     api.Get("/all/mobile", c.GetAllUserPurchaseHistory)

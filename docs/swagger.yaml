@@ -289,6 +289,22 @@ definitions:
     - eventFunction
     - eventModule
     type: object
+  dto.ChangeSignInTypeDto:
+    properties:
+      signInEmailAddress:
+        type: string
+      signInEmailPassword:
+        type: string
+      signInMobileNumber:
+        type: string
+      signInType:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - signInType
+    - user_id
+    type: object
   dto.CheckPackageDto:
     properties:
       package_id:
@@ -594,6 +610,28 @@ definitions:
     - password
     - username
     type: object
+  dto.NewLoginDto:
+    properties:
+      fromBiometric:
+        default: 0
+        type: integer
+      machineId:
+        type: string
+      password:
+        default: Abcd1234
+        type: string
+      playerId:
+        type: string
+      signInType:
+        default: 2
+        type: integer
+      username:
+        default: eugene.lim@nova-hub.com
+        type: string
+    required:
+    - signInType
+    - username
+    type: object
   dto.PostChangePasswordDto:
     properties:
       newPassword:
@@ -661,6 +699,19 @@ definitions:
     required:
     - machineId
     type: object
+  dto.PostUserSetNewPasswordDto:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      verificationCode:
+        type: string
+    required:
+    - email
+    - password
+    - verificationCode
+    type: object
   dto.SearchKeyword2Dto:
     properties:
       keyword:
@@ -692,6 +743,26 @@ definitions:
         type: string
       keyword4:
         type: string
+    type: object
+  dto.UserEmailVerificationDto:
+    properties:
+      email:
+        type: string
+      verificationCode:
+        type: string
+    required:
+    - email
+    - verificationCode
+    type: object
+  dto.UserMobileVerificationDto:
+    properties:
+      mobileNo:
+        type: string
+      tac:
+        type: string
+    required:
+    - mobileNo
+    - tac
     type: object
   futureOrder.FutureOrder:
     properties:
@@ -856,6 +927,49 @@ definitions:
         type: string
       verificationCode:
         type: string
+    type: object
+  model.ApplicationUserFamily:
+    properties:
+      address:
+        type: string
+      auf_id:
+        type: integer
+      contactNumber:
+        type: string
+      dob:
+        type: string
+      docNumber:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      gender:
+        type: string
+      isActive:
+        type: boolean
+      isGoldenPearl:
+        type: boolean
+      isKidsExplorer:
+        type: boolean
+      isPatient:
+        type: boolean
+      maritalStatus:
+        type: string
+      nationality:
+        type: string
+      nokRefNumber:
+        type: integer
+      nricPassport:
+        type: string
+      patientPrn:
+        type: string
+      prn:
+        type: string
+      relationship:
+        type: string
+      user_id:
+        type: integer
     type: object
   model.AssignBranch:
     properties:
@@ -1210,7 +1324,7 @@ paths:
   /admin/adminportal/save-log:
     post:
       parameters:
-      - description: AdminPortalLogDto Request
+      - description: AdminPortalLogDto
         in: body
         name: request
         required: true
@@ -1280,7 +1394,7 @@ paths:
   /admin/change-password:
     post:
       parameters:
-      - description: PostLinkUserPrnDto Request
+      - description: PostChangePasswordDto
         in: body
         name: request
         required: true
@@ -1295,10 +1409,28 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/change-signin-type:
+    post:
+      parameters:
+      - description: ChangeSignInTypeDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ChangeSignInTypeDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/change-user-password:
     post:
       parameters:
-      - description: PostChangeUserPasswordDto Request
+      - description: PostChangeUserPasswordDto
         in: body
         name: request
         required: true
@@ -1350,12 +1482,29 @@ paths:
   /admin/link-user-prn:
     post:
       parameters:
-      - description: PostLinkUserPrnDto Request
+      - description: PostLinkUserPrnDto
         in: body
         name: request
         required: true
         schema:
           $ref: '#/definitions/dto.PostLinkUserPrnDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/resend-user-signup-email/{email}:
+    post:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1481,6 +1630,27 @@ paths:
       - Clubs
     post:
       parameters:
+      - description: GoldenPearlAboutUsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlAboutUsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Clubs
+  /clubs/goldenpearl/about-us/{goldenPearlId}:
+    put:
+      parameters:
+      - description: goldenPearlId
+        in: path
+        name: goldenPearlId
+        required: true
+        type: integer
       - description: GoldenPearlAboutUsDto
         in: body
         name: request
@@ -2626,6 +2796,110 @@ paths:
           description: OK
       tags:
       - Auth
+  /login/v2:
+    post:
+      parameters:
+      - description: New Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewLoginDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Auth
+  /my-family:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: _self
+        in: query
+        name: _self
+        type: string
+      - description: _isForAppt
+        in: query
+        name: _isForAppt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUserFamily'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - MyFamily
+  /my-family/all/{userId}:
+    get:
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: _self
+        in: query
+        name: _self
+        type: string
+      - description: _isForAppt
+        in: query
+        name: _isForAppt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUserFamily'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - MyFamily
+  /my-family/familyId/{familyId}:
+    get:
+      parameters:
+      - description: FamilyId
+        in: path
+        name: familyId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ApplicationUserFamily'
+      security:
+      - BearerAuth: []
+      tags:
+      - MyFamily
   /notification/{notificationId}:
     get:
       parameters:
@@ -2738,6 +3012,19 @@ paths:
             type: array
       tags:
       - Public Branch
+  /user:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ApplicationUser'
+      security:
+      - BearerAuth: []
+      tags:
+      - User
   /user-package/{purchaseId}:
     get:
       parameters:
@@ -2851,10 +3138,27 @@ paths:
       - BearerAuth: []
       tags:
       - User Package
+  /user/active-user/{userId}:
+    post:
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
   /user/add-machine-id:
     post:
       parameters:
-      - description: AddMachineId Request
+      - description: AddMachineId
         in: body
         name: request
         required: true
@@ -2893,6 +3197,34 @@ paths:
       - BearerAuth: []
       tags:
       - User
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUser'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
   /user/all/active:
     get:
       parameters:
@@ -2917,6 +3249,131 @@ paths:
       - BearerAuth: []
       tags:
       - User
+  /user/branches:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AssignBranch'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/change-password:
+    post:
+      parameters:
+      - description: PostChangePasswordDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostChangePasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/delete-account:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/disable-firsttime-bio:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/inactive-user/{userId}:
+    post:
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/notification/list:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.OnesignalNotification'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/notification/unseen/count:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/set-new-password:
+    post:
+      parameters:
+      - description: PostUserSetNewPasswordDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostUserSetNewPasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - User
   /user/update-playerid/{playerId}:
     post:
       parameters:
@@ -2932,6 +3389,73 @@ paths:
           description: OK
       security:
       - BearerAuth: []
+      tags:
+      - User
+  /user/userId/{userId}:
+    get:
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ApplicationUser'
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/verify:
+    post:
+      parameters:
+      - description: UserEmailVerificationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserEmailVerificationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - User
+  /user/verify-email:
+    post:
+      parameters:
+      - description: UserEmailVerificationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserEmailVerificationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - User
+  /user/verify-smstac:
+    post:
+      parameters:
+      - description: UserMobileVerificationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserMobileVerificationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       tags:
       - User
 securityDefinitions:
