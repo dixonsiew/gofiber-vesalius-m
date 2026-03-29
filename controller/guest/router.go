@@ -16,4 +16,11 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api.Get("/notification/all/:playerId", c.getAllGuestNotificationLists)
     api.Get("/notification/seen/:notificationId/:playerId", c.GetGuestUnseenNotificationCount)
     api.Get("/clubs/littlekids/about-us", c.GetLittleKidsAboutUs)
+    api.Post("/clubs/littlekids/membership", c.CreateGuestLittleKidsMembership)
+    api.Get("/clubs/littlekids/membership/:identificationNumber", c.GetAllAppLittleKidsMemberships)
+    api.Get("/clubs/littlekids/activity/all/mobile/:isHome", c.GetAllAppLittleKidsActivities)
+    api.Post("/clubs/littlekids/activity/participate", c.ParticipateLittleKidsActivity)
+    api.Get("/clubs/goldenpearl/membership/:identificationNumber", c.GetAllAppGoldenPearlMemberships)
+    api.Post("/clubs/goldenpearl/activity/participate", c.ParticipateGoldenPearlActivity)
+    api.Post("/package/check/expiry-maxpurchase", c.CheckPackageExpiryMaxpurchase)
 }
