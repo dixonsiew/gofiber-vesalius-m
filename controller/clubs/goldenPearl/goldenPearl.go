@@ -3,7 +3,7 @@ package goldenPearl
 import (
     "strconv"
     "strings"
-    u "vesaliusm/controller/clubs/shared"
+    "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
@@ -59,7 +59,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := shared.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
@@ -198,7 +198,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := shared.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
@@ -323,7 +323,7 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
         return err
     }
 
-    eligibleAge := u.GoldenPearlEligibleAge(data.GoldenDob)
+    eligibleAge := shared.GoldenPearlEligibleAge(data.GoldenDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }

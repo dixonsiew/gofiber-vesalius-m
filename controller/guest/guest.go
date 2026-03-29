@@ -205,11 +205,11 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -451,11 +451,11 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 

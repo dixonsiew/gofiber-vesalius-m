@@ -3,7 +3,7 @@ package littleKids
 import (
     "strconv"
     "strings"
-    u "vesaliusm/controller/clubs/shared"
+    "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     "vesaliusm/model/clubs"
@@ -59,7 +59,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
+    eligibleAge := shared.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
@@ -200,7 +200,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         return fiber.NewError(fiber.StatusBadRequest, "You have already registered previously. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
+    eligibleAge := shared.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
@@ -327,7 +327,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         return err
     }
 
-    eligibleAge := u.LittleKidsEligibleAge(data.KidsDob)
+    eligibleAge := shared.LittleKidsEligibleAge(data.KidsDob)
     if !eligibleAge {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }

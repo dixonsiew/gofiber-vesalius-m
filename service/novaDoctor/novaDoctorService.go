@@ -629,9 +629,13 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
     return &doctor, nil
 }
 
-func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64) (string, error) {
+func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64, conn *sqlx.DB) (string, error) {
+    db := conn
+    if db == nil {
+        db = s.db
+    }
     var name string
-    err := s.db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
+    err := db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return "", nil

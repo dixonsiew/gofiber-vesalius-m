@@ -34,15 +34,21 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
+	github.com/richardlehane/mscfb v1.0.6 // indirect
+	github.com/richardlehane/msoleps v1.0.6 // indirect
 	github.com/swaggo/files/v2 v2.0.2 // indirect
+	github.com/tiendc/go-deepcopy v1.7.2 // indirect
 	github.com/tinylib/msgp v1.6.3 // indirect
 	github.com/tkuchiki/go-timezone v0.2.3 // indirect
+	github.com/xuri/efp v0.0.1 // indirect
+	github.com/xuri/nfp v0.0.2-0.20250530014748-2ddeb826f9a9 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/tools v0.42.0 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )
 
 require (
@@ -54,12 +60,15 @@ require (
 	github.com/guregu/null/v6 v6.0.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/klauspost/compress v1.18.4 // indirect
+	github.com/lnquy/cron v1.1.1
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/nleeper/goment v1.4.4
 	github.com/sijms/go-ora/v2 v2.9.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.69.0 // indirect
+	github.com/xuri/excelize/v2 v2.10.1
 	github.com/ztrue/tracerr v0.4.0
 	golang.org/x/sys v0.41.0 // indirect
+	gopkg.in/mail.v2 v2.3.1
 )

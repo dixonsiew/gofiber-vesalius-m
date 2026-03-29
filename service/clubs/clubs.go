@@ -65,7 +65,7 @@ func (s *ClubService) FindGoldenPearlMembershipById(goldenMembershipId int64) (*
     return &o, err
 }
 
-func (s *ClubService) findGuestLittleKidsMembershipByIc(identificationNumber string) (*clubs.LittleExplorersKidsMembership, error) {
+func (s *ClubService) FindGuestLittleKidsMembershipByIc(identificationNumber string) (*clubs.LittleExplorersKidsMembership, error) {
     query := `SELECT * FROM KIDS_CLUB_MEMBERSHIP WHERE KIDS_DOC_NUMBER = :identificationNumber`
     var o clubs.LittleExplorersKidsMembership
     err := s.db.GetContext(s.ctx, &o, query, identificationNumber)

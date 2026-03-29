@@ -311,7 +311,7 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
     return &o, nil
 }
 
-func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.UserPackage) error {
+func (s *PatientPurchaseDetailsService) Save(paymentId int64, o userPackage.UserPackage) error {
     query := `
         INSERT INTO PATIENT_PURCHASE_DETAILS (
             PATIENT_PRN, PATIENT_NAME, PACKAGE_ID,
@@ -337,9 +337,9 @@ func (s *PatientPurchaseDetailsService) Save(payment_id int64, o userPackage.Use
         args := []interface{}{
             sql.Named("patientPrn", o.PatientPrn.String),
             sql.Named("patientName", o.PatientName.String),
-            sql.Named("package_id", o.PackageID.Int64),
+            sql.Named("package_id", o.PackageId.Int64),
             sql.Named("packageStatus", o.PackageStatus.String),
-            sql.Named("payment_id", payment_id),
+            sql.Named("payment_id", paymentId),
         }
         _, err = tx.ExecContext(s.ctx, query, args...)
         if err != nil {

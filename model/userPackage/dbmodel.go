@@ -34,10 +34,10 @@ func (o *UserPackagePaymentEmail) Set() {
 }
 
 type UserPackage struct {
-    PurchaseID        null.Int64  `json:"purchase_id" db:"PATIENT_PURCHASE_ID" swaggertype:"integer"`
+    PurchaseId        null.Int64  `json:"purchase_id" db:"PATIENT_PURCHASE_ID" swaggertype:"integer"`
     PatientPrn        null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
     PatientName       null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
-    PackageID         null.Int64  `json:"package_id" db:"PACKAGE_ID" swaggertype:"integer"`
+    PackageId         null.Int64  `json:"package_id" db:"PACKAGE_ID" swaggertype:"integer"`
     PackagePurchaseNo null.String `json:"packagePurchaseNo" db:"PACKAGE_PURCHASE_NO" swaggertype:"string"`
     PackageStatus     null.String `json:"packageStatus" db:"PACKAGE_STATUS" swaggertype:"string"`
     OrderedDateTime   null.String `json:"orderedDateTime" db:"ORDERED_DATETIME" swaggertype:"string"`
