@@ -467,7 +467,7 @@ func (s *PatientPurchaseDetailsService) GetAppointmentDetailsByPurchaseId(paymen
     return &o, nil
 }
 
-func (s *PatientPurchaseDetailsService) GetPackageExpiryStatus(packageId int64) (string, error) {
+func (s *PatientPurchaseDetailsService) GetPackageExpiryStatus(conn *sqlx.DB, packageId int64) (string, error) {
     var r string
     query := `
         SELECT
@@ -479,7 +479,7 @@ func (s *PatientPurchaseDetailsService) GetPackageExpiryStatus(packageId int64) 
          FROM HOSPITAL_PACKAGE
          WHERE PACKAGE_ID = :packageId
     `
-    err := s.db.GetContext(s.ctx, &r, query, packageId)
+    err := conn.GetContext(s.ctx, &r, query, packageId)
     if err != nil {
         if err == sql.ErrNoRows {
             return "", err
@@ -515,7 +515,7 @@ func (s *PatientPurchaseDetailsService) GetPackageSoldoutStatus(packageId int64)
     return r, nil
 }
 
-func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(packageId int64, quantityPurchased int) (*userPackage.PackageExceedPurchaseStatus, error) {
+func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(conn *sqlx.DB, packageId int64, quantityPurchased int) (*userPackage.PackageExceedPurchaseStatus, error) {
     var result userPackage.PackageExceedPurchaseStatus
     query := `
         SELECT
@@ -540,7 +540,10 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(packageId
           WHERE PACKAGE_ID = :packageId
          ) hp
     `
-    err := s.db.GetContext(s.ctx, &result, query, sql.Named("quantityPurchased", quantityPurchased), sql.Named("packageId", packageId))
+    err := conn.GetContext(s.ctx, &result, query, 
+        sql.Named("quantityPurchased", quantityPurchased), 
+        sql.Named("packageId", packageId),
+    )
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -559,7 +562,7 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
         ExceedPurchase:      0,
         RecommendedQuantity: 0,
     }
-    expiry, err := s.GetPackageExpiryStatus(packageId)
+    expiry, err := s.GetPackageExpiryStatus(s.db, packageId)
     if err != nil {
         return nil, err
     }
@@ -575,13 +578,13 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
         result.Soldout = 1
     }
 
-    exceedRes, err := s.GetPackageExceedPurchaseStatus(packageId, quantityPurchased)
+    exceedRes, err := s.GetPackageExceedPurchaseStatus(s.db, packageId, quantityPurchased)
     if err != nil {
         return nil, err
     }
-    if exceedRes.PurchaseStatus == "Exceeded" {
+    if exceedRes.PurchaseStatus.String == "Exceeded" {
         result.ExceedPurchase = 1
-        result.RecommendedQuantity = exceedRes.RecommendedQuantity
+        result.RecommendedQuantity = int(exceedRes.RecommendedQuantity.Int32)
     }
 
     return result, nil

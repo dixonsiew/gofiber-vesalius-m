@@ -234,6 +234,6 @@ type ApptDetails struct {
 }
 
 type PackageExceedPurchaseStatus struct {
-    PurchaseStatus      string `db:"PURCHASE_STATUS"`
-    RecommendedQuantity int    `db:"RECOMMENDED_QUANTITY"`
+    PurchaseStatus      null.String `db:"PURCHASE_STATUS"`
+    RecommendedQuantity null.Int32  `db:"RECOMMENDED_QUANTITY"`
 }

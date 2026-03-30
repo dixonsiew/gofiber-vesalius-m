@@ -22,5 +22,8 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api.Post("/clubs/littlekids/activity/participate", c.ParticipateLittleKidsActivity)
     api.Get("/clubs/goldenpearl/membership/:identificationNumber", c.GetAllAppGoldenPearlMemberships)
     api.Post("/clubs/goldenpearl/activity/participate", c.ParticipateGoldenPearlActivity)
+    api.Get("/package/all/mobile/:isHome", c.GetAllAppPackages)
+    api.Get("/package/packageStatus/:packageId", c.GetPackageStatusById)
+    api.Get("/package/:packageId", c.GetPackageById)
     api.Post("/package/check/expiry-maxpurchase", c.CheckPackageExpiryMaxpurchase)
 }

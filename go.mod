@@ -63,6 +63,7 @@ require (
 	github.com/lnquy/cron v1.1.1
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nleeper/goment v1.4.4
 	github.com/sijms/go-ora/v2 v2.9.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

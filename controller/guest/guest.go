@@ -11,6 +11,7 @@ import (
     "vesaliusm/service/guest"
     "vesaliusm/service/mail"
     "vesaliusm/service/novaDoctor"
+    "vesaliusm/service/hpackage"
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/utils"
 
@@ -21,6 +22,7 @@ type GuestController struct {
     clubService                   *clubsSvc.ClubService
     guestService                  *guest.GuestService
     novaDoctorService             *novaDoctor.NovaDoctorService
+    packageService                *hpackage.PackageService
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
     mailService                   *mail.MailService
 }
@@ -30,6 +32,7 @@ func NewGuestController() *GuestController {
         clubService:                   clubsSvc.ClubSvc,
         guestService:                  guest.GuestSvc,
         novaDoctorService:             novaDoctor.NovaDoctorSvc,
+        packageService:                hpackage.PackageSvc,
         patientPurchaseDetailsService: patientPurchaseDetails.PatientPurchaseDetailsSvc,
         mailService:                   mail.MailSvc,
     }
@@ -307,7 +310,9 @@ func (cr *GuestController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        isHome    path        string  true  "isHome"
+// @Param        isHome    path        string  true   "isHome"
+// @Param        _page     query       string  false  "_page"  default:"1"
+// @Param        _limit    query       string  false  "_limit" default:"10"
 // @Success 200 (object) model.PagedList
 // @Router /guest/clubs/littlekids/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
@@ -553,7 +558,9 @@ func (cr *GuestController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param isHome path string true "isHome"
+// @Param        isHome            path        string  true   "isHome"
+// @Param        _page             query       string  false  "_page"  default:"1"
+// @Param        _limit            query       string  false  "_limit" default:"10"
 // @Success 200 (object) []clubs.GoldenPearlActivity
 // @Router /guest/clubs/goldenpearl/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
@@ -632,11 +639,60 @@ func (cr *GuestController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
     })
 }
 
+// GetAllAppPackages
+// @Tags Guest
+// @Produce json
+// @Param        isHome            path        string  true   "isHome"
+// @Param        _page             query       string  false  "_page"  default:"1"
+// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Success 200
+// @Router /guest/package/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppPackages(c fiber.Ctx) error {
-    // isHome := c.Params("isHome")
-    // page := c.Query("_page", "1")
-    // limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
-    return nil
+    isHome := c.Params("isHome")
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.packageService.ListApp(isHome == "1", page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// GetPackageStatusById
+// @Tags Guest
+// @Produce json
+// @Param        packageId            path        string  true   "packageId"
+// @Success 200
+// @Router /guest/package/packageStatus/{packageId} [get]
+func (cr *GuestController) GetPackageStatusById(c fiber.Ctx) error {
+    packageId := c.Params("packageId")
+    ipackageId, _ := strconv.ParseInt(packageId, 10, 64)
+    o, err := cr.packageService.FindPackageStatusByPackageId(ipackageId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// GetPackageById
+// @Tags Guest
+// @Produce json
+// @Param        packageId            path        string  true   "packageId"
+// @Success 200
+// @Router /guest/package/{packageId} [get]
+func (cr *GuestController) GetPackageById(c fiber.Ctx) error {
+    packageId := c.Params("packageId")
+    ipackageId, _ := strconv.ParseInt(packageId, 10, 64)
+    o, err := cr.packageService.FindByPackageId(ipackageId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
 }
 
 // CheckPackageExpiryMaxpurchase
