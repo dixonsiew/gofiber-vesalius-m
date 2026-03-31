@@ -10,6 +10,7 @@ import (
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/assignBranch"
     "vesaliusm/service/branch"
+    "vesaliusm/service/groupModulePermission"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
 
@@ -17,20 +18,22 @@ import (
 )
 
 type AdminController struct {
-    adminUserService       *adminUser.AdminUserService
-    applicationUserService *applicationUser.ApplicationUserService
-    assignBranchService    *assignBranch.AssignBranchService
-    branchService          *branch.BranchService
-    mailService            *mail.MailService
+    adminUserService             *adminUser.AdminUserService
+    applicationUserService       *applicationUser.ApplicationUserService
+    assignBranchService          *assignBranch.AssignBranchService
+    branchService                *branch.BranchService
+    groupModulePermissionService *groupModulePermission.GroupModulePermissionService
+    mailService                  *mail.MailService
 }
 
 func NewAdminController() *AdminController {
     return &AdminController{
-        adminUserService:       adminUser.AdminUserSvc,
-        applicationUserService: applicationUser.ApplicationUserSvc,
-        assignBranchService:    assignBranch.AssignBranchSvc,
-        branchService:          branch.BranchSvc,
-        mailService:            mail.MailSvc,
+        adminUserService:             adminUser.AdminUserSvc,
+        applicationUserService:       applicationUser.ApplicationUserSvc,
+        assignBranchService:          assignBranch.AssignBranchSvc,
+        branchService:                branch.BranchSvc,
+        groupModulePermissionService: groupModulePermission.GroupModulePermissionSvc,
+        mailService:                  mail.MailSvc,
     }
 }
 
@@ -350,6 +353,40 @@ func (cr *AdminController) ResetUserPassword(c fiber.Ctx) error {
     return c.JSON(fiber.Map{
         "successMessage": "New password has been sent to the registered email address",
     })
+}
+
+// GetAllGroupModulesPermission
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200
+// @Router /admin/group-permission [get]
+func (cr *AdminController) GetAllGroupModulesPermission(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return middleware.Unauthorized(c)
+    }
+
+    lx, err := cr.groupModulePermissionService.FindAll()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // DeleteUser

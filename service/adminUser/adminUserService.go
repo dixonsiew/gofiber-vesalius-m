@@ -9,6 +9,7 @@ import (
     "vesaliusm/model"
     "vesaliusm/service/assignBranch"
     "vesaliusm/service/branch"
+    "vesaliusm/service/groupModulePermission"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
@@ -19,18 +20,20 @@ import (
 var AdminUserSvc *AdminUserService = NewAdminUserService(database.GetDb(), database.GetCtx())
 
 type AdminUserService struct {
-    db              *sqlx.DB
-    ctx             context.Context
-    branchSvc       *branch.BranchService
-    assignBranchSvc *assignBranch.AssignBranchService
+    db                       *sqlx.DB
+    ctx                      context.Context
+    branchSvc                *branch.BranchService
+    assignBranchSvc          *assignBranch.AssignBranchService
+    groupModulePermissionSvc *groupModulePermission.GroupModulePermissionService
 }
 
 func NewAdminUserService(db *sqlx.DB, ctx context.Context) *AdminUserService {
     return &AdminUserService{
-        db:              db,
-        ctx:             ctx,
-        branchSvc:       branch.BranchSvc,
-        assignBranchSvc: assignBranch.AssignBranchSvc,
+        db:                       db,
+        ctx:                      ctx,
+        branchSvc:                branch.BranchSvc,
+        assignBranchSvc:          assignBranch.AssignBranchSvc,
+        groupModulePermissionSvc: groupModulePermission.GroupModulePermissionSvc,
     }
 }
 

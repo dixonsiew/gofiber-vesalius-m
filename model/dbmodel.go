@@ -1,11 +1,11 @@
 package model
 
 import (
-	"strconv"
-	"vesaliusm/utils"
+    "strconv"
+    "vesaliusm/utils"
 
-	"github.com/guregu/null/v6"
-	"github.com/nleeper/goment"
+    "github.com/guregu/null/v6"
+    "github.com/nleeper/goment"
 )
 
 type Wayfinding struct {
@@ -435,16 +435,16 @@ type UserGroupModulePermission struct {
 }
 
 type UserGroup struct {
-    GroupId       null.Int64                  `json:"groupId" db:"GROUP_ID" swaggertype:"integer"`
-    UserGroupName null.String                 `json:"userGroupName" db:"USER_GROUP_NAME" swaggertype:"string"`
-    DateCreated   null.String                 `json:"dateCreated" db:"DATE_CREATED" swaggertype:"string"`
-    Permissions   []UserGroupModulePermission `json:"permissions"`
+    GroupId                             null.Int64                  `json:"groupId" db:"GROUP_ID" swaggertype:"integer"`
+    UserGroupName                       null.String                 `json:"userGroupName" db:"USER_GROUP_NAME" swaggertype:"string"`
+    DateCreated                         null.String                 `json:"dateCreated" db:"DATE_CREATED" swaggertype:"string"`
+    UserGroupModulePermissionStatesList []UserGroupModulePermission `json:"userGroupModulePermissionStatesList"`
 }
 
 type UserGroupDetails struct {
     UserGroupId   int                         `json:"userGroupId"`
     UserGroupName string                      `json:"userGroupName"`
-    Permissions   []UserGroupModulePermission `json:"permission"`
+    Permission    []UserGroupModulePermission `json:"permission"`
 }
 
 type AllUserGroupDetails struct {
@@ -453,7 +453,7 @@ type AllUserGroupDetails struct {
     DateCreated     string                      `json:"dateCreated"`
     SelectedModules []string                    `json:"selectedModules"`
     ActiveUser      []AdminUser                 `json:"activeUser"`
-    Permissions     []UserGroupModulePermission `json:"permission"`
+    Permission      []UserGroupModulePermission `json:"permission"`
 }
 
 type NovaDoctorSpokenLanguage struct {
