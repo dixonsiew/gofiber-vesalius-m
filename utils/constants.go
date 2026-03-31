@@ -1,6 +1,7 @@
 package utils
 
 const (
+	FILE_SIZE_LIMIT  = 5242880 // 5MB
 	PAGE_SIZE        = 10
 	MAX_PAGE_NUMBERS = 10
 	X_TOTAL_COUNT    = "x-total-count"
