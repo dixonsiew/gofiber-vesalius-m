@@ -442,13 +442,13 @@ type UserGroup struct {
 }
 
 type UserGroupDetails struct {
-    UserGroupId   int                         `json:"userGroupId"`
+    UserGroupId   int64                       `json:"userGroupId"`
     UserGroupName string                      `json:"userGroupName"`
     Permission    []UserGroupModulePermission `json:"permission"`
 }
 
 type AllUserGroupDetails struct {
-    UserGroupId     int                         `json:"userGroupId"`
+    UserGroupId     int64                       `json:"userGroupId"`
     UserGroupName   string                      `json:"userGroupName"`
     DateCreated     string                      `json:"dateCreated"`
     SelectedModules []string                    `json:"selectedModules"`

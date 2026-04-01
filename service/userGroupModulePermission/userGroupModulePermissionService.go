@@ -24,7 +24,7 @@ func NewUserGroupModulePermissionService(db *sqlx.DB, ctx context.Context) *User
 	}
 }
 
-func (s *UserGroupModulePermissionService) FindByUserGroupIdOrderByModuleIdAsc(userGroupId int) ([]model.UserGroupModulePermission, error) {
+func (s *UserGroupModulePermissionService) FindByUserGroupIdOrderByModuleIdAsc(userGroupId int64) ([]model.UserGroupModulePermission, error) {
 	query := `SELECT * FROM USR_GRP_MOD_PERMERSSION WHERE USER_GROUP_ID = :userGroupId ORDER BY MODULE_ID ASC`
 	query = strings.Replace(query, "*", utils.GetDbCols(model.UserGroupModulePermission{}, ""), 1)
     list := make([]model.UserGroupModulePermission, 0)

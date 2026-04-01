@@ -1,7 +1,9 @@
 package feedback
 
 import (
-    "github.com/guregu/null/v6"
+	"vesaliusm/utils"
+
+	"github.com/guregu/null/v6"
 )
 
 type FeedbackAttachment struct {
@@ -29,4 +31,20 @@ type Feedback struct {
     HasAttachmentV         null.String `json:"-" db:"HAS_ATTACHMENT"`
     HasAttachment          bool        `json:"hasAttachment"`
     SubmittedDateTimeExcel null.String `json:"submittedDateTimeExcel"`
+}
+
+func (o *Feedback) Set() {
+    if !o.AccountNo.Valid {
+        o.AccountNo = utils.NewNullString("-")
+    }
+
+    if !o.FeedbackDesc.Valid {
+        o.FeedbackDesc = utils.NewNullString("-")
+    }
+
+    if o.HasAttachmentV.String == "Y" {
+        o.HasAttachment = true
+    } else {
+        o.HasAttachment = false
+    }
 }

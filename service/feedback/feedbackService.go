@@ -57,6 +57,7 @@ func (s *FeedbackService) FindByFeedbackId(feedbackId int64) (*feedback.Feedback
         utils.LogError(err)
         return nil, err
     }
+    o.Set()
     return &o, err
 }
 
@@ -105,18 +106,21 @@ func (s *FeedbackService) Count(conn *sqlx.DB) (int, error) {
     return count, nil
 }
 
-func (s *FeedbackService) FindAll(offset int, limit int, conn *sqlx.DB) ([]feedback.FeedbackAttachment, error) {
+func (s *FeedbackService) FindAll(offset int, limit int, conn *sqlx.DB) ([]feedback.Feedback, error) {
     db := conn
     if db == nil {
         db = s.db
     }
     query := `SELECT * FROM PATIENT_FEEDBACK ORDER BY DATE_SUBMIT DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    query = strings.Replace(query, "*", utils.GetDbCols(feedback.FeedbackAttachment{}, ""), 1)
-    list := make([]feedback.FeedbackAttachment, 0)
+    query = strings.Replace(query, "*", utils.GetDbCols(feedback.Feedback{}, ""), 1)
+    list := make([]feedback.Feedback, 0)
     err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
+    }
+    for i := range list {
+        list[i].Set()
     }
     return list, nil
 }

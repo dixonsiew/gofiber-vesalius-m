@@ -12,28 +12,37 @@ import (
     "vesaliusm/service/branch"
     "vesaliusm/service/groupModulePermission"
     "vesaliusm/service/mail"
+    "vesaliusm/service/userGroup"
+    "vesaliusm/service/userGroupModulePermission"
+    "vesaliusm/service/userGroupModules"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type AdminController struct {
-    adminUserService             *adminUser.AdminUserService
-    applicationUserService       *applicationUser.ApplicationUserService
-    assignBranchService          *assignBranch.AssignBranchService
-    branchService                *branch.BranchService
-    groupModulePermissionService *groupModulePermission.GroupModulePermissionService
-    mailService                  *mail.MailService
+    adminUserService                 *adminUser.AdminUserService
+    applicationUserService           *applicationUser.ApplicationUserService
+    assignBranchService              *assignBranch.AssignBranchService
+    branchService                    *branch.BranchService
+    groupModulePermissionService     *groupModulePermission.GroupModulePermissionService
+    userGroupService                 *userGroup.UserGroupService
+    userGroupModulesService          *userGroupModules.UserGroupModulesService
+    userGroupModulePermissionService *userGroupModulePermission.UserGroupModulePermissionService
+    mailService                      *mail.MailService
 }
 
 func NewAdminController() *AdminController {
     return &AdminController{
-        adminUserService:             adminUser.AdminUserSvc,
-        applicationUserService:       applicationUser.ApplicationUserSvc,
-        assignBranchService:          assignBranch.AssignBranchSvc,
-        branchService:                branch.BranchSvc,
-        groupModulePermissionService: groupModulePermission.GroupModulePermissionSvc,
-        mailService:                  mail.MailSvc,
+        adminUserService:                 adminUser.AdminUserSvc,
+        applicationUserService:           applicationUser.ApplicationUserSvc,
+        assignBranchService:              assignBranch.AssignBranchSvc,
+        branchService:                    branch.BranchSvc,
+        groupModulePermissionService:     groupModulePermission.GroupModulePermissionSvc,
+        userGroupService:                 userGroup.UserGroupSvc,
+        userGroupModulesService:          userGroupModules.UserGroupModulesSvc,
+        userGroupModulePermissionService: userGroupModulePermission.UserGroupModulePermissionSvc,
+        mailService:                      mail.MailSvc,
     }
 }
 
@@ -355,12 +364,354 @@ func (cr *AdminController) ResetUserPassword(c fiber.Ctx) error {
     })
 }
 
-// GetAllGroupModulesPermission
+// GetUserGroupList
+//
+// @Tags Admin
+// @Produce json
+// @Success 200 {array} model.UserGroup
+// @Router /admin/user-group/list [get]
+func (cr *AdminController) GetUserGroupList(c fiber.Ctx) error {
+    lx, err := cr.userGroupService.ListAll()
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(lx)
+}
+
+// GetAllUserGroup
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.AllUserGroupDetails
+// @Router /admin/all-user-group [get]
+func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return middleware.Unauthorized(c)
+    }
+
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.userGroupService.List(page, limit)
+    if err != nil {
+        return err
+    }
+
+    lg := m.List.([]model.UserGroup)
+    lx := make([]model.AllUserGroupDetails, 0)
+    userGroupModules, err := cr.userGroupModulesService.FindAllAsMap()
+    if err != nil {
+        return err
+    }
+
+    for i := range lg {
+        userGroup := lg[i]
+        admins, err := cr.adminUserService.FindByUserGroupId(userGroup.GroupId.Int64)
+        if err != nil {
+            return err
+        }
+
+        userGroupDetail := model.AllUserGroupDetails{
+            UserGroupId: userGroup.GroupId.Int64,
+            UserGroupName: userGroup.UserGroupName.String,
+            DateCreated: userGroup.DateCreated.String,
+            ActiveUser: admins,
+        }
+
+        moduleList := make([]string, 0)
+        lgmp, err := cr.userGroupModulePermissionService.FindByUserGroupId(userGroup.GroupId.Int64)
+        if err != nil {
+            return err
+        }
+
+        mg := make(map[int64]int64)
+        for j := range lgmp {
+            ugmp := lgmp[j]
+            if _, ok := mg[ugmp.ModuleId.Int64]; ok {
+                continue
+            }
+
+            if _, ok := userGroupModules[ugmp.ModuleId.Int64]; ok {
+                x := userGroupModules[ugmp.ModuleId.Int64]
+                moduleList = append(moduleList, x.ModuleName.String)
+                mg[ugmp.ModuleId.Int64] = 1
+            }
+
+            userGroupDetail.Permission = lgmp
+            userGroupDetail.SelectedModules = moduleList
+        }
+
+        lx = append(lx, userGroupDetail)
+    }
+
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(lx)
+}
+
+// AddUserGroup
 //
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
 // @Success 200
+// @Router /admin/add-user-group [post]
+func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    data := new(dto.UserGroupDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    b, err := cr.userGroupService.ExistsByUserGroupName(data.UserGroupName)
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, "User Group name has already existed")
+    }
+
+    o := model.UserGroup{
+        UserGroupName: utils.NewNullString(data.UserGroupName),
+        UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
+    }
+    for _, x := range data.Permission {
+        k := model.UserGroupModulePermission{
+            ModuleId: utils.NewInt64(int64(x.ModuleId)),
+            PermissionId: utils.NewInt64(int64(x.PermissionId)),
+        }
+        o.UserGroupModulePermissionStatesList = append(o.UserGroupModulePermissionStatesList, k)
+    }
+    err = cr.userGroupService.Save(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "Successful add new User Group",
+    })
+}
+
+// GetUserGroup
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} model.UserGroupDetails
+// @Router /admin/user-group/{userGroupId} [get]
+func (cr *AdminController) GetUserGroup(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    userGroupId := c.Params("userGroupId")
+    iuserGroupId, _ := strconv.ParseInt(userGroupId, 10, 64)
+    o, err := cr.userGroupService.FindByGroupId(iuserGroupId)
+    if err != nil {
+        return err
+    }
+
+    permissionList, err := cr.userGroupModulePermissionService.FindByUserGroupId(iuserGroupId)
+    if err != nil {
+        return err
+    }
+
+    userGroupDetails := model.UserGroupDetails{
+        UserGroupId: o.GroupId.Int64,
+        UserGroupName: o.UserGroupName.String,
+        Permission: permissionList,
+    }
+
+    return c.JSON(userGroupDetails)
+}
+
+// UpdateUserGroup
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200
+// @Router /admin/update-user-group [post]
+func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    data := new(dto.UserGroupDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    b, err := cr.userGroupService.ExistsByGroupId(int64(data.UserGroupId))
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return fiber.NewError(fiber.StatusNotFound, "User Group not found")
+    }
+
+    b1, err := cr.userGroupService.ExistsByOtherUserGroupName(data.UserGroupName, int64(data.UserGroupId))
+    if err != nil {
+        return err
+    }
+
+    if b1 {
+        return fiber.NewError(fiber.StatusBadRequest, "User Group name has already existed")
+    }
+
+    o := model.UserGroup{
+        GroupId: utils.NewInt64(int64(data.UserGroupId)),
+        UserGroupName: utils.NewNullString(data.UserGroupName),
+        UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
+    }
+    for _, x := range data.Permission {
+        k := model.UserGroupModulePermission{
+            ModuleId: utils.NewInt64(int64(x.ModuleId)),
+            PermissionId: utils.NewInt64(int64(x.PermissionId)),
+            UserGroupId: utils.NewInt64(int64(data.UserGroupId)),
+        }
+        o.UserGroupModulePermissionStatesList = append(o.UserGroupModulePermissionStatesList, k)
+    }
+    err = cr.userGroupService.Update(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "User Group has been updated successfully",
+    })
+}
+
+// DeleteUserGroup
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param userGroupId path int true "userGroupId"
+// @Success 200
+// @Router /admin/delete-user-group/{userGroupId} [post]
+func (cr *AdminController) DeleteUserGroup(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    userGroupId := c.Params("userGroupId")
+    iuserGroupId, _ := strconv.ParseInt(userGroupId, 10, 64)
+    b, err := cr.userGroupService.ExistsByGroupId(iuserGroupId)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return fiber.NewError(fiber.StatusNotFound, "User Group not found")
+    }
+
+    err = cr.userGroupService.DeleteByGroupId(iuserGroupId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "User Group has been deleted successfully",
+    })
+}
+
+// GetAllGroupModules
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.UserGroupModules
+// @Router /admin/group-modules [get]
+func (cr *AdminController) GetAllGroupModules(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    if err != nil {
+        return err
+    }
+
+    if !b {
+        return middleware.Unauthorized(c)
+    }
+
+    lx, err := cr.userGroupModulesService.FindAll()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetAllGroupModulesPermission
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.GroupModulePermission
 // @Router /admin/group-permission [get]
 func (cr *AdminController) GetAllGroupModulesPermission(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
@@ -382,6 +733,31 @@ func (cr *AdminController) GetAllGroupModulesPermission(c fiber.Ctx) error {
     }
 
     lx, err := cr.groupModulePermissionService.FindAll()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetUserGroupPermission
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.UserGroupModulePermission
+// @Router /admin/user-group-permission [get]
+func (cr *AdminController) GetUserGroupPermission(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    lx, err := cr.userGroupModulePermissionService.FindByUserGroupIdOrderByModuleIdAsc(user.UserGroupId.Int64)
     if err != nil {
         return err
     }
@@ -584,6 +960,14 @@ func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
     })
 }
 
+// AddAdminUser
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.PostAdminUserDto true "PostAdminUserDto"
+// @Success 200
+// @Router /admin/sign-up [post]
 func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
     data := new(dto.PostAdminUserDto)
     if err := utils.BindNValidate(c, data); err != nil {
@@ -606,6 +990,14 @@ func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
     o.LastName = utils.NewNullString(data.LastName)
     o.UserGroupId = utils.NewInt64(data.UserGroupId)
 
+    ug, err := cr.userGroupService.FindByGroupId(data.UserGroupId)
+    if err != nil {
+        return err
+    }
+
+    o.UserGroupName = ug.UserGroupName
+    o.Role = o.UserGroupName
+
     adminBranchIds := data.AdminBranchIds
     err = cr.adminUserService.Save(o, adminBranchIds)
     if err != nil {
@@ -618,6 +1010,52 @@ func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
 
     return c.JSON(fiber.Map{
         "successMessage": "Admin user successfully created",
+    })
+}
+
+// EditAdminUser
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.PostUpdateAdminUserDto true "PostUpdateAdminUserDto"
+// @Success 200
+// @Router /admin/edit-admin-user [post]
+func (cr *AdminController) EditAdminUser(c fiber.Ctx) error {
+    data := new(dto.PostUpdateAdminUserDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+    
+    o, err := cr.adminUserService.FindByEmail(data.Email)
+    if err != nil {
+        return err
+    }
+    
+    if o == nil {
+        return fiber.NewError(fiber.StatusNotFound, "User not found")
+    }
+    
+    o.FirstName = utils.NewNullString(data.FirstName)
+    o.LastName = utils.NewNullString(data.LastName)
+    o.UserGroupId = utils.NewInt64(data.UserGroupId)
+
+    ug, err := cr.userGroupService.FindByGroupId(data.UserGroupId)
+    if err != nil {
+        return err
+    }
+    
+    o.UserGroupName = ug.UserGroupName
+    o.Role = o.UserGroupName
+    
+    adminBranchIds := data.AdminBranchIds
+    err = cr.adminUserService.Update(o, adminBranchIds)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(fiber.Map{
+        "successMessage": "User profile has been updated",
     })
 }
 
