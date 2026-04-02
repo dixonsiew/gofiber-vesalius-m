@@ -5,9 +5,9 @@ import (
     "strings"
     "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
-    "vesaliusm/model/clubs"
+    model "vesaliusm/model/clubs"
     "vesaliusm/model/userPackage"
-    clubsSvc "vesaliusm/service/clubs"
+    "vesaliusm/service/clubs"
     "vesaliusm/service/guest"
     "vesaliusm/service/mail"
     "vesaliusm/service/novaDoctor"
@@ -19,7 +19,7 @@ import (
 )
 
 type GuestController struct {
-    clubService                   *clubsSvc.ClubService
+    clubService                   *clubs.ClubService
     guestService                  *guest.GuestService
     novaDoctorService             *novaDoctor.NovaDoctorService
     packageService                *hpackage.PackageService
@@ -29,7 +29,7 @@ type GuestController struct {
 
 func NewGuestController() *GuestController {
     return &GuestController{
-        clubService:                   clubsSvc.ClubSvc,
+        clubService:                   clubs.ClubSvc,
         guestService:                  guest.GuestSvc,
         novaDoctorService:             novaDoctor.NovaDoctorSvc,
         packageService:                hpackage.PackageSvc,
@@ -224,7 +224,7 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
-    var o clubs.LittleExplorersKidsMembership
+    var o model.LittleExplorersKidsMembership
     kidsMembershipNo, err := cr.clubService.GenerateKidsMembershipNo()
     if err != nil {
         return err
@@ -294,7 +294,7 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
 // @Tags Guest
 // @Produce json
 // @Param        identificationNumber    path        string  true  "identificationNumber"
-// @Success 200 (object) clubs.LittleExplorersKidsMembership
+// @Success 200 {object} model.LittleExplorersKidsMembership
 // @Router /guest/clubs/littlekids/membership/{identificationNumber} [get]
 func (cr *GuestController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
     identificationNumber := c.Params("identificationNumber")
@@ -313,7 +313,7 @@ func (cr *GuestController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
 // @Param        isHome    path        string  true   "isHome"
 // @Param        _page     query       string  false  "_page"  default:"1"
 // @Param        _limit    query       string  false  "_limit" default:"10"
-// @Success 200 (object) model.PagedList
+// @Success 200 {object} model.PagedList
 // @Router /guest/clubs/littlekids/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
     isHome := c.Params("isHome")
@@ -342,10 +342,10 @@ func (cr *GuestController) ParticipateLittleKidsActivity(c fiber.Ctx) error {
         return err
     }
 
-    actvParticipation := make([]clubs.LittleExplorersKidsActvParticipation, 0)
+    actvParticipation := make([]model.LittleExplorersKidsActvParticipation, 0)
     for i := range data.KidsActvParticipation {
         participation := data.KidsActvParticipation[i]
-        var o clubs.LittleExplorersKidsActvParticipation
+        var o model.LittleExplorersKidsActvParticipation
         o.KidsActivityId = participation.KidsActivityId
         o.KidsMembershipId = participation.KidsMembershipId
         o.ActivityDateTime = participation.ActivityDateTime
@@ -393,7 +393,7 @@ func (cr *GuestController) ParticipateLittleKidsActivity(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Success 200 (object) clubs.GoldenPearlAboutUs
+// @Success 200 {object} model.GoldenPearlAboutUs
 // @Router /guest/clubs/goldenpearl/about-us [get]
 func (cr *GuestController) GetGoldenPearlAboutUs(c fiber.Ctx) error {
     o, err := cr.clubService.FindGoldenPearlAboutUs()
@@ -472,7 +472,7 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
-    var o clubs.GoldenPearlMembership
+    var o model.GoldenPearlMembership
     goldenMembershipNo, err := cr.clubService.GenerateGoldenMembershipNo()
     if err != nil {
         return err
@@ -542,7 +542,7 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
 // @Tags Guest
 // @Produce json
 // @Param identificationNumber path string true "identificationNumber"
-// @Success 200 (object) []clubs.GuestLittleKidsMembership
+// @Success 200 {array} model.GoldenPearlMembership
 // @Router /guest/clubs/goldenpearl/membership/{identificationNumber} [get]
 func (cr *GuestController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
     identificationNumber := c.Params("identificationNumber")
@@ -561,7 +561,7 @@ func (cr *GuestController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
 // @Param        isHome            path        string  true   "isHome"
 // @Param        _page             query       string  false  "_page"  default:"1"
 // @Param        _limit            query       string  false  "_limit" default:"10"
-// @Success 200 (object) []clubs.GoldenPearlActivity
+// @Success 200 {array} model.GoldenPearlActivity
 // @Router /guest/clubs/goldenpearl/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
     isHome := c.Params("isHome")
@@ -590,11 +590,11 @@ func (cr *GuestController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
         return err
     }
 
-    actvParticipation := make([]clubs.GoldenPearlActvParticipation, 0)
+    actvParticipation := make([]model.GoldenPearlActvParticipation, 0)
     for i := range data.GoldenActvParticipation {
         participation := data.GoldenActvParticipation[i]
 
-        var o clubs.GoldenPearlActvParticipation
+        var o model.GoldenPearlActvParticipation
         o.GoldenActivityId = participation.GoldenActivityId
         o.GoldenMembershipId = participation.GoldenMembershipId
         o.ActivityDateTime = participation.ActivityDateTime

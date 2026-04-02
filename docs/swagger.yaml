@@ -289,6 +289,29 @@ definitions:
     - eventFunction
     - eventModule
     type: object
+  dto.AppDownloadedUserDto:
+    properties:
+      machineId:
+        type: string
+      playerId:
+        type: string
+    required:
+    - machineId
+    - playerId
+    type: object
+  dto.AppVersionDto:
+    properties:
+      latestVersion:
+        type: string
+      osPlatform:
+        type: string
+      status:
+        type: integer
+    required:
+    - latestVersion
+    - osPlatform
+    - status
+    type: object
   dto.ChangeSignInTypeDto:
     properties:
       signInEmailAddress:
@@ -324,6 +347,26 @@ definitions:
     required:
     - package
     type: object
+  dto.DeleteAccountDto:
+    properties:
+      contactNumber:
+        type: string
+      dob:
+        type: string
+      documentNumber:
+        type: string
+      email:
+        type: string
+      fullname:
+        type: string
+      prn:
+        type: string
+    required:
+    - dob
+    - documentNumber
+    - fullname
+    - prn
+    type: object
   dto.DynamicEmailMasterDto:
     properties:
       emailFor:
@@ -350,6 +393,57 @@ definitions:
     - emailSenderName
     - emailSubject
     - emailTemplate
+    type: object
+  dto.FeedbackDto:
+    properties:
+      accountNo:
+        type: string
+      apptSchedulingRating:
+        type: integer
+      feedbackDesc:
+        type: string
+      feedbackFiles:
+        items:
+          $ref: '#/definitions/dto.FeedbackFileDto'
+        type: array
+      foodBeveragesRating:
+        type: integer
+      hospitalServiceRating:
+        type: integer
+      overallRating:
+        type: integer
+      patientPrn:
+        type: string
+      paymentBillingRating:
+        type: integer
+      recommendUsRating:
+        type: integer
+      staffServiceRating:
+        type: integer
+      visitType:
+        type: string
+    required:
+    - accountNo
+    - apptSchedulingRating
+    - feedbackDesc
+    - foodBeveragesRating
+    - hospitalServiceRating
+    - overallRating
+    - patientPrn
+    - paymentBillingRating
+    - recommendUsRating
+    - staffServiceRating
+    - visitType
+    type: object
+  dto.FeedbackFileDto:
+    properties:
+      filename:
+        type: string
+      mimeType:
+        type: string
+    required:
+    - filename
+    - mimeType
     type: object
   dto.GoldenActvParticipationDto:
     properties:
@@ -795,6 +889,58 @@ definitions:
     - notificationParam1
     - notificationParam2
     type: object
+  dto.PackageDto:
+    properties:
+      packageAllowAppt:
+        type: string
+      packageAssignedDoctor:
+        type: integer
+      packageCode:
+        type: string
+      packageDesc:
+        type: string
+      packageDisplayOrder:
+        type: integer
+      packageEndDateTime:
+        type: string
+      packageExtLink:
+        type: string
+      packageImage:
+        type: string
+      packageMaxPurchase:
+        type: integer
+      packageName:
+        type: string
+      packagePrice:
+        type: number
+      packageStartDateTime:
+        type: string
+      packageTnc:
+        type: string
+      packageValidity:
+        type: integer
+      packageValidityDate:
+        type: string
+      packageValidityType:
+        type: string
+    required:
+    - packageAllowAppt
+    - packageAssignedDoctor
+    - packageCode
+    - packageDesc
+    - packageDisplayOrder
+    - packageEndDateTime
+    - packageExtLink
+    - packageImage
+    - packageMaxPurchase
+    - packageName
+    - packagePrice
+    - packageStartDateTime
+    - packageTnc
+    - packageValidity
+    - packageValidityDate
+    - packageValidityType
+    type: object
   dto.ParamSettingDto:
     properties:
       paramCode:
@@ -804,6 +950,47 @@ definitions:
     required:
     - paramCode
     - paramValue
+    type: object
+  dto.PostAdminUserDto:
+    properties:
+      address:
+        type: string
+      adminBranchIds:
+        items:
+          type: integer
+        type: array
+      contact_number:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      nationality:
+        type: string
+      passport:
+        type: string
+      resident:
+        type: string
+      sex:
+        type: string
+      title:
+        type: string
+      userGroupId:
+        type: integer
+      username:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - userGroupId
+    - username
     type: object
   dto.PostChangePasswordDto:
     properties:
@@ -872,6 +1059,46 @@ definitions:
     required:
     - machineId
     type: object
+  dto.PostUpdateAdminUserDto:
+    properties:
+      address:
+        type: string
+      adminBranchIds:
+        items:
+          type: integer
+        type: array
+      contact_number:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      nationality:
+        type: string
+      passport:
+        type: string
+      resident:
+        type: string
+      sex:
+        type: string
+      title:
+        type: string
+      userGroupId:
+        type: integer
+      userGroupName:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - userGroupId
+    type: object
   dto.PostUserSetNewPasswordDto:
     properties:
       email:
@@ -884,6 +1111,16 @@ definitions:
     - email
     - password
     - verificationCode
+    type: object
+  dto.ReleaseVersionDto:
+    properties:
+      latestVersion:
+        type: string
+      stackPlatform:
+        type: string
+    required:
+    - latestVersion
+    - stackPlatform
     type: object
   dto.SearchKeyword2Dto:
     properties:
@@ -937,6 +1174,52 @@ definitions:
     - mobileNo
     - tac
     type: object
+  feedback.Feedback:
+    properties:
+      accountNo:
+        type: string
+      apptSchedulingRating:
+        type: integer
+      feedback_id:
+        type: integer
+      feedbackDesc:
+        type: string
+      foodBeveragesRating:
+        type: integer
+      hasAttachment:
+        type: boolean
+      hospitalServiceRating:
+        type: integer
+      overallRating:
+        type: integer
+      patientPrn:
+        type: string
+      paymentBillingRating:
+        type: integer
+      recommendUsRating:
+        type: integer
+      staffServiceRating:
+        type: integer
+      submittedDateTime:
+        type: string
+      submittedDateTimeExcel:
+        type: string
+      visitType:
+        type: string
+    type: object
+  feedback.FeedbackAttachment:
+    properties:
+      attachmentContent:
+        type: string
+      attachmentFilename:
+        type: string
+      attachmentType:
+        type: string
+      feedback_attachment_id:
+        type: integer
+      feedback_id:
+        type: integer
+    type: object
   futureOrder.FutureOrder:
     properties:
       description:
@@ -950,6 +1233,57 @@ definitions:
       planType:
         type: string
       prn:
+        type: string
+    type: object
+  hpackage.Package:
+    properties:
+      package_id:
+        type: integer
+      packageAllowAppt:
+        type: string
+      packageAssignedDoctor:
+        type: integer
+      packageAssignedDoctorName:
+        type: string
+      packageCode:
+        type: string
+      packageDesc:
+        type: string
+      packageDisplayOrder:
+        type: integer
+      packageEndDateTime:
+        type: string
+      packageEndDateTimeExcel:
+        type: string
+      packageExtLink:
+        type: string
+      packageImage:
+        type: string
+      packageMaxPurchase:
+        type: integer
+      packageName:
+        type: string
+      packagePrice:
+        type: number
+      packageStartDateTime:
+        type: string
+      packageStartDateTimeExcel:
+        type: string
+      packageTnc:
+        type: string
+      packageTotalSold:
+        type: integer
+      packageValidity:
+        type: integer
+      packageValidityDate:
+        type: string
+      packageValidityDateExcel:
+        type: string
+      packageValidityExcel:
+        type: string
+      packageValidityType:
+        type: string
+      resizePackageImage:
         type: string
     type: object
   logistic.LogisticRequest:
@@ -1116,6 +1450,43 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  model.AllUserGroupDetails:
+    properties:
+      activeUser:
+        items:
+          $ref: '#/definitions/model.AdminUser'
+        type: array
+      dateCreated:
+        type: string
+      permission:
+        items:
+          $ref: '#/definitions/model.UserGroupModulePermission'
+        type: array
+      selectedModules:
+        items:
+          type: string
+        type: array
+      userGroupId:
+        type: integer
+      userGroupName:
+        type: string
+    type: object
+  model.AppServices:
+    properties:
+      serviceImage:
+        type: string
+      serviceName:
+        type: string
+    type: object
+  model.AppVersion:
+    properties:
+      latestVersion:
+        type: string
+      osPlatform:
+        type: string
+      status:
+        type: integer
     type: object
   model.ApplicationUser:
     properties:
@@ -1350,6 +1721,13 @@ definitions:
       targetNationality:
         type: string
       targetState:
+        type: string
+    type: object
+  model.GroupModulePermission:
+    properties:
+      permissionId:
+        type: integer
+      permissionName:
         type: string
     type: object
   model.HospitalProfile:
@@ -1607,6 +1985,14 @@ definitions:
       visitType:
         type: string
     type: object
+  model.PagedList:
+    properties:
+      list: {}
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
   model.ParamSetting:
     properties:
       paramCode:
@@ -1615,6 +2001,15 @@ definitions:
         type: string
       paramValue:
         type: integer
+    type: object
+  model.ReleaseVersion:
+    properties:
+      dateUpdate:
+        type: string
+      latestVersion:
+        type: string
+      stackPlatform:
+        type: string
     type: object
   model.StatisticAppointment:
     properties:
@@ -1667,6 +2062,48 @@ definitions:
       totalRegistrations:
         type: string
       year:
+        type: string
+    type: object
+  model.UserGroup:
+    properties:
+      dateCreated:
+        type: string
+      groupId:
+        type: integer
+      userGroupModulePermissionStatesList:
+        items:
+          $ref: '#/definitions/model.UserGroupModulePermission'
+        type: array
+      userGroupName:
+        type: string
+    type: object
+  model.UserGroupDetails:
+    properties:
+      permission:
+        items:
+          $ref: '#/definitions/model.UserGroupModulePermission'
+        type: array
+      userGroupId:
+        type: integer
+      userGroupName:
+        type: string
+    type: object
+  model.UserGroupModulePermission:
+    properties:
+      moduleId:
+        type: integer
+      permissionId:
+        type: integer
+      userGroupId:
+        type: integer
+      userGroupModulePermissionId:
+        type: integer
+    type: object
+  model.UserGroupModules:
+    properties:
+      moduleId:
+        type: integer
+      moduleName:
         type: string
     type: object
   userPackage.UserPackage:
@@ -1768,6 +2205,17 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.AdminUser'
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/add-user-group:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       security:
       - BearerAuth: []
       tags:
@@ -1965,6 +2413,21 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/all-user-group:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AllUserGroupDetails'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/change-password:
     post:
       parameters:
@@ -2036,6 +2499,23 @@ paths:
       - BearerAuth: []
       tags:
       - Admin
+  /admin/delete-user-group/{userGroupId}:
+    post:
+      parameters:
+      - description: userGroupId
+        in: path
+        name: userGroupId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/delete-user/{userId}:
     post:
       parameters:
@@ -2049,6 +2529,54 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/edit-admin-user:
+    post:
+      parameters:
+      - description: PostUpdateAdminUserDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostUpdateAdminUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/group-modules:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserGroupModules'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/group-permission:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.GroupModulePermission'
+            type: array
       security:
       - BearerAuth: []
       tags:
@@ -2189,6 +2717,76 @@ paths:
       responses:
         "200":
           description: OK
+      tags:
+      - Admin
+  /admin/sign-up:
+    post:
+      parameters:
+      - description: PostAdminUserDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostAdminUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/update-user-group:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/user-group-permission:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserGroupModulePermission'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/user-group/{userGroupId}:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserGroupDetails'
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/user-group/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserGroup'
+            type: array
       tags:
       - Admin
   /clubs/goldenpearl/about-us:
@@ -3286,6 +3884,79 @@ paths:
       - BearerAuth: []
       tags:
       - Clubs
+  /common/app/hospital-profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.HospitalProfile'
+            type: array
+      tags:
+      - Common
+  /common/app/release/version:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ReleaseVersion'
+            type: array
+      tags:
+      - Common
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ReleaseVersionDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ReleaseVersionDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
+  /common/app/version:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AppVersion'
+            type: array
+      tags:
+      - Common
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: AppVersionDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AppVersionDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
   /common/country/list:
     get:
       produces:
@@ -3299,6 +3970,37 @@ paths:
             type: array
       tags:
       - Common
+  /common/downloaded-app-v2:
+    post:
+      parameters:
+      - description: AppDownloadedUserDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AppDownloadedUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
+  /common/downloaded-app/{playerId}:
+    post:
+      parameters:
+      - description: playerId
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
   /common/nationality/list:
     get:
       produces:
@@ -3309,6 +4011,50 @@ paths:
           schema:
             items:
               $ref: '#/definitions/model.Nationality'
+            type: array
+      tags:
+      - Common
+  /common/request-delete-account:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: DeleteAccountDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteAccountDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
+  /common/service/auth/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AppServices'
+            type: array
+      tags:
+      - Common
+  /common/service/guest/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AppServices'
             type: array
       tags:
       - Common
@@ -3325,6 +4071,109 @@ paths:
             type: array
       tags:
       - Common
+  /feedback:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Files
+        in: formData
+        name: files
+        type: file
+      - description: FeedbackDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FeedbackDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Feedback
+  /feedback/{feedbackId}:
+    get:
+      parameters:
+      - description: feedbackId
+        in: path
+        name: feedbackId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/feedback.Feedback'
+      security:
+      - BearerAuth: []
+      tags:
+      - Feedback
+  /feedback/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/feedback.FeedbackAttachment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Feedback
+  /feedback/attachment-download/{attachmentId}:
+    get:
+      parameters:
+      - description: attachmentId
+        in: path
+        name: attachmentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      security:
+      - BearerAuth: []
+      tags:
+      - Feedback
+  /feedback/attachment/{feedbackId}:
+    get:
+      parameters:
+      - description: feedbackId
+        in: path
+        name: feedbackId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/feedback.FeedbackAttachment'
+      security:
+      - BearerAuth: []
+      tags:
+      - Feedback
   /future-order/all/{prn}:
     get:
       parameters:
@@ -3354,6 +4203,95 @@ paths:
       - BearerAuth: []
       tags:
       - Future Order
+  /guest/clubs/goldenpearl/about-us:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.GoldenPearlAboutUs'
+      tags:
+      - Guest
+  /guest/clubs/goldenpearl/activity/all/mobile/{isHome}:
+    get:
+      parameters:
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlActivity'
+            type: array
+      tags:
+      - Guest
+  /guest/clubs/goldenpearl/activity/participate:
+    post:
+      parameters:
+      - description: GoldenPearlActvParticipationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlActvParticipationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/clubs/goldenpearl/membership:
+    post:
+      parameters:
+      - description: GoldenPearlMembershipDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GoldenPearlMembershipDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/clubs/goldenpearl/membership/{identificationNumber}:
+    get:
+      parameters:
+      - description: identificationNumber
+        in: path
+        name: identificationNumber
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/clubs.GoldenPearlMembership'
+            type: array
+      tags:
+      - Guest
   /guest/clubs/littlekids/about-us:
     get:
       produces:
@@ -3363,6 +4301,80 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/clubs.LittleExplorersKidsAboutUs'
+      tags:
+      - Guest
+  /guest/clubs/littlekids/activity/all/mobile/{isHome}:
+    get:
+      parameters:
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PagedList'
+      tags:
+      - Guest
+  /guest/clubs/littlekids/activity/participate:
+    post:
+      parameters:
+      - description: LittleExplorersKidsActvParticipationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LittleExplorersKidsActvParticipationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/clubs/littlekids/membership:
+    post:
+      parameters:
+      - description: LittleExplorersKidsMembershipDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LittleExplorersKidsMembershipDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/clubs/littlekids/membership/{identificationNumber}:
+    get:
+      parameters:
+      - description: identificationNumber
+        in: path
+        name: identificationNumber
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/clubs.LittleExplorersKidsMembership'
       tags:
       - Guest
   /guest/notification/all/{playerId}:
@@ -3403,6 +4415,75 @@ paths:
       - description: playerId
         in: path
         name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/package/{packageId}:
+    get:
+      parameters:
+      - description: packageId
+        in: path
+        name: packageId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/package/all/mobile/{isHome}:
+    get:
+      parameters:
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/package/check/expiry-maxpurchase:
+    post:
+      parameters:
+      - description: CheckPackageExpiryMaxpurchaseDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CheckPackageExpiryMaxpurchaseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/package/packageStatus/{packageId}:
+    get:
+      parameters:
+      - description: packageId
+        in: path
+        name: packageId
         required: true
         type: string
       produces:
@@ -4432,6 +5513,15 @@ paths:
       - BearerAuth: []
       tags:
       - Notification
+  /notification/send-notification/{playerId}:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Notification
   /notification/unseen/count:
     get:
       produces:
@@ -4445,6 +5535,161 @@ paths:
       - BearerAuth: []
       tags:
       - Notification
+  /package:
+    post:
+      parameters:
+      - description: PackageDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PackageDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
+  /package/{packageId}:
+    get:
+      parameters:
+      - description: packageId
+        in: path
+        name: packageId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
+    put:
+      parameters:
+      - description: PackageDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PackageDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
+  /package/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hpackage.Package'
+            type: array
+      tags:
+      - Package
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword3Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hpackage.Package'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
+  /package/all/mobile/{isHome}:
+    get:
+      parameters:
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hpackage.Package'
+            type: array
+      tags:
+      - Package
+  /package/process-resize-image:
+    post:
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Package
+  /packageStatus/{packageId}:
+    get:
+      parameters:
+      - description: packageId
+        in: path
+        name: packageId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
   /public/branch/list:
     get:
       produces:

@@ -38,6 +38,26 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/add-user-group": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/adminId/{adminId}": {
             "get": {
                 "security": [
@@ -359,6 +379,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/all-user-group": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AllUserGroupDetails"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/change-password": {
             "post": {
                 "security": [
@@ -481,6 +527,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/delete-user-group/{userGroupId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "userGroupId",
+                        "name": "userGroupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/delete-user/{userId}": {
             "post": {
                 "security": [
@@ -506,6 +581,89 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/edit-admin-user": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostUpdateAdminUserDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostUpdateAdminUserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/group-modules": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserGroupModules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/group-permission": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.GroupModulePermission"
+                            }
+                        }
                     }
                 }
             }
@@ -735,6 +893,127 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/sign-up": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "PostAdminUserDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostAdminUserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/update-user-group": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/user-group-permission": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserGroupModulePermission"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user-group/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserGroup"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user-group/{userGroupId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserGroupDetails"
+                        }
                     }
                 }
             }
@@ -2557,6 +2836,123 @@ const docTemplate = `{
                 }
             }
         },
+        "/common/app/hospital-profile": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.HospitalProfile"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/common/app/release/version": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ReleaseVersion"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "parameters": [
+                    {
+                        "description": "ReleaseVersionDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReleaseVersionDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/common/app/version": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AppVersion"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "parameters": [
+                    {
+                        "description": "AppVersionDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AppVersionDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/common/country/list": {
             "get": {
                 "produces": [
@@ -2574,6 +2970,56 @@ const docTemplate = `{
                                 "$ref": "#/definitions/model.Country"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/common/downloaded-app-v2": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "parameters": [
+                    {
+                        "description": "AppDownloadedUserDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AppDownloadedUserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/common/downloaded-app/{playerId}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "playerId",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -2599,6 +3045,77 @@ const docTemplate = `{
                 }
             }
         },
+        "/common/request-delete-account": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "parameters": [
+                    {
+                        "description": "DeleteAccountDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteAccountDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/common/service/auth/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AppServices"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/common/service/guest/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AppServices"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/common/telcode/list": {
             "get": {
                 "produces": [
@@ -2615,6 +3132,177 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/model.CountryTelCode"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Files",
+                        "name": "files",
+                        "in": "formData"
+                    },
+                    {
+                        "description": "FeedbackDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbackDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/feedback/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/feedback.FeedbackAttachment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback/attachment-download/{attachmentId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "attachmentId",
+                        "name": "attachmentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback/attachment/{feedbackId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "feedbackId",
+                        "name": "feedbackId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/feedback.FeedbackAttachment"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback/{feedbackId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "feedbackId",
+                        "name": "feedbackId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/feedback.Feedback"
                         }
                     }
                 }
@@ -2667,6 +3355,148 @@ const docTemplate = `{
                 }
             }
         },
+        "/guest/clubs/goldenpearl/about-us": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.GoldenPearlAboutUs"
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/clubs/goldenpearl/activity/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlActivity"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/clubs/goldenpearl/activity/participate": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlActvParticipationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlActvParticipationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/clubs/goldenpearl/membership": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "GoldenPearlMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GoldenPearlMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/clubs/goldenpearl/membership/{identificationNumber}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "identificationNumber",
+                        "name": "identificationNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/clubs.GoldenPearlMembership"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/guest/clubs/littlekids/about-us": {
             "get": {
                 "produces": [
@@ -2680,6 +3510,124 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/clubs.LittleExplorersKidsAboutUs"
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/clubs/littlekids/activity/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PagedList"
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/clubs/littlekids/activity/participate": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsActvParticipationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsActvParticipationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/clubs/littlekids/membership": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "LittleExplorersKidsMembershipDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LittleExplorersKidsMembershipDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/clubs/littlekids/membership/{identificationNumber}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "identificationNumber",
+                        "name": "identificationNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/clubs.LittleExplorersKidsMembership"
                         }
                     }
                 }
@@ -2747,6 +3695,116 @@ const docTemplate = `{
                         "type": "string",
                         "description": "playerId",
                         "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/package/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/package/check/expiry-maxpurchase": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "CheckPackageExpiryMaxpurchaseDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckPackageExpiryMaxpurchaseDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/package/packageStatus/{packageId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "packageId",
+                        "name": "packageId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/package/{packageId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "packageId",
+                        "name": "packageId",
                         "in": "path",
                         "required": true
                     }
@@ -4426,6 +5484,21 @@ const docTemplate = `{
                 }
             }
         },
+        "/notification/send-notification/{playerId}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/notification/unseen/count": {
             "get": {
                 "security": [
@@ -4477,6 +5550,262 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.OnesignalNotification"
                         }
+                    }
+                }
+            }
+        },
+        "/package": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "description": "PackageDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PackageDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/package/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/hpackage.Package"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/hpackage.Package"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/package/all/mobile/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/hpackage.Package"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/package/process-resize-image": {
+            "post": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/package/{packageId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "packageId",
+                        "name": "packageId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "description": "PackageDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PackageDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/packageStatus/{packageId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "packageId",
+                        "name": "packageId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -5690,6 +7019,40 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.AppDownloadedUserDto": {
+            "type": "object",
+            "required": [
+                "machineId",
+                "playerId"
+            ],
+            "properties": {
+                "machineId": {
+                    "type": "string"
+                },
+                "playerId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AppVersionDto": {
+            "type": "object",
+            "required": [
+                "latestVersion",
+                "osPlatform",
+                "status"
+            ],
+            "properties": {
+                "latestVersion": {
+                    "type": "string"
+                },
+                "osPlatform": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.ChangeSignInTypeDto": {
             "type": "object",
             "required": [
@@ -5743,6 +7106,35 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DeleteAccountDto": {
+            "type": "object",
+            "required": [
+                "dob",
+                "documentNumber",
+                "fullname",
+                "prn"
+            ],
+            "properties": {
+                "contactNumber": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "documentNumber": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.DynamicEmailMasterDto": {
             "type": "object",
             "required": [
@@ -5777,6 +7169,78 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "emailTemplate": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FeedbackDto": {
+            "type": "object",
+            "required": [
+                "accountNo",
+                "apptSchedulingRating",
+                "feedbackDesc",
+                "foodBeveragesRating",
+                "hospitalServiceRating",
+                "overallRating",
+                "patientPrn",
+                "paymentBillingRating",
+                "recommendUsRating",
+                "staffServiceRating",
+                "visitType"
+            ],
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "apptSchedulingRating": {
+                    "type": "integer"
+                },
+                "feedbackDesc": {
+                    "type": "string"
+                },
+                "feedbackFiles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FeedbackFileDto"
+                    }
+                },
+                "foodBeveragesRating": {
+                    "type": "integer"
+                },
+                "hospitalServiceRating": {
+                    "type": "integer"
+                },
+                "overallRating": {
+                    "type": "integer"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "paymentBillingRating": {
+                    "type": "integer"
+                },
+                "recommendUsRating": {
+                    "type": "integer"
+                },
+                "staffServiceRating": {
+                    "type": "integer"
+                },
+                "visitType": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FeedbackFileDto": {
+            "type": "object",
+            "required": [
+                "filename",
+                "mimeType"
+            ],
+            "properties": {
+                "filename": {
+                    "type": "string"
+                },
+                "mimeType": {
                     "type": "string"
                 }
             }
@@ -6420,6 +7884,77 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PackageDto": {
+            "type": "object",
+            "required": [
+                "packageAllowAppt",
+                "packageAssignedDoctor",
+                "packageCode",
+                "packageDesc",
+                "packageDisplayOrder",
+                "packageEndDateTime",
+                "packageExtLink",
+                "packageImage",
+                "packageMaxPurchase",
+                "packageName",
+                "packagePrice",
+                "packageStartDateTime",
+                "packageTnc",
+                "packageValidity",
+                "packageValidityDate",
+                "packageValidityType"
+            ],
+            "properties": {
+                "packageAllowAppt": {
+                    "type": "string"
+                },
+                "packageAssignedDoctor": {
+                    "type": "integer"
+                },
+                "packageCode": {
+                    "type": "string"
+                },
+                "packageDesc": {
+                    "type": "string"
+                },
+                "packageDisplayOrder": {
+                    "type": "integer"
+                },
+                "packageEndDateTime": {
+                    "type": "string"
+                },
+                "packageExtLink": {
+                    "type": "string"
+                },
+                "packageImage": {
+                    "type": "string"
+                },
+                "packageMaxPurchase": {
+                    "type": "integer"
+                },
+                "packageName": {
+                    "type": "string"
+                },
+                "packagePrice": {
+                    "type": "number"
+                },
+                "packageStartDateTime": {
+                    "type": "string"
+                },
+                "packageTnc": {
+                    "type": "string"
+                },
+                "packageValidity": {
+                    "type": "integer"
+                },
+                "packageValidityDate": {
+                    "type": "string"
+                },
+                "packageValidityType": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ParamSettingDto": {
             "type": "object",
             "required": [
@@ -6432,6 +7967,66 @@ const docTemplate = `{
                 },
                 "paramValue": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.PostAdminUserDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "userGroupId",
+                "username"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adminBranchIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "contact_number": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "middle_name": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "passport": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -6533,6 +8128,65 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PostUpdateAdminUserDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "userGroupId"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adminBranchIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "contact_number": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "middle_name": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "passport": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "userGroupName": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.PostUserSetNewPasswordDto": {
             "type": "object",
             "required": [
@@ -6548,6 +8202,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "verificationCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ReleaseVersionDto": {
+            "type": "object",
+            "required": [
+                "latestVersion",
+                "stackPlatform"
+            ],
+            "properties": {
+                "latestVersion": {
+                    "type": "string"
+                },
+                "stackPlatform": {
                     "type": "string"
                 }
             }
@@ -6632,6 +8301,76 @@ const docTemplate = `{
                 }
             }
         },
+        "feedback.Feedback": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "apptSchedulingRating": {
+                    "type": "integer"
+                },
+                "feedbackDesc": {
+                    "type": "string"
+                },
+                "feedback_id": {
+                    "type": "integer"
+                },
+                "foodBeveragesRating": {
+                    "type": "integer"
+                },
+                "hasAttachment": {
+                    "type": "boolean"
+                },
+                "hospitalServiceRating": {
+                    "type": "integer"
+                },
+                "overallRating": {
+                    "type": "integer"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "paymentBillingRating": {
+                    "type": "integer"
+                },
+                "recommendUsRating": {
+                    "type": "integer"
+                },
+                "staffServiceRating": {
+                    "type": "integer"
+                },
+                "submittedDateTime": {
+                    "type": "string"
+                },
+                "submittedDateTimeExcel": {
+                    "type": "string"
+                },
+                "visitType": {
+                    "type": "string"
+                }
+            }
+        },
+        "feedback.FeedbackAttachment": {
+            "type": "object",
+            "properties": {
+                "attachmentContent": {
+                    "type": "string"
+                },
+                "attachmentFilename": {
+                    "type": "string"
+                },
+                "attachmentType": {
+                    "type": "string"
+                },
+                "feedback_attachment_id": {
+                    "type": "integer"
+                },
+                "feedback_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "futureOrder.FutureOrder": {
             "type": "object",
             "properties": {
@@ -6651,6 +8390,83 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "prn": {
+                    "type": "string"
+                }
+            }
+        },
+        "hpackage.Package": {
+            "type": "object",
+            "properties": {
+                "packageAllowAppt": {
+                    "type": "string"
+                },
+                "packageAssignedDoctor": {
+                    "type": "integer"
+                },
+                "packageAssignedDoctorName": {
+                    "type": "string"
+                },
+                "packageCode": {
+                    "type": "string"
+                },
+                "packageDesc": {
+                    "type": "string"
+                },
+                "packageDisplayOrder": {
+                    "type": "integer"
+                },
+                "packageEndDateTime": {
+                    "type": "string"
+                },
+                "packageEndDateTimeExcel": {
+                    "type": "string"
+                },
+                "packageExtLink": {
+                    "type": "string"
+                },
+                "packageImage": {
+                    "type": "string"
+                },
+                "packageMaxPurchase": {
+                    "type": "integer"
+                },
+                "packageName": {
+                    "type": "string"
+                },
+                "packagePrice": {
+                    "type": "number"
+                },
+                "packageStartDateTime": {
+                    "type": "string"
+                },
+                "packageStartDateTimeExcel": {
+                    "type": "string"
+                },
+                "packageTnc": {
+                    "type": "string"
+                },
+                "packageTotalSold": {
+                    "type": "integer"
+                },
+                "packageValidity": {
+                    "type": "integer"
+                },
+                "packageValidityDate": {
+                    "type": "string"
+                },
+                "packageValidityDateExcel": {
+                    "type": "string"
+                },
+                "packageValidityExcel": {
+                    "type": "string"
+                },
+                "packageValidityType": {
+                    "type": "string"
+                },
+                "package_id": {
+                    "type": "integer"
+                },
+                "resizePackageImage": {
                     "type": "string"
                 }
             }
@@ -6902,6 +8718,63 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "model.AllUserGroupDetails": {
+            "type": "object",
+            "properties": {
+                "activeUser": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.AdminUser"
+                    }
+                },
+                "dateCreated": {
+                    "type": "string"
+                },
+                "permission": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroupModulePermission"
+                    }
+                },
+                "selectedModules": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "userGroupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AppServices": {
+            "type": "object",
+            "properties": {
+                "serviceImage": {
+                    "type": "string"
+                },
+                "serviceName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AppVersion": {
+            "type": "object",
+            "properties": {
+                "latestVersion": {
+                    "type": "string"
+                },
+                "osPlatform": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
@@ -7258,6 +9131,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "targetState": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GroupModulePermission": {
+            "type": "object",
+            "properties": {
+                "permissionId": {
+                    "type": "integer"
+                },
+                "permissionName": {
                     "type": "string"
                 }
             }
@@ -7652,6 +9536,18 @@ const docTemplate = `{
                 }
             }
         },
+        "model.PagedList": {
+            "type": "object",
+            "properties": {
+                "list": {},
+                "total": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.ParamSetting": {
             "type": "object",
             "properties": {
@@ -7663,6 +9559,20 @@ const docTemplate = `{
                 },
                 "paramValue": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.ReleaseVersion": {
+            "type": "object",
+            "properties": {
+                "dateUpdate": {
+                    "type": "string"
+                },
+                "latestVersion": {
+                    "type": "string"
+                },
+                "stackPlatform": {
+                    "type": "string"
                 }
             }
         },
@@ -7744,6 +9654,71 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserGroup": {
+            "type": "object",
+            "properties": {
+                "dateCreated": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "integer"
+                },
+                "userGroupModulePermissionStatesList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroupModulePermission"
+                    }
+                },
+                "userGroupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserGroupDetails": {
+            "type": "object",
+            "properties": {
+                "permission": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserGroupModulePermission"
+                    }
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "userGroupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserGroupModulePermission": {
+            "type": "object",
+            "properties": {
+                "moduleId": {
+                    "type": "integer"
+                },
+                "permissionId": {
+                    "type": "integer"
+                },
+                "userGroupId": {
+                    "type": "integer"
+                },
+                "userGroupModulePermissionId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UserGroupModules": {
+            "type": "object",
+            "properties": {
+                "moduleId": {
+                    "type": "integer"
+                },
+                "moduleName": {
                     "type": "string"
                 }
             }

@@ -6,8 +6,8 @@ import (
     "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     "vesaliusm/middleware"
-    "vesaliusm/model/clubs"
-    clubsSvc "vesaliusm/service/clubs"
+    model "vesaliusm/model/clubs"
+    "vesaliusm/service/clubs"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
 
@@ -16,13 +16,13 @@ import (
 )
 
 type ClubsLittleKidsController struct {
-    clubService *clubsSvc.ClubService
+    clubService *clubs.ClubService
     mailService *mail.MailService
 }
 
 func NewClubsLittleKidsController() *ClubsLittleKidsController {
     return &ClubsLittleKidsController{
-        clubService: clubsSvc.ClubSvc,
+        clubService: clubs.ClubSvc,
         mailService: mail.MailSvc,
     }
 }
@@ -98,7 +98,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
-    var o clubs.LittleExplorersKidsMembership
+    var o model.LittleExplorersKidsMembership
     kidsMembershipNo, err := cr.clubService.GenerateKidsMembershipNo()
     if err != nil {
         return err
@@ -239,7 +239,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
-    var o clubs.LittleExplorersKidsMembership
+    var o model.LittleExplorersKidsMembership
     kidsMembershipNo, err := cr.clubService.GenerateKidsMembershipNo()
     if err != nil {
         return err
@@ -366,7 +366,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
-    var o clubs.LittleExplorersKidsMembership
+    var o model.LittleExplorersKidsMembership
     o.KidsMembershipId = utils.NewInt64(imembershipId)
     o.KidsName = utils.NewNullString(data.KidsName)
     o.KidsDob = utils.NewNullString(data.KidsDob)
@@ -407,7 +407,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
 // @Produce json
 // @Security BearerAuth
 // @Param        membershipId               path        string  true  "membershipId"
-// @Success 200 {object} clubs.LittleExplorersKidsMembership
+// @Success 200 {object} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/{membershipId} [get]
 func (cr *ClubsLittleKidsController) GetLittleKidsMembershipById(c fiber.Ctx) error {
     membershipId := c.Params("membershipId")
@@ -425,7 +425,7 @@ func (cr *ClubsLittleKidsController) GetLittleKidsMembershipById(c fiber.Ctx) er
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/all/mobile [get]
 func (cr *ClubsLittleKidsController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
@@ -446,7 +446,7 @@ func (cr *ClubsLittleKidsController) GetAllAppLittleKidsMemberships(c fiber.Ctx)
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsMembership(c fiber.Ctx) error {
     return nil
@@ -458,7 +458,7 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsMembership(c fiber.Ct
 // @Produce json
 // @Security BearerAuth
 // @Param keyword body dto.SearchKeyword2Dto false "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber.Ctx) error {
     var data utils.Map
@@ -485,7 +485,7 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber
 // @Security BearerAuth
 // @Param        _page             query       string  false  "_page"  default:"1"
 // @Param        _limit            query       string  false  "_limit" default:"10"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/all [get]
 func (cr *ClubsLittleKidsController) GetAllLittleKidsMemberships(c fiber.Ctx) error {
     page := c.Query("_page", "1")
@@ -508,7 +508,7 @@ func (cr *ClubsLittleKidsController) GetAllLittleKidsMemberships(c fiber.Ctx) er
 // @Param         _page        query       string                false  "_page"  default:"1"
 // @Param         _limit       query       string                false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword2Dto false  "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/all [post]
 func (cr *ClubsLittleKidsController) SearchAllLittleKidsMembership(c fiber.Ctx) error {
     var data utils.Map
@@ -542,7 +542,7 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsMembership(c fiber.Ctx) 
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} clubs.LittleExplorersKidsMyActivity
+// @Success 200 {array} model.LittleExplorersKidsMyActivity
 // @Router /clubs/littlekids/my-activity/all [get]
 func (cr *ClubsLittleKidsController) GetAllUserLittleKidsActivities(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
@@ -571,10 +571,10 @@ func (cr *ClubsLittleKidsController) ParticipateLittleKidsActivity(c fiber.Ctx) 
         return err
     }
 
-    actvParticipation := make([]clubs.LittleExplorersKidsActvParticipation, 0)
+    actvParticipation := make([]model.LittleExplorersKidsActvParticipation, 0)
     for i := range data.KidsActvParticipation {
         participation := data.KidsActvParticipation[i]
-        var o clubs.LittleExplorersKidsActvParticipation
+        var o model.LittleExplorersKidsActvParticipation
         o.KidsActivityId = participation.KidsActivityId
         o.KidsMembershipId = participation.KidsMembershipId
         o.ActivityDateTime = participation.ActivityDateTime
@@ -639,7 +639,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsActivity(c fiber.Ctx) error
 
     maxParticipant, _ := strconv.ParseInt(data.ActivityMaxParticipant, 10, 32)
 
-    var o clubs.LittleExplorersKidsActivity
+    var o model.LittleExplorersKidsActivity
     o.KidsActivityCode = utils.NewNullString(data.KidsActivityCode)
     o.KidsActivityName = utils.NewNullString(data.KidsActivityName)
     o.KidsActivityDesc = utils.NewNullString(data.KidsActivityDesc)
@@ -684,7 +684,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsActivity(c fiber.Ctx) error
 
     maxParticipant, _ := strconv.ParseInt(data.ActivityMaxParticipant, 10, 32)
 
-    var o clubs.LittleExplorersKidsActivity
+    var o model.LittleExplorersKidsActivity
     o.KidsActivityId = utils.NewInt64(iactivityId)
     o.KidsActivityCode = utils.NewNullString(data.KidsActivityCode)
     o.KidsActivityName = utils.NewNullString(data.KidsActivityName)
@@ -711,7 +711,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsActivity(c fiber.Ctx) error
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} clubs.LittleExplorersKidsActivity
+// @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsActivity(c fiber.Ctx) error {
     return nil
@@ -723,7 +723,7 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsActivity(c fiber.Ctx)
 // @Produce json
 // @Security BearerAuth
 // @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsActivity
+// @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.Ctx) error {
     var data utils.Map
@@ -757,7 +757,7 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.C
 // @Produce json
 // @Param         _page        query       string                false  "_page"  default:"1"
 // @Param         _limit       query       string                false  "_limit" default:"10"
-// @Success 200 {array} clubs.LittleExplorersKidsActivity
+// @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/all [get]
 func (cr *ClubsLittleKidsController) GetAllLittleKidsActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
@@ -779,7 +779,7 @@ func (cr *ClubsLittleKidsController) GetAllLittleKidsActivities(c fiber.Ctx) err
 // @Param         _page        query       string                false  "_page"  default:"1"
 // @Param         _limit       query       string                false  "_limit" default:"10"
 // @Param         isHome       path        string                true   "isHome"
-// @Success 200 {array} clubs.LittleExplorersKidsActivity
+// @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/all/mobile/{isHome} [get]
 func (cr *ClubsLittleKidsController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
@@ -803,7 +803,7 @@ func (cr *ClubsLittleKidsController) GetAllAppLittleKidsActivities(c fiber.Ctx) 
 // @Param         _page        query       string                false  "_page"  default:"1"
 // @Param         _limit       query       string                false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsActivity
+// @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/all [post]
 func (cr *ClubsLittleKidsController) SearchAllLittleKidsActivities(c fiber.Ctx) error {
     var data utils.Map
@@ -846,7 +846,7 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsActivities(c fiber.Ctx) 
 // @Produce json
 // @Security BearerAuth
 // @Param        activityId      path      string                             true  "activityId"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/{activityId}/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsAttendees(c fiber.Ctx) error {
     return nil
@@ -859,7 +859,7 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsAttendees(c fiber.Ctx
 // @Security BearerAuth
 // @Param        activityId      path      string                             true  "activityId"
 // @Param        keyword         body      dto.SearchKeyword2Dto              false  "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/:activityId/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsAttendees(c fiber.Ctx) error {
     return nil
@@ -873,7 +873,7 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsAttendees(c fiber.
 // @Param         activityId      path     string                true   "activityId"
 // @Param         _page           query    string                false  "_page"  default:"1"
 // @Param         _limit          query    string                false  "_limit" default:"10"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/{activityId} [get]
 func (cr *ClubsLittleKidsController) GetLittleKidsActivityAttendeesById(c fiber.Ctx) error {
     activityId := c.Params("activityId")
@@ -899,7 +899,7 @@ func (cr *ClubsLittleKidsController) GetLittleKidsActivityAttendeesById(c fiber.
 // @Param         _page        query       string                false  "_page"  default:"1"
 // @Param         _limit       query       string                false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword2Dto false  "Search"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/{activityId} [post]
 func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) error {
     activityId := c.Params("activityId")
@@ -937,7 +937,7 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) e
 // @Produce json
 // @Security BearerAuth
 // @Param         activityId   path        string                true   "activityId"
-// @Success 200 {object} clubs.LittleExplorersKidsActivity
+// @Success 200 {object} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/name/{activityId} [get]
 func (cr *ClubsLittleKidsController) GetLittleKidsActivityNameById(c fiber.Ctx) error {
     activityId := c.Params("activityId")
@@ -974,7 +974,7 @@ func (cr *ClubsLittleKidsController) GetLittleKidsActivityById(c fiber.Ctx) erro
 // @Produce json
 // @Security BearerAuth
 // @Param request body dto.LittleExplorersKidsAboutUsDto true "LittleExplorersKidsAboutUsDto"
-// @Success 200 {array} clubs.LittleExplorersKidsMembership
+// @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/about-us [post]
 func (cr *ClubsLittleKidsController) CreateLittleKidsAboutUs(c fiber.Ctx) error {
     _, user, err := middleware.ValidateAdminToken(c)
@@ -996,7 +996,7 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsAboutUs(c fiber.Ctx) error 
         return fiber.NewError(fiber.StatusBadRequest, "Already setup Little Explorers Kids - About Us previously")
     }
 
-    var o clubs.LittleExplorersKidsAboutUs
+    var o model.LittleExplorersKidsAboutUs
     o.KidsClubTitle = utils.NewNullString(data.KidsClubTitle)
     o.KidsClubDesc = utils.NewNullString(data.KidsClubDesc)
     o.KidsClubImage = utils.NewNullString(data.KidsClubImage)
@@ -1046,7 +1046,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsAboutUs(c fiber.Ctx) error 
         return fiber.NewError(fiber.StatusBadRequest, "Little Explorers Kids - About us does not exist")
     }
 
-    var o clubs.LittleExplorersKidsAboutUs
+    var o model.LittleExplorersKidsAboutUs
     o.KidsClubId = utils.NewInt64(ikidsClubId)
     o.KidsClubTitle = utils.NewNullString(data.KidsClubTitle)
     o.KidsClubDesc = utils.NewNullString(data.KidsClubDesc)
@@ -1068,7 +1068,7 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsAboutUs(c fiber.Ctx) error 
 //
 // @Tags Clubs
 // @Produce json
-// @Success 200 {object} clubs.LittleExplorersKidsAboutUs
+// @Success 200 {object} model.LittleExplorersKidsAboutUs
 // @Router /clubs/littlekids/about-us [get]
 func (cr *ClubsLittleKidsController) GetLittleKidsAboutUs(c fiber.Ctx) error {
     o, err := cr.clubService.FindLittleKidsAboutUs()
