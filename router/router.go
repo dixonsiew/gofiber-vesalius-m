@@ -5,6 +5,7 @@ import (
 	"vesaliusm/controller/auth"
 	"vesaliusm/controller/clubs"
 	"vesaliusm/controller/common"
+	"vesaliusm/controller/feedback"
 	"vesaliusm/controller/futureOrder"
 	"vesaliusm/controller/guest"
 	"vesaliusm/controller/hpackage"
@@ -24,6 +25,7 @@ func SetupRoutes(app *fiber.App, basePath string) {
 	common.SetupRoutes(api)
 	auth.SetupRoutes(api)
 	clubs.SetupRoutes(api)
+	feedback.SetupRoutes(api)
 	futureOrder.SetupRoutes(api)
 	guest.SetupRoutes(api)
 	hpackage.SetupRoutes(api)

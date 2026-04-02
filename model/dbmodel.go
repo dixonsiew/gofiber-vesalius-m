@@ -137,12 +137,12 @@ type AppServices struct {
 }
 
 type RequestDeleteAccount struct {
-    PRN            string `json:"prn" swaggertype:"string"`
-    Fullname       string `json:"fullname" swaggertype:"string"`
-    DocumentNumber string `json:"documentNumber" swaggertype:"string"`
-    DOB            string `json:"dob" swaggertype:"string"`
-    ContactNumber  string `json:"contactNumber" swaggertype:"string"`
-    Email          string `json:"email" swaggertype:"string"`
+    PRN            string `json:"prn"`
+    Fullname       string `json:"fullname"`
+    DocumentNumber string `json:"documentNumber"`
+    DOB            string `json:"dob"`
+    ContactNumber  string `json:"contactNumber"`
+    Email          string `json:"email"`
 }
 
 type CountryTelCode struct {
@@ -227,7 +227,7 @@ type ApplicationUserFamily struct {
     PatientPrn      null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
     NokRefNumberV   null.String `json:"-" db:"NOK_REF_NUMBER" swaggertype:"string"`
     IsPatientV      null.String `json:"-" db:"IS_PATIENT" swaggertype:"string"`
-    NokRefNumber    int64       `json:"nokRefNumber" swaggertype:"integer"`
+    NokRefNumber    int64       `json:"nokRefNumber"`
     IsPatient       bool        `json:"isPatient"`
     Fullname        null.String `json:"fullName" db:"FULLNAME" swaggertype:"string"`
     Relationship    null.String `json:"relationship" db:"RELATIONSHIP" swaggertype:"string"`
@@ -596,10 +596,10 @@ type VesaliusPastApptInfo struct {
 }
 
 type PatientAppointment struct {
-    DoctorId             int                        `json:"doctor_id"`
-    MCR                  string                     `json:"mcr" db:"MCR"`
-    Name                 string                     `json:"name" db:"NAME"`
-    Image                string                     `json:"image" db:"IMAGE"`
+    DoctorId             int64                      `json:"doctor_id"`
+    MCR                  string                     `json:"mcr"`
+    Name                 string                     `json:"name"`
+    Image                string                     `json:"image"`
     DoctorSpecialities   []NovaDoctorSpecialities   `json:"doctorSpecialities"`
     DoctorClinicLocation []NovaDoctorClinicLocation `json:"doctorClinicLocation"`
     DoctorContact        []NovaDoctorContact        `json:"doctorContact"`
@@ -607,7 +607,7 @@ type PatientAppointment struct {
 }
 
 type PatientPastAppointment struct {
-    DoctorId             int                        `json:"doctor_id"`
+    DoctorId             int64                      `json:"doctor_id"`
     MCR                  string                     `json:"mcr"`
     Name                 string                     `json:"name"`
     Image                string                     `json:"image"`
