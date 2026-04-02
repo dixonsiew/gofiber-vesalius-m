@@ -48,6 +48,12 @@ func GetR() *resty.Request {
     return client.R()
 }
 
+func GetRWs(action string) *resty.Request {
+    return client.R().
+        SetHeader("Content-Type", "text/xml; charset=utf-8").
+        SetHeader("SOAPAction", fmt.Sprintf("urn:%s", action))
+}
+
 func GetDbColsWithReplace(s interface{}, prefix string, m map[string]string) string {
     r := ""
     // Get the type of the struct
