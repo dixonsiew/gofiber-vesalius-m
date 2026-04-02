@@ -1,25 +1,75 @@
 package userNotification
 
 import (
-	"strconv"
-	"vesaliusm/middleware"
-	"vesaliusm/service/applicationUserNotification"
-	"vesaliusm/service/generalNotificationMaster"
-	"vesaliusm/utils"
+    "strconv"
+    "vesaliusm/middleware"
+    "vesaliusm/model"
+    "vesaliusm/service/applicationUserNotification"
+    "vesaliusm/service/generalNotificationMaster"
+    "vesaliusm/service/notification"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
+    "github.com/OneSignal/onesignal-go-api"
+    "github.com/gofiber/fiber/v3"
 )
 
 type UserNotificationController struct {
-	applicationUserNotificationService *applicationUserNotification.ApplicationUserNotificationService
-	generalNotificationMasterService   *generalNotificationMaster.GeneralNotificationMasterService
+    applicationUserNotificationService *applicationUserNotification.ApplicationUserNotificationService
+    generalNotificationMasterService   *generalNotificationMaster.GeneralNotificationMasterService
+    notificationService                *notification.NotificationService
 }
 
 func NewUserNotificationController() *UserNotificationController {
-	return &UserNotificationController{
-		applicationUserNotificationService: applicationUserNotification.ApplicationUserNotificationSvc,
-		generalNotificationMasterService:   generalNotificationMaster.GeneralNotificationMasterSvc,
-	}
+    return &UserNotificationController{
+        applicationUserNotificationService: applicationUserNotification.ApplicationUserNotificationSvc,
+        generalNotificationMasterService:   generalNotificationMaster.GeneralNotificationMasterSvc,
+        notificationService:                notification.NewNotificationService(),
+    }
+}
+
+// SendNotification
+//
+// @Tags Notification
+// @Produce json
+// @Success 200
+// @Router /notification/send-notification/{playerId} [post]
+func (cr *UserNotificationController) SendNotification(c fiber.Ctx) error {
+    // msgType := c.Query("msgType")
+    playerId := c.Params("playerId")
+    playerIdList := []string{playerId}
+
+    notification := model.OnesignalNotification{
+        NotificationTitle: utils.NewNullString("Testing Push Notification"),
+        ShortMessage:      utils.NewNullString("Kindly ignore"),
+        // FullMessage:       utils.NewNullString("From OneSignal"),
+        // UserId:            utils.NewInt64(365),
+        // VisitType:         utils.NewNullString("Testing Visit Type"),
+        // AccountNo:         utils.NewNullString("A123"),
+    }
+
+    if len(playerIdList) > 0 {
+        n := *onesignal.NewNotification(cr.notificationService.GetAppId())
+        n.SetIncludePlayerIds(playerIdList)
+        n.SetHeadings(onesignal.StringMap{ En: &notification.NotificationTitle.String })
+        n.SetContents(onesignal.StringMap{ En: &notification.ShortMessage.String })
+        n.SetIosBadgeType("Increase")
+        n.SetIosBadgeCount(1)
+        n.SetData(map[string]interface{}{
+            "count": 0,
+        })
+
+        res, err := cr.notificationService.CreateNotification(&n)
+        if err != nil {
+            return err
+        }
+        return c.JSON(fiber.Map{
+            "success": res.Id,
+        })
+    }
+
+    return c.JSON(fiber.Map{
+        "success": -1,
+    })
 }
 
 // GetUnseenNotificationCount
@@ -30,21 +80,21 @@ func NewUserNotificationController() *UserNotificationController {
 // @Success 200 {integer} int
 // @Router /notification/unseen/count [get]
 func (cr *UserNotificationController) GetUnseenNotificationCount(c fiber.Ctx) error {
-	_, user, err := middleware.ValidateToken(c)
-	if err != nil {
-		return err
-	}
+    _, user, err := middleware.ValidateToken(c)
+    if err != nil {
+        return err
+    }
 
-	if user == nil {
-		return middleware.Unauthorized(c)
-	}
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
 
-	count, err := cr.applicationUserNotificationService.CountUnseenByUserId(user.UserId.Int64)
-	if err != nil {
-		return err
-	}
+    count, err := cr.applicationUserNotificationService.CountUnseenByUserId(user.UserId.Int64)
+    if err != nil {
+        return err
+    }
 
-	return c.Send([]byte(strconv.Itoa(count)))
+    return c.Send([]byte(strconv.Itoa(count)))
 }
 
 // GetNotificationList
@@ -57,25 +107,25 @@ func (cr *UserNotificationController) GetUnseenNotificationCount(c fiber.Ctx) er
 // @Success 200 {array} model.OnesignalNotification
 // @Router /notification/all [get]
 func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
-	_, user, err := middleware.ValidateToken(c)
-	if err != nil {
-		return err
-	}
+    _, user, err := middleware.ValidateToken(c)
+    if err != nil {
+        return err
+    }
 
-	if user == nil {
-		return middleware.Unauthorized(c)
-	}
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
 
-	page := c.Query("_page", "1")
-	limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
-	m, err := cr.applicationUserNotificationService.ListByUserId(user.UserId.Int64, page, limit)
-	if err != nil {
-		return err
-	}
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.applicationUserNotificationService.ListByUserId(user.UserId.Int64, page, limit)
+    if err != nil {
+        return err
+    }
 
-	c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-	c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
-	return c.JSON(m.List)
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
 }
 
 // GetGeneralNotificationList
@@ -88,16 +138,16 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
 // @Success 200 {array} model.GeneralNotification
 // @Router /notification/general/master/all [get]
 func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) error {
-	page := c.Query("_page", "1")
-	limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
-	m, err := cr.generalNotificationMasterService.List(page, limit)
-	if err != nil {
-		return err
-	}
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    m, err := cr.generalNotificationMasterService.List(page, limit)
+    if err != nil {
+        return err
+    }
 
-	c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-	c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
-	return c.JSON(m.List)
+    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
 }
 
 // GetByNotificationMasterId
@@ -109,14 +159,14 @@ func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) er
 // @Success 200 {object} model.GeneralNotification
 // @Router /notification/general/master/{notificationMasterId} [get]
 func (cr *UserNotificationController) GetByNotificationMasterId(c fiber.Ctx) error {
-	notificationMasterId := c.Params("notificationMasterId")
-	id, _ := strconv.ParseInt(notificationMasterId, 10, 64)
-	o, err := cr.generalNotificationMasterService.FindByNotificationMasterId(id)
-	if err != nil {
-		return err
-	}
+    notificationMasterId := c.Params("notificationMasterId")
+    id, _ := strconv.ParseInt(notificationMasterId, 10, 64)
+    o, err := cr.generalNotificationMasterService.FindByNotificationMasterId(id)
+    if err != nil {
+        return err
+    }
 
-	return c.JSON(o)
+    return c.JSON(o)
 }
 
 // GetNotificationById
@@ -128,12 +178,12 @@ func (cr *UserNotificationController) GetByNotificationMasterId(c fiber.Ctx) err
 // @Success 200 {object} model.OnesignalNotification
 // @Router /notification/{notificationId} [get]
 func (cr *UserNotificationController) GetNotificationById(c fiber.Ctx) error {
-	notificationId := c.Params("notificationId")
-	id, _ := strconv.ParseInt(notificationId, 10, 64)
-	o, err := cr.applicationUserNotificationService.FindByNotificationId(id)
-	if err != nil {
-		return err
-	}
+    notificationId := c.Params("notificationId")
+    id, _ := strconv.ParseInt(notificationId, 10, 64)
+    o, err := cr.applicationUserNotificationService.FindByNotificationId(id)
+    if err != nil {
+        return err
+    }
 
-	return c.JSON(o)
+    return c.JSON(o)
 }
