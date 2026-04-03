@@ -353,12 +353,17 @@ func (s *PatientPurchaseDetailsService) SaveGuest(payment_id int64, o userPackag
     return s.Save(payment_id, o)
 }
 
-func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchaseNo string, packageStatus string) error {
+func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchaseNo string, packageStatus string, tx *sqlx.Tx) error {
     var query string
+    var err error
 
     if packageStatus == utils.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PURCHASE_NO = :purchaseNo`
-        _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
+        if tx == nil {
+            _, err = s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
+        } else {
+            _, err = tx.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
+        }
         if err != nil {
             utils.LogError(err)
             return err
@@ -376,7 +381,11 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
         }
 
         query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PURCHASE_NO = :purchaseNo`, fieldDt)
-        _, err := s.db.ExecContext(s.ctx, query, packageStatus, purchaseNo)
+        if tx == nil {
+            _, err = s.db.ExecContext(s.ctx, query, packageStatus, purchaseNo)
+        } else {
+            _, err = tx.ExecContext(s.ctx, query, packageStatus, purchaseNo)
+        }
         if err != nil {
             utils.LogError(err)
             return err

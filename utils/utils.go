@@ -8,6 +8,7 @@ import (
     "strings"
     "time"
 
+    "github.com/shopspring/decimal"
     "github.com/go-playground/validator/v10"
     "github.com/go-resty/resty/v2"
     "github.com/gofiber/fiber/v3"
@@ -139,6 +140,12 @@ func NewInt64(i int64) null.Int64 {
 
 func NewFloat(f float64) null.Float {
     return null.NewFloat(f, true)
+}
+
+func GetAmount(s any) string {
+    r := fmt.Sprintf("%v", s)
+    d, _ := decimal.NewFromString(r)
+    return d.StringFixed(2)
 }
 
 func BindNValidate(c fiber.Ctx, out any) error {

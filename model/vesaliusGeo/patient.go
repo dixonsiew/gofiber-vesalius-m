@@ -4,6 +4,20 @@ import "encoding/xml"
 
 // 970712-14-5329
 
+type ResultPerson struct {
+    XMLName xml.Name `xml:"Result" json:"-"`
+    Person  Person   `xml:"Person"`
+    Success Success  `xml:"Success"`
+    Error   Error    `xml:"Error"`
+}
+
+type ResultListPerson struct {
+    XMLName xml.Name `xml:"Result" json:"-"`
+    Persons []Person `xml:"Person"`
+    Success Success  `xml:"Success"`
+    Error   Error    `xml:"Error"`
+}
+
 type ResultPatient struct {
     XMLName xml.Name `xml:"Result" json:"-"`
     Patient Patient  `xml:"Patient"`
@@ -83,8 +97,18 @@ type Patient struct {
     Sex            Sex            `xml:"Sex" json:"sex"`
     HomeAddress    HomeAddress    `xml:"HomeAddress" json:"homeAddress"`
     ContactNumber  ContactNumber  `xml:"ContactNumber" json:"contactNumber"`
-    Document       []Document     `xml:"Document" json:"documents"`
+    Documents      []Document     `xml:"Document" json:"documents"`
     Nationality    Nationality    `xml:"Nationality" json:"nationality"`
-    ChargeCategory ChargeCategory `xml:"ChargeCategory" json:"chargeCategory"`
-    PaymentClass   PaymentClass   `xml:"PaymentClass" json:"paymentClass"`
+}
+
+type Person struct {
+    XMLName       xml.Name      `xml:"Person" json:"-"`
+    Name          Name          `xml:"Name" json:"name"`
+    Resident      string        `xml:"Resident" json:"resident"`
+    DOB           string        `xml:"DOB" json:"dob"`
+    Sex           Sex           `xml:"Sex" json:"sex"`
+    HomeAddress   HomeAddress   `xml:"HomeAddress" json:"homeAddress"`
+    ContactNumber ContactNumber `xml:"ContactNumber" json:"contactNumber"`
+    Document      []Document    `xml:"Document" json:"documents"`
+    Nationality   Nationality   `xml:"Nationality" json:"nationality"`
 }
