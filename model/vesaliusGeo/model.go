@@ -11,6 +11,10 @@ type VesaliusWSException struct {
     Message string `json:"message"`
 }
 
+func (o *VesaliusWSException) ToString() string {
+    return o.Code + ": " + o.Message
+}
+
 type Error struct {
     XMLName      xml.Name `xml:"Error" json:"-"`
     ErrorCode    string   `xml:"ErrorCode" json:"errorCode"`

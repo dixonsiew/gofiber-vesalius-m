@@ -270,7 +270,15 @@ func (s *VesaliusGeoService) AppointmentChangeAppointment(prn string, slotNumber
             }
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+        if ex.Code == "WS-00028" {
+            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour reschedule information is outdated, please retry again.", ex.ToString()))
+        }
+
+        if ex.Code == "WS-00036" {
+            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nWhoops! You've already booked an appointment with another doctor during that time. Please reschedule another alternative date/session.", ex.ToString()))
+        }
+
+        return result, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
     }
 
     return result, nil
@@ -359,7 +367,15 @@ func (s *VesaliusGeoService) AppointmentMakeAppointment(prn string, slotNumber s
             }
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+        if ex.Code == "WS-00007" {
+            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
+        }
+
+        if ex.Code == "WS-00028" {
+            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
+        }
+
+        return result, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
     }
 
     return result, nil

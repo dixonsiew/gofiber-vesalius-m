@@ -634,8 +634,9 @@ func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64, conn *sqlx.
     if db == nil {
         db = s.db
     }
+    query := `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`
     var name string
-    err := db.GetContext(s.ctx, &name, `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`, doctorId)
+    err := db.GetContext(s.ctx, &name, query, doctorId)
     if err != nil {
         if err == sql.ErrNoRows {
             return "", nil
@@ -646,9 +647,14 @@ func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64, conn *sqlx.
     return name, nil
 }
 
-func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
+func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string, conn *sqlx.DB) (int64, error) {
+    db := conn
+    if db == nil {
+        db = s.db
+    }
+    query := `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :mcr`
     var id int64
-    err := s.db.GetContext(s.ctx, &id, `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
+    err := db.GetContext(s.ctx, &id, query, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return 0, err
@@ -660,8 +666,10 @@ func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string) (int64, error) {
 }
 
 func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, error) {
+    query := `SELECT * FROM NOVA_DOCTOR WHERE MCR = :mcr`
+    query = strings.Replace(query, "*", getNovaDoctorCols(), 1)
     var doctor model.NovaDoctor
-    err := s.db.GetContext(s.ctx, &doctor, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
+    err := s.db.GetContext(s.ctx, &doctor, query, mcr)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -673,8 +681,10 @@ func (s *NovaDoctorService) FindDoctorByMcr(mcr string) (*model.NovaDoctor, erro
 }
 
 func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error) {
+    query := `SELECT * FROM NOVA_DOCTOR WHERE MCR = :mcr`
+    query = strings.Replace(query, "*", getNovaDoctorCols(), 1)
     doctors := make([]model.NovaDoctor, 0)
-    err := s.db.SelectContext(s.ctx, &doctors, `SELECT ` + getNovaDoctorCols() + ` FROM NOVA_DOCTOR WHERE MCR = :mcr`, mcr)
+    err := s.db.SelectContext(s.ctx, &doctors, query, mcr)
     if err != nil {
         utils.LogError(err)
         return nil, err
