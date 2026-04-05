@@ -54,17 +54,18 @@ type Appointment struct {
 }
 
 type Slot struct {
-    XMLName    xml.Name `xml:"Slot" json:"-"`
-    SlotNumber string   `xml:"SlotNumber" json:"slotNumber"`
-    Date       string   `xml:"Date" json:"date"`
-    Day        string   `xml:"Day" json:"day"`
-    StartTime  string   `xml:"StartTime" json:"startTime"`
-    EndTime    string   `xml:"EndTime" json:"endTime"`
-    DoctorName string   `xml:"DoctorName" json:"doctorName"`
-    Speciality string   `xml:"Specialty" json:"specialty"`
-    Clinic     string   `xml:"Clinic" json:"clinic"`
-    Room       string   `xml:"Room" json:"room"`
-    CaseType   string   `xml:"CaseType" json:"caseType"`
+    XMLName     xml.Name `xml:"Slot" json:"-"`
+    SlotNumber  string   `xml:"SlotNumber" json:"slotNumber"`
+    Date        string   `xml:"Date" json:"date"`
+    Day         string   `xml:"Day" json:"day"`
+    StartTime   string   `xml:"StartTime" json:"startTime"`
+    EndTime     string   `xml:"EndTime" json:"endTime"`
+    DoctorName  string   `xml:"DoctorName" json:"doctorName"`
+    Speciality  string   `xml:"Specialty" json:"specialty"`
+    Clinic      string   `xml:"Clinic" json:"clinic"`
+    Room        string   `xml:"Room" json:"room"`
+    CaseType    string   `xml:"CaseType" json:"caseType"`
+    SessionType string   `json:"sessionType"`
 }
 
 type AppointmentBookingConfirmation struct {

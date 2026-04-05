@@ -205,7 +205,7 @@ func (s *VesaliusGeoService) appointmentCancelAppointmentResult(prn string, appo
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sAPPOINTMENT/cancelAppointment.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("CancelAppointment")
     envelope :=
@@ -300,7 +300,7 @@ func (s *VesaliusGeoService) appointmentChangeAppointmentResult(prn string, slot
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sAPPOINTMENT/changeAppointment.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("ChangeAppointment")
     envelope :=
@@ -397,7 +397,7 @@ func (s *VesaliusGeoService) appointmentMakeAppointmentResult(prn string, slotNu
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     sremark := remark
     reasonCode := s.wsVesaliusMakeApptReasonCode
     url := fmt.Sprintf("%sAPPOINTMENT/makeAppointment.cfc", s.wsVesaliusServerBaseUrl)
@@ -493,7 +493,7 @@ func (s *VesaliusGeoService) appointmentGetNextAvailableSlotsResult(
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sAPPOINTMENT/getNextAvailableSlots.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("getNextAvailableSlots")
     envelope :=
@@ -562,6 +562,10 @@ func (s *VesaliusGeoService) AppointmentGetFutureAppointments(prn string) (*mode
             }
         }
 
+        if ex.Code == "WS-00138" {
+            return result, fiber.NewError(fiber.StatusBadRequest, ex.Code)
+        }
+
         return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
     }
 
@@ -584,7 +588,7 @@ func (s *VesaliusGeoService) appointmentGetFutureAppointmentsResult(prn string) 
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sAPPOINTMENT/getFutureAppointment.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("getFutureAppointment")
     envelope :=
@@ -672,7 +676,7 @@ func (s *VesaliusGeoService) patientProcessPatientBillPaymentResult(
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sPATIENT/ProcessPatientBillPayment.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("ProcessPatientBillPayment")
     envelope :=
@@ -784,7 +788,7 @@ func (s *VesaliusGeoService) personProcessPersonBiodataResult(
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sPATIENT/ProcessPersonBiodata.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("ProcessPersonBiodata")
     envelope := `
@@ -1000,7 +1004,7 @@ func (s *VesaliusGeoService) patientGetPatientOutstandingBillsResult(prn string)
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sPATIENT/GetPatientOutstandingBills.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("GetPatientOutstandingBills")
     envelope :=
@@ -1079,7 +1083,7 @@ func (s *VesaliusGeoService) patientGetPatientOutstandingBillDetailsResult(prn s
 
     defer s.defLogout(localToken)
 
-    sleep()
+    Sleep()
     url := fmt.Sprintf("%sPATIENT/GetPatientBill.cfc", s.wsVesaliusServerBaseUrl)
     r := utils.GetRWs("GetPatientBill")
     envelope :=
@@ -1241,10 +1245,10 @@ func (s *VesaliusGeoService) updateVesaliusWSLog(errorMessage string, requestNo 
     return nil
 }
 
-func (s *VesaliusGeoService) defLogout(token string) {
-    _, _ = s.Logout(token)
+func Sleep() {
+    time.Sleep(1200 * time.Millisecond)
 }
 
-func sleep() {
-    time.Sleep(1200 * time.Millisecond)
+func (s *VesaliusGeoService) defLogout(token string) {
+    _, _ = s.Logout(token)
 }
