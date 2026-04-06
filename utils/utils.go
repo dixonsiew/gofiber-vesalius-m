@@ -231,6 +231,13 @@ func GetRandomStr(length int) string {
     return string(b)
 }
 
+func ToTitleCase(text string) string {
+	if len(text) == 0 {
+		return text
+	}
+	return strings.ToUpper(string(text[0])) + strings.ToLower(text[1:])
+}
+
 func CatchPanic(funcName string) {
     if err := recover(); err != nil {
         //LogInfo(fmt.Sprintf("recovered from panic -%s:%v", funcName, err))

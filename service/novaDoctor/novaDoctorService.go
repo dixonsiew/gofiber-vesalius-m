@@ -104,10 +104,10 @@ func (s *NovaDoctorService) Save(doctor *model.NovaDoctor) error {
     return tx.Commit()
 }
 
-func (s *NovaDoctorService) ResizeAllDoctorImage(image string, doctorID int) error {
+func (s *NovaDoctorService) ResizeAllDoctorImage(image string, doctorId int64) error {
     _, err := s.db.ExecContext(s.ctx,
-        `UPDATE NOVA_DOCTOR SET RESIZE_IMAGE = :1 WHERE DOCTOR_ID = :2`,
-        image, doctorID,
+        `UPDATE NOVA_DOCTOR SET RESIZE_IMAGE = :image WHERE DOCTOR_ID = :doctorId`,
+        image, doctorId,
     )
     if err != nil {
         utils.LogError(err)

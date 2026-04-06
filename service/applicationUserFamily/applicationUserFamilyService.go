@@ -278,6 +278,55 @@ func (s *ApplicationUserFamilyService) FindAllByUserIdAppt(userId int64, include
     return list, nil
 }
 
+func (s *ApplicationUserFamilyService) FindAllByUserPrnAppt(prn string, includeSelf bool, isForAppt bool, conn *sqlx.DB) ([]model.ApplicationUserFamily, error) {
+    db := conn
+    if db == nil {
+        db = s.db
+    }
+    query := ""
+    if isForAppt {
+        query = `
+            SELECT * FROM APPLICATION_USER_FAMILY 
+            WHERE PATIENT_PRN = :prn 
+            AND IS_PATIENT = 'Y'
+            AND IS_ACTIVE = 'Y'
+            ORDER BY NOK_REF_NUMBER DESC
+        `
+    } else {
+        query = `
+            SELECT * FROM APPLICATION_USER_FAMILY 
+            WHERE PATIENT_PRN = :prn
+            AND IS_ACTIVE = 'Y'
+            ORDER BY NOK_REF_NUMBER
+        `
+    }
+    query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUserFamily{}, ""), 1)
+    list := make([]model.ApplicationUserFamily, 0)
+    err := db.SelectContext(s.ctx, &list, query, prn)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+    }
+
+    if includeSelf {
+        o, err := s.applicationUserService.FindByPRN(prn, conn)
+        if err != nil {
+            return nil, err
+        }
+
+        if o != nil {
+            f := new(model.ApplicationUserFamily)
+            f.SetFromFamilyMember(*o)
+            list = append([]model.ApplicationUserFamily{*f}, list...)
+        }
+    }
+
+    return list, nil
+}
+
 func (s *ApplicationUserFamilyService) FindByFamilyId(familyId int64) (*model.ApplicationUserFamily, error) {
     query := `SELECT * FROM APPLICATION_USER_FAMILY WHERE AUF_ID = :familyId`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUserFamily{}, ""), 1)

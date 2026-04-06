@@ -78,7 +78,7 @@ func (s *NovaDoctorPatientApptService) FindAll(offset int, limit int, conn *sqlx
     return list, nil
 }
 
-func (s *NovaDoctorPatientApptService) FindAllByDoctorId(doctorId int64, month int, year int, needAppt int) ([]model.NovaDoctorAppointment, []model.NovaDoctorAppointmentLists, error) {
+func (s *NovaDoctorPatientApptService) FindAllByDoctorId(doctorId int64, month int, year int, needAppt string) ([]model.NovaDoctorAppointment, []model.NovaDoctorAppointmentLists, error) {
     monthArray := []string{"EMPTY", "JAN-", "FEB-", "MAR-", "APR-", "MAY-", "JUN-", "JUL-", "AUG-", "SEP-", "OCT-", "NOV-", "DEC-"}
     monthYear := fmt.Sprintf("%s%d", monthArray[month], year)
     query := sqx.GET_ALL_DOCTOR_APPOINTMENTS
@@ -90,7 +90,7 @@ func (s *NovaDoctorPatientApptService) FindAllByDoctorId(doctorId int64, month i
         return nil, nil, err
     }
 
-    if needAppt == 1 {
+    if needAppt == "1" {
         query := `SELECT DAY_OF_WEEK, SLOT_TYPE, SESSION_TYPE, START_TIME, END_TIME FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID = :doctorId`
         err := s.db.SelectContext(s.ctx, &list, query, doctorId)
         if err != nil {

@@ -651,6 +651,18 @@ type NovaDoctor struct {
     DoctorSpecialty           []NovaDoctorSpecialty      `json:"doctorSpecialty"`
 }
 
+type NovaDoctorApptSlot struct {
+    DoctorApptSlotId null.Int64  `json:"doctorApptSlotId" db:"DOCTOR_APPT_SLOT_ID" swaggertype:"integer"`
+    DoctorId         null.Int64  `json:"doctorId" db:"DOCTOR_ID" swaggertype:"integer"`
+    DayOfWeek        null.String `json:"dayOfWeek" db:"DAY_OF_WEEK" swaggertype:"string"`
+    SlotType         null.String `json:"slotType" db:"SLOT_TYPE" swaggertype:"string"`
+    SessionType      null.String `json:"sessionType" db:"SESSION_TYPE" swaggertype:"string"`
+    StartTime        null.String `json:"startTime" db:"START_TIME" swaggertype:"string"`
+    EndTime          null.String `json:"endTime" db:"END_TIME" swaggertype:"string"`
+    MaxSlots         null.Int32  `json:"maxSlots" db:"MAX_SLOTS" swaggertype:"integer"`
+    DisplaySequence  null.Int32  `json:"displaySequence" db:"DISPLAY_SEQUENCE" swaggertype:"integer"`
+}
+
 type ColumnMap struct {
     Field string `json:"field"`
     Text  string `json:"text"`

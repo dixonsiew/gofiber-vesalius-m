@@ -9,6 +9,7 @@ import (
     "time"
     "vesaliusm/config"
     "vesaliusm/database"
+    "vesaliusm/dto"
     model "vesaliusm/model/vesaliusGeo"
     "vesaliusm/utils"
 
@@ -169,24 +170,26 @@ func (s *VesaliusGeoService) Logout(token string) (*model.ResultLogout, *model.V
     return result, ex
 }
 
-func (s *VesaliusGeoService) AppointmentCancelAppointment(prn string, appointmentNumber string, reason string) (*model.ResultAppointmentCancelConfirmation, error) {
+func (s *VesaliusGeoService) AppointmentCancelAppointment(prn string, appointmentNumber string, reason string) (*model.ResultAppointmentCancelConfirmation, *model.VesaliusWSException, error) {
     result, ex := s.appointmentCancelAppointmentResult(prn, appointmentNumber, reason)
     if ex != nil {
         if ex.Code == "WS-00041" || ex.Code == "WS-00034" {
-            return result, fiber.NewError(fiber.StatusForbidden, ex.Code)
+            return result, ex, fiber.NewError(fiber.StatusForbidden, ex.Code)
         }
 
         if ex.Code == "WS-00009" || ex.Code == "WS-00005" {
             res, e := s.appointmentCancelAppointmentResult(prn, appointmentNumber, reason)
             if e != nil {
-                return res, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+                return res, e, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
             }
+
+            return res, nil, nil
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) appointmentCancelAppointmentResult(prn string, appointmentNumber string, reason string) (*model.ResultAppointmentCancelConfirmation, *model.VesaliusWSException) {
@@ -260,28 +263,30 @@ func (s *VesaliusGeoService) appointmentCancelAppointmentResult(prn string, appo
     return result, ex
 }
 
-func (s *VesaliusGeoService) AppointmentChangeAppointment(prn string, slotNumber string, appointmentNumber string, reason string) (*model.ResultAppointmentChangeConfirmation, error) {
+func (s *VesaliusGeoService) AppointmentChangeAppointment(prn string, slotNumber string, appointmentNumber string, reason string) (*model.ResultAppointmentChangeConfirmation, *model.VesaliusWSException, error) {
     result, ex := s.appointmentChangeAppointmentResult(prn, slotNumber, appointmentNumber, reason)
     if ex != nil {
         if ex.Code == "WS-00009" || ex.Code == "WS-00005" {
             res, e := s.appointmentChangeAppointmentResult(prn, slotNumber, appointmentNumber, reason)
             if e != nil {
-                return res, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+                return res, e, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
             }
+
+            return res, nil, nil
         }
 
         if ex.Code == "WS-00028" {
-            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour reschedule information is outdated, please retry again.", ex.ToString()))
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour reschedule information is outdated, please retry again.", ex.ToString()))
         }
 
         if ex.Code == "WS-00036" {
-            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nWhoops! You've already booked an appointment with another doctor during that time. Please reschedule another alternative date/session.", ex.ToString()))
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nWhoops! You've already booked an appointment with another doctor during that time. Please reschedule another alternative date/session.", ex.ToString()))
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) appointmentChangeAppointmentResult(prn string, slotNumber string, appointmentNumber string, reason string) (*model.ResultAppointmentChangeConfirmation, *model.VesaliusWSException) {
@@ -357,28 +362,30 @@ func (s *VesaliusGeoService) appointmentChangeAppointmentResult(prn string, slot
     return result, ex
 }
 
-func (s *VesaliusGeoService) AppointmentMakeAppointment(prn string, slotNumber string, caseType string, remark string) (*model.ResultAppointmentBookingConfirmation, error) {
+func (s *VesaliusGeoService) AppointmentMakeAppointment(prn string, slotNumber string, caseType string, remark string) (*model.ResultAppointmentBookingConfirmation, *model.VesaliusWSException, error) {
     result, ex := s.appointmentMakeAppointmentResult(prn, slotNumber, caseType, remark)
     if ex != nil {
         if ex.Code == "WS-00009" || ex.Code == "WS-00005" {
             res, e := s.appointmentMakeAppointmentResult(prn, slotNumber, caseType, remark)
             if e != nil {
-                return res, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+                return res, e, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
             }
+
+            return res, nil, nil
         }
 
         if ex.Code == "WS-00007" {
-            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
         }
 
         if ex.Code == "WS-00028" {
-            return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("%s\nYour appointment information is outdated, please retry again.", ex.ToString()))
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) appointmentMakeAppointmentResult(prn string, slotNumber string, caseType string, remark string) (*model.ResultAppointmentBookingConfirmation, *model.VesaliusWSException) {
@@ -459,20 +466,22 @@ func (s *VesaliusGeoService) appointmentMakeAppointmentResult(prn string, slotNu
 
 func (s *VesaliusGeoService) AppointmentGetNextAvailableSlots(
     prn string, specialtyCode string, mcr string,
-    startDate string, startTime string, caseType string) (*model.ResultListSlot, error) {
+    startDate string, startTime string, caseType string) (*model.ResultListSlot, *model.VesaliusWSException, error) {
     result, ex := s.appointmentGetNextAvailableSlotsResult(prn, specialtyCode, mcr, startDate, startTime, caseType)
     if ex != nil {
         if ex.Code == "WS-00009" || ex.Code == "WS-00005" {
             res, e := s.appointmentGetNextAvailableSlotsResult(prn, specialtyCode, mcr, startDate, startTime, caseType)
             if e != nil {
-                return res, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+                return res, e, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
             }
+
+            return res, nil, nil
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) appointmentGetNextAvailableSlotsResult(
@@ -552,24 +561,26 @@ func (s *VesaliusGeoService) appointmentGetNextAvailableSlotsResult(
     return result, ex
 }
 
-func (s *VesaliusGeoService) AppointmentGetFutureAppointments(prn string) (*model.ResultListAppointment, error) {
+func (s *VesaliusGeoService) AppointmentGetFutureAppointments(prn string) (*model.ResultListAppointment, *model.VesaliusWSException, error) {
     result, ex := s.appointmentGetFutureAppointmentsResult(prn)
     if ex != nil {
         if ex.Code == "WS-00009" || ex.Code == "WS-00005" {
             res, e := s.appointmentGetFutureAppointmentsResult(prn)
             if e != nil {
-                return res, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+                return res, e, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
             }
+
+            return res, nil, nil
         }
 
         if ex.Code == "WS-00138" {
-            return result, fiber.NewError(fiber.StatusBadRequest, ex.Code)
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, ex.Code)
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to Vesalius at the moment.\nPlease try again later.")
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) appointmentGetFutureAppointmentsResult(prn string) (*model.ResultListAppointment, *model.VesaliusWSException) {
@@ -643,18 +654,18 @@ func (s *VesaliusGeoService) appointmentGetFutureAppointmentsResult(prn string) 
 
 func (s *VesaliusGeoService) PatientProcessPatientBillPayment(
     prn string, billNumber string, paymentMethod string, paymentAmount string,
-    paymentRequestNumber string, remark string, payorName string) (*model.ResultBillPaymentConfirmation, error) {
+    paymentRequestNumber string, remark string, payorName string) (*model.ResultBillPaymentConfirmation, *model.VesaliusWSException, error) {
     result, ex := s.patientProcessPatientBillPaymentResult(prn, billNumber, paymentMethod, paymentAmount, paymentRequestNumber, remark, payorName)
     if ex != nil {
         errorMessage := fmt.Sprintf("%s (%s)", ex.Message, ex.Code)
         requestNo := paymentRequestNumber
         err := s.updateVesaliusWSLog(errorMessage, requestNo)
         if err != nil {
-            return result, err
+            return result, ex, err
         }
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) patientProcessPatientBillPaymentResult(
@@ -739,28 +750,16 @@ func (s *VesaliusGeoService) patientProcessPatientBillPaymentResult(
     return result, ex
 }
 
-func (s *VesaliusGeoService) PersonProcessPersonBiodata(
-    fullname string, dob string, gender string, contactNumber string, maritalStatus string,
-    address1 string, address2 string, postcode string, city string, state string,
-    nationality string, email string,
-) (*model.ResultPerson, error) {
-    result, ex := s.personProcessPersonBiodataResult(
-        fullname, dob, gender, contactNumber, maritalStatus,
-        address1, address2, postcode, city, state,
-        nationality, email,
-    )
+func (s *VesaliusGeoService) PersonProcessPersonBiodata(biodata dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException, error) {
+    result, ex := s.personProcessPersonBiodataResult(biodata)
     if ex != nil {
-        return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
-func (s *VesaliusGeoService) personProcessPersonBiodataResult(
-    fullname string, dob string, gender string, contactNumber string, maritalStatus string,
-    address1 string, address2 string, postcode string, city string, state string,
-    nationality string, email string,
-) (*model.ResultPerson, *model.VesaliusWSException) {
+func (s *VesaliusGeoService) personProcessPersonBiodataResult(biodata dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException) {
     var (
         result *model.ResultPerson = new(model.ResultPerson)
         ex     *model.VesaliusWSException
@@ -770,11 +769,11 @@ func (s *VesaliusGeoService) personProcessPersonBiodataResult(
         "Single":  "01",
         "Married": "02",
     }
-    maritalMap := m[maritalStatus]
-    g, _ := goment.New(dob, "DD/MM/YYYY")
+    maritalMap := m[biodata.MaritalStatus]
+    g, _ := goment.New(biodata.Dob, "DD/MM/YYYY")
     dobs := g.Format("DD-MMM-YYYY")
     sex := "F"
-    if gender == "Male" {
+    if biodata.Gender == "Male" {
         sex = "M"
     }
     localToken, resx, ex := s.Login()
@@ -824,9 +823,9 @@ func (s *VesaliusGeoService) personProcessPersonBiodataResult(
         </x:Body>
     </x:Envelope>
     `
-    v := fmt.Sprintf(envelope, localToken, fullname, dobs, sex, contactNumber,
-        maritalMap, address1, address2, postcode, city,
-        state, nationality, s.vesaliusServerCompanyCode, email)
+    v := fmt.Sprintf(envelope, localToken, biodata.FullName, dobs, sex, biodata.ContactNumber,
+        maritalMap, biodata.Address1, biodata.Address2, biodata.Postcode, biodata.TownCity,
+        biodata.State, biodata.Nationality, s.vesaliusServerCompanyCode, biodata.Email)
     res, err := r.SetBody(v).Post(url)
     if err != nil {
         return result, &model.VesaliusWSException{
@@ -886,38 +885,53 @@ func (s *VesaliusGeoService) patientCheckPatientData(prn string) (*model.ResultL
     return result, nil
 }
 
-func (s *VesaliusGeoService) ClubsGetPatientData(docNumber string) (*model.ResultListPatient, error) {
+func (s *VesaliusGeoService) ClubsGetPatientData(docNumber string) (*model.ResultListPatient, *model.VesaliusWSException, error) {
     result, ex := s.patientGetPatientDataResult(docNumber)
     if ex != nil {
-        return nil, fiber.NewError(fiber.StatusBadRequest, ex.Message)
+        return nil, ex, fiber.NewError(fiber.StatusBadRequest, ex.Message)
     }
 
     if len(result.Patients) > 1 {
-        return result, fiber.NewError(fiber.StatusBadRequest, "More than 1 patient found with the Identification Type / Number provided. Please reach out to our customer service at +604-238 3388 for further action")
+        return result,
+            &model.VesaliusWSException{
+                Code:    "99",
+                Message: "More than 1 patient found with the Identification Type / Number provided. Please reach out to our customer service at +604-238 3388 for further action",
+            },
+            fiber.NewError(fiber.StatusBadRequest, "More than 1 patient found with the Identification Type / Number provided. Please reach out to our customer service at +604-238 3388 for further action")
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
-func (s *VesaliusGeoService) patientGetPatientData(prn string) (*model.ResultListPatient, error) {
+func (s *VesaliusGeoService) patientGetPatientData(prn string) (*model.ResultListPatient, *model.VesaliusWSException, error) {
     result, ex := s.patientGetPatientDataResult(prn)
     if ex != nil {
         if ex.Code == "WS-00014" {
-            return result, fiber.NewError(fiber.StatusBadRequest, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
     }
 
     if len(result.Patients) > 1 {
-        return result, fiber.NewError(fiber.StatusBadRequest, "More than 1 Patient Found")
+        return result,
+            &model.VesaliusWSException{
+                Code:    "99",
+                Message: "More than 1 Patient Found",
+            },
+            fiber.NewError(fiber.StatusBadRequest, "More than 1 Patient Found")
     }
 
     if len(result.Patients) < 1 {
-        return result, fiber.NewError(fiber.StatusBadRequest, "No Patient Found")
+        return result,
+            &model.VesaliusWSException{
+                Code:    "99",
+                Message: "No Patient Found",
+            },
+            fiber.NewError(fiber.StatusBadRequest, "No Patient Found")
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) patientGetPatientDataResult(prn string) (*model.ResultListPatient, *model.VesaliusWSException) {
@@ -975,17 +989,17 @@ func (s *VesaliusGeoService) patientGetPatientDataResult(prn string) (*model.Res
     return result, ex
 }
 
-func (s *VesaliusGeoService) PatientGetPatientOutstandingBills(prn string) (*model.ResultOutstandingBills, error) {
+func (s *VesaliusGeoService) PatientGetPatientOutstandingBills(prn string) (*model.ResultOutstandingBills, *model.VesaliusWSException, error) {
     result, ex := s.patientGetPatientOutstandingBillsResult(prn)
     if ex != nil {
         if ex.Code == "NH-00294" {
-            return result, fiber.NewError(fiber.StatusBadRequest, ex.Message)
+            return result, ex, fiber.NewError(fiber.StatusBadRequest, ex.Message)
         }
 
-        return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) patientGetPatientOutstandingBillsResult(prn string) (*model.ResultOutstandingBills, *model.VesaliusWSException) {
@@ -1058,13 +1072,13 @@ func (s *VesaliusGeoService) patientGetPatientOutstandingBillsResult(prn string)
     return result, ex
 }
 
-func (s *VesaliusGeoService) PatientGetPatientOutstandingBillDetails(prn string, billNumber string) (*model.ResultPDFOutstandingBill, error) {
+func (s *VesaliusGeoService) PatientGetPatientOutstandingBillDetails(prn string, billNumber string) (*model.ResultPDFOutstandingBill, *model.VesaliusWSException, error) {
     result, ex := s.patientGetPatientOutstandingBillDetailsResult(prn, billNumber)
     if ex != nil {
-        return result, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
+        return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
     }
 
-    return result, nil
+    return result, nil, nil
 }
 
 func (s *VesaliusGeoService) patientGetPatientOutstandingBillDetailsResult(prn string, billNumber string) (*model.ResultPDFOutstandingBill, *model.VesaliusWSException) {
@@ -1165,17 +1179,17 @@ func (s *VesaliusGeoService) getPatientFromDocuments(o model.Patient, prn string
     return o, fiber.NewError(fiber.StatusNoContent)
 }
 
-func (s *VesaliusGeoService) GetPatientDataByPRN(prn string) (*model.Patient, error) {
-    result, err := s.patientGetPatientData(prn)
+func (s *VesaliusGeoService) GetPatientDataByPRN(prn string) (*model.Patient, *model.VesaliusWSException, error) {
+    result, ex, err := s.patientGetPatientData(prn)
     if err != nil {
-        return nil, fiber.NewError(fiber.StatusNoContent)
+        return nil, ex, fiber.NewError(fiber.StatusNoContent)
     }
 
     if len(result.Patients) < 1 {
-        return nil, fiber.NewError(fiber.StatusNoContent)
+        return nil, ex, fiber.NewError(fiber.StatusNoContent)
     }
 
-    return &result.Patients[0], nil
+    return &result.Patients[0], ex, nil
 }
 
 func (s *VesaliusGeoService) CheckPatientDataByNRIC(nric string) (*model.Patient, *model.VesaliusWSException) {
@@ -1205,27 +1219,27 @@ func (s *VesaliusGeoService) CheckPatientDataByNRIC(nric string) (*model.Patient
     }
 }
 
-func (s *VesaliusGeoService) GetPatientDataByNRIC(nric string) (*model.Patient, error) {
+func (s *VesaliusGeoService) GetPatientDataByNRIC(nric string) (*model.Patient, *model.VesaliusWSException, error) {
     nricWSWithDash := strings.ToLower(s.wsVesaliusNRICWithDash)
     prn := nric
     if nricWSWithDash != "y" {
         prn = strings.ReplaceAll(nric, "-", "")
     }
 
-    result, err := s.patientGetPatientData(prn)
+    result, ex, err := s.patientGetPatientData(prn)
     if err != nil {
-        return nil, err
+        return nil, ex, err
     }
-    
+
     o := result.Patients[0]
     if o.Prn == prn {
-        return &o, nil
+        return &o, nil, nil
     } else {
         patient, err := s.getPatientFromDocuments(o, prn)
         if err != nil {
-            return nil, err
+            return nil, nil, err
         }
-        return &patient, nil
+        return &patient, nil, nil
     }
 }
 

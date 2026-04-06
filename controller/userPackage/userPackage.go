@@ -157,7 +157,7 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        purchaseId         path      string  true  "PurchaseId"
+// @Param        purchaseId         path      string  true  "purchaseId"
 // @Success 200 {object} userPackage.UserPackage
 // @Router /user-package/{purchaseId} [get]
 func (cr *UserPackageController) GetUserPackageById(c fiber.Ctx) error {

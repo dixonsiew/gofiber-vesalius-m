@@ -2,10 +2,10 @@ package vesalius
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"slices"
-	"strings"
 	"vesaliusm/database"
 	"vesaliusm/dto"
 	"vesaliusm/model"
@@ -16,6 +16,7 @@ import (
 	"vesaliusm/service/novaDoctorPatientAppt"
 	"vesaliusm/service/patientPurchaseDetails"
 	"vesaliusm/service/vesaliusGeo"
+    sqx "vesaliusm/sql"
 	"vesaliusm/utils"
 
 	"github.com/gofiber/fiber/v3"
@@ -50,22 +51,20 @@ func NewVesaliusService(db *sqlx.DB, ctx context.Context) *VesaliusService {
 }
 
 func (s *VesaliusService) VesaliusGetCancelAppointment(prn string, data dto.PostCancelAppointmentDto) (*gm.AppointmentCancelConfirmation, error) {
-	res, err := s.vesaliusGeoService.AppointmentCancelAppointment(prn, data.AppointmentNumber, "No Reason Stated")
+	res, ex, err := s.vesaliusGeoService.AppointmentCancelAppointment(prn, data.AppointmentNumber, "No Reason Stated")
 	if err != nil {
+		if ex != nil {
+			if ex.Code == "WS-00041" || ex.Code == "WS-00034" {
+				o := gm.AppointmentCancelConfirmation{
+					AppointmentStatus: "CANCELLED",
+					AppointmentNumber: data.AppointmentNumber,
+				}
+				err := s.handleCancelAppointment(prn, data, o, err)
+				return nil, err
+			}
+		}
 		var e *fiber.Error
 		if errors.As(err, &e) {
-			if e.Code == fiber.StatusForbidden {
-				ms := e.Message
-				if ms == "WS-00041" || ms == "WS-00034" {
-					o := gm.AppointmentCancelConfirmation{
-						AppointmentStatus: "CANCELLED",
-						AppointmentNumber: data.AppointmentNumber,
-					}
-					err := s.handleCancelAppointment(prn, data, o, err)
-					return nil, err
-				}
-			}
-
 			if e.Code == fiber.StatusBadRequest {
 				return nil, err
 			}
@@ -118,7 +117,7 @@ func (s *VesaliusService) handleCancelAppointment(prn string, data dto.PostCance
 }
 
 func (s *VesaliusService) VesaliusGetChangeAppointment(prn string, data dto.PostChangeAppointmentDto) (*gm.AppointmentChangeConfirmation, error) {
-	res, err := s.vesaliusGeoService.AppointmentChangeAppointment(prn, data.SlotNumber, data.AppointmentNumber, "No Reason Stated")
+	res, _, err := s.vesaliusGeoService.AppointmentChangeAppointment(prn, data.SlotNumber, data.AppointmentNumber, "No Reason Stated")
 	if err != nil {
 		var e *fiber.Error
 		if errors.As(err, &e) {
@@ -177,7 +176,7 @@ func (s *VesaliusService) handleChangeAppointment(prn string, data dto.PostChang
 }
 
 func (s *VesaliusService) VesaliusGetMakeAppointment(prn string, data dto.PostMakeAppointmentDto) (*gm.AppointmentBookingConfirmation, error) {
-	res, err := s.vesaliusGeoService.AppointmentMakeAppointment(prn, data.SlotNumber, data.CaseType, data.Remark)
+	res, _, err := s.vesaliusGeoService.AppointmentMakeAppointment(prn, data.SlotNumber, data.CaseType, data.Remark)
 	if err != nil {
 		var e *fiber.Error
 		if errors.As(err, &e) {
@@ -246,12 +245,10 @@ func (s *VesaliusService) getAllPatientFutureAppointments(familyMembers []model.
 	m := make(map[string]model.ApplicationUserFamily)
 	for i := 0; i < len(familyMembers); i++ {
 		f := familyMembers[i]
-		res, err := s.vesaliusGeoService.AppointmentGetFutureAppointments(f.NokPrn.String)
+		res, ex, err := s.vesaliusGeoService.AppointmentGetFutureAppointments(f.NokPrn.String)
 		if err != nil {
-			var e *fiber.Error
-			if errors.As(err, &e) {
-				ms := e.Message
-				if ms == "WS-00138" {
+			if ex != nil {
+				if ex.Code == "WS-00138" {
 					i = i - 1
 					vesaliusGeo.Sleep()
 					continue
@@ -284,10 +281,111 @@ func (s *VesaliusService) getAllPatientFutureAppointments(familyMembers []model.
 	return lr, m
 }
 
+func (s *VesaliusService) VesaliusGetPatientFutureAppointments(prn string, isHome bool) ([]model.PatientAppointment, error) {
+    lx := make([]model.PatientAppointment, 0)
+    familyMembers := make([]model.ApplicationUserFamily, 0)
+	patient, err := s.applicationUserService.FindByPRN(prn, s.db)
+    if err != nil {
+        return nil, err
+    }
+
+    if patient == nil {
+        return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("vesaliusGetFutureAppointments not found: %s", prn))
+    }
+
+    familyMembers, err = s.applicationUserFamilyService.FindAllByUserPrnAppt(patient.MasterPrn.String, true, true, s.db)
+    lrx, mx := s.getAllPatientFutureAppointments(familyMembers)
+
+    var (
+        sessionType := ""
+        sessionStartTime := ""
+        sessionEndTime := ""
+    )
+
+    if len(lrx) > 0 && isHome {
+        firstDate := lrx[0].Date
+        la := make([]gm.Appointment, 0)
+        for _, x := range lrx {
+            if x.Date == firstDate {
+                la = append(la, x)
+            }
+        }
+        lrx = la
+    }
+
+    for i := range lrx {
+        vesAppt := lrx[i]
+        auf := mx[vesAppt.AppointmentNumber]
+        doc, err := s.novaDoctorService.FindDoctorByMcr(vesAppt.DoctorMCR)
+        if err != nil {
+            return nil, err
+        }
+
+        if doc == nil {
+            continue
+        }
+
+        patientAppointment := model.PatientAppointment{
+            DoctorId: doc.DoctorId.Int64,
+            Image: doc.Image.String,
+            MCR: doc.MCR.String,
+            Name: doc.Name.String,
+        }
+
+        query := `
+            SELECT hp.PACKAGE_IMG, hp.PACKAGE_NAME, 
+               ppd.PACKAGE_PURCHASE_NO, ppd.EXPIRED_DATETIME
+               FROM NOVA_DOCTOR_PATIENT_APPT ndpa
+               JOIN PATIENT_PURCHASE_DETAILS ppd ON ndpa.PACKAGE_PURCHASE_NO = ppd.PACKAGE_PURCHASE_NO
+               LEFT JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID 
+            WHERE ndpa.PATIENT_PRN = :prn AND ndpa.APPT_NO = :apptNo`
+        list := make([]model.DoctorPatientAppointment, 0)
+        err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
+        if err != nil {
+            utils.LogError(err)
+            return nil, err
+        }
+
+        var mobileAppt *model.DoctorPatientAppointment
+        if len(list) > 0 {
+            mobileAppt = &list[0]
+            patientAppointment.Image = ""
+            patientAppointment.Name = ""
+        }
+
+        ls := make([]model.NovaDoctorAppointmentLists, 0)
+        err := s.db.SelectContext(s.ctx, &ls, sqx.GET_SINGLEDATE_DOCTOR_APPOINTMENTS, 
+            sql.Named("doctorId", doctorId), 
+            sql.Named("dt", vesAppt.Date),
+        )
+        if err != nil {
+            utils.LogError(err)
+            return nil, nil, err
+        }
+
+        var appt *model.NovaDoctorAppointmentLists
+        if len(ls) > 0 {
+            appt = &ls[0]
+        }
+
+        if appt == nil {
+            return nil, fiber.NewError(fiber.StatusNoContent)
+        }
+
+        if appt.NormalStatus == "NOT AVAILABLE" {
+            
+        }
+    }
+}
+
 func (s *VesaliusService) VesaliusGetFutureAppointments(prn string) ([]gm.Appointment, error) {
-	res, err := s.vesaliusGeoService.AppointmentGetFutureAppointments(prn)
+	res, _, err := s.vesaliusGeoService.AppointmentGetFutureAppointments(prn)
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("vesaliusGetFutureAppointments not found: %s", prn))
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
 	}
 
 	lx := res.Appointments
@@ -302,23 +400,27 @@ func (s *VesaliusService) VesaliusGetFutureAppointments(prn string) ([]gm.Appoin
 	return lx, nil
 }
 
-func (s *VesaliusService) vesaliusCallNextAvailSlots(data dto.PostNextAvailableSlotsDto, prn string, conn *sqlx.DB) (bool, bool, []gm.Slot, error) {
+func (s *VesaliusService) vesaliusCallNextAvailSlots(data dto.PostNextAvailableSlotsDto, prn string, conn *sqlx.DB) (bool, bool, []gm.Slot, *gm.VesaliusWSException, error) {
 	db := conn
 	if db == nil {
 		db = s.db
 	}
-	res, err := s.vesaliusGeoService.AppointmentGetNextAvailableSlots(prn, data.SpecialtyCode, data.Mcr, data.StartDate, data.StartTime, data.CaseType)
+	res, ex, err := s.vesaliusGeoService.AppointmentGetNextAvailableSlots(prn, data.SpecialtyCode, data.Mcr, data.StartDate, data.StartTime, data.CaseType)
 	if err != nil {
-		return false, false, nil, err
+		return false, false, nil, ex, err
+	}
+
+	if res == nil {
+		return false, false, nil, ex, fiber.NewError(fiber.StatusNoContent)
 	}
 
 	lx := res.Slots
 	if lx == nil {
-		return false, false, nil, fiber.NewError(fiber.StatusNoContent)
+		return false, false, nil, ex, fiber.NewError(fiber.StatusNoContent)
 	}
 
 	if len(lx) < 1 {
-		return false, false, nil, fiber.NewError(fiber.StatusNoContent)
+		return false, false, nil, ex, fiber.NewError(fiber.StatusNoContent)
 	}
 
 	vesMorningDate := lx[0].Date
@@ -333,7 +435,7 @@ func (s *VesaliusService) vesaliusCallNextAvailSlots(data dto.PostNextAvailableS
 		vesMorningDT := fmt.Sprintf("%s %s", lx[0].Date, lx[0].StartTime)
 		morningDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesMorningDT, s.db)
 		if err != nil {
-			return false, false, nil, err
+			return false, false, nil, ex, err
 		}
 	}
 
@@ -341,7 +443,7 @@ func (s *VesaliusService) vesaliusCallNextAvailSlots(data dto.PostNextAvailableS
 		vesAfternoonDT := fmt.Sprintf("%s %s", lx[1].Date, lx[1].StartTime)
 		afternoonDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesAfternoonDT, s.db)
 		if err != nil {
-			return false, false, nil, err
+			return false, false, nil, ex, err
 		}
 	}
 
@@ -359,7 +461,7 @@ func (s *VesaliusService) vesaliusCallNextAvailSlots(data dto.PostNextAvailableS
 		getAfternoonSlotAgn = true
 	}
 
-	return getMorningSlotAgn, getAfternoonSlotAgn, lx, nil
+	return getMorningSlotAgn, getAfternoonSlotAgn, lx, nil, nil
 }
 
 func (s *VesaliusService) VesaliusGetNextSessionAvailableSlots(prn string, data dto.PostNextAvailableSlotsDto) ([]gm.Slot, error) {
@@ -369,12 +471,30 @@ func (s *VesaliusService) VesaliusGetNextSessionAvailableSlots(prn string, data 
 	var doctorId int64
 	var vesData []gm.Slot
 	var err error
+	var ex *gm.VesaliusWSException
 
 	var prm *dto.PostNextAvailableSlotsDto = &data
 
 	for getMorningSlotAgn || getAfternoonSlotAgn {
-		getMorningSlotAgn, getAfternoonSlotAgn, vesData, err = s.vesaliusCallNextAvailSlots(*prm, prn, s.db)
+		getMorningSlotAgn, getAfternoonSlotAgn, vesData, ex, err = s.vesaliusCallNextAvailSlots(*prm, prn, s.db)
+		if ex != nil {
+			if ex.Code != "" && ex.Message != "" {
+				titleCase := utils.ToTitleCase(ex.Message)
+				ms := fmt.Sprintf("%s: %s", ex.Code, titleCase)
+				return nil, fiber.NewError(fiber.StatusBadRequest, ms)
+			}
+
+			return nil, fiber.NewError(fiber.StatusBadRequest, ex.ToString())
+		}
 		if err != nil {
+			var e *fiber.Error
+			if errors.As(err, &e) {
+				if e.Code == fiber.StatusBadRequest {
+					return nil, err
+				}
+
+				return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("vesaliusGetNextAvailableSlots not found: %s", prn))
+			}
 			return nil, err
 		}
 
@@ -400,7 +520,7 @@ func (s *VesaliusService) VesaliusGetNextSessionAvailableSlots(prn string, data 
 	dateMonth := sd.Month()
 	dateYear := sd.Year()
 
-	doc_appts, _, err := s.novaDoctorPatientApptService.FindAllByDoctorId(doctorId, dateMonth, dateYear, 1)
+	doc_appts, _, err := s.novaDoctorPatientApptService.FindAllByDoctorId(doctorId, dateMonth, dateYear, "1")
 	if err != nil {
 		return nil, err
 	}
@@ -409,43 +529,137 @@ func (s *VesaliusService) VesaliusGetNextSessionAvailableSlots(prn string, data 
 		if vesData[0].Date == prm.StartDate {
 			i := slices.IndexFunc(doc_appts, func(x model.NovaDoctorAppointment) bool {
 				b := x.ApptSlotType.String == "SESSION" && x.ApptDayOfWeek.String == vesData[0].Day
-                vesStartTime, _ := goment.New(vesData[0].StartTime, "hh:mm")
-                docApptStartTime, _ := goment.New(x.ApptStartTime.String, "hh:mm")
-                docApptEndTime, _ := goment.New(x.ApptEndTime.String, "hh:mm")
-                isWithinTimeRange := !vesStartTime.IsBefore(docApptStartTime) && !vesStartTime.IsAfter(docApptEndTime)
+				vesStartTime, _ := goment.New(vesData[0].StartTime, "hh:mm")
+				docApptStartTime, _ := goment.New(x.ApptStartTime.String, "hh:mm")
+				docApptEndTime, _ := goment.New(x.ApptEndTime.String, "hh:mm")
+				isWithinTimeRange := !vesStartTime.IsBefore(docApptStartTime) && !vesStartTime.IsAfter(docApptEndTime)
 				return b && isWithinTimeRange
 			})
 			if i >= 0 {
 				a := doc_appts[i]
-                doctorMorningSession := a.ApptSessionType
-                vesData[0].SessionType = doctorMorningSession.String
-                lx = append(lx, vesData[0])
+				doctorMorningSession := a.ApptSessionType
+				vesData[0].SessionType = doctorMorningSession.String
+				lx = append(lx, vesData[0])
 			}
 		}
 
-        if vesData[1].Date == prm.StartDate {
-            i := slices.IndexFunc(doc_appts, func(x model.NovaDoctorAppointment) bool {
+		if vesData[1].Date == prm.StartDate {
+			i := slices.IndexFunc(doc_appts, func(x model.NovaDoctorAppointment) bool {
 				b := x.ApptSlotType.String == "SESSION" && x.ApptDayOfWeek.String == vesData[1].Day
-                vesStartTime, _ := goment.New(vesData[1].StartTime, "hh:mm")
-                docApptStartTime, _ := goment.New(x.ApptStartTime.String, "hh:mm")
-                docApptEndTime, _ := goment.New(x.ApptEndTime.String, "hh:mm")
-                isWithinTimeRange := !vesStartTime.IsBefore(docApptStartTime) && !vesStartTime.IsAfter(docApptEndTime)
+				vesStartTime, _ := goment.New(vesData[1].StartTime, "hh:mm")
+				docApptStartTime, _ := goment.New(x.ApptStartTime.String, "hh:mm")
+				docApptEndTime, _ := goment.New(x.ApptEndTime.String, "hh:mm")
+				isWithinTimeRange := !vesStartTime.IsBefore(docApptStartTime) && !vesStartTime.IsAfter(docApptEndTime)
 				return b && isWithinTimeRange
 			})
-            if i >= 0 {
+			if i >= 0 {
 				a := doc_appts[i]
-                doctorMorningSession := a.ApptSessionType
-                vesData[1].SessionType = doctorMorningSession.String
-                lx = append(lx, vesData[1])
+				doctorMorningSession := a.ApptSessionType
+				vesData[1].SessionType = doctorMorningSession.String
+				lx = append(lx, vesData[1])
 			}
-        }
+		}
 	}
 	return lx, nil
 }
 
-func convertToTitleCase(text string) string {
-	if len(text) == 0 {
-		return text
+func (s *VesaliusService) VesaliusGetNextAvailableSlots(prn string, data dto.PostNextAvailableSlotsDto) ([]gm.Slot, error) {
+	res, _, err := s.vesaliusGeoService.AppointmentGetNextAvailableSlots(prn, data.SpecialtyCode, data.Mcr, data.StartDate, data.StartTime, data.CaseType)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("vesaliusGetNextAvailableSlots not found: %s", prn))
 	}
-	return strings.ToUpper(string(text[0])) + strings.ToLower(text[1:])
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	lx := res.Slots
+	if lx == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	if len(lx) < 1 {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	return lx, nil
+}
+
+func (s *VesaliusService) VesaliusGetPatientOutstandingBillDetails(prn string, billNumber string) ([]byte, error) {
+	res, _, err := s.vesaliusGeoService.PatientGetPatientOutstandingBillDetails(prn, billNumber)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "Incorrect PRN or Bill Number: The Patient PRN Number or Bill Number provided does not exist. Please retry")
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	x := res.BillData
+	if x == "" {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	decodedBytes, err := base64.StdEncoding.DecodeString(x)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusInternalServerError, "Failed to decode base64 string")
+	}
+
+	return decodedBytes, nil
+}
+
+func (s *VesaliusService) VesaliusGetPatientOutstandingBillsByPrn(prn string) (*gm.ResultOutstandingBills, error) {
+	res, _, err := s.vesaliusGeoService.PatientGetPatientOutstandingBills(prn)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	return res, nil
+}
+
+func (s *VesaliusService) VesaliusGetPatientDataByPrn(prn string) (*gm.Patient, error) {
+	res, _, err := s.vesaliusGeoService.GetPatientDataByPRN(prn)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	return res, nil
+}
+
+func (s *VesaliusService) VesaliusCheckpatientDataByNric(nric string) (*gm.Patient, *gm.VesaliusWSException) {
+	return s.vesaliusGeoService.CheckPatientDataByNRIC(nric)
+}
+
+func (s *VesaliusService) VesaliusGetPatientDataByNric(nric string) (*gm.Patient, error) {
+	res, _, err := s.vesaliusGeoService.GetPatientDataByNRIC(nric)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "The Identification Number provided does not exist in our hospital records. Please retry.")
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	return res, nil
+}
+
+func (s *VesaliusService) vesaliusProcessPersonBiodata(biodata dto.GuestMakeNewPatientDto) (*gm.Person, error) {
+	res, _, err := s.vesaliusGeoService.PersonProcessPersonBiodata(biodata)
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, "Information provided does not match with hospital patient profile. Please retry.")
+	}
+
+	if res == nil {
+		return nil, fiber.NewError(fiber.StatusNoContent)
+	}
+
+	return &res.Person, nil
 }
