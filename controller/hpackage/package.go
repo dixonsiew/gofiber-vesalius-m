@@ -159,7 +159,7 @@ func (cr *PackageController) GetPackageStatusById(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 
@@ -178,7 +178,7 @@ func (cr *PackageController) GetPackageById(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 
@@ -201,32 +201,30 @@ func (cr *PackageController) CreatePackage(c fiber.Ctx) error {
         return err
     }
 
-    o := model.Package{
-        PackageCode: utils.NewNullString(data.PackageCode),
-        PackageName: utils.NewNullString(data.PackageName),
-        PackageDesc: utils.NewNullString(data.PackageDesc),
-    }
-
     resizeValidation, err := resizeBase64Image(data.PackageImage)
     if err != nil {
         return err
     }
 
-    o.PackageImage = utils.NewNullString(data.PackageImage)
-    o.ResizePackageImage = resizeValidation
-
-    o.PackageStartDateTime = utils.NewNullString(data.PackageStartDateTime)
-    o.PackageEndDateTime = utils.NewNullString(data.PackageEndDateTime)
-    o.PackageValidityType = utils.NewNullString(data.PackageValidityType)
-    o.PackageValidity = utils.NewInt64(int64(data.PackageValidity))
-    o.PackageValidityDate = utils.NewNullString(data.PackageValidityDate)
-    o.PackageTnc = utils.NewNullString(data.PackageTnc)
-    o.PackagePrice = utils.NewFloat(data.PackagePrice)
-    o.PackageMaxPurchase = utils.NewInt32(int32(data.PackageMaxPurchase))
-    o.PackageAssignedDoctor = utils.NewInt64(int64(data.PackageAssignedDoctor))
-    o.PackageAllowAppt = utils.NewNullString(data.PackageAllowAppt)
-    o.PackageDisplayOrder = utils.NewInt32(int32(data.PackageDisplayOrder))
-    o.PackageExtLink = utils.NewNullString(data.PackageExtLink)
+    o := model.Package{
+        PackageCode:           utils.NewNullString(data.PackageCode),
+        PackageName:           utils.NewNullString(data.PackageName),
+        PackageDesc:           utils.NewNullString(data.PackageDesc),
+        PackageImage:          utils.NewNullString(data.PackageImage),
+        ResizePackageImage:    resizeValidation,
+        PackageStartDateTime:  utils.NewNullString(data.PackageStartDateTime),
+        PackageEndDateTime:    utils.NewNullString(data.PackageEndDateTime),
+        PackageValidityType:   utils.NewNullString(data.PackageValidityType),
+        PackageValidity:       utils.NewInt64(int64(data.PackageValidity)),
+        PackageValidityDate:   utils.NewNullString(data.PackageValidityDate),
+        PackageTnc:            utils.NewNullString(data.PackageTnc),
+        PackagePrice:          utils.NewFloat(data.PackagePrice),
+        PackageMaxPurchase:    utils.NewInt32(int32(data.PackageMaxPurchase)),
+        PackageAssignedDoctor: utils.NewInt64(int64(data.PackageAssignedDoctor)),
+        PackageAllowAppt:      utils.NewNullString(data.PackageAllowAppt),
+        PackageDisplayOrder:   utils.NewInt32(int32(data.PackageDisplayOrder)),
+        PackageExtLink:        utils.NewNullString(data.PackageExtLink),
+    }
 
     err = cr.packageService.Save(o, adminId)
     if err != nil {
@@ -260,39 +258,37 @@ func (cr *PackageController) UpdatePackage(c fiber.Ctx) error {
     packageId := c.Params("packageId")
     ipackageId, _ := strconv.ParseInt(packageId, 10, 64)
 
-    o := model.Package{
-        PackageId: utils.NewInt64(ipackageId),
-        PackageCode: utils.NewNullString(data.PackageCode),
-        PackageName: utils.NewNullString(data.PackageName),
-        PackageDesc: utils.NewNullString(data.PackageDesc),
-    }
-
     resizeValidation, err := resizeBase64Image(data.PackageImage)
     if err != nil {
         return err
     }
 
-    o.PackageImage = utils.NewNullString(data.PackageImage)
-    o.ResizePackageImage = resizeValidation
-
-    o.PackageStartDateTime = utils.NewNullString(data.PackageStartDateTime)
-    o.PackageEndDateTime = utils.NewNullString(data.PackageEndDateTime)
-    o.PackageValidityType = utils.NewNullString(data.PackageValidityType)
-    o.PackageValidity = utils.NewInt64(int64(data.PackageValidity))
-    o.PackageValidityDate = utils.NewNullString(data.PackageValidityDate)
-    o.PackageTnc = utils.NewNullString(data.PackageTnc)
-    o.PackagePrice = utils.NewFloat(data.PackagePrice)
-    o.PackageMaxPurchase = utils.NewInt32(int32(data.PackageMaxPurchase))
-    o.PackageAssignedDoctor = utils.NewInt64(int64(data.PackageAssignedDoctor))
-    o.PackageAllowAppt = utils.NewNullString(data.PackageAllowAppt)
-    o.PackageDisplayOrder = utils.NewInt32(int32(data.PackageDisplayOrder))
-    o.PackageExtLink = utils.NewNullString(data.PackageExtLink)
+    o := model.Package{
+        PackageId:             utils.NewInt64(ipackageId),
+        PackageCode:           utils.NewNullString(data.PackageCode),
+        PackageName:           utils.NewNullString(data.PackageName),
+        PackageDesc:           utils.NewNullString(data.PackageDesc),
+        PackageImage:          utils.NewNullString(data.PackageImage),
+        ResizePackageImage:    resizeValidation,
+        PackageStartDateTime:  utils.NewNullString(data.PackageStartDateTime),
+        PackageEndDateTime:    utils.NewNullString(data.PackageEndDateTime),
+        PackageValidityType:   utils.NewNullString(data.PackageValidityType),
+        PackageValidity:       utils.NewInt64(int64(data.PackageValidity)),
+        PackageValidityDate:   utils.NewNullString(data.PackageValidityDate),
+        PackageTnc:            utils.NewNullString(data.PackageTnc),
+        PackagePrice:          utils.NewFloat(data.PackagePrice),
+        PackageMaxPurchase:    utils.NewInt32(int32(data.PackageMaxPurchase)),
+        PackageAssignedDoctor: utils.NewInt64(int64(data.PackageAssignedDoctor)),
+        PackageAllowAppt:      utils.NewNullString(data.PackageAllowAppt),
+        PackageDisplayOrder:   utils.NewInt32(int32(data.PackageDisplayOrder)),
+        PackageExtLink:        utils.NewNullString(data.PackageExtLink),
+    }
 
     err = cr.packageService.Update(o, adminId)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(fiber.Map{
         "message": "Package updated",
     })

@@ -16,6 +16,7 @@ import (
 	"vesaliusm/controller/user"
 	"vesaliusm/controller/userNotification"
 	"vesaliusm/controller/userPackage"
+	"vesaliusm/controller/vesalius"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -37,4 +38,5 @@ func SetupRoutes(app *fiber.App, basePath string) {
 	admin.SetupRoutes(api)
 	userNotification.SetupRoutes(api)
 	userPackage.SetupRoutes(api)
+	vesalius.SetupRoutes(api)
 }

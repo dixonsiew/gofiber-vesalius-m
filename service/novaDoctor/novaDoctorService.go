@@ -1,17 +1,18 @@
 package novaDoctor
 
 import (
-	"context"
-	"database/sql"
-	"fmt"
-	"strings"
-	"vesaliusm/config"
-	"vesaliusm/database"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "fmt"
+    "strconv"
+    "strings"
+    "vesaliusm/config"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/jmoiron/sqlx"
+    "github.com/gofiber/fiber/v3"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaDoctorSvc *NovaDoctorService = NewNovaDoctorService(database.GetDb(), database.GetCtx())
@@ -305,9 +306,9 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
     }
 
     // Collect IDs for child fetches
-    ids := make([]int64, 0)
+    ids := make([]string, 0)
     for i, d := range doctors {
-        ids = append(ids, d.DoctorId.Int64)
+        ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
         // Set showMakeAppointmentButton based on config
         if config.GetIpayTestEnv() == "Y" && d.AllowAppointment.String == "Y" {
             doctors[i].ShowMakeAppointmentButton = "Y"
@@ -316,28 +317,29 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
         }
     }
 
+    doctorIds := strings.Join(ids, ",")
     // Fetch child data in bulk
-    specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
+    ms, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    specMap, err := s.findAllNovaDoctorSpecialities(s.db, ids)
+    m3, err := s.FindAllNovaDoctorSpecialities(doctorIds, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    locMap, err := s.findAllNovaDoctorClinicLocation(s.db, ids)
+    m4, err := s.FindAllNovaDoctorClinicLocation(doctorIds, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    contactMap, err := s.findAllNovaDoctorContact(s.db, ids)
+    m5, err := s.FindAllNovaDoctorContact(doctorIds, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    doctorSpecialtyMap, err := s.findAllNovaDoctorSpecialty(s.db, ids, specialtyMap)
+    m7, err := s.FindAllNovaDoctorSpecialty(doctorIds, ms, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -345,16 +347,16 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
 
     // Assign child collections
     for i, doc := range doctors {
-        if list, ok := specMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m3[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialities = list
         }
-        if list, ok := locMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m4[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorClinicLocation = list
         }
-        if list, ok := contactMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m5[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorContact = list
         }
-        if list, ok := doctorSpecialtyMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m7[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialty = list
             // Check if any primary specialty exists; if not, disable appointment
             hasPrimary := false
@@ -434,43 +436,44 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
         return doctors, nil
     }
 
-    ids := make([]int64, len(doctors))
+    ids := make([]string, len(doctors))
     for _, d := range doctors {
-        ids = append(ids, d.DoctorId.Int64)
+        ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
     }
 
-    specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
+    doctorIds := strings.Join(ids, ",")
+    ms, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
         return nil, err
     }
-    specMap, err := s.findAllNovaDoctorSpecialities(s.db, ids)
+    m3, err := s.FindAllNovaDoctorSpecialities(doctorIds, s.db)
     if err != nil {
         return nil, err
     }
-    locMap, err := s.findAllNovaDoctorClinicLocation(s.db, ids)
+    m4, err := s.FindAllNovaDoctorClinicLocation(doctorIds, s.db)
     if err != nil {
         return nil, err
     }
-    contactMap, err := s.findAllNovaDoctorContact(s.db, ids)
+    m5, err := s.FindAllNovaDoctorContact(doctorIds, s.db)
     if err != nil {
         return nil, err
     }
-    doctorSpecialtyMap, err := s.findAllNovaDoctorSpecialty(s.db, ids, specialtyMap)
+    m7, err := s.FindAllNovaDoctorSpecialty(doctorIds, ms, s.db)
     if err != nil {
         return nil, err
     }
 
     for i, doc := range doctors {
-        if list, ok := specMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m3[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialities = list
         }
-        if list, ok := locMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m4[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorClinicLocation = list
         }
-        if list, ok := contactMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m5[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorContact = list
         }
-        if list, ok := doctorSpecialtyMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m7[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialty = list
         }
     }
@@ -584,45 +587,46 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
         return nil, err
     }
 
-    ids := []int64{doctorId}
+    ids := []string{strconv.FormatInt(doctorId, 10)}
+    doctorIds := strings.Join(ids, ",")
 
-    specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
+    ms, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
         return nil, err
     }
 
     // Fetch all child data
-    spokenMap, _ := s.findAllNovaDoctorSpokenLanguage(s.db, ids)
-    qualMap, _ := s.findAllNovaDoctorQualifications(s.db, ids)
-    specMap, _ := s.findAllNovaDoctorSpecialities(s.db, ids)
-    locMap, _ := s.findAllNovaDoctorClinicLocation(s.db, ids)
-    hoursMap, _ := s.findAllNovaDoctorClinicHours(s.db, ids)
-    contactMap, _ := s.findAllNovaDoctorContact(s.db, ids)
-    doctorSpecialtyMap, _ := s.findAllNovaDoctorSpecialty(s.db, ids, specialtyMap)
-    apptMap, _ := s.findAllNovaDoctorAppointments(s.db, ids)
+    m1, _ := s.FindAllNovaDoctorSpokenLanguage(doctorIds, s.db)
+    m2, _ := s.FindAllNovaDoctorQualifications(doctorIds, s.db)
+    m3, _ := s.FindAllNovaDoctorSpecialities(doctorIds, s.db)
+    m4, _ := s.FindAllNovaDoctorClinicLocation(doctorIds, s.db)
+    m5, _ := s.FindAllNovaDoctorClinicHours(doctorIds, s.db)
+    m6, _ := s.FindAllNovaDoctorContact(doctorIds, s.db)
+    m7, _ := s.FindAllNovaDoctorSpecialty(doctorIds, ms, s.db)
+    m8, _ := s.FindAllNovaDoctorAppointments(doctorIds, s.db)
 
-    if list, ok := spokenMap[doctorId]; ok {
+    if list, ok := m1[doctorId]; ok {
         doctor.DoctorSpokenLanguage = list
     }
-    if list, ok := qualMap[doctorId]; ok {
+    if list, ok := m2[doctorId]; ok {
         doctor.DoctorQualifications = list
     }
-    if list, ok := specMap[doctorId]; ok {
+    if list, ok := m3[doctorId]; ok {
         doctor.DoctorSpecialities = list
     }
-    if list, ok := locMap[doctorId]; ok {
+    if list, ok := m4[doctorId]; ok {
         doctor.DoctorClinicLocation = list
     }
-    if list, ok := hoursMap[doctorId]; ok {
+    if list, ok := m5[doctorId]; ok {
         doctor.DoctorClinicHours = list
     }
-    if list, ok := contactMap[doctorId]; ok {
+    if list, ok := m6[doctorId]; ok {
         doctor.DoctorContact = list
     }
-    if list, ok := doctorSpecialtyMap[doctorId]; ok {
+    if list, ok := m7[doctorId]; ok {
         doctor.DoctorSpecialty = list
     }
-    if list, ok := apptMap[doctorId]; ok {
+    if list, ok := m8[doctorId]; ok {
         doctor.DoctorAppointment = list
     }
 
@@ -694,45 +698,46 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
         return doctors, nil
     }
 
-    ids := make([]int64, 0)
+    ids := make([]string, 0)
     for _, d := range doctors {
-        ids = append(ids, d.DoctorId.Int64)
+        ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
     }
 
-    specialtyMap, err := s.findAllNovaSpecialtyMap(s.db)
+    ms, err := s.findAllNovaSpecialtyMap(s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
 
-    spokenMap, _ := s.findAllNovaDoctorSpokenLanguage(s.db, ids)
-    qualMap, _ := s.findAllNovaDoctorQualifications(s.db, ids)
-    specMap, _ := s.findAllNovaDoctorSpecialities(s.db, ids)
-    locMap, _ := s.findAllNovaDoctorClinicLocation(s.db, ids)
-    hoursMap, _ := s.findAllNovaDoctorClinicHours(s.db, ids)
-    contactMap, _ := s.findAllNovaDoctorContact(s.db, ids)
-    doctorSpecialtyMap, _ := s.findAllNovaDoctorSpecialtyPrimary(s.db, ids, specialtyMap)
+    doctorIds := strings.Join(ids, ",")
+    m1, _ := s.FindAllNovaDoctorSpokenLanguage(doctorIds, s.db)
+    m2, _ := s.FindAllNovaDoctorQualifications(doctorIds, s.db)
+    m3, _ := s.FindAllNovaDoctorSpecialities(doctorIds, s.db)
+    m4, _ := s.FindAllNovaDoctorClinicLocation(doctorIds, s.db)
+    m5, _ := s.FindAllNovaDoctorClinicHours(doctorIds, s.db)
+    m6, _ := s.FindAllNovaDoctorContact(doctorIds, s.db)
+    m7, _ := s.FindAllNovaDoctorSpecialtyPrimary(doctorIds, ms, s.db)
 
     for i, doc := range doctors {
-        if list, ok := spokenMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m1[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpokenLanguage = list
         }
-        if list, ok := qualMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m2[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorQualifications = list
         }
-        if list, ok := specMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m3[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialities = list
         }
-        if list, ok := locMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m4[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorClinicLocation = list
         }
-        if list, ok := hoursMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m5[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorClinicHours = list
         }
-        if list, ok := contactMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m6[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorContact = list
         }
-        if list, ok := doctorSpecialtyMap[doc.DoctorId.Int64]; ok {
+        if list, ok := m7[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialty = list
             hasPrimary := false
             for _, sp := range list {
@@ -752,17 +757,10 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
     return doctors, nil
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorSpokenLanguage(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorSpokenLanguage, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorSpokenLanguageCols() + ` FROM NOVA_DOCTOR_SPOKEN_LANGUAGE WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorSpokenLanguage(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorSpokenLanguage, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPOKEN_LANGUAGE WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorSpokenLanguageCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -781,17 +779,10 @@ func (s *NovaDoctorService) findAllNovaDoctorSpokenLanguage(db *sqlx.DB, ids []i
     return result, rows.Err()
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorQualifications(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorQualifications, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorQualificationsCols() + ` FROM NOVA_DOCTOR_QUALIFICATIONS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorQualifications(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorQualifications, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_QUALIFICATIONS WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorQualificationsCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -810,17 +801,10 @@ func (s *NovaDoctorService) findAllNovaDoctorQualifications(db *sqlx.DB, ids []i
     return result, err
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorSpecialities(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorSpecialities, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorSpecialitiesCols() + ` FROM NOVA_DOCTOR_SPECIALITIES WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorSpecialities(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialities, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALITIES WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorSpecialitiesCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -839,17 +823,10 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialities(db *sqlx.DB, ids []int
     return result, rows.Err()
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorClinicLocation(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorClinicLocation, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorClinicLocationCols() + ` FROM NOVA_DOCTOR_CLINIC_LOCATION WHERE DOCTOR_ID IN (?)`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorClinicLocation(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorClinicLocation, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CLINIC_LOCATION WHERE DOCTOR_ID IN (%s)`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorClinicLocationCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -868,17 +845,10 @@ func (s *NovaDoctorService) findAllNovaDoctorClinicLocation(db *sqlx.DB, ids []i
     return result, rows.Err()
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorClinicHours(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorClinicHours, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT ` + getNovaDoctorClinicHoursCols() + ` FROM NOVA_DOCTOR_CLINIC_HOURS WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorClinicHours(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorClinicHours, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CLINIC_HOURS WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorClinicHoursCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -897,17 +867,10 @@ func (s *NovaDoctorService) findAllNovaDoctorClinicHours(db *sqlx.DB, ids []int6
     return result, rows.Err()
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorContact(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorContact, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT `+getNovaDoctorContactCols()+` FROM NOVA_DOCTOR_CONTACT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorContact(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorContact, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CONTACT WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorContactCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -926,17 +889,10 @@ func (s *NovaDoctorService) findAllNovaDoctorContact(db *sqlx.DB, ids []int64) (
     return result, err
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorAppointments(db *sqlx.DB, ids []int64) (map[int64][]model.NovaDoctorAppointment, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT `+getNovaDoctorAppointmentCols()+` FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID IN (?) ORDER BY DISPLAY_SEQUENCE`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorAppointments(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorAppointment, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorAppointmentCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -955,17 +911,10 @@ func (s *NovaDoctorService) findAllNovaDoctorAppointments(db *sqlx.DB, ids []int
     return result, err
 }
 
-func (s *NovaDoctorService) findAllNovaDoctorSpecialty(db *sqlx.DB, ids []int64, specialtyMap map[int64]model.NovaSpecialty) (map[int64][]model.NovaDoctorSpecialty, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT `+getNovaDoctorSpecialtyCols()+` FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?)`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorSpecialty(doctorIds string, specialtyMap map[int64]model.NovaSpecialty, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialty, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (%s)`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorSpecialtyCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -986,18 +935,10 @@ func (s *NovaDoctorService) findAllNovaDoctorSpecialty(db *sqlx.DB, ids []int64,
     }
     return result, err
 }
-
-func (s *NovaDoctorService) findAllNovaDoctorSpecialtyPrimary(db *sqlx.DB, ids []int64, specialtyMap map[int64]model.NovaSpecialty) (map[int64][]model.NovaDoctorSpecialty, error) {
-    if len(ids) == 0 {
-        return nil, nil
-    }
-    query, args, err := sqlx.In(`SELECT `+getNovaDoctorSpecialtyCols()+` FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (?) AND PRIMARY_SPECIALTY = 1`, ids)
-    if err != nil {
-        utils.LogError(err)
-        return nil, err
-    }
-    query = db.Rebind(query)
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+func (s *NovaDoctorService) FindAllNovaDoctorSpecialtyPrimary(doctorIds string, specialtyMap map[int64]model.NovaSpecialty, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialty, error) {
+    query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (%s) AND PRIMARY_SPECIALTY = 1`, doctorIds)
+    query = strings.Replace(query, "*", getNovaDoctorSpecialtyCols(), 1)
+    rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
         return nil, err

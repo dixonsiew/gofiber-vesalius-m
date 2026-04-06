@@ -203,6 +203,17 @@ func (s *NovaDoctorPatientApptService) ExistsByPrnDateSessionType(prn string, da
     return count == 1, nil
 }
 
+func (s *NovaDoctorPatientApptService) FindApptSlotsByDoctorId(doctorId int64) ([]model.NovaDoctorApptSlot, error) {
+    query := `SELECT * FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID = :doctorId`
+    list := make([]model.NovaDoctorApptSlot, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, doctorId)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    return list, nil
+}
+
 func (s *NovaDoctorPatientApptService) Save(prn string, apptSessionType string, doctorId int64, rd vesaliusGeo.AppointmentBookingConfirmation, remark string, tx *sqlx.Tx) error {
     patientName, err := s.getPatientName(s.db, prn)
     if err != nil {

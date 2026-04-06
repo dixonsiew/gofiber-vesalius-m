@@ -11,7 +11,6 @@ import (
     "strings"
     "vesaliusm/dto"
     "vesaliusm/model"
-    gm "vesaliusm/model/vesaliusGeo"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/novaDoctor"
     "vesaliusm/service/novaDoctorPatientAppt"
@@ -469,7 +468,7 @@ func (cr *VesaliusController) GetPatientOutstandingBillData(c fiber.Ctx) error {
 // @Security BearerAuth
 // @Param       branchId         path      string       true  "branchId"
 // @Param       prn              path      string       true  "prn"
-// @Success 200 {object} gm.Patient
+// @Success 200 {object} vesaliusGeo.Patient
 // @Router /vesalius/patient-data/{branchId}/{prn} [get]
 func (cr *VesaliusController) GetPatientData(c fiber.Ctx) error {
     prn := c.Params("prn")
@@ -481,19 +480,171 @@ func (cr *VesaliusController) GetPatientData(c fiber.Ctx) error {
     return c.JSON(o)
 }
 
+// GetPatientFutureAppointments
+//
+// @Tags Vesalius
+// @Produce json
+// @Param       branchId         path      string       true  "branchId"
+// @Param       prn              path      string       true  "prn"
+// @Param       isHome           path      string       true  "isHome"
+// @Success 200 {array} model.PatientAppointment
+// @Router /vesalius/patient-future-appointments/{branchId}/{prn}/{isHome} [get]
 func (cr *VesaliusController) GetPatientFutureAppointments(c fiber.Ctx) error {
     prn := c.Params("prn")
     isHome := c.Params("isHome")
-    cr.vesaliusService.VesaliusGetPatientFutureAppointments(prn, isHome == "1")
+    lx, err := cr.vesaliusService.VesaliusGetPatientFutureAppointments(prn, isHome == "1")
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
-func (cr *VesaliusController) 
+// GetFutureAppointments
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId         path      string       true  "branchId"
+// @Param       prn              path      string       true  "prn"
+// @Success 200 {array} vesaliusGeo.Appointment
+// @Router /vesalius/future-appointments/{branchId}/{prn} [get]
+func (cr *VesaliusController) GetFutureAppointments(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    lx, err := cr.vesaliusService.VesaliusGetFutureAppointments(prn)
+    if err != nil {
+        return err
+    }
 
-func (cr *VesaliusController) 
+    return c.JSON(lx)
+}
 
-func (cr *VesaliusController) 
+// GetNextAvailableSlots
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostNextAvailableSlotsDto  true  "PostNextAvailableSlotsDto"
+// @Success 200 {array} vesaliusGeo.Slot
+// @Router /vesalius/get-next-available-slots/{branchId}/{prn} [post]
+func (cr *VesaliusController) GetNextAvailableSlots(c fiber.Ctx) error {
+    data := new(dto.PostNextAvailableSlotsDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
 
-func (cr *VesaliusController) 
+    prn := c.Params("prn")
+    lx, err := cr.vesaliusService.VesaliusGetNextAvailableSlots(prn, data)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// CheckPatientAppointment
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostCheckAppointmentDto    true  "PostCheckAppointmentDto"
+// @Success 200 {boolean} boolean
+// @Router /vesalius/check-make-appointment/{branchId}/{prn} [post]
+func (cr *VesaliusController) CheckPatientAppointment(c fiber.Ctx) error {
+    data := new(dto.PostCheckAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    prn := c.Params("prn")
+    g, _ := goment.New(data.ApptDate, "YYYY-MM-DD")
+    convertedDate := g.Format("YYYY-MM-DD")
+    b, err := cr.novaDoctorPatientApptService.ExistsByPrnDateSessionType(prn, convertedDate, data.ApptSessionType)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(b)
+}
+
+// GetMakeAppointment
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostMakeAppointmentDto     true  "PostMakeAppointmentDto"
+// @Success 200 {object} vesaliusGeo.AppointmentBookingConfirmation
+// @Router /vesalius/make-appointment/{branchId}/{prn} [post]
+func (cr *VesaliusController) GetMakeAppointment(c fiber.Ctx) error {
+    data := new(dto.PostMakeAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+    
+    prn := c.Params("prn")
+    o, err := cr.vesaliusService.VesaliusGetMakeAppointment(prn, data)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(o)
+}
+
+// GetChangeAppointment
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostChangeAppointmentDto   true  "PostChangeAppointmentDto"
+// @Success 200 {object} vesaliusGeo.AppointmentChangeConfirmation
+// @Router /vesalius/change-appointment/{branchId}/{prn} [post]
+func (cr *VesaliusController) GetChangeAppointment(c fiber.Ctx) error {
+    data := new(dto.PostChangeAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+    
+    prn := c.Params("prn")
+    o, err := cr.vesaliusService.VesaliusGetChangeAppointment(prn, data)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(o)
+}
+
+// GetCancelAppointment
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostCancelAppointmentDto   true  "PostCancelAppointmentDto"
+// @Success 200 {object} vesaliusGeo.AppointmentCancelConfirmation
+// @Router /vesalius/cancel-appointment/{branchId}/{prn} [post]
+func (cr *VesaliusController) GetCancelAppointment(c fiber.Ctx) error {
+    data := new(dto.PostCancelAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+    
+    prn := c.Params("prn")
+    o, err := cr.vesaliusService.VesaliusGetCancelAppointment(prn, data)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(o)
+}
 
 func resizeBase64Image(base64s string) (string, error) {
     i := strings.Index(base64s, "base64,")

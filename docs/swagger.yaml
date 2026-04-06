@@ -889,6 +889,206 @@ definitions:
     - notificationParam1
     - notificationParam2
     type: object
+  dto.NovaDoctorAppointmentDto:
+    properties:
+      apptDayOfWeek:
+        maxLength: 20
+        type: string
+      apptEndTime:
+        type: string
+      apptMaxSlots:
+        type: integer
+      apptSessionType:
+        maxLength: 10
+        type: string
+      apptSlotType:
+        type: string
+      apptStartTime:
+        type: string
+      displaySequence:
+        type: integer
+    required:
+    - apptDayOfWeek
+    - apptEndTime
+    - apptMaxSlots
+    - apptSessionType
+    - apptSlotType
+    - apptStartTime
+    - displaySequence
+    type: object
+  dto.NovaDoctorClinicHoursDto:
+    properties:
+      byAppointmentOnly:
+        type: boolean
+      dayEndTime:
+        maxLength: 20
+        type: string
+      dayOfTheWeek:
+        maxLength: 20
+        type: string
+      dayStartTime:
+        maxLength: 20
+        type: string
+      displaySequence:
+        type: integer
+    required:
+    - byAppointmentOnly
+    - dayEndTime
+    - dayOfTheWeek
+    - dayStartTime
+    - displaySequence
+    type: object
+  dto.NovaDoctorClinicLocationDto:
+    properties:
+      building:
+        maxLength: 200
+        type: string
+      location:
+        maxLength: 200
+        type: string
+    required:
+    - building
+    - location
+    type: object
+  dto.NovaDoctorContactDto:
+    properties:
+      contactType:
+        maxLength: 255
+        type: string
+      contactValue:
+        maxLength: 255
+        type: string
+      displaySequence:
+        type: integer
+    required:
+    - contactType
+    - contactValue
+    - displaySequence
+    type: object
+  dto.NovaDoctorDto:
+    properties:
+      allowAppointment:
+        maxLength: 1
+        type: string
+      consultantType:
+        maxLength: 20
+        type: string
+      displaySequence:
+        type: integer
+      doctorAppointment:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorAppointmentDto'
+        type: array
+      doctorClinicHours:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorClinicHoursDto'
+        type: array
+      doctorClinicLocation:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorClinicLocationDto'
+        type: array
+      doctorContact:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorContactDto'
+        type: array
+      doctorQualifications:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorQualificationsDto'
+        type: array
+      doctorSpecialities:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorSpecialitiesDto'
+        type: array
+      doctorSpecialty:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorSpecialtyDto'
+        type: array
+      doctorSpokenLanguage:
+        items:
+          $ref: '#/definitions/dto.NovaDoctorSpokenLanguageDto'
+        type: array
+      gender:
+        maxLength: 20
+        type: string
+      image:
+        type: string
+      isForPackage:
+        maxLength: 1
+        type: string
+      mcr:
+        maxLength: 100
+        type: string
+      name:
+        maxLength: 200
+        type: string
+      nationality:
+        maxLength: 200
+        type: string
+      qualifications:
+        maxLength: 200
+        type: string
+      registrationNum:
+        maxLength: 200
+        type: string
+      subspecialty:
+        maxLength: 200
+        type: string
+    required:
+    - allowAppointment
+    - consultantType
+    - gender
+    - isForPackage
+    - mcr
+    - name
+    - nationality
+    type: object
+  dto.NovaDoctorQualificationsDto:
+    properties:
+      displaySequence:
+        type: integer
+      qualification:
+        maxLength: 200
+        type: string
+    required:
+    - displaySequence
+    - qualification
+    type: object
+  dto.NovaDoctorSpecialitiesDto:
+    properties:
+      displaySequence:
+        type: integer
+      specialities:
+        maxLength: 200
+        type: string
+      subspecialty:
+        maxLength: 200
+        type: string
+    required:
+    - displaySequence
+    - specialities
+    - subspecialty
+    type: object
+  dto.NovaDoctorSpecialtyDto:
+    properties:
+      primarySpecialty:
+        type: boolean
+      specialtyId:
+        type: integer
+    required:
+    - primarySpecialty
+    - specialtyId
+    type: object
+  dto.NovaDoctorSpokenLanguageDto:
+    properties:
+      displaySequence:
+        type: integer
+      spokenLanguage:
+        maxLength: 200
+        type: string
+    required:
+    - displaySequence
+    - spokenLanguage
+    type: object
   dto.PackageDto:
     properties:
       packageAllowAppt:
@@ -992,6 +1192,33 @@ definitions:
     - userGroupId
     - username
     type: object
+  dto.PostCancelAppointmentDto:
+    properties:
+      appointmentNumber:
+        type: string
+      remark:
+        type: string
+    required:
+    - appointmentNumber
+    type: object
+  dto.PostChangeAppointmentDto:
+    properties:
+      appointmentNumber:
+        type: string
+      apptDate:
+        type: string
+      apptSessionType:
+        type: string
+      remark:
+        type: string
+      slotNumber:
+        type: string
+    required:
+    - appointmentNumber
+    - apptDate
+    - apptSessionType
+    - slotNumber
+    type: object
   dto.PostChangePasswordDto:
     properties:
       newPassword:
@@ -1011,6 +1238,16 @@ definitions:
     required:
     - new_password
     - user_id
+    type: object
+  dto.PostCheckAppointmentDto:
+    properties:
+      apptDate:
+        type: string
+      apptSessionType:
+        type: string
+    required:
+    - apptDate
+    - apptSessionType
     type: object
   dto.PostLinkUserPrnDto:
     properties:
@@ -1058,6 +1295,45 @@ definitions:
         type: string
     required:
     - machineId
+    type: object
+  dto.PostMakeAppointmentDto:
+    properties:
+      apptSessionType:
+        type: string
+      caseType:
+        type: string
+      doctorMcr:
+        type: string
+      remark:
+        type: string
+      slotNumber:
+        type: string
+    required:
+    - apptSessionType
+    - caseType
+    - doctorMcr
+    - slotNumber
+    type: object
+  dto.PostNextAvailableSlotsDto:
+    properties:
+      caseType:
+        type: string
+      doctorId:
+        type: integer
+      mcr:
+        type: string
+      specialtyCode:
+        type: string
+      startDate:
+        type: string
+      startTime:
+        type: string
+    required:
+    - caseType
+    - mcr
+    - specialtyCode
+    - startDate
+    - startTime
     type: object
   dto.PostUpdateAdminUserDto:
     properties:
@@ -1677,6 +1953,39 @@ definitions:
       startDate:
         type: string
     type: object
+  model.DoctorPatientAppointment:
+    properties:
+      apptCasetype:
+        type: string
+      apptClinic:
+        type: string
+      apptDay:
+        type: string
+      apptNo:
+        type: string
+      apptRoom:
+        type: string
+      apptSessionType:
+        type: string
+      apptStatus:
+        type: string
+      dateAppt:
+        type: string
+      doctor_id:
+        type: integer
+      doctor_patient_appt_id:
+        type: integer
+      doctorName:
+        type: string
+      doctorSpecialty:
+        type: string
+      patientId:
+        type: integer
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+    type: object
   model.DynamicEmailMaster:
     properties:
       emailFor:
@@ -2002,6 +2311,31 @@ definitions:
       paramValue:
         type: integer
     type: object
+  model.PatientAppointment:
+    properties:
+      doctor_id:
+        type: integer
+      doctorClinicLocation:
+        items:
+          $ref: '#/definitions/model.NovaDoctorClinicLocation'
+        type: array
+      doctorContact:
+        items:
+          $ref: '#/definitions/model.NovaDoctorContact'
+        type: array
+      doctorSpecialities:
+        items:
+          $ref: '#/definitions/model.NovaDoctorSpecialities'
+        type: array
+      image:
+        type: string
+      mcr:
+        type: string
+      name:
+        type: string
+      vesaliusApptInfo:
+        $ref: '#/definitions/model.VesaliusApptInfo'
+    type: object
   model.ReleaseVersion:
     properties:
       dateUpdate:
@@ -2106,6 +2440,39 @@ definitions:
       moduleName:
         type: string
     type: object
+  model.VesaliusApptInfo:
+    properties:
+      apptCaseType:
+        type: string
+      apptDate:
+        type: string
+      apptEndTime:
+        type: string
+      apptNo:
+        type: string
+      apptPackageImage:
+        type: string
+      apptPackageName:
+        type: string
+      apptPackagePurchaseNo:
+        type: string
+      apptPatientName:
+        type: string
+      apptPatientPrn:
+        type: string
+      apptSessionType:
+        type: string
+      apptSlotType:
+        type: string
+      apptStartTime:
+        type: string
+      patientPackageExpiry:
+        type: string
+      sessionEndTime:
+        type: string
+      sessionStartTime:
+        type: string
+    type: object
   userPackage.UserPackage:
     properties:
       appointmentDateTime:
@@ -2188,6 +2555,214 @@ definitions:
       redeemedDateTime:
         type: string
       redeemedDateTimeExcel:
+        type: string
+    type: object
+  vesaliusGeo.Appointment:
+    properties:
+      appointmentNumber:
+        type: string
+      caseType:
+        type: string
+      clinic:
+        type: string
+      date:
+        type: string
+      day:
+        type: string
+      doctorMcr:
+        type: string
+      doctorName:
+        type: string
+      endTime:
+        type: string
+      room:
+        type: string
+      specialty:
+        type: string
+      specialtyCode:
+        type: string
+      startTime:
+        type: string
+    type: object
+  vesaliusGeo.AppointmentBookingConfirmation:
+    properties:
+      appointmentNumber:
+        type: string
+      appointmentStatus:
+        type: string
+      caseType:
+        type: string
+      clinic:
+        type: string
+      date:
+        type: string
+      day:
+        type: string
+      doctorName:
+        type: string
+      endTime:
+        type: string
+      room:
+        type: string
+      specialty:
+        type: string
+      startTime:
+        type: string
+    type: object
+  vesaliusGeo.AppointmentCancelConfirmation:
+    properties:
+      appointmentNumber:
+        type: string
+      appointmentStatus:
+        type: string
+      caseType:
+        type: string
+      clinic:
+        type: string
+      date:
+        type: string
+      day:
+        type: string
+      doctorName:
+        type: string
+      endTime:
+        type: string
+      room:
+        type: string
+      specialty:
+        type: string
+      startTime:
+        type: string
+    type: object
+  vesaliusGeo.AppointmentChangeConfirmation:
+    properties:
+      appointmentNumber:
+        type: string
+      appointmentStatus:
+        type: string
+      caseType:
+        type: string
+      clinic:
+        type: string
+      date:
+        type: string
+      day:
+        type: string
+      doctorName:
+        type: string
+      endTime:
+        type: string
+      room:
+        type: string
+      specialty:
+        type: string
+      startTime:
+        type: string
+    type: object
+  vesaliusGeo.ContactNumber:
+    properties:
+      email:
+        type: string
+      home:
+        type: string
+    type: object
+  vesaliusGeo.Document:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      expireDate:
+        type: string
+      value:
+        type: string
+    type: object
+  vesaliusGeo.HomeAddress:
+    properties:
+      address1:
+        type: string
+      address2:
+        type: string
+      address3:
+        type: string
+      cityState:
+        type: string
+      country:
+        type: string
+      postalCode:
+        type: string
+    type: object
+  vesaliusGeo.Name:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      middleName:
+        type: string
+      title:
+        type: string
+    type: object
+  vesaliusGeo.Nationality:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+    type: object
+  vesaliusGeo.Patient:
+    properties:
+      contactNumber:
+        $ref: '#/definitions/vesaliusGeo.ContactNumber'
+      dob:
+        type: string
+      documents:
+        items:
+          $ref: '#/definitions/vesaliusGeo.Document'
+        type: array
+      homeAddress:
+        $ref: '#/definitions/vesaliusGeo.HomeAddress'
+      name:
+        $ref: '#/definitions/vesaliusGeo.Name'
+      nationality:
+        $ref: '#/definitions/vesaliusGeo.Nationality'
+      prn:
+        type: string
+      resident:
+        type: string
+      sex:
+        $ref: '#/definitions/vesaliusGeo.Sex'
+    type: object
+  vesaliusGeo.Sex:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+    type: object
+  vesaliusGeo.Slot:
+    properties:
+      caseType:
+        type: string
+      clinic:
+        type: string
+      date:
+        type: string
+      day:
+        type: string
+      doctorName:
+        type: string
+      endTime:
+        type: string
+      room:
+        type: string
+      sessionType:
+        type: string
+      slotNumber:
+        type: string
+      specialty:
+        type: string
+      startTime:
         type: string
     type: object
 info:
@@ -5719,7 +6294,7 @@ paths:
   /user-package/{purchaseId}:
     get:
       parameters:
-      - description: PurchaseId
+      - description: purchaseId
         in: path
         name: purchaseId
         required: true
@@ -6149,6 +6724,451 @@ paths:
           description: OK
       tags:
       - User
+  /vesalius/cancel-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostCancelAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostCancelAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.AppointmentCancelConfirmation'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/change-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostChangeAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostChangeAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.AppointmentChangeConfirmation'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/check-make-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostCheckAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostCheckAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/doctor:
+    post:
+      parameters:
+      - description: NovaDoctorDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NovaDoctorDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/doctor-image-delete/{doctorId}:
+    put:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/doctor/{doctorId}:
+    delete:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+    get:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+    put:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      - description: NovaDoctorDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NovaDoctorDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/doctor/appointment/all:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DoctorPatientAppointment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword3Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DoctorPatientAppointment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/future-appointments/{branchId}/{prn}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/vesaliusGeo.Appointment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt}:
+    get:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      - description: month
+        in: path
+        name: month
+        required: true
+        type: string
+      - description: year
+        in: path
+        name: year
+        required: true
+        type: string
+      - description: needAppt
+        in: path
+        name: needAppt
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/get-next-available-slots/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostNextAvailableSlotsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostNextAvailableSlotsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/vesaliusGeo.Slot'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/make-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostMakeAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostMakeAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.AppointmentBookingConfirmation'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/outstanding-bill/{branchId}/{prn}/{billNumber}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: billNumber
+        in: path
+        name: billNumber
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: integer
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/patient-data/{branchId}/{prn}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.Patient'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/patient-future-appointments/{branchId}/{prn}/{isHome}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: isHome
+        in: path
+        name: isHome
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.PatientAppointment'
+            type: array
+      tags:
+      - Vesalius
+  /vesalius/process-resize-image:
+    post:
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Vesalius
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

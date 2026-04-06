@@ -6020,7 +6020,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "PurchaseId",
+                        "description": "purchaseId",
                         "name": "purchaseId",
                         "in": "path",
                         "required": true
@@ -6568,6 +6568,726 @@
                             "$ref": "#/definitions/dto.UserMobileVerificationDto"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/cancel-appointment/{branchId}/{prn}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostCancelAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostCancelAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.AppointmentCancelConfirmation"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/change-appointment/{branchId}/{prn}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostChangeAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostChangeAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.AppointmentChangeConfirmation"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/check-make-appointment/{branchId}/{prn}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostCheckAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostCheckAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/doctor": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "description": "NovaDoctorDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.NovaDoctorDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/doctor-image-delete/{doctorId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/doctor/appointment/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DoctorPatientAppointment"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DoctorPatientAppointment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/doctor/{doctorId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "NovaDoctorDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.NovaDoctorDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/future-appointments/{branchId}/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vesaliusGeo.Appointment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "month",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "year",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "needAppt",
+                        "name": "needAppt",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/get-next-available-slots/{branchId}/{prn}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostNextAvailableSlotsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostNextAvailableSlotsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vesaliusGeo.Slot"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/make-appointment/{branchId}/{prn}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostMakeAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostMakeAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.AppointmentBookingConfirmation"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/outstanding-bill/{branchId}/{prn}/{billNumber}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "billNumber",
+                        "name": "billNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/patient-data/{branchId}/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.Patient"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/patient-future-appointments/{branchId}/{prn}/{isHome}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "isHome",
+                        "name": "isHome",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.PatientAppointment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/process-resize-image": {
+            "post": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Vesalius"
                 ],
                 "responses": {
                     "200": {
@@ -7877,6 +8597,287 @@
                 }
             }
         },
+        "dto.NovaDoctorAppointmentDto": {
+            "type": "object",
+            "required": [
+                "apptDayOfWeek",
+                "apptEndTime",
+                "apptMaxSlots",
+                "apptSessionType",
+                "apptSlotType",
+                "apptStartTime",
+                "displaySequence"
+            ],
+            "properties": {
+                "apptDayOfWeek": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "apptEndTime": {
+                    "type": "string"
+                },
+                "apptMaxSlots": {
+                    "type": "integer"
+                },
+                "apptSessionType": {
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "apptSlotType": {
+                    "type": "string"
+                },
+                "apptStartTime": {
+                    "type": "string"
+                },
+                "displaySequence": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.NovaDoctorClinicHoursDto": {
+            "type": "object",
+            "required": [
+                "byAppointmentOnly",
+                "dayEndTime",
+                "dayOfTheWeek",
+                "dayStartTime",
+                "displaySequence"
+            ],
+            "properties": {
+                "byAppointmentOnly": {
+                    "type": "boolean"
+                },
+                "dayEndTime": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "dayOfTheWeek": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "dayStartTime": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "displaySequence": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.NovaDoctorClinicLocationDto": {
+            "type": "object",
+            "required": [
+                "building",
+                "location"
+            ],
+            "properties": {
+                "building": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "location": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dto.NovaDoctorContactDto": {
+            "type": "object",
+            "required": [
+                "contactType",
+                "contactValue",
+                "displaySequence"
+            ],
+            "properties": {
+                "contactType": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "contactValue": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "displaySequence": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.NovaDoctorDto": {
+            "type": "object",
+            "required": [
+                "allowAppointment",
+                "consultantType",
+                "gender",
+                "isForPackage",
+                "mcr",
+                "name",
+                "nationality"
+            ],
+            "properties": {
+                "allowAppointment": {
+                    "type": "string",
+                    "maxLength": 1
+                },
+                "consultantType": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "doctorAppointment": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorAppointmentDto"
+                    }
+                },
+                "doctorClinicHours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorClinicHoursDto"
+                    }
+                },
+                "doctorClinicLocation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorClinicLocationDto"
+                    }
+                },
+                "doctorContact": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorContactDto"
+                    }
+                },
+                "doctorQualifications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorQualificationsDto"
+                    }
+                },
+                "doctorSpecialities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorSpecialitiesDto"
+                    }
+                },
+                "doctorSpecialty": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorSpecialtyDto"
+                    }
+                },
+                "doctorSpokenLanguage": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NovaDoctorSpokenLanguageDto"
+                    }
+                },
+                "gender": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "image": {
+                    "type": "string"
+                },
+                "isForPackage": {
+                    "type": "string",
+                    "maxLength": 1
+                },
+                "mcr": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "nationality": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "qualifications": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "registrationNum": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "subspecialty": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dto.NovaDoctorQualificationsDto": {
+            "type": "object",
+            "required": [
+                "displaySequence",
+                "qualification"
+            ],
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "qualification": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dto.NovaDoctorSpecialitiesDto": {
+            "type": "object",
+            "required": [
+                "displaySequence",
+                "specialities",
+                "subspecialty"
+            ],
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "specialities": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "subspecialty": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dto.NovaDoctorSpecialtyDto": {
+            "type": "object",
+            "required": [
+                "primarySpecialty",
+                "specialtyId"
+            ],
+            "properties": {
+                "primarySpecialty": {
+                    "type": "boolean"
+                },
+                "specialtyId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.NovaDoctorSpokenLanguageDto": {
+            "type": "object",
+            "required": [
+                "displaySequence",
+                "spokenLanguage"
+            ],
+            "properties": {
+                "displaySequence": {
+                    "type": "integer"
+                },
+                "spokenLanguage": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
         "dto.PackageDto": {
             "type": "object",
             "required": [
@@ -8023,6 +9024,46 @@
                 }
             }
         },
+        "dto.PostCancelAppointmentDto": {
+            "type": "object",
+            "required": [
+                "appointmentNumber"
+            ],
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostChangeAppointmentDto": {
+            "type": "object",
+            "required": [
+                "appointmentNumber",
+                "apptDate",
+                "apptSessionType",
+                "slotNumber"
+            ],
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "apptDate": {
+                    "type": "string"
+                },
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "slotNumber": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.PostChangePasswordDto": {
             "type": "object",
             "required": [
@@ -8050,6 +9091,21 @@
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.PostCheckAppointmentDto": {
+            "type": "object",
+            "required": [
+                "apptDate",
+                "apptSessionType"
+            ],
+            "properties": {
+                "apptDate": {
+                    "type": "string"
+                },
+                "apptSessionType": {
+                    "type": "string"
                 }
             }
         },
@@ -8117,6 +9173,62 @@
             ],
             "properties": {
                 "machineId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostMakeAppointmentDto": {
+            "type": "object",
+            "required": [
+                "apptSessionType",
+                "caseType",
+                "doctorMcr",
+                "slotNumber"
+            ],
+            "properties": {
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "doctorMcr": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "slotNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostNextAvailableSlotsDto": {
+            "type": "object",
+            "required": [
+                "caseType",
+                "mcr",
+                "specialtyCode",
+                "startDate",
+                "startTime"
+            ],
+            "properties": {
+                "caseType": {
+                    "type": "string"
+                },
+                "doctorId": {
+                    "type": "integer"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "specialtyCode": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "startTime": {
                     "type": "string"
                 }
             }
@@ -9058,6 +10170,56 @@
                 }
             }
         },
+        "model.DoctorPatientAppointment": {
+            "type": "object",
+            "properties": {
+                "apptCasetype": {
+                    "type": "string"
+                },
+                "apptClinic": {
+                    "type": "string"
+                },
+                "apptDay": {
+                    "type": "string"
+                },
+                "apptNo": {
+                    "type": "string"
+                },
+                "apptRoom": {
+                    "type": "string"
+                },
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "apptStatus": {
+                    "type": "string"
+                },
+                "dateAppt": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "doctorSpecialty": {
+                    "type": "string"
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "doctor_patient_appt_id": {
+                    "type": "integer"
+                },
+                "patientId": {
+                    "type": "integer"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                }
+            }
+        },
         "model.DynamicEmailMaster": {
             "type": "object",
             "properties": {
@@ -9555,6 +10717,44 @@
                 }
             }
         },
+        "model.PatientAppointment": {
+            "type": "object",
+            "properties": {
+                "doctorClinicLocation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorClinicLocation"
+                    }
+                },
+                "doctorContact": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorContact"
+                    }
+                },
+                "doctorSpecialities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorSpecialities"
+                    }
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "vesaliusApptInfo": {
+                    "$ref": "#/definitions/model.VesaliusApptInfo"
+                }
+            }
+        },
         "model.ReleaseVersion": {
             "type": "object",
             "properties": {
@@ -9716,6 +10916,56 @@
                 }
             }
         },
+        "model.VesaliusApptInfo": {
+            "type": "object",
+            "properties": {
+                "apptCaseType": {
+                    "type": "string"
+                },
+                "apptDate": {
+                    "type": "string"
+                },
+                "apptEndTime": {
+                    "type": "string"
+                },
+                "apptNo": {
+                    "type": "string"
+                },
+                "apptPackageImage": {
+                    "type": "string"
+                },
+                "apptPackageName": {
+                    "type": "string"
+                },
+                "apptPackagePurchaseNo": {
+                    "type": "string"
+                },
+                "apptPatientName": {
+                    "type": "string"
+                },
+                "apptPatientPrn": {
+                    "type": "string"
+                },
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "apptSlotType": {
+                    "type": "string"
+                },
+                "apptStartTime": {
+                    "type": "string"
+                },
+                "patientPackageExpiry": {
+                    "type": "string"
+                },
+                "sessionEndTime": {
+                    "type": "string"
+                },
+                "sessionStartTime": {
+                    "type": "string"
+                }
+            }
+        },
         "userPackage.UserPackage": {
             "type": "object",
             "properties": {
@@ -9838,6 +11088,324 @@
                     "type": "string"
                 },
                 "redeemedDateTimeExcel": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Appointment": {
+            "type": "object",
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "clinic": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "doctorMcr": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                },
+                "specialtyCode": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.AppointmentBookingConfirmation": {
+            "type": "object",
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "appointmentStatus": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "clinic": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.AppointmentCancelConfirmation": {
+            "type": "object",
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "appointmentStatus": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "clinic": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.AppointmentChangeConfirmation": {
+            "type": "object",
+            "properties": {
+                "appointmentNumber": {
+                    "type": "string"
+                },
+                "appointmentStatus": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "clinic": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.ContactNumber": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "home": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Document": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "expireDate": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.HomeAddress": {
+            "type": "object",
+            "properties": {
+                "address1": {
+                    "type": "string"
+                },
+                "address2": {
+                    "type": "string"
+                },
+                "address3": {
+                    "type": "string"
+                },
+                "cityState": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Name": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "middleName": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Nationality": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Patient": {
+            "type": "object",
+            "properties": {
+                "contactNumber": {
+                    "$ref": "#/definitions/vesaliusGeo.ContactNumber"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "documents": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vesaliusGeo.Document"
+                    }
+                },
+                "homeAddress": {
+                    "$ref": "#/definitions/vesaliusGeo.HomeAddress"
+                },
+                "name": {
+                    "$ref": "#/definitions/vesaliusGeo.Name"
+                },
+                "nationality": {
+                    "$ref": "#/definitions/vesaliusGeo.Nationality"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "resident": {
+                    "type": "string"
+                },
+                "sex": {
+                    "$ref": "#/definitions/vesaliusGeo.Sex"
+                }
+            }
+        },
+        "vesaliusGeo.Sex": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "vesaliusGeo.Slot": {
+            "type": "object",
+            "properties": {
+                "caseType": {
+                    "type": "string"
+                },
+                "clinic": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "sessionType": {
+                    "type": "string"
+                },
+                "slotNumber": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                },
+                "startTime": {
                     "type": "string"
                 }
             }
