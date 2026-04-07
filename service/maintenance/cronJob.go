@@ -4,6 +4,7 @@ import (
     "database/sql"
     "fmt"
     "strings"
+    "vesaliusm/database"
     "vesaliusm/model"
     "vesaliusm/utils"
 
@@ -31,10 +32,7 @@ func (s *MaintenanceService) ListAllCronjobHistories(page string, limit string) 
 }
 
 func (s *MaintenanceService) CountAllCronjobHistories(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT COUNT(*) AS COUNT
         FROM (
@@ -54,10 +52,7 @@ func (s *MaintenanceService) CountAllCronjobHistories(conn *sqlx.DB) (int, error
 }
 
 func (s *MaintenanceService) FindAllCronjobHistories(offset int, limit int, conn *sqlx.DB) ([]model.CronjobHistory, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT 
           ch.CRONJOB_NAME, 
@@ -142,10 +137,7 @@ func (s *MaintenanceService) SearchAllCronjobHistoriesByKeyword(cronjobName stri
 }
 
 func (s *MaintenanceService) CountCronjobHistoriesByKeyword(cronjobName string, keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildCronJobConditions(cronjobName, keyword, keyword2)
     base := `SELECT COUNT(*) AS COUNT FROM CRONJOB_HISTORY ch`
     query := base + whereClause(conds)
@@ -160,13 +152,10 @@ func (s *MaintenanceService) CountCronjobHistoriesByKeyword(cronjobName string, 
 }
 
 func (s *MaintenanceService) FindCronjobHistoriesByKeyword(cronjobName string, keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.CronjobHistory, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildCronJobConditions(cronjobName, keyword, keyword2)
     args = append(args, sql.Named("offset", offset))
-	args = append(args, sql.Named("limit", limit))
+    args = append(args, sql.Named("limit", limit))
 
     base := `
         SELECT 

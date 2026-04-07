@@ -22,10 +22,7 @@ func NewNovaVitalSignsService(db *sqlx.DB, ctx context.Context) *NovaVitalSignsS
 }
 
 func (s *NovaVitalSignsService) FindPatientVitalSignsByAccountNo(accountNo string, conn *sqlx.DB) ([]model.NovaPatientVitalSigns, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM (  
           SELECT t.TEMPLATE_REF_NO AS REF_NO, t.PRN, t.ACCOUNT_NO, t.DATE_TIME   
@@ -45,9 +42,9 @@ func (s *NovaVitalSignsService) FindPatientVitalSignsByAccountNo(accountNo strin
           AND ((v.VISIT_TYPE IN ('DAY-SURGERY', 'INPATIENT') AND v.VISIT_STATUS <> 'CANCEL' AND v.ADMISSION_STATUS = 'DISCHARGED')    
           OR (v.VISIT_TYPE IN ('OUTPATIENT', 'EXTERNAL', 'ACCIDENT-EMERGENCY') AND v.VISIT_STATUS <> 'CANCEL'))   
           AND p.STATUS <> 'VOID'  
-            )  
-            ORDER BY DATE_TIME DESC  
-            FETCH FIRST 1 ROW ONLY
+        )  
+        ORDER BY DATE_TIME DESC  
+        FETCH FIRST 1 ROW ONLY
     `
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientVitalSigns{}, ""), 1)
     list := make([]model.NovaPatientVitalSigns, 0)

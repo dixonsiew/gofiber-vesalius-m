@@ -23,10 +23,7 @@ func NewNovaBillService(db *sqlx.DB, ctx context.Context) *NovaBillService {
 }
 
 func (s *NovaBillService) GetNovaBillByPrnAndAccountNo(prn string, accountNo string, conn *sqlx.DB) ([]model.NovaBill, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM NOVA_BILL WHERE PRN = :prn AND ACCOUNT_NO = :accountNo
         AND BILL_NO NOT IN (SELECT ORIGINAL_BILL_NO FROM NOVA_BILL WHERE PRN = :prn AND ACCOUNT_NO = :accountNo 

@@ -21,10 +21,7 @@ func NewNovaHealthScreenRptService(db *sqlx.DB, ctx context.Context) *NovaHealth
 }
 
 func (s *NovaHealthScreenRptService) FindHealthScreeningRptByPrnAndAccountNo(prn string, accountNo string, conn *sqlx.DB) ([]model.NovaHealthScreeningRpt, error) {
-	db := conn
-    if db == nil {
-        db = s.db
-    }
+	db := database.GetFromCon(conn, s.db)
     query := `
         SELECT r.HSR_REF_NO, r.ACCOUNT_NO, r.REPORT_DATE, r.REPORT_USER 
         FROM NOVA_VISIT v, NOVA_ACCOUNT_HSR r, NOVA_ACCOUNT_HSR_CLOB c 

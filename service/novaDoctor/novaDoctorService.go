@@ -634,10 +634,7 @@ func (s *NovaDoctorService) FindAllByDoctorId(doctorId int64) (*model.NovaDoctor
 }
 
 func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64, conn *sqlx.DB) (string, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT NAME FROM NOVA_DOCTOR WHERE DOCTOR_ID = :doctorId`
     var name string
     err := db.GetContext(s.ctx, &name, query, doctorId)
@@ -652,10 +649,7 @@ func (s *NovaDoctorService) FindDoctorNameByDoctorId(doctorId int64, conn *sqlx.
 }
 
 func (s *NovaDoctorService) FindDoctorIdByMcr(mcr string, conn *sqlx.DB) (int64, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT DOCTOR_ID FROM NOVA_DOCTOR WHERE MCR = :mcr`
     var id int64
     err := db.GetContext(s.ctx, &id, query, mcr)

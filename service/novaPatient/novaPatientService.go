@@ -22,10 +22,7 @@ func NewNovaPatientService(db *sqlx.DB, ctx context.Context) *NovaPatientService
 }
 
 func (s *NovaPatientService) FindByPrn(prn string, conn *sqlx.DB) (*model.NovaPatient, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_PATIENT WHERE PRN = :prn`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatient{}, ""), 1)
     var o model.NovaPatient

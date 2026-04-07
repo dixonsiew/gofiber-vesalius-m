@@ -53,3 +53,11 @@ func ConnectDB() {
 func CloseDB() {
     dbVar.Close()
 }
+
+func GetFromCon(conn *sqlx.DB, sdb *sqlx.DB) *sqlx.DB {
+    db := conn
+    if db == nil {
+        db = sdb
+    }
+    return db
+}

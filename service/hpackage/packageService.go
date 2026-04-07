@@ -64,10 +64,7 @@ func (s *PackageService) ListByKeyword(keyword string, keyword2 string, keyword3
 }
 
 func (s *PackageService) CountByKeyword(keyword string, keyword2 string, keyword3 string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
     base := `SELECT COUNT(hp.PACKAGE_ID) AS COUNT FROM HOSPITAL_PACKAGE hp`
     query := base + whereClause(conditions)
@@ -82,10 +79,7 @@ func (s *PackageService) CountByKeyword(keyword string, keyword2 string, keyword
 }
 
 func (s *PackageService) FindByKeyword(keyword string, keyword2 string, keyword3 string, offset int, limit int, conn *sqlx.DB) ([]hpackage.Package, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
@@ -224,10 +218,7 @@ func (s *PackageService) Update(o hpackage.Package, adminId int64) error {
 }
 
 func (s *PackageService) FindAllApp(offset int, limit int, isHome bool, conn *sqlx.DB) ([]hpackage.Package, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT PACKAGE_ID, PACKAGE_CODE, PACKAGE_NAME, PACKAGE_DESC, RESIZE_PACKAGE_IMG AS PACKAGE_IMG, 
         PACKAGE_START_DATETIME, PACKAGE_END_DATETIME, PACKAGE_VALIDITY, PACKAGE_TNC, PACKAGE_PRICE, 
@@ -279,10 +270,7 @@ func (s *PackageService) FindAllApp(offset int, limit int, isHome bool, conn *sq
 }
 
 func (s *PackageService) FindAll(offset int, limit int, conn *sqlx.DB) ([]hpackage.Package, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT hp.*, (SELECT NVL(COUNT(ppd.PACKAGE_ID), 0) 
         FROM PATIENT_PURCHASE_DETAILS ppd 
@@ -331,10 +319,7 @@ func (s *PackageService) ListApp(isHome bool, page string, limit string) (*model
 }
 
 func (s *PackageService) CountApp(isHome bool, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT COUNT(PACKAGE_ID) AS COUNT FROM HOSPITAL_PACKAGE
          WHERE (
@@ -384,10 +369,7 @@ func (s *PackageService) List(page string, limit string) (*model.PagedList, erro
 }
 
 func (s *PackageService) Count(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(PACKAGE_ID) AS COUNT FROM HOSPITAL_PACKAGE`
     var count int
     err := db.GetContext(s.ctx, &count, query)

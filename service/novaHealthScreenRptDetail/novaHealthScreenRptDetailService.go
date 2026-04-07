@@ -21,10 +21,7 @@ func NewNovaHealthScreenRptDetailService(db *sqlx.DB, ctx context.Context) *Nova
 }
 
 func (s *NovaHealthScreenRptDetailService) FindEachHealthScreeningRptByHSRRefNo(hsrRefNo string, conn *sqlx.DB) ([]model.NovaHealthScreeningDetailRpt, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT dbms_random.string('U', 30) as HSR_REF_NO, c.HSR_CLOB_VALUE 
         FROM NOVA_ACCOUNT_HSR_CLOB c 

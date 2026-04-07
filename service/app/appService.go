@@ -110,10 +110,7 @@ func (s *AppService) UpdateAppVersion(latestVersion string, osPlatform string, s
 }
 
 func (s *AppService) FindAllGuestMode(conn *sqlx.DB) ([]model.AppServices, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APP_SERVICE WHERE IS_GUEST_ONLY = 1 AND IS_ENABLED = 1 ORDER BY SERVICE_DISPLAY_ORDER`
     query = strings.Replace(query, "*", utils.GetDbCols(model.AppServices{}, ""), 1)
     list := make([]model.AppServices, 0)
@@ -144,10 +141,7 @@ func (s *AppService) ListByGuestMode() (*model.PagedList, error) {
 }
 
 func (s *AppService) CountByGuestMode(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(SERVICE_NAME) AS COUNT FROM APP_SERVICE WHERE IS_GUEST_ONLY = 1 AND IS_ENABLED = 1`
     var count int
     err := db.GetContext(s.ctx, &count, query)
@@ -159,10 +153,7 @@ func (s *AppService) CountByGuestMode(conn *sqlx.DB) (int, error) {
 }
 
 func (s *AppService) FindAllAuthMode(conn *sqlx.DB) ([]model.AppServices, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APP_SERVICE WHERE IS_ENABLED = 1 ORDER BY SERVICE_DISPLAY_ORDER`
     query = strings.Replace(query, "*", utils.GetDbCols(model.AppServices{}, ""), 1)
     list := make([]model.AppServices, 0)
@@ -193,10 +184,7 @@ func (s *AppService) ListByAuthMode() (*model.PagedList, error) {
 }
 
 func (s *AppService) CountByAuthMode(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(SERVICE_NAME) AS COUNT FROM APP_SERVICE WHERE IS_ENABLED = 1`
     var count int
     err := db.GetContext(s.ctx, &count, query)

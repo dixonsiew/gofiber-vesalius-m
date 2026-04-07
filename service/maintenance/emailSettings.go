@@ -3,6 +3,7 @@ package maintenance
 import (
     "database/sql"
     "strings"
+    "vesaliusm/database"
     "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/utils"
@@ -29,10 +30,7 @@ func (s *MaintenanceService) ListAllDynamicEmailSettings(page string, limit stri
 }
 
 func (s *MaintenanceService) CountAllDynamicEmailSettings(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(*) AS COUNT FROM EMAIL_MASTER`
     var count int
     err := db.GetContext(s.ctx, &count, query)
@@ -44,10 +42,7 @@ func (s *MaintenanceService) CountAllDynamicEmailSettings(conn *sqlx.DB) (int, e
 }
 
 func (s *MaintenanceService) FindAllDynamicEmailSettings(offset int, limit int, conn *sqlx.DB) ([]model.DynamicEmailMaster, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM EMAIL_MASTER OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.DynamicEmailMaster{}, ""), 1)
     list := make([]model.DynamicEmailMaster, 0)
@@ -78,10 +73,7 @@ func (s *MaintenanceService) SearchAllDynamicEmailSettingsByKeyword(keyword stri
 }
 
 func (s *MaintenanceService) CountDynamicEmailSettingsByKeyword(keyword string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildDynamicEmailSettingsConditions(keyword)
     base := `SELECT COUNT(*) AS COUNT FROM EMAIL_MASTER em`
     query := base + whereClause(conds)
@@ -96,10 +88,7 @@ func (s *MaintenanceService) CountDynamicEmailSettingsByKeyword(keyword string, 
 }
 
 func (s *MaintenanceService) FindDynamicEmailSettingsByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.DynamicEmailMaster, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildDynamicEmailSettingsConditions(keyword)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))

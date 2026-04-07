@@ -47,10 +47,7 @@ func (s *MaintenanceService) SearchAllNotificationSettingsByKeyword(keyword stri
 }
 
 func (s *MaintenanceService) CountAllNotificationSettings(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(*) AS COUNT FROM NOTIFICATION_SETTINGS`
     var count int
     err := db.GetContext(s.ctx, &count, query)
@@ -62,10 +59,7 @@ func (s *MaintenanceService) CountAllNotificationSettings(conn *sqlx.DB) (int, e
 }
 
 func (s *MaintenanceService) CountNotificationSettingsByKeyword(keyword string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildNotificationSettingsConditions(keyword)
     base := `SELECT COUNT(*) AS COUNT FROM NOTIFICATION_SETTINGS ns`
     query := base + whereClause(conds)
@@ -80,10 +74,7 @@ func (s *MaintenanceService) CountNotificationSettingsByKeyword(keyword string, 
 }
 
 func (s *MaintenanceService) FindAllNotificationSettings(offset int, limit int, conn *sqlx.DB) ([]model.NotificationSetting, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOTIFICATION_SETTINGS ORDER BY NOTIFICATION_CODE OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NotificationSetting{}, ""), 1)
     list := make([]model.NotificationSetting, 0)
@@ -96,10 +87,7 @@ func (s *MaintenanceService) FindAllNotificationSettings(offset int, limit int, 
 }
 
 func (s *MaintenanceService) FindNotificationSettingsByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.NotificationSetting, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildNotificationSettingsConditions(keyword)
     args = append(args, sql.Named("offset", offset))
 	args = append(args, sql.Named("limit", limit))

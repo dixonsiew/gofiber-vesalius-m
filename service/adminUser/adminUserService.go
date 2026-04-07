@@ -557,7 +557,8 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
         return err
     }
 
-    o.AdminId.Int64, _ = adminId.Int64()
+    iadminId, _ := adminId.Int64()
+    o.AdminId.Int64 = iadminId
 
     for _, adminBranchId := range adminBranchIds {
         _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,

@@ -23,10 +23,7 @@ func NewNovaInvestigationDetailService(db *sqlx.DB, ctx context.Context) *NovaIn
 }
 
 func (s *NovaInvestigationDetailService) GetInvestigationRefNoAndCode(investigationRefNo string, code string, conn *sqlx.DB) ([]model.NovaPatientInvestigationDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT dbms_random.string('U', 30) as id, i.* 
         FROM NOVA_PATIENT_INVESTIGATION_DET i 
@@ -47,10 +44,7 @@ func (s *NovaInvestigationDetailService) GetInvestigationRefNoAndCode(investigat
 func (s *NovaInvestigationDetailService) GetLabHistoryTrendingForDashboard(
     prn string, labInvestigationType string, labCodeHDL string, labCodeLDL string, labCodeGlucose string, 
     labCodeHemoglobin string, conn *sqlx.DB) ([]model.NovaPatientInvestigationDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         WITH ranked_results AS ( 
           SELECT i.STATUS_DATE_TIME, 

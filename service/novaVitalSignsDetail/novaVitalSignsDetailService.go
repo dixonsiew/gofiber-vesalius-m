@@ -26,10 +26,7 @@ func (s *NovaVitalSignsDetailService) GetLocalPatientVitalSignsDetailsByRefNo(
     refNo string, vitalCodeHeight string, vitalCodeWeight string, vitalCodeBP string, vitalCodeBMI string, 
     vitalCodePulse string, conn *sqlx.DB,
 ) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT dbms_random.string('U', 30) as id, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, 
         to_char(SYNC_DATE, 'DD Mon YYYY') as DATE_TIME 
@@ -47,10 +44,7 @@ func (s *NovaVitalSignsDetailService) GetLocalPatientVitalSignsDetailsByRefNo(
 }
 
 func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryHeight(prn string, vitalSignsCode string, conn *sqlx.DB) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
           SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
@@ -73,10 +67,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryHeight(prn stri
 }
 
 func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryWeight(prn string, vitalSignsCode string, conn *sqlx.DB) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
           SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
@@ -99,10 +90,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryWeight(prn stri
 }
 
 func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryBMI(prn string, vitalSignsCode string, conn *sqlx.DB) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
           SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
@@ -125,10 +113,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryBMI(prn string,
 }
 
 func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryPulse(prn string, vitalSignsCode string, conn *sqlx.DB) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
           SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
@@ -151,10 +136,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryPulse(prn strin
 }
 
 func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryBP(prn string, vitalSignsCode string, conn *sqlx.DB) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, to_char(date_time, 'DD Mon YYYY') as DATE_TIME FROM ( 
           SELECT ID, REF_NO, CODE, DESCRIPTION, VALUE1, VALUE2, UNIT, DATE_TIME FROM ( 
@@ -180,10 +162,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryForDashboard(
     prn string, vitalCodeHeight string, vitalCodeWeight string, vitalCodeBP string, vitalCodeBMI string, 
     vitalCodePulse string, conn *sqlx.DB,
 ) ([]model.NovaPatientVitalSignsDetail, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM ( 
         WITH PATIENT_VISITS AS ( 

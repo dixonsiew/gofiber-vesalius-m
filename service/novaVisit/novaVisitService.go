@@ -23,10 +23,7 @@ func NewNovaVisitService(db *sqlx.DB, ctx context.Context) *NovaVisitService {
 }
 
 func (s *NovaVisitService) FindByPrn(prn string, conn *sqlx.DB) ([]model.NovaVisit, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT WHERE PRN = :prn`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisit{}, ""), 1)
     list := make([]model.NovaVisit, 0)
@@ -39,10 +36,7 @@ func (s *NovaVisitService) FindByPrn(prn string, conn *sqlx.DB) ([]model.NovaVis
 }
 
 func (s *NovaVisitService) GetSpecificPatientVisit(prn string, conn *sqlx.DB) ([]model.NovaVisit, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM NOVA_VISIT WHERE (PRN = :prn OR PRN IN (SELECT OLD_PRN FROM NOVA_PATIENT_MERGE_DETAIL WHERE NEW_PRN = :prn)) 
         AND ((VISIT_TYPE IN ('DAY-SURGERY', 'INPATIENT') AND VISIT_STATUS <> 'CANCEL' AND ADMISSION_STATUS = 'DISCHARGED') 
@@ -59,10 +53,7 @@ func (s *NovaVisitService) GetSpecificPatientVisit(prn string, conn *sqlx.DB) ([
 }
 
 func (s *NovaVisitService) GetPatientVisitWithVitalSign(prn string, conn *sqlx.DB) ([]model.NovaVisit, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM ( 
           SELECT v.* 
@@ -99,10 +90,7 @@ func (s *NovaVisitService) GetPatientVisitWithVitalSign(prn string, conn *sqlx.D
 }
 
 func (s *NovaVisitService) GetPatientVisitWithReferralLetter(prn string, conn *sqlx.DB) ([]model.NovaVisit, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM ( 
           SELECT v.* FROM NOVA_VISIT v, NOVA_EXT_REFERRAL_LETTER e 
@@ -131,10 +119,7 @@ func (s *NovaVisitService) GetPatientVisitWithReferralLetter(prn string, conn *s
 }
 
 func (s *NovaVisitService) GetPatientVisitWithHealthScreeningReport(prn string, conn *sqlx.DB) ([]model.NovaVisit, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT v.* FROM NOVA_VISIT v, NOVA_ACCOUNT_HSR r, NOVA_ACCOUNT_HSR_CLOB c 
         WHERE (v.PRN = :prn OR v.PRN IN (SELECT OLD_PRN FROM NOVA_PATIENT_MERGE_DETAIL WHERE NEW_PRN = :prn)) 

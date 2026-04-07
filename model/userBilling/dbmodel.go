@@ -12,12 +12,21 @@ type UserBillingPayment struct {
     VesInvoiceDateTime     null.String `json:"vesInvoiceDateTime" db:"INVOICE_DATE_TIME" swaggertype:"string"`
     VesInvoiceAmount       null.String `json:"vesInvoiceAmount" db:"INVOICE_AMOUNT" swaggertype:"string"`
     VesOutstandingAmount   null.String `json:"vesOutstandingAmount" db:"OUTSTANDING_AMOUNT" swaggertype:"string"`
-    PaymentGateway         null.String `json:"paymentGateway" db:"PAYMENT_GATEWAY" swaggertype:"string"`
+    PaymentGatewayV        null.String `json:"-" db:"PAYMENT_GATEWAY" swaggertype:"string"`
+    PaymentGateway         string      `json:"paymentGateway"`
     PaymentRequestNo       null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`
     PaymentAmountCollected null.String `json:"paymentAmountCollected" db:"PAYMENT_AMOUNT_COLLECTED" swaggertype:"string"`
     PaymentTransDate       null.String `json:"paymentTransDate" db:"PAYMENT_TRANS_DATE" swaggertype:"string"`
     BillingFullname        null.String `json:"billingFullname" db:"BILLING_FULLNAME" swaggertype:"string"`
     VesPaymentReceiptNo    null.String `json:"vesPaymentReceiptNo" db:"PAYMENT_RECEIPT_NO" swaggertype:"string"`
+}
+
+func(o *UserBillingPayment) Set() {
+    if o.PaymentGatewayV.String == "1" {
+        o.PaymentGateway = "Wallex"
+    } else {
+        o.PaymentGateway = "iPay88"
+    }
 }
 
 type UserBilling struct {
@@ -67,4 +76,11 @@ type BillingPayment struct {
     PaymentUrl               string      `json:"paymentUrl"`
     VesPaymentReceiptNo      string      `json:"vesPaymentReceiptNo"`
     DateCreate               string      `json:"dateCreate"`
+}
+
+type PatientOutstandingBill struct {
+    PatientPRN    null.String `json:"patient_prn" db:"PATIENT_PRN" swaggertype:"string"`
+    BillNumber    null.String `json:"bill_number" db:"BILL_NUMBER" swaggertype:"string"`
+    InvoiceNumber null.String `json:"invoice_number" db:"INVOICE_NUMBER" swaggertype:"string"`
+    PaymentStatus null.String `json:"payment_status" db:"PAYMENT_STATUS" swaggertype:"string"`
 }

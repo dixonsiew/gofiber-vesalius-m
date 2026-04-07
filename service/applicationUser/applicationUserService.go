@@ -61,10 +61,7 @@ func scanApplicationUsers(rows *sqlx.Rows) ([]model.ApplicationUser, error) {
 }
 
 func (s *ApplicationUserService) FindAll(offset int, limit int, conn *sqlx.DB) ([]model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N' ORDER BY REGISTRATION_DATE_TIME, MASTER_PRN OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     list := make([]model.ApplicationUser, 0)
@@ -98,10 +95,7 @@ func (s *ApplicationUserService) List(page string, limit string) (*model.PagedLi
 }
 
 func (s *ApplicationUserService) Count(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(USER_ID) FROM APPLICATION_USER WHERE INACTIVE_FLAG = 'N'`
     err := db.GetContext(s.ctx, &count, query)
@@ -140,10 +134,7 @@ func (s *ApplicationUserService) CountActive(conn *sqlx.DB) (int, error) {
 }
 
 func (s *ApplicationUserService) FindByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT au.* FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
@@ -186,10 +177,7 @@ func (s *ApplicationUserService) ListByKeyword(keyword string, page string, limi
 }
 
 func (s *ApplicationUserService) CountByKeyword(keyword string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT COUNT(au.USER_ID) FROM APPLICATION_USER au
         WHERE (LOWER(au.FIRST_NAME) LIKE :key OR LOWER(au.MIDDLE_NAME) LIKE :key OR LOWER(au.LAST_NAME) LIKE :key
@@ -223,10 +211,7 @@ func (s *ApplicationUserService) FindByUserIdSessionId(userId int64, sessionId s
 }
 
 func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER WHERE USER_ID = :userId`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
@@ -243,10 +228,7 @@ func (s *ApplicationUserService) FindByUserId(userId int64, conn *sqlx.DB) (*mod
 }
 
 func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) (*model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER WHERE LOWER(USERNAME) = LOWER(:username) ORDER BY REGISTRATION_DATE_TIME DESC`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
@@ -263,10 +245,7 @@ func (s *ApplicationUserService) FindByUsername(username string, conn *sqlx.DB) 
 }
 
 func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER WHERE LOWER(EMAIL) = LOWER(:email)`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
@@ -283,10 +262,7 @@ func (s *ApplicationUserService) FindByEmail(email string, conn *sqlx.DB) (*mode
 }
 
 func (s *ApplicationUserService) FindByPRN(prn string, conn *sqlx.DB) (*model.ApplicationUser, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER WHERE MASTER_PRN = :prn`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUser{}, ""), 1)
     var o model.ApplicationUser
@@ -517,10 +493,7 @@ func (s *ApplicationUserService) Update(o *model.ApplicationUser) error {
 }
 
 func (s *ApplicationUserService) SaveSessionId(userId int64, conn *sqlx.DB) (string, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     sessionId := uuid.New().String()
     query := `UPDATE APPLICATION_USER SET SESSION_ID = :sessionId WHERE USER_ID = :userId`
     _, err := db.ExecContext(s.ctx, query, sessionId, userId)
@@ -634,7 +607,8 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
         return err
     }
 
-    o.UserId.Int64, _ = userId.Int64()
+    iuserId, _ := userId.Int64()
+    o.UserId.Int64 = iuserId
 
     // Insert into ASSIGN_BRANCH
     _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, PRN, USER_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, NULL, :prn, :userId, :branchId)`,
@@ -940,10 +914,7 @@ func (s *ApplicationUserService) UpdateVerificationCode(code string, userId int6
 }
 
 func (s *ApplicationUserService) UpdateMachineId(id string, userId int64, conn *sqlx.DB) error {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     hashedID, err := bcrypt.GenerateFromPassword([]byte(id), saltRounds)
     if err != nil {
         utils.LogError(err)
@@ -961,10 +932,7 @@ func (s *ApplicationUserService) UpdateMachineId(id string, userId int64, conn *
 }
 
 func (s *ApplicationUserService) UpdatePlayerId(playerId string, userId int64, conn *sqlx.DB) error {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     // First nullify any existing player_id with same id
     _, err := db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PLAYER_ID = NULL WHERE PLAYER_ID = :playerId`, playerId)
     if err != nil {
@@ -980,10 +948,7 @@ func (s *ApplicationUserService) UpdatePlayerId(playerId string, userId int64, c
 }
 
 func (s *ApplicationUserService) InsertDownloadApp(playerId string, conn *sqlx.DB) error {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         MERGE INTO APP_DOWNLOADED_USER apu
         USING (SELECT :playerId AS PLAYER_ID FROM DUAL) src
@@ -999,10 +964,7 @@ func (s *ApplicationUserService) InsertDownloadApp(playerId string, conn *sqlx.D
 }
 
 func (s *ApplicationUserService) InsertDownloadAppV2(machineId string, playerId string, conn *sqlx.DB) error {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         MERGE INTO APP_DOWNLOADED_USER apu
         USING (SELECT :machineId AS MACHINE_ID, :playerId AS PLAYER_ID FROM DUAL) src

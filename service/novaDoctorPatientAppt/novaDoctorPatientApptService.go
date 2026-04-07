@@ -44,10 +44,7 @@ func (s *NovaDoctorPatientApptService) List(page string, limit string) (*model.P
 }
 
 func (s *NovaDoctorPatientApptService) Count(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(*) AS COUNT FROM NOVA_DOCTOR_PATIENT_APPT`
     err := db.GetContext(s.ctx, &count, query)
@@ -59,10 +56,7 @@ func (s *NovaDoctorPatientApptService) Count(conn *sqlx.DB) (int, error) {
 }
 
 func (s *NovaDoctorPatientApptService) FindAll(offset int, limit int, conn *sqlx.DB) ([]model.DoctorPatientAppointment, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM NOVA_DOCTOR_PATIENT_APPT ndpa
         ORDER BY DATE_APPT DESC 
@@ -120,10 +114,7 @@ func (s *NovaDoctorPatientApptService) ListByKeyword(keyword string, keyword2 st
 }
 
 func (s *NovaDoctorPatientApptService) CountByKeyword(keyword string, keyword2 string, keyword3 string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildKeywordConditions(keyword, keyword2, keyword3)
     base := `SELECT COUNT(*) AS COUNT FROM NOVA_DOCTOR_PATIENT_APPT ndpa`
     query := base + whereClause(conds)
@@ -138,10 +129,7 @@ func (s *NovaDoctorPatientApptService) CountByKeyword(keyword string, keyword2 s
 }
 
 func (s *NovaDoctorPatientApptService) FindByKeyword(keyword string, keyword2 string, keyword3 string, offset int, limit int, conn *sqlx.DB) ([]model.DoctorPatientAppointment, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
@@ -161,10 +149,7 @@ func (s *NovaDoctorPatientApptService) FindByKeyword(keyword string, keyword2 st
 }
 
 func (s *NovaDoctorPatientApptService) ExistsByPrnDateTime(prn string, dateTime string, conn *sqlx.DB) (bool, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT COUNT(*) AS COUNT FROM DUAL WHERE EXISTS
         (
@@ -279,7 +264,6 @@ func (s *NovaDoctorPatientApptService) UpdateToReschedule(prn string, apptSessio
           DATE_APPT = TO_DATE(:appointment_dateTime, 'DD-MON-YYYY hh24:mi')
         WHERE PATIENT_PRN = :patient_prn AND APPT_NO = :appointment_number
     `
-    var err error
     args := []any{
         sql.Named("doctor_name", o.DoctorName),
         sql.Named("doctor_specialty", o.Specialty),
@@ -294,6 +278,7 @@ func (s *NovaDoctorPatientApptService) UpdateToReschedule(prn string, apptSessio
         sql.Named("patient_prn", prn),
         sql.Named("appointment_number", o.AppointmentNumber),
     }
+    var err error
     if tx == nil {
         _, err = s.db.ExecContext(s.ctx, query, args...)
     } else {
@@ -313,12 +298,12 @@ func (s *NovaDoctorPatientApptService) UpdateToCancel(prn string, o vesaliusGeo.
           APPT_NO = :appointment_number
         WHERE PATIENT_PRN = :patient_prn AND APPT_NO = :appointment_number
     `
-    var err error
     args := []any{
         sql.Named("appointment_status", o.AppointmentStatus),
         sql.Named("appointment_number", o.AppointmentNumber),
         sql.Named("patient_prn", prn),
     }
+    var err error
     if tx == nil {
         _, err = s.db.ExecContext(s.ctx, query, args...)
     } else {

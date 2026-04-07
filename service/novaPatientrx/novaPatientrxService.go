@@ -23,10 +23,7 @@ func NewNovaPatientrxService(db *sqlx.DB, ctx context.Context) *NovaPatientrxSer
 }
 
 func (s *NovaPatientrxService) FindPatientRxByAccountNo(accountNo string, conn *sqlx.DB) ([]model.NovaPatientRx, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM 
         ( 

@@ -22,10 +22,7 @@ func NewNovaInvestigationService(db *sqlx.DB, ctx context.Context) *NovaInvestig
 }
 
 func (s *NovaInvestigationService) FindNonPanelInvestiationByAccountNo(accountNo string, conn *sqlx.DB) ([]model.NovaPatientInvestigation, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_PATIENT_INVESTIGATION WHERE ACCOUNT_NO = :accountNo AND PANEL_CODE IS NULL ORDER BY TO_NUMBER(INVESTIGATION_REF_NO)`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientInvestigation{}, ""), 1)
     list := make([]model.NovaPatientInvestigation, 0)
@@ -38,10 +35,7 @@ func (s *NovaInvestigationService) FindNonPanelInvestiationByAccountNo(accountNo
 }
 
 func (s *NovaInvestigationService) FindPanelInvestigationByAccountNoPanelCode(accountNo string, panelCode string, conn *sqlx.DB) ([]model.NovaPatientInvestigation, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_PATIENT_INVESTIGATION WHERE ACCOUNT_NO = :accountNo AND PANEL_CODE = :panelCode ORDER BY TO_NUMBER(INVESTIGATION_REF_NO)`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientInvestigation{}, ""), 1)
     list := make([]model.NovaPatientInvestigation, 0)
@@ -54,10 +48,7 @@ func (s *NovaInvestigationService) FindPanelInvestigationByAccountNoPanelCode(ac
 }
 
 func (s *NovaInvestigationService) FindUniquePanelInvestigationByAccountNo(accountNo string, conn *sqlx.DB) ([]string, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT UNIQUE PANEL_CODE FROM NOVA_PATIENT_INVESTIGATION WHERE ACCOUNT_NO = :accountNo AND PANEL_CODE IS NOT NULL ORDER BY PANEL_CODE`
     list := make([]string, 0)
     err := db.SelectContext(s.ctx, &list, query, accountNo)

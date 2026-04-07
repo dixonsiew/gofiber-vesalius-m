@@ -514,10 +514,7 @@ func (s *VesaliusService) VesaliusGetFutureAppointments(prn string) ([]gm.Appoin
 }
 
 func (s *VesaliusService) vesaliusCallNextAvailSlots(data *dto.PostNextAvailableSlotsDto, prn string, conn *sqlx.DB) (bool, bool, []gm.Slot, *gm.VesaliusWSException, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     res, ex, err := s.vesaliusGeoService.AppointmentGetNextAvailableSlots(prn, data.SpecialtyCode, data.Mcr, data.StartDate, data.StartTime, data.CaseType)
     if err != nil {
         return false, false, nil, ex, err
@@ -546,7 +543,7 @@ func (s *VesaliusService) vesaliusCallNextAvailSlots(data *dto.PostNextAvailable
 
     if vesMorningDate == data.StartDate {
         vesMorningDT := fmt.Sprintf("%s %s", lx[0].Date, lx[0].StartTime)
-        morningDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesMorningDT, s.db)
+        morningDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesMorningDT, db)
         if err != nil {
             return false, false, nil, ex, err
         }
@@ -554,7 +551,7 @@ func (s *VesaliusService) vesaliusCallNextAvailSlots(data *dto.PostNextAvailable
 
     if vesAfternoonDate == data.StartDate {
         vesAfternoonDT := fmt.Sprintf("%s %s", lx[1].Date, lx[1].StartTime)
-        afternoonDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesAfternoonDT, s.db)
+        afternoonDuplicateCount, err = s.novaDoctorPatientApptService.ExistsByPrnDateTime(prn, vesAfternoonDT, db)
         if err != nil {
             return false, false, nil, ex, err
         }

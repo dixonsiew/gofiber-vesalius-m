@@ -22,10 +22,7 @@ func NewNovaReferralLetterService(db *sqlx.DB, ctx context.Context) *NovaReferra
 }
 
 func (s *NovaReferralLetterService) FindExtReferralLetterByPrnAndAccountNo(prn string, accountNo string, conn *sqlx.DB) ([]model.NovaReferralLetter, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT REFERRAL_REF_NO, PRN, ACCOUNT_NO, REFERRAL_DATE_TIME, REFERRER_DOCTOR_MCR, 
         REFERRAL_TO, TITLE_DEPARTMENT, ADDRESS, REFERRAL_LETTER, 'EXTERNAL' AS REFFERAL_TYPE 
@@ -44,10 +41,7 @@ func (s *NovaReferralLetterService) FindExtReferralLetterByPrnAndAccountNo(prn s
 }
 
 func (s *NovaReferralLetterService) FindAllReferralLetterByPrnAndAccountNo(prn string, accountNo string, conn *sqlx.DB) ([]model.NovaReferralLetter, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT REFERRAL_REF_NO, PRN, ACCOUNT_NO, REFERRAL_DATE_TIME, 
         (SELECT DOCTOR_NAME FROM NOVA_DOCTOR WHERE ROWNUM = 1 AND MCR_NO = REFERRER_DOCTOR_MCR) AS REFERRER_DOCTOR_MCR, 

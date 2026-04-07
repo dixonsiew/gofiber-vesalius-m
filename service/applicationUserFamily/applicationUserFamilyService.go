@@ -34,10 +34,7 @@ func NewApplicationUserFamilyService(db *sqlx.DB, ctx context.Context, dbrs *sql
 }
 
 func (s *ApplicationUserFamilyService) FindByPRN(prn string, conn *sqlx.DB) (*model.ApplicationUserFamily, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM APPLICATION_USER_FAMILY WHERE NOK_PRN = :prn`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ApplicationUserFamily{}, ""), 1)
     var o model.ApplicationUserFamily
@@ -54,10 +51,7 @@ func (s *ApplicationUserFamilyService) FindByPRN(prn string, conn *sqlx.DB) (*mo
 }
 
 func (s *ApplicationUserFamilyService) FindAllByUserId(userId int64, offset int, limit int, includeSelf bool, isForAppt bool, conn *sqlx.DB) ([]model.ApplicationUserFamily, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := ""
     if isForAppt {
         query = `
@@ -121,10 +115,7 @@ func (s *ApplicationUserFamilyService) ListByUserId(userId int64, includeSelf bo
 }
 
 func (s *ApplicationUserFamilyService) CountByUserId(userId int64, isForAppt bool, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId)`
     if isForAppt {
@@ -140,10 +131,7 @@ func (s *ApplicationUserFamilyService) CountByUserId(userId int64, isForAppt boo
 }
 
 func (s *ApplicationUserFamilyService) FindAllActiveByUserId(userId int64, offset int, limit int, includeSelf bool, isForAppt bool, conn *sqlx.DB) ([]model.ApplicationUserFamily, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := ""
     if isForAppt {
         query = `
@@ -211,10 +199,7 @@ func (s *ApplicationUserFamilyService) ListActiveByUserId(userId int64, includeS
 }
 
 func (s *ApplicationUserFamilyService) CountActiveByUserId(userId int64, isForAppt bool, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId) AND IS_ACTIVE = 'Y'`
     if isForAppt {
@@ -230,10 +215,7 @@ func (s *ApplicationUserFamilyService) CountActiveByUserId(userId int64, isForAp
 }
 
 func (s *ApplicationUserFamilyService) FindAllByUserIdAppt(userId int64, includeSelf bool, isForAppt bool, conn *sqlx.DB) ([]model.ApplicationUserFamily, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := ""
     if isForAppt {
         query = `
@@ -279,10 +261,7 @@ func (s *ApplicationUserFamilyService) FindAllByUserIdAppt(userId int64, include
 }
 
 func (s *ApplicationUserFamilyService) FindAllByUserPrnAppt(prn string, includeSelf bool, isForAppt bool, conn *sqlx.DB) ([]model.ApplicationUserFamily, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := ""
     if isForAppt {
         query = `

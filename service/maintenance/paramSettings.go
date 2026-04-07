@@ -47,10 +47,7 @@ func (s *MaintenanceService) SearchAllParamSettingsByKeyword(keyword string, pag
 }
 
 func (s *MaintenanceService) CountAllParamSettings(conn *sqlx.DB) (int, error){
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT COUNT(*) AS COUNT FROM PARAM_SETTINGS`
     var count int
     err := db.GetContext(s.ctx, &count, query)
@@ -62,16 +59,13 @@ func (s *MaintenanceService) CountAllParamSettings(conn *sqlx.DB) (int, error){
 }
 
 func (s *MaintenanceService) CountParamSettingsByKeyword(keyword string, conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildParamSettingsConditions(keyword)
     base := `SELECT COUNT(*) AS COUNT FROM PARAM_SETTINGS ps`
     query := base + whereClause(conds)
 
     var count int
-	err := s.db.GetContext(s.ctx, &count, query, args...)
+	err := db.GetContext(s.ctx, &count, query, args...)
 	if err != nil {
 		utils.LogError(err)
 		return 0, err
@@ -80,10 +74,7 @@ func (s *MaintenanceService) CountParamSettingsByKeyword(keyword string, conn *s
 }
 
 func (s *MaintenanceService) FindAllParamSettings(offset int, limit int, conn *sqlx.DB) ([]model.ParamSetting, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM PARAM_SETTINGS ORDER BY PARAM_CODE OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.ParamSetting{}, ""), 1)
     list := make([]model.ParamSetting, 0)
@@ -96,10 +87,7 @@ func (s *MaintenanceService) FindAllParamSettings(offset int, limit int, conn *s
 }
 
 func (s *MaintenanceService) FindParamSettingsByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.ParamSetting, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildParamSettingsConditions(keyword)
     args = append(args, sql.Named("offset", offset))
 	args = append(args, sql.Named("limit", limit))

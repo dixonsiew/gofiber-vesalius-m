@@ -22,10 +22,7 @@ func NewNovaVisitSummaryService(db *sqlx.DB, ctx context.Context) *NovaVisitSumm
 }
 
 func (s *NovaVisitSummaryService) FindByAccountNo(accountNo string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE ACCOUNT_NO = :accountNo`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
     list := make([]model.NovaVisitSummary, 0)
@@ -38,10 +35,7 @@ func (s *NovaVisitSummaryService) FindByAccountNo(accountNo string, conn *sqlx.D
 }
 
 func (s *NovaVisitSummaryService) FindByCategory(category string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE CATEGORY = :category`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
     list := make([]model.NovaVisitSummary, 0)
@@ -54,10 +48,7 @@ func (s *NovaVisitSummaryService) FindByCategory(category string, conn *sqlx.DB)
 }
 
 func (s *NovaVisitSummaryService) FindByCategoryAndAccountNo(category string, accountNo string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE CATEGORY = :category AND ACCOUNT_NO = :accountNo`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
     list := make([]model.NovaVisitSummary, 0)
@@ -70,10 +61,7 @@ func (s *NovaVisitSummaryService) FindByCategoryAndAccountNo(category string, ac
 }
 
 func (s *NovaVisitSummaryService) FindByAccountNoAndCategory(accountNo string, category string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE ACCOUNT_NO = :accountNo AND CATEGORY = :category`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
     list := make([]model.NovaVisitSummary, 0)
@@ -86,10 +74,7 @@ func (s *NovaVisitSummaryService) FindByAccountNoAndCategory(accountNo string, c
 }
 
 func (s *NovaVisitSummaryService) GetByAccountNoAndNotInCategories(accountNo string, firstCategory string, secondCategory string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE ACCOUNT_NO = :accountNo AND CATEGORY = :firstCategory`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
     list := make([]model.NovaVisitSummary, 0)

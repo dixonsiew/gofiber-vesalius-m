@@ -92,10 +92,7 @@ func (s *FeedbackService) List(page string, limit string) (*model.PagedList, err
 }
 
 func (s *FeedbackService) Count(conn *sqlx.DB) (int, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(FEEDBACK_ID) AS COUNT FROM PATIENT_FEEDBACK`
     err := db.GetContext(s.ctx, &count, query)
@@ -107,10 +104,7 @@ func (s *FeedbackService) Count(conn *sqlx.DB) (int, error) {
 }
 
 func (s *FeedbackService) FindAll(offset int, limit int, conn *sqlx.DB) ([]feedback.Feedback, error) {
-    db := conn
-    if db == nil {
-        db = s.db
-    }
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM PATIENT_FEEDBACK ORDER BY DATE_SUBMIT DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(feedback.Feedback{}, ""), 1)
     list := make([]feedback.Feedback, 0)
@@ -175,7 +169,8 @@ func (s *FeedbackService) Save(o feedback.Feedback, la []feedback.FeedbackAttach
         return err
     }
     
-    o.FeedbackId.Int64, _ = feedbackId.Int64()
+    ifeedbackId, _ := feedbackId.Int64()
+    o.FeedbackId.Int64 = ifeedbackId
     
     for _, a := range la {
         q := `

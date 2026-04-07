@@ -202,14 +202,11 @@ func (s *UserGroupService) List(page string, limit string) (*model.PagedList, er
 }
 
 func (s *UserGroupService) FindAll(offset int, limit int, conn *sqlx.DB) ([]model.UserGroup, error) {
-	db := conn
-    if db == nil {
-        db = s.db
-    }
+	db := database.GetFromCon(conn, s.db)
 	query := `SELECT * FROM USER_GROUP ORDER BY GROUP_ID OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 	query = strings.Replace(query, "*", utils.GetDbCols(model.UserGroup{}, ""), 1)
 	list := make([]model.UserGroup, 0)
-    err := conn.SelectContext(context.Background(), &list, query, offset, limit)
+    err := db.SelectContext(context.Background(), &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
