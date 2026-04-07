@@ -3,6 +3,7 @@ package healthCare
 import (
     "context"
     "encoding/base64"
+    "strings"
     "vesaliusm/config"
     "vesaliusm/database"
     "vesaliusm/model/healthCare"
@@ -76,8 +77,8 @@ type HealthCareService struct {
 
 func NewHealthCareService(db *sqlx.DB, ctx context.Context) *HealthCareService {
     return &HealthCareService{
-        db:                              db,
-        ctx:                             ctx,
+        db:  db,
+        ctx: ctx,
 
         vitalCodeWeight:                 config.Config("vital.code.weight"),
         vitalCodeHeight:                 config.Config("vital.code.height"),
@@ -136,14 +137,14 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
             if len(novaVisitSummaries) > 0 {
                 for _, _ = range novaVisitSummaries {
                     novaVisitDetail := healthCare.NovaVisitDetails{
-                        NovaVisit: &novaVisit,
+                        NovaVisit:          &novaVisit,
                         NovaVisitSummaries: novaVisitSummaries,
                     }
                     novaVisitDetails = append(novaVisitDetails, novaVisitDetail)
                 }
             }
         }
-    
+
     case "2":
         novaVisitsPrescription, err := s.novaVisitService.GetSpecificPatientVisit(prn, s.db)
         if err != nil {
@@ -160,7 +161,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
             if len(novaVisitPatientRxList) > 0 {
                 for _, _ = range novaVisitPatientRxList {
                     novaVisitDetail := healthCare.NovaVisitDetails{
-                        NovaVisit: &novaVisit,
+                        NovaVisit:              &novaVisit,
                         NovaVisitPatientRxList: novaVisitPatientRxList,
                     }
                     novaVisitDetails = append(novaVisitDetails, novaVisitDetail)
@@ -240,7 +241,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
                                     if len(novaPatientInvestigationDetailList) > 0 {
                                         for _, novaPatientInvestigationDetail := range novaPatientInvestigationDetailList {
                                             panelDetail := healthCare.NovaVisitInvestigationPanelDetail{
-                                                Code: novaPatientInvestigationDetail.Code.String,
+                                                Code:        novaPatientInvestigationDetail.Code.String,
                                                 Description: novaPatientInvestigation.Description.String,
                                             }
                                             if novaPatientInvestigationDetail.ResultValue.Valid && novaPatientInvestigationDetail.ResultValue.String != "null" {
@@ -260,9 +261,9 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
                                 novaVisitInvestigationDetailDto.InvestigationRefNo = novaPatientPanelInvestigationList[0].InvestigationRefNo.String
                                 novaVisitInvestigationDetailDto.InvestigationType = novaPatientPanelInvestigationList[0].InvestigationType.String
                                 novaVisitInvestigationDetailDto.AccountNo = novaPatientPanelInvestigationList[0].AccountNo.String
-                                novaVisitInvestigationDetailDto.PanelCode = novaPatientPanelInvestigationList[0].PanelCode.String;
-                                novaVisitInvestigationDetailDto.PanelDescription = novaPatientPanelInvestigationList[0].PanelDescription.String;
-                                novaVisitInvestigationDetailDto.PanelDetail = panelDetailList;
+                                novaVisitInvestigationDetailDto.PanelCode = novaPatientPanelInvestigationList[0].PanelCode.String
+                                novaVisitInvestigationDetailDto.PanelDescription = novaPatientPanelInvestigationList[0].PanelDescription.String
+                                novaVisitInvestigationDetailDto.PanelDetail = panelDetailList
                             }
                         }
                     }
@@ -323,18 +324,18 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
                     if len(patientVitalSignsDetailList) > 0 {
                         for _, eachPatientVitalSignsDetail := range patientVitalSignsDetailList {
                             visitVitalSignsDetail := healthCare.NovaVisitVitalSignsDetail{
-                                Code: eachPatientVitalSignsDetail.Code.String,
-                                Desc: eachPatientVitalSignsDetail.Description.String,
+                                Code:   eachPatientVitalSignsDetail.Code.String,
+                                Desc:   eachPatientVitalSignsDetail.Description.String,
                                 Value1: eachPatientVitalSignsDetail.Value1.String,
                                 Value2: eachPatientVitalSignsDetail.Value2.String,
-                                Unit: eachPatientVitalSignsDetail.Unit.String,
+                                Unit:   eachPatientVitalSignsDetail.Unit.String,
                             }
                             novaVisitVitalSignsDetailList = append(novaVisitVitalSignsDetailList, visitVitalSignsDetail)
                         }
                     }
                 }
                 novaVisitDetail := healthCare.NovaVisitDetails{
-                    NovaVisit: &novaVisit,
+                    NovaVisit:                     &novaVisit,
                     NovaVisitVitalSignsDetailList: novaVisitVitalSignsDetailList,
                 }
                 novaVisitDetails = append(novaVisitDetails, novaVisitDetail)
@@ -357,22 +358,22 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
             if len(novaReferralLetterList) > 0 {
                 for _, novaExtReferralLetter := range novaReferralLetterList {
                     novaVisitReferralLetterDetail := healthCare.NovaVisitReferralLetter{
-                        ReferralRefNo: novaExtReferralLetter.ReferralRefNo.String,
-                        PRN: novaExtReferralLetter.PRN.String,
-                        AccountNo: novaExtReferralLetter.AccountNo.String,
-                        ReferralDateTime: novaExtReferralLetter.ReferralDateTime.String,
-                        ReferrerDoctor: novaExtReferralLetter.ReferrerDoctorMCR.String,
-                        ReferralDoctor: novaExtReferralLetter.ReferralTo.String,
-                        ReferralTitleDept: novaExtReferralLetter.ReferralTitleDept.String,
+                        ReferralRefNo:            novaExtReferralLetter.ReferralRefNo.String,
+                        PRN:                      novaExtReferralLetter.PRN.String,
+                        AccountNo:                novaExtReferralLetter.AccountNo.String,
+                        ReferralDateTime:         novaExtReferralLetter.ReferralDateTime.String,
+                        ReferrerDoctor:           novaExtReferralLetter.ReferrerDoctorMCR.String,
+                        ReferralDoctor:           novaExtReferralLetter.ReferralTo.String,
+                        ReferralTitleDept:        novaExtReferralLetter.ReferralTitleDept.String,
                         ReferralAddressOrSubject: novaExtReferralLetter.ReferralAddressOrSubject.String,
-                        ReferralLetter: novaExtReferralLetter.ReferralLetter.String,
-                        ReferralType: novaExtReferralLetter.ReferralType.String,
+                        ReferralLetter:           novaExtReferralLetter.ReferralLetter.String,
+                        ReferralType:             novaExtReferralLetter.ReferralType.String,
                     }
                     novaVisitReferralLetterList = append(novaVisitReferralLetterList, novaVisitReferralLetterDetail)
                 }
             }
             novaVisitDetail := healthCare.NovaVisitDetails{
-                NovaVisit: &novaVisit,
+                NovaVisit:                   &novaVisit,
                 NovaVisitReferralLetterList: novaVisitReferralLetterList,
             }
             novaVisitDetails = append(novaVisitDetails, novaVisitDetail)
@@ -394,8 +395,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
             if len(novaHealthScreeningRptList) > 0 {
                 for _, novaHealthScreeningRpt := range novaHealthScreeningRptList {
                     novaHealthScreeningRptDetail := healthCare.NovaHealthScreeningRpt{
-                        HsrRefNo: utils.NewNullString(novaHealthScreeningRpt.HsrRefNo.String),
-                        AccountNo: utils.NewNullString(novaHealthScreeningRpt.AccountNo.String),
+                        HsrRefNo:   utils.NewNullString(novaHealthScreeningRpt.HsrRefNo.String),
+                        AccountNo:  utils.NewNullString(novaHealthScreeningRpt.AccountNo.String),
                         ReportDate: utils.NewNullString(novaHealthScreeningRpt.ReportDate.String),
                         ReportUser: utils.NewNullString(novaHealthScreeningRpt.ReportUser.String),
                     }
@@ -403,7 +404,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
                 }
             }
             novaVisitDetail := healthCare.NovaVisitDetails{
-                NovaVisit: &novaVisit,
+                NovaVisit:                  &novaVisit,
                 NovaHealthScreeningRptList: novaHealthScreeningRptDtoList,
             }
             novaVisitDetails = append(novaVisitDetails, novaVisitDetail)
@@ -412,16 +413,104 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]health
     return novaVisitDetails, nil
 }
 
+func (s *HealthCareService) GetVitalSignsHistoryForDahsboard(prn string) ([]healthCare.NovaVitalSignsDashboard, error) {
+    vitalSignsDashboardList := make([]healthCare.NovaVitalSignsDashboard, 0)
+    patientVitalSignsHistoryList, err := s.novaVitalSignsDetailService.GetPatientVitalSignsHistoryForDashboard(prn, s.vitalCodeHeight, s.vitalCodeWeight, s.vitalCodeBP, s.vitalCodeBMI, s.vitalCodePulse, nil)
+    if err != nil {
+        return nil, err
+    }
+    if len(patientVitalSignsHistoryList) < 1 {
+        return nil, fiber.NewError(fiber.StatusNoContent)
+    }
+
+    vitalSignsGroupHeight := healthCare.NovaVitalSignsDashboard{}
+    vitalSignsGroupWeight := healthCare.NovaVitalSignsDashboard{}
+    vitalSignsGroupBMI := healthCare.NovaVitalSignsDashboard{}
+    vitalSignsGroupBP := healthCare.NovaVitalSignsDashboard{}
+    vitalSignsGroupPulse := healthCare.NovaVitalSignsDashboard{}
+
+    vitalSignsGroupHeight.VitalSignCode = "HEIGHT"
+    vitalSignsGroupWeight.VitalSignCode = "WEIGHT"
+    vitalSignsGroupBMI.VitalSignCode = "BMI"
+    vitalSignsGroupBP.VitalSignCode = "BP"
+    vitalSignsGroupPulse.VitalSignCode = "PULSE RATE"
+
+    patientVitalSignsDetailHeightList := make([]healthCare.NovaPatientVitalSignsDetailDto, 0)
+    patientVitalSignsDetailWeightList := make([]healthCare.NovaPatientVitalSignsDetailDto, 0)
+    patientVitalSignsDetailBMIList := make([]healthCare.NovaPatientVitalSignsDetailDto, 0)
+    patientVitalSignsDetailBPList := make([]healthCare.NovaPatientVitalSignsDetailDto, 0)
+    patientVitalSignsDetailPulseList := make([]healthCare.NovaPatientVitalSignsDetailDto, 0)
+
+    for _, vitalSignsHistoryDetail := range patientVitalSignsHistoryList {
+        if strings.EqualFold(vitalSignsHistoryDetail.Description.String, s.vitalCodeHeight) ||
+            strings.EqualFold(vitalSignsHistoryDetail.Code.String, s.vitalCodeClinicaltemplateHeight) {
+            patientVitalSignsDetailHeight := healthCare.NovaPatientVitalSignsDetail{
+                Code:         utils.NewNullString(vitalSignsHistoryDetail.Code.String),
+                Description:  utils.NewNullString(vitalSignsHistoryDetail.Description.String),
+                RefNo:        utils.NewNullString(vitalSignsHistoryDetail.RefNo.String),
+                RecordedDate: utils.NewNullString(vitalSignsHistoryDetail.RecordedDate.String),
+                Unit:         utils.NewNullString(vitalSignsHistoryDetail.Unit.String),
+                Value1:       utils.NewNullString(vitalSignsHistoryDetail.Value1.String),
+                Value2:       utils.NewNullString(vitalSignsHistoryDetail.Value2.String),
+            }
+
+            novaPatientVitalSignsDetailHeightDto := healthCare.NovaPatientVitalSignsDetailDto{
+                NovaPatientVitalSignsDetail: &patientVitalSignsDetailHeight,
+            }
+            patientVitalSignsDetailHeightList = append(patientVitalSignsDetailHeightList, novaPatientVitalSignsDetailHeightDto)
+        }
+
+        if strings.EqualFold(vitalSignsHistoryDetail.Description.String, s.vitalCodeWeight) ||
+            strings.EqualFold(vitalSignsHistoryDetail.Code.String, s.vitalCodeClinicaltemplateWeight) {
+            patientVitalSignsDetailWeight := healthCare.NovaPatientVitalSignsDetail{
+                Code:         utils.NewNullString(vitalSignsHistoryDetail.Code.String),
+                Description:  utils.NewNullString(vitalSignsHistoryDetail.Description.String),
+                RefNo:        utils.NewNullString(vitalSignsHistoryDetail.RefNo.String),
+                RecordedDate: utils.NewNullString(vitalSignsHistoryDetail.RecordedDate.String),
+                Unit:         utils.NewNullString(vitalSignsHistoryDetail.Unit.String),
+                Value1:       utils.NewNullString(vitalSignsHistoryDetail.Value1.String),
+                Value2:       utils.NewNullString(vitalSignsHistoryDetail.Value2.String),
+            }
+
+            novaPatientVitalSignsDetailWeightDto := healthCare.NovaPatientVitalSignsDetailDto{
+                NovaPatientVitalSignsDetail: &patientVitalSignsDetailWeight,
+            }
+            patientVitalSignsDetailWeightList = append(patientVitalSignsDetailWeightList, novaPatientVitalSignsDetailWeightDto)
+        }
+
+        if strings.EqualFold(vitalSignsHistoryDetail.Code.String, s.vitalCodeBP) {
+            patientVitalSignsDetailBP := healthCare.NovaPatientVitalSignsDetail{
+                Code:         utils.NewNullString(vitalSignsHistoryDetail.Code.String),
+                Description:  utils.NewNullString(vitalSignsHistoryDetail.Description.String),
+                RefNo:        utils.NewNullString(vitalSignsHistoryDetail.RefNo.String),
+                RecordedDate: utils.NewNullString(vitalSignsHistoryDetail.RecordedDate.String),
+                Unit:         utils.NewNullString(vitalSignsHistoryDetail.Unit.String),
+                Value1:       utils.NewNullString(vitalSignsHistoryDetail.Value1.String),
+                Value2:       utils.NewNullString(vitalSignsHistoryDetail.Value2.String),
+            }
+
+            novaPatientVitalSignsDetailBPDto := healthCare.NovaPatientVitalSignsDetailDto{
+                NovaPatientVitalSignsDetail: &patientVitalSignsDetailBP,
+                Value1LowValue:              "120",
+                Value1HighValue:             "130",
+                Value2LowValue:              "80",
+                Value2HighValue:             "90",
+            }
+            patientVitalSignsDetailBPList = append(patientVitalSignsDetailBPList, novaPatientVitalSignsDetailBPDto)
+        }
+    }
+}
+
 func (s *HealthCareService) GetPdfHealthScreeningReport(hsrRefNo string) ([]byte, error) {
     novaHealthScreeningRptDetailDtoList := make([]healthCare.NovaHealthScreeningRptDetail, 0)
     novaHealthScreeningRptDetailList, err := s.novaHealthScreenRptDetailService.FindEachHealthScreeningRptByHSRRefNo(hsrRefNo, nil)
     if len(novaHealthScreeningRptDetailList) < 1 {
         return nil, fiber.NewError(fiber.StatusNoContent)
     }
-    
+
     for _, novaHealthScreeningDetailRpt := range novaHealthScreeningRptDetailList {
         novaHealthScreeningRptDetail := healthCare.NovaHealthScreeningRptDetail{
-            HsrRefNo: novaHealthScreeningDetailRpt.HsrRefNo.String,
+            HsrRefNo:     novaHealthScreeningDetailRpt.HsrRefNo.String,
             HsrClobValue: novaHealthScreeningDetailRpt.HsrClobValue.String,
         }
         novaHealthScreeningRptDetailDtoList = append(novaHealthScreeningRptDetailDtoList, novaHealthScreeningRptDetail)
