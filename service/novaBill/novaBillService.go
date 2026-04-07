@@ -1,13 +1,14 @@
 package novaBill
 
 import (
-	"context"
-	"database/sql"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaBillSvc *NovaBillService = NewNovaBillService(database.GetDbrs(), database.GetCtx())
@@ -31,6 +32,7 @@ func (s *NovaBillService) GetNovaBillByPrnAndAccountNo(prn string, accountNo str
         AND BILL_NO NOT IN (SELECT ORIGINAL_BILL_NO FROM NOVA_BILL WHERE PRN = :prn AND ACCOUNT_NO = :accountNo 
         AND BILL_TYPE = 'CANCEL') AND BILL_TYPE <> 'CANCEL'
     `
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaBill{}, ""), 1)
     list := make([]model.NovaBill, 0)
     err := db.SelectContext(s.ctx, &list, query, sql.Named("prn", prn), sql.Named("accountNo", accountNo))
     if err != nil {

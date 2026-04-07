@@ -449,6 +449,6 @@ type PastAppointment struct {
 }
 
 type NovaHealthScreeningDetailRpt struct {
-    HsrRefNo     string `json:"hsrRefNo"`
-    HsrClobValue string `json:"hsrClobValue"`
+    HsrRefNo     null.String `json:"hsrRefNo" db:"HSR_REF_NO" swaggertype:"string"`
+    HsrClobValue null.String `json:"hsrClobValue" db:"HSR_CLOB_VALUE" swaggertype:"string"`
 }
