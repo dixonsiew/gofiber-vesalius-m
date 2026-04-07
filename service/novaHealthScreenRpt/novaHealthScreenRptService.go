@@ -1,4 +1,4 @@
-package novahealthScreenRpt
+package novaHealthScreenRpt
 
 import (
 	"context"

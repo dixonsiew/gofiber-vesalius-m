@@ -1,13 +1,14 @@
 package novaPatient
 
 import (
-	"context"
-	"strings"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaPatientSvc *NovaPatientService = NewNovaPatientService(database.GetDbrs(), database.GetCtx())
@@ -28,6 +29,9 @@ func (s *NovaPatientService) FindByPrn(prn string, conn *sqlx.DB) (*model.NovaPa
     var o model.NovaPatient
     err := db.GetContext(s.ctx, &o, query, prn)
     if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, err
+        }
         utils.LogError(err)
         return nil, err
     }

@@ -5,8 +5,8 @@ import (
     "database/sql"
     "strings"
     "vesaliusm/database"
-    "vesaliusm/model"
-    ub "vesaliusm/model/userBilling"
+    gm "vesaliusm/model"
+    model "vesaliusm/model/userBilling"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/mail"
     "vesaliusm/service/patientOutstandingBill"
@@ -17,7 +17,7 @@ import (
     go_ora "github.com/sijms/go-ora/v2"
 )
 
-var BillPaymentDetailSvc *BillPaymentDetailsService = NewBillPaymentDetailsService(database.GetDb(), database.GetCtx())
+var BillPaymentDetailsSvc *BillPaymentDetailsService = NewBillPaymentDetailsService(database.GetDb(), database.GetCtx())
 
 type BillPaymentDetailsService struct {
     db                            *sqlx.DB
@@ -55,10 +55,10 @@ func (s *BillPaymentDetailsService) UpdateReceiptNoByRequestNo(conn *sqlx.DB, re
     return nil
 }
 
-func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) ([]ub.BillingPayment, error) {
+func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) ([]model.BillingPayment, error) {
     query := `SELECT * FROM OUTSTANDING_BILL_PAYMENT WHERE PAYMENT_REQUEST_NO = :requestNo`
-    query = strings.Replace(query, "*", utils.GetDbCols(ub.BillingPayment{}, ""), 1)
-    list := make([]ub.BillingPayment, 0)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.BillingPayment{}, ""), 1)
+    list := make([]model.BillingPayment, 0)
     err := s.db.SelectContext(s.ctx, &list, query, requestNo)
     if err != nil {
         utils.LogError(err)
@@ -67,7 +67,7 @@ func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) ([]ub.Bill
     return list, nil
 }
 
-func (s *BillPaymentDetailsService) BillPaymentFindByRequestNo(conn *sqlx.DB, paymentRequestNo string) ([]ub.BillingPayment, error) {
+func (s *BillPaymentDetailsService) BillPaymentFindByRequestNo(conn *sqlx.DB, paymentRequestNo string) ([]model.BillingPayment, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT 
@@ -81,7 +81,7 @@ func (s *BillPaymentDetailsService) BillPaymentFindByRequestNo(conn *sqlx.DB, pa
         FROM OUTSTANDING_BILL_PAYMENT
         WHERE PAYMENT_REQUEST_NO = :paymentRequestNo
     `
-    list := make([]ub.BillingPayment, 0)
+    list := make([]model.BillingPayment, 0)
     err := db.SelectContext(s.ctx, &list, query, paymentRequestNo)
     if err != nil {
         utils.LogError(err)
@@ -117,7 +117,7 @@ func (s *BillPaymentDetailsService) SetIPayBillPaymentStatusToPaid(tx *sqlx.Tx, 
     return nil
 }
 
-func (s *BillPaymentDetailsService) PaymentFindByRequestId(conn *sqlx.DB, paymentRequestId string) ([]ub.BillingPayment, error) {
+func (s *BillPaymentDetailsService) PaymentFindByRequestId(conn *sqlx.DB, paymentRequestId string) ([]model.BillingPayment, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT 
@@ -132,7 +132,7 @@ func (s *BillPaymentDetailsService) PaymentFindByRequestId(conn *sqlx.DB, paymen
         FROM OUTSTANDING_BILL_PAYMENT
         WHERE PAYMENT_REQUEST_ID = :paymentRequestId
     `
-    list := make([]ub.BillingPayment, 0)
+    list := make([]model.BillingPayment, 0)
     err := db.SelectContext(s.ctx, &list, query, paymentRequestId)
     if err != nil {
         utils.LogError(err)
@@ -168,7 +168,7 @@ func (s *BillPaymentDetailsService) SetWallexPaymentStatusToPaid(tx *sqlx.Tx, pa
     return nil
 }
 
-func (s *BillPaymentDetailsService) SaveIPay(o ub.BillingPayment, o2 ub.UserBilling) error {
+func (s *BillPaymentDetailsService) SaveIPay(o model.BillingPayment, o2 model.UserBilling) error {
     tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
@@ -245,7 +245,7 @@ func (s *BillPaymentDetailsService) SaveIPay(o ub.BillingPayment, o2 ub.UserBill
     return err
 }
 
-func (s *BillPaymentDetailsService) SaveWallex(o ub.BillingPayment, o2 ub.UserBilling) error {
+func (s *BillPaymentDetailsService) SaveWallex(o model.BillingPayment, o2 model.UserBilling) error {
     tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
@@ -494,7 +494,7 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
     return nil
 }
 
-func (s *BillPaymentDetailsService) FindAllPaidByPrn(prn string, offset int, limit int, conn *sqlx.DB) ([]ub.UserBillingPayment, error) {
+func (s *BillPaymentDetailsService) FindAllPaidByPrn(prn string, offset int, limit int, conn *sqlx.DB) ([]model.UserBillingPayment, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT pob.PATIENT_PRN, pob.PATIENT_NAME, pob.PATIENT_DOC_NUMBER, pob.BILL_NUMBER,
@@ -507,7 +507,7 @@ func (s *BillPaymentDetailsService) FindAllPaidByPrn(prn string, offset int, lim
         ORDER BY pob.DATE_CREATE DESC, obp.PAYMENT_REQUEST_NO DESC
         OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
-    list := make([]ub.UserBillingPayment, 0)
+    list := make([]model.UserBillingPayment, 0)
     err := db.SelectContext(s.ctx, &list, query, prn, offset, limit)
     if err != nil {
         utils.LogError(err)
@@ -517,4 +517,41 @@ func (s *BillPaymentDetailsService) FindAllPaidByPrn(prn string, offset int, lim
         list[i].Set()
     }
     return list, nil
+}
+
+func (s *BillPaymentDetailsService) ListPaidByPrn(userId int64, page string, limit string) (*gm.PagedList, error) {
+    user, err := s.applicationUserService.FindByUserId(userId, s.db)
+    if err != nil {
+        return nil, err
+    }
+    
+    prn := user.MasterPrn.String
+    total, err := s.CountPaidByPrn(prn, s.db)
+    if err != nil {
+        return nil, err
+    }
+
+    pager := gm.GetPager(total, page, limit)
+    list, err := s.FindAllPaidByPrn(prn, pager.GetLowerBound(), pager.PageSize, s.db)
+    if err != nil {
+        return nil, err
+    }
+
+    return &gm.PagedList{
+        List:       list,
+        Total:      total,
+        TotalPages: pager.GetTotalPages(),
+    }, nil
+}
+
+func (s *BillPaymentDetailsService) CountPaidByPrn(prn string, conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
+    query := `SELECT COUNT(PATIENT_OUTSTANDING_BILL_ID) AS COUNT FROM PATIENT_OUTSTANDING_BILL WHERE PATIENT_PRN = :prn AND PAYMENT_STATUS = 'Paid'`
+    var count int
+    err := db.GetContext(s.ctx, &count, query, prn)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
 }

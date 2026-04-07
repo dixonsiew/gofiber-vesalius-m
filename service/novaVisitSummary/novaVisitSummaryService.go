@@ -73,6 +73,19 @@ func (s *NovaVisitSummaryService) FindByAccountNoAndCategory(accountNo string, c
     return list, nil
 }
 
+func (s *NovaVisitSummaryService) FindByAccountNoAndCategoryNotAndCategoryNot(accountNo string, firstCategory string, secondCategory string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
+    db := database.GetFromCon(conn, s.db)
+    query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE ACCOUNT_NO = :accountNo AND CATEGORY IN (:firstCategory, :secondCategory)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaVisitSummary{}, ""), 1)
+    list := make([]model.NovaVisitSummary, 0)
+    err := db.SelectContext(s.ctx, &list, query, accountNo, firstCategory)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    return list, nil
+}
+
 func (s *NovaVisitSummaryService) GetByAccountNoAndNotInCategories(accountNo string, firstCategory string, secondCategory string, conn *sqlx.DB) ([]model.NovaVisitSummary, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_VISIT_SUMMARY WHERE ACCOUNT_NO = :accountNo AND CATEGORY = :firstCategory`

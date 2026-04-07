@@ -21,28 +21,28 @@ func NewNovaPatientAlertService(db *sqlx.DB, ctx context.Context) *NovaPatientAl
     return &NovaPatientAlertService{db: db, ctx: ctx}
 }
 
-func (s *NovaPatientAlertService) FindNovaPatientAlertByPrn(prn string, conn *sqlx.DB) (*model.NovaPatientAlert, error) {
+func (s *NovaPatientAlertService) FindNovaPatientAlertByPrn(prn string, conn *sqlx.DB) ([]model.NovaPatientAlert, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_PATIENT_ALERT WHERE PRN = :prn`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientAlert{}, ""), 1)
-    var o model.NovaPatientAlert
-    err := db.GetContext(s.ctx, &o, query, prn)
+    list := make([]model.NovaPatientAlert, 0)
+    err := db.GetContext(s.ctx, &list, query, prn)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return &o, nil
+    return list, nil
 }
 
-func (s *NovaPatientAlertService) FindPatientActiveAlertByPrn(prn string, conn *sqlx.DB) (*model.NovaPatientAlert, error) {
+func (s *NovaPatientAlertService) FindPatientActiveAlertByPrn(prn string, conn *sqlx.DB) ([]model.NovaPatientAlert, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM NOVA_PATIENT_ALERT WHERE PRN = :prn AND INACTIVE_DATE_TIME IS NULL ORDER BY ALERT_TYPE`
     query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientAlert{}, ""), 1)
-    var o model.NovaPatientAlert
-    err := db.GetContext(s.ctx, &o, query, prn)
+    list := make([]model.NovaPatientAlert, 0)
+    err := db.GetContext(s.ctx, &list, query, prn)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return &o, nil
+    return list, nil
 }
