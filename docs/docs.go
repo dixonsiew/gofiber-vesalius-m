@@ -7057,6 +7057,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/vesalius/get-lab-history/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/healthCare.NovaLabHistoryDashboard"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/vesalius/get-next-available-slots/{branchId}/{prn}": {
             "post": {
                 "security": [
@@ -7102,6 +7137,125 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/vesaliusGeo.Slot"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/get-vital-signs-history/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/healthCare.NovaVitalSignsDashboard"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/get-vital-signs-history/{prn}/{visitDate}/{vitalSignsCode}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "visitDate",
+                        "name": "visitDate",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "vitalSignsCode",
+                        "name": "vitalSignsCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/healthCare.NovaPatientVitalSignsDetailDto"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/health-screening-report/{hsrRefNo}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "hsrRefNo",
+                        "name": "hsrRefNo",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
                             }
                         }
                     }
@@ -7205,6 +7359,80 @@ const docTemplate = `{
                 }
             }
         },
+        "/vesalius/outstanding-bills/{branchId}/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.ResultOutstandingBills"
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/patient-allergy/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/healthCare.NovaPatientAlert"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/vesalius/patient-data/{branchId}/{prn}": {
             "get": {
                 "security": [
@@ -7283,6 +7511,80 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/model.PatientAppointment"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/patient-visit/{prn}/{pageId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "pageId",
+                        "name": "pageId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/healthCare.NovaVisitDetails"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vesalius/patient/{prn}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/healthCare.NovaPatient"
                         }
                     }
                 }
@@ -9506,6 +9808,860 @@ const docTemplate = `{
                 }
             }
         },
+        "healthCare.NovaBill": {
+            "type": "object",
+            "properties": {
+                "accountNumber": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "badDebtStatus": {
+                    "type": "string"
+                },
+                "billDate": {
+                    "type": "string"
+                },
+                "billNumber": {
+                    "type": "string"
+                },
+                "billTime": {
+                    "type": "string"
+                },
+                "billType": {
+                    "type": "string"
+                },
+                "cnAmount": {
+                    "type": "number"
+                },
+                "dnAmount": {
+                    "type": "number"
+                },
+                "exclusiveTax": {
+                    "type": "number"
+                },
+                "finalizeCounter": {
+                    "type": "string"
+                },
+                "finalizeLocation": {
+                    "type": "string"
+                },
+                "finalizeUser": {
+                    "type": "string"
+                },
+                "inclusiveTax": {
+                    "type": "number"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "invoiceType": {
+                    "type": "string"
+                },
+                "memberId": {
+                    "type": "string"
+                },
+                "originalBillNumber": {
+                    "type": "string"
+                },
+                "osAmount": {
+                    "type": "number"
+                },
+                "payer": {
+                    "type": "string"
+                },
+                "paymentTerm": {
+                    "type": "integer"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "roundingAmount": {
+                    "type": "number"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaHealthScreeningRpt": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "hsrRefNo": {
+                    "type": "string"
+                },
+                "reportDate": {
+                    "type": "string"
+                },
+                "reportUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaLabHistoryDashboard": {
+            "type": "object",
+            "properties": {
+                "labCode": {
+                    "type": "string"
+                },
+                "labData": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaPatientInvestigationDetail"
+                    }
+                }
+            }
+        },
+        "healthCare.NovaPatient": {
+            "type": "object",
+            "properties": {
+                "accessLevel": {
+                    "type": "string"
+                },
+                "chargeCategoryCode": {
+                    "type": "string"
+                },
+                "countryOfBirth": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "creationDate": {
+                    "type": "string"
+                },
+                "deathDate": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "employerCode": {
+                    "type": "string"
+                },
+                "employerName": {
+                    "type": "string"
+                },
+                "ethnicGroup": {
+                    "type": "string"
+                },
+                "firstOrganization": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "homeAddress": {
+                    "type": "string"
+                },
+                "homePhone": {
+                    "type": "string"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "maritalStatus": {
+                    "type": "string"
+                },
+                "mobilePhone": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "occupation": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "placeOfBirth": {
+                    "type": "string"
+                },
+                "preferredDoctor": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "religion": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "reminderPreference": {
+                    "type": "string"
+                },
+                "residentFlag": {
+                    "type": "string"
+                },
+                "spokenLanguage": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "string"
+                },
+                "writtenLanguage": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientAlert": {
+            "type": "object",
+            "properties": {
+                "alertRefNo": {
+                    "type": "integer"
+                },
+                "alertType": {
+                    "type": "string"
+                },
+                "allergyType": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "creationDate": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "inactiveDateTime": {
+                    "type": "string"
+                },
+                "inactiveReason": {
+                    "type": "string"
+                },
+                "inactiveUser": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "probability": {
+                    "type": "string"
+                },
+                "reaction": {
+                    "type": "string"
+                },
+                "route": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "system": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientDiagnosis": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "diagnonsisCloseDate": {
+                    "type": "string"
+                },
+                "diagnonsisDesc": {
+                    "type": "string"
+                },
+                "diagnosisCancelDate": {
+                    "type": "string"
+                },
+                "diagnosisDate": {
+                    "type": "string"
+                },
+                "diagnosisRefNo": {
+                    "type": "integer"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "primaryDiagnosis": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientDiagnosisDetails": {
+            "type": "object",
+            "properties": {
+                "novaPatientDiagnosis": {
+                    "$ref": "#/definitions/healthCare.NovaPatientDiagnosis"
+                },
+                "novaPatientDiagnosisInfo": {
+                    "$ref": "#/definitions/healthCare.NovaPatientDiagnosisInfo"
+                }
+            }
+        },
+        "healthCare.NovaPatientDiagnosisInfo": {
+            "type": "object",
+            "properties": {
+                "diagnosisLaterality": {
+                    "type": "string"
+                },
+                "diagnosisRefNo": {
+                    "type": "integer"
+                },
+                "diagnosisSeverity": {
+                    "type": "string"
+                },
+                "diagnosisType": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientInvestigationDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "investigationRefNo": {
+                    "type": "string"
+                },
+                "rangeType": {
+                    "type": "string"
+                },
+                "recordedDate": {
+                    "type": "string"
+                },
+                "referenceRange": {
+                    "type": "string"
+                },
+                "resultClob": {
+                    "type": "string"
+                },
+                "resultUnit": {
+                    "type": "string"
+                },
+                "resultValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientRx": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "doctorMCR": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "event": {
+                    "type": "string"
+                },
+                "eventDateTime": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "orderNo": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "string"
+                },
+                "rxRefNo": {
+                    "type": "string"
+                },
+                "uom": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientVitalSignsDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "recordedDate": {
+                    "type": "string"
+                },
+                "refNo": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "value1": {
+                    "type": "string"
+                },
+                "value2": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaPatientVitalSignsDetailDto": {
+            "type": "object",
+            "properties": {
+                "novaPatientVitalSignsDetail": {
+                    "$ref": "#/definitions/healthCare.NovaPatientVitalSignsDetail"
+                },
+                "value1_high_value": {
+                    "type": "string"
+                },
+                "value1_low_value": {
+                    "type": "string"
+                },
+                "value2_high_value": {
+                    "type": "string"
+                },
+                "value2_low_value": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisit": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "admissionDate": {
+                    "type": "string"
+                },
+                "admissionStatus": {
+                    "type": "string"
+                },
+                "admissionTime": {
+                    "type": "string"
+                },
+                "admittingDoctor": {
+                    "type": "string"
+                },
+                "bedNo": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "chargeCategoryCode": {
+                    "type": "string"
+                },
+                "clinicName": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "dischargeDate": {
+                    "type": "string"
+                },
+                "dischargeDiagnosis": {
+                    "type": "string"
+                },
+                "dischargeDoctor": {
+                    "type": "string"
+                },
+                "dischargeReason": {
+                    "type": "string"
+                },
+                "dischargeTime": {
+                    "type": "string"
+                },
+                "dispositionRemark": {
+                    "type": "string"
+                },
+                "dispositionStatus": {
+                    "type": "string"
+                },
+                "healthCheck": {
+                    "type": "string"
+                },
+                "hospitalCode": {
+                    "type": "string"
+                },
+                "mcrNo": {
+                    "type": "string"
+                },
+                "paymentClassCode": {
+                    "type": "string"
+                },
+                "prelimDischargeDate": {
+                    "type": "string"
+                },
+                "prelimDischargeTime": {
+                    "type": "string"
+                },
+                "primaryDoctor": {
+                    "type": "string"
+                },
+                "primarySpecialty": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "referral": {
+                    "type": "string"
+                },
+                "referralText": {
+                    "type": "string"
+                },
+                "referrerCode": {
+                    "type": "string"
+                },
+                "registrationDate": {
+                    "type": "string"
+                },
+                "registrationTime": {
+                    "type": "string"
+                },
+                "roomNo": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferChargeAccountNo": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                },
+                "visitStatus": {
+                    "type": "string"
+                },
+                "visitType": {
+                    "type": "string"
+                },
+                "wardNo": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisitDetails": {
+            "type": "object",
+            "properties": {
+                "novaBills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaBill"
+                    }
+                },
+                "novaHealthScreeningRptList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaHealthScreeningRpt"
+                    }
+                },
+                "novaPatientDiagnosisDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaPatientDiagnosisDetails"
+                    }
+                },
+                "novaVisit": {
+                    "$ref": "#/definitions/healthCare.NovaVisit"
+                },
+                "novaVisitInvestigationDetailList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitInvestigationDetail"
+                    }
+                },
+                "novaVisitPatientRxList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaPatientRx"
+                    }
+                },
+                "novaVisitPrescriptionList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitSummary"
+                    }
+                },
+                "novaVisitReferralLetterList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitReferralLetter"
+                    }
+                },
+                "novaVisitSummaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitSummary"
+                    }
+                },
+                "novaVisitVitalSignsDetailList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitVitalSignsDetail"
+                    }
+                }
+            }
+        },
+        "healthCare.NovaVisitInvestigationDetail": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "investigationRefNo": {
+                    "type": "string"
+                },
+                "investigationType": {
+                    "type": "string"
+                },
+                "panelCode": {
+                    "type": "string"
+                },
+                "panelDescription": {
+                    "type": "string"
+                },
+                "panelDetail": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaVisitInvestigationPanelDetail"
+                    }
+                },
+                "rangeType": {
+                    "type": "string"
+                },
+                "referenceRange": {
+                    "type": "string"
+                },
+                "resultClob": {
+                    "type": "string"
+                },
+                "resultUnit": {
+                    "type": "string"
+                },
+                "resultValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisitInvestigationPanelDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "rangeType": {
+                    "type": "string"
+                },
+                "referenceRange": {
+                    "type": "string"
+                },
+                "resultClob": {
+                    "type": "string"
+                },
+                "resultUnit": {
+                    "type": "string"
+                },
+                "resultValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisitReferralLetter": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
+                },
+                "referralAddressOrSubject": {
+                    "type": "string"
+                },
+                "referralDateTime": {
+                    "type": "string"
+                },
+                "referralDoctor": {
+                    "type": "string"
+                },
+                "referralLetter": {
+                    "type": "string"
+                },
+                "referralRefNo": {
+                    "type": "string"
+                },
+                "referralTitleDept": {
+                    "type": "string"
+                },
+                "referralType": {
+                    "type": "string"
+                },
+                "referrerDoctor": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisitSummary": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "categoryData": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "description": "note: original TS has \"transferDateTIme\" (typo)",
+                    "type": "string"
+                },
+                "transferFlag": {
+                    "type": "string"
+                },
+                "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVisitVitalSignsDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "value1": {
+                    "type": "string"
+                },
+                "value2": {
+                    "type": "string"
+                }
+            }
+        },
+        "healthCare.NovaVitalSignsDashboard": {
+            "type": "object",
+            "properties": {
+                "vitalSignCode": {
+                    "type": "string"
+                },
+                "vitalSignsData": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/healthCare.NovaPatientVitalSignsDetailDto"
+                    }
+                }
+            }
+        },
         "hpackage.Package": {
             "type": "object",
             "properties": {
@@ -11333,6 +12489,32 @@ const docTemplate = `{
                 }
             }
         },
+        "vesaliusGeo.OutstandingBill": {
+            "type": "object",
+            "properties": {
+                "billAmount": {
+                    "type": "string"
+                },
+                "billInvoiceDateTime": {
+                    "type": "string"
+                },
+                "billNumber": {
+                    "type": "string"
+                },
+                "invoiceAmount": {
+                    "type": "string"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "outstandingAmount": {
+                    "type": "string"
+                },
+                "regDateTime": {
+                    "type": "string"
+                }
+            }
+        },
         "vesaliusGeo.Patient": {
             "type": "object",
             "properties": {
@@ -11365,6 +12547,23 @@ const docTemplate = `{
                 },
                 "sex": {
                     "$ref": "#/definitions/vesaliusGeo.Sex"
+                }
+            }
+        },
+        "vesaliusGeo.ResultOutstandingBills": {
+            "type": "object",
+            "properties": {
+                "bills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vesaliusGeo.OutstandingBill"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "prn": {
+                    "type": "string"
                 }
             }
         },

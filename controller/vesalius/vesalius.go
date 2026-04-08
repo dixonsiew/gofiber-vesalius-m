@@ -11,9 +11,12 @@ import (
     "strings"
     "vesaliusm/dto"
     "vesaliusm/model"
+    gm "vesaliusm/model/vesaliusGeo"
     "vesaliusm/service/applicationUser"
+    "vesaliusm/service/healthCare"
     "vesaliusm/service/novaDoctor"
     "vesaliusm/service/novaDoctorPatientAppt"
+    "vesaliusm/service/patientOutstandingBill"
     "vesaliusm/service/vesalius"
     "vesaliusm/utils"
 
@@ -23,18 +26,22 @@ import (
 )
 
 type VesaliusController struct {
-    applicationUserService       applicationUser.ApplicationUserService
-    novaDoctorService            *novaDoctor.NovaDoctorService
-    novaDoctorPatientApptService *novaDoctorPatientAppt.NovaDoctorPatientApptService
-    vesaliusService              *vesalius.VesaliusService
+    applicationUserService        *applicationUser.ApplicationUserService
+    healthCareService             *healthCare.HealthCareService
+    novaDoctorService             *novaDoctor.NovaDoctorService
+    novaDoctorPatientApptService  *novaDoctorPatientAppt.NovaDoctorPatientApptService
+    patientOutstandingBillService *patientOutstandingBill.PatientOutstandingBillService
+    vesaliusService               *vesalius.VesaliusService
 }
 
 func NewVesaliusController() *VesaliusController {
     return &VesaliusController{
-        applicationUserService:       *applicationUser.ApplicationUserSvc,
-        novaDoctorService:            novaDoctor.NovaDoctorSvc,
-        novaDoctorPatientApptService: novaDoctorPatientAppt.NovaDoctorPatientApptSvc,
-        vesaliusService:              vesalius.VesaliusSvc,
+        applicationUserService:        applicationUser.ApplicationUserSvc,
+        healthCareService:             healthCare.HealthCareSvc,
+        novaDoctorService:             novaDoctor.NovaDoctorSvc,
+        novaDoctorPatientApptService:  novaDoctorPatientAppt.NovaDoctorPatientApptSvc,
+        patientOutstandingBillService: patientOutstandingBill.PatientOutstandingBillSvc,
+        vesaliusService:               vesalius.VesaliusSvc,
     }
 }
 
@@ -436,8 +443,179 @@ func (cr *VesaliusController) GetDoctorAppointments(c fiber.Ctx) error {
 
     return c.JSON(fiber.Map{
         "calendarDailyStatus": lb,
-        "doctorAppointment": la,
+        "doctorAppointment":   la,
     })
+}
+
+// GetLabHistoryForDashboard
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn              path      string       true  "prn"
+// @Success 200 {array} healthCare.NovaLabHistoryDashboard
+// @Router /vesalius/get-lab-history/{prn} [get]
+func (cr *VesaliusController) GetLabHistoryForDashboard(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    lx, err := cr.healthCareService.GetLabHistoryForDahsboard(prn)
+    if err != nil {
+        return nil
+    }
+
+    return c.JSON(lx)
+}
+
+// GetVitalSignsHistoryForDashboard
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn              path      string       true  "prn"
+// @Success 200 {array} healthCare.NovaVitalSignsDashboard
+// @Router /vesalius/get-vital-signs-history/{prn} [get]
+func (cr *VesaliusController) GetVitalSignsHistoryForDashboard(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    lx, err := cr.healthCareService.GetVitalSignsHistoryForDashboard(prn)
+    if err != nil {
+        return nil
+    }
+
+    return c.JSON(lx)
+}
+
+// GetVitalSignsHistory
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn              path      string       true  "prn"
+// @Param       visitDate        path      string       true  "visitDate"
+// @Param       vitalSignsCode   path      string       true  "vitalSignsCode"
+// @Success 200 {array} healthCare.NovaPatientVitalSignsDetailDto
+// @Router /vesalius/get-vital-signs-history/{prn}/{visitDate}/{vitalSignsCode} [get]
+func (cr *VesaliusController) GetVitalSignsHistory(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    visitDate := c.Params("visitDate")
+    vitalSignsCode := c.Params("vitalSignsCode")
+    lx, err := cr.healthCareService.GetVitalSignsHistory(prn, visitDate, vitalSignsCode)
+    if err != nil {
+        return nil
+    }
+
+    return c.JSON(lx)
+}
+
+// GetPatientAllergy
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn            path      string       true  "prn"
+// @Success 200 {array} healthCare.NovaPatientAlert
+// @Router /vesalius/patient-allergy/{prn} [get]
+func (cr *VesaliusController) GetPatientAllergy(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    lx, err := cr.healthCareService.GetPatientAllergy(prn);
+    if err != nil {
+        return nil
+    }
+
+    return c.JSON(lx)
+}
+
+// GetPatientVisit
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn            path      string       true  "prn"
+// @Param       pageId         path      string       true  "pageId"
+// @Success 200 {array} healthCare.NovaVisitDetails
+// @Router /vesalius/patient-visit/{prn}/{pageId} [get]
+func (cr *VesaliusController) GetPatientVisit(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    pageId := c.Params("pageId")
+    lx, err := cr.healthCareService.GetPatientVisit(prn, pageId)
+    if err != nil {
+        return nil
+    }
+
+    return c.JSON(lx)
+}
+
+// GetHealthScreeningRpt
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       hsrRefNo            path      string       true  "hsrRefNo"
+// @Success 200 {array} byte
+// @Router /vesalius/health-screening-report/{hsrRefNo} [get]
+func (cr *VesaliusController) GetHealthScreeningRpt(c fiber.Ctx) error {
+    hsrRefNo := c.Params("hsrRefNo")
+    bx, err := cr.healthCareService.GetPdfHealthScreeningReport(hsrRefNo)
+    if err != nil {
+        return err
+    }
+
+    return c.Send(bx)
+}
+
+// GetPatientFromReportSchemaByPrn
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       prn            path      string       true  "prn"
+// @Success 200 {object} healthCare.NovaPatient
+// @Router /vesalius/patient/{prn} [get]
+func (cr *VesaliusController) GetPatientFromReportSchemaByPrn(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    o, err := cr.healthCareService.GetPatientFromReportSchemaByPrn(prn)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// GetPatientOutstandingBills
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId       path      string       true  "branchId"
+// @Param       prn            path      string       true  "prn"
+// @Success 200 {object} gm.ResultOutstandingBills
+// @Router /vesalius/outstanding-bills/{branchId}/{prn} [get]
+func (cr *VesaliusController) GetPatientOutstandingBills(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    filteredBillResults := make([]gm.OutstandingBill, 0)
+    vesBillRes, err := cr.vesaliusService.VesaliusGetPatientOutstandingBillsByPrn(prn)
+    if err != nil {
+        return err
+    }
+
+    for i := range vesBillRes.Bills {
+        vesBill := vesBillRes.Bills[i]
+        paidCount, err := cr.patientOutstandingBillService.FindPaidCountByBillInvoiceNumber(vesBill.BillNumber, vesBill.InvoiceNumber)
+        if err != nil {
+            return err
+        }
+
+        if paidCount > 0 {
+            continue
+        }
+
+        if vesBill.BillAmount == "" {
+            vesBillRes.Bills[i].BillAmount = "-"
+        }
+
+        filteredBillResults = append(filteredBillResults, vesBill)
+    }
+
+    vesBillRes.Bills = filteredBillResults
+    return c.JSON(vesBillRes)
 }
 
 // GetPatientOutstandingBillData
@@ -586,13 +764,13 @@ func (cr *VesaliusController) GetMakeAppointment(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
+
     prn := c.Params("prn")
     o, err := cr.vesaliusService.VesaliusGetMakeAppointment(prn, data)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 
@@ -611,13 +789,13 @@ func (cr *VesaliusController) GetChangeAppointment(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
+
     prn := c.Params("prn")
     o, err := cr.vesaliusService.VesaliusGetChangeAppointment(prn, data)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 
@@ -636,13 +814,13 @@ func (cr *VesaliusController) GetCancelAppointment(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
+
     prn := c.Params("prn")
     o, err := cr.vesaliusService.VesaliusGetCancelAppointment(prn, data)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 

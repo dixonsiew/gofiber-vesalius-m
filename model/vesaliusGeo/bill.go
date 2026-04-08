@@ -3,19 +3,19 @@ package vesaliusGeo
 import "encoding/xml"
 
 type ResultOutstandingBills struct {
-    XMLName xml.Name          `xml:"Result"`
+    XMLName xml.Name          `xml:"Result" swaggerignore:"true"`
     Name    string            `xml:"Name" json:"name"`
     PRN     string            `xml:"PRN" json:"prn"`
-    Bills   []OutstandingBill `xml:"Bills"`
-    Success Success           `xml:"Success"`
-    Error   Error             `xml:"Error"`
+    Bills   []OutstandingBill `xml:"Bills" json:"bills"`
+    Success Success           `xml:"Success" json:"-"`
+    Error   Error             `xml:"Error" json:"-"`
 }
 
 type ResultPDFOutstandingBill struct {
     XMLName  xml.Name `xml:"Result"`
     BillData string   `xml:"BillData" json:"billData"`
-    Success  Success  `xml:"Success"`
-    Error    Error    `xml:"Error"`
+    Success  Success  `xml:"Success" json:"-"`
+    Error    Error    `xml:"Error" json:"-"`
 }
 
 type ResultBillPaymentConfirmation struct {
@@ -26,8 +26,8 @@ type ResultBillPaymentConfirmation struct {
     Receipt       []string `xml:"Receipt" json:"receipt"`
     ReceiptNumber string   `json:"receiptNumber"`
     ReceiptAmount string   `json:"receiptAmount"`
-    Success       Success  `xml:"Success"`
-    Error         Error    `xml:"Error"`
+    Success       Success  `xml:"Success" json:"-"`
+    Error         Error    `xml:"Error" json:"-"`
 }
 
 func (o *ResultBillPaymentConfirmation) Set() {

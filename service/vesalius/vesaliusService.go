@@ -743,17 +743,17 @@ func (s *VesaliusService) VesaliusCheckpatientDataByNric(nric string) (*gm.Patie
     return s.vesaliusGeoService.CheckPatientDataByNRIC(nric)
 }
 
-func (s *VesaliusService) VesaliusGetPatientDataByNric(nric string) (*gm.Patient, error) {
-    res, _, err := s.vesaliusGeoService.GetPatientDataByNRIC(nric)
+func (s *VesaliusService) VesaliusGetPatientDataByNric(nric string) (*gm.Patient, *gm.VesaliusWSException, error) {
+    res, ex, err := s.vesaliusGeoService.GetPatientDataByNRIC(nric)
     if err != nil {
-        return nil, fiber.NewError(fiber.StatusNotFound, "The Identification Number provided does not exist in our hospital records. Please retry.")
+        return nil, ex, fiber.NewError(fiber.StatusNotFound, "The Identification Number provided does not exist in our hospital records. Please retry.")
     }
 
     if res == nil {
-        return nil, fiber.NewError(fiber.StatusNoContent)
+        return nil, ex, fiber.NewError(fiber.StatusNoContent)
     }
 
-    return res, nil
+    return res, ex, nil
 }
 
 func (s *VesaliusService) vesaliusProcessPersonBiodata(biodata dto.GuestMakeNewPatientDto) (*gm.Person, error) {

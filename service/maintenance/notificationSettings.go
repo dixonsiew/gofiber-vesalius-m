@@ -1,13 +1,14 @@
 package maintenance
 
 import (
-	"database/sql"
-	"strings"
-	"vesaliusm/dto"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/dto"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 func (s *MaintenanceService) ListAllNotificationSettings(page string, limit string) (*model.PagedList, error) {
@@ -90,7 +91,7 @@ func (s *MaintenanceService) FindNotificationSettingsByKeyword(keyword string, o
     db := database.GetFromCon(conn, s.db)
     conditions, args := buildNotificationSettingsConditions(keyword)
     args = append(args, sql.Named("offset", offset))
-	args = append(args, sql.Named("limit", limit))
+    args = append(args, sql.Named("limit", limit))
 
     base := `SELECT * FROM NOTIFICATION_SETTINGS ns`
     query := base + whereClause(conditions) + ` OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`

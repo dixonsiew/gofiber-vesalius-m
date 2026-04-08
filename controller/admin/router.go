@@ -16,6 +16,7 @@ func (c *AdminController) registerRoutes(router fiber.Router) {
     api.Post("/reset-signup-email/user/:email", c.ResetSignUpUserByEmail)
     api.Post("/self-reset-password/:branchId/:email", c.SelfResetPassword)
     api.Get("/user-group/list", c.GetUserGroupList)
+    api.Post("/self-sign-up", c.SelfSignUpUser)
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/", c.GetAdmin)
@@ -38,12 +39,15 @@ func (c *AdminController) registerRoutes(router fiber.Router) {
     api.Get("/user-group-permission", c.GetUserGroupPermission)
     api.Post("/delete-user/:userId", c.DeleteUser)
     api.Post("/link-user-prn", c.LinkUserPrn)
-    api.Post("/change-signin-type", c.ChangeSignInType)
+    api.Post("/unlink-user-prn", c.UnlinkUserPrn)
+    api.Post("/set-master-profile", c.SetMasterPrn)
     api.Post("/change-password", c.ChangePassword)
     api.Post("/sign-up", c.AddAdminUser)
     api.Post("/edit-admin-user", c.EditAdminUser)
     api.Post("/delete-admin/:email", c.DeleteAdmin)
     api.Post("/adminportal/save-log", c.SaveAdminPortalLog)
+
     api.Post("/resend-user-signup-email/:email", c.ResendUserSignupEmail)
+    api.Post("/change-signin-type", c.ChangeSignInType)
     api.Post("/change-user-password", c.ChangeUserPassword)
 }

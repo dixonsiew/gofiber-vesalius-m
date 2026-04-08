@@ -1511,6 +1511,569 @@ definitions:
       prn:
         type: string
     type: object
+  healthCare.NovaBill:
+    properties:
+      accountNumber:
+        type: string
+      amount:
+        type: number
+      badDebtStatus:
+        type: string
+      billDate:
+        type: string
+      billNumber:
+        type: string
+      billTime:
+        type: string
+      billType:
+        type: string
+      cnAmount:
+        type: number
+      dnAmount:
+        type: number
+      exclusiveTax:
+        type: number
+      finalizeCounter:
+        type: string
+      finalizeLocation:
+        type: string
+      finalizeUser:
+        type: string
+      inclusiveTax:
+        type: number
+      invoiceNumber:
+        type: string
+      invoiceType:
+        type: string
+      memberId:
+        type: string
+      originalBillNumber:
+        type: string
+      osAmount:
+        type: number
+      payer:
+        type: string
+      paymentTerm:
+        type: integer
+      prn:
+        type: string
+      remark:
+        type: string
+      roundingAmount:
+        type: number
+      syncDate:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+    type: object
+  healthCare.NovaHealthScreeningRpt:
+    properties:
+      accountNo:
+        type: string
+      hsrRefNo:
+        type: string
+      reportDate:
+        type: string
+      reportUser:
+        type: string
+    type: object
+  healthCare.NovaLabHistoryDashboard:
+    properties:
+      labCode:
+        type: string
+      labData:
+        items:
+          $ref: '#/definitions/healthCare.NovaPatientInvestigationDetail'
+        type: array
+    type: object
+  healthCare.NovaPatient:
+    properties:
+      accessLevel:
+        type: string
+      chargeCategoryCode:
+        type: string
+      countryOfBirth:
+        type: string
+      createdBy:
+        type: string
+      creationDate:
+        type: string
+      deathDate:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      employerCode:
+        type: string
+      employerName:
+        type: string
+      ethnicGroup:
+        type: string
+      firstOrganization:
+        type: string
+      gender:
+        type: string
+      height:
+        type: string
+      homeAddress:
+        type: string
+      homePhone:
+        type: string
+      imageUrl:
+        type: string
+      maritalStatus:
+        type: string
+      mobilePhone:
+        type: string
+      nationality:
+        type: string
+      occupation:
+        type: string
+      patientName:
+        type: string
+      placeOfBirth:
+        type: string
+      preferredDoctor:
+        type: string
+      prn:
+        type: string
+      religion:
+        type: string
+      remark:
+        type: string
+      reminderPreference:
+        type: string
+      residentFlag:
+        type: string
+      spokenLanguage:
+        type: string
+      syncDate:
+        type: string
+      title:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+      weight:
+        type: string
+      writtenLanguage:
+        type: string
+    type: object
+  healthCare.NovaPatientAlert:
+    properties:
+      alertRefNo:
+        type: integer
+      alertType:
+        type: string
+      allergyType:
+        type: string
+      createdBy:
+        type: string
+      creationDate:
+        type: string
+      description:
+        type: string
+      inactiveDateTime:
+        type: string
+      inactiveReason:
+        type: string
+      inactiveUser:
+        type: string
+      prn:
+        type: string
+      probability:
+        type: string
+      reaction:
+        type: string
+      route:
+        type: string
+      syncDate:
+        type: string
+      system:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+    type: object
+  healthCare.NovaPatientDiagnosis:
+    properties:
+      accountNo:
+        type: string
+      diagnonsisCloseDate:
+        type: string
+      diagnonsisDesc:
+        type: string
+      diagnosisCancelDate:
+        type: string
+      diagnosisDate:
+        type: string
+      diagnosisRefNo:
+        type: integer
+      doctorName:
+        type: string
+      mcr:
+        type: string
+      primaryDiagnosis:
+        type: string
+      status:
+        type: string
+      syncDate:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+    type: object
+  healthCare.NovaPatientDiagnosisDetails:
+    properties:
+      novaPatientDiagnosis:
+        $ref: '#/definitions/healthCare.NovaPatientDiagnosis'
+      novaPatientDiagnosisInfo:
+        $ref: '#/definitions/healthCare.NovaPatientDiagnosisInfo'
+    type: object
+  healthCare.NovaPatientDiagnosisInfo:
+    properties:
+      diagnosisLaterality:
+        type: string
+      diagnosisRefNo:
+        type: integer
+      diagnosisSeverity:
+        type: string
+      diagnosisType:
+        type: string
+      syncDate:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+    type: object
+  healthCare.NovaPatientInvestigationDetail:
+    properties:
+      code:
+        type: string
+      investigationRefNo:
+        type: string
+      rangeType:
+        type: string
+      recordedDate:
+        type: string
+      referenceRange:
+        type: string
+      resultClob:
+        type: string
+      resultUnit:
+        type: string
+      resultValue:
+        type: string
+    type: object
+  healthCare.NovaPatientRx:
+    properties:
+      accountNo:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      doctorMCR:
+        type: string
+      doctorName:
+        type: string
+      event:
+        type: string
+      eventDateTime:
+        type: string
+      instruction:
+        type: string
+      orderNo:
+        type: string
+      quantity:
+        type: string
+      rxRefNo:
+        type: string
+      uom:
+        type: string
+    type: object
+  healthCare.NovaPatientVitalSignsDetail:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      recordedDate:
+        type: string
+      refNo:
+        type: string
+      unit:
+        type: string
+      value1:
+        type: string
+      value2:
+        type: string
+    type: object
+  healthCare.NovaPatientVitalSignsDetailDto:
+    properties:
+      novaPatientVitalSignsDetail:
+        $ref: '#/definitions/healthCare.NovaPatientVitalSignsDetail'
+      value1_high_value:
+        type: string
+      value1_low_value:
+        type: string
+      value2_high_value:
+        type: string
+      value2_low_value:
+        type: string
+    type: object
+  healthCare.NovaVisit:
+    properties:
+      accountNo:
+        type: string
+      admissionDate:
+        type: string
+      admissionStatus:
+        type: string
+      admissionTime:
+        type: string
+      admittingDoctor:
+        type: string
+      bedNo:
+        type: string
+      caseType:
+        type: string
+      chargeCategoryCode:
+        type: string
+      clinicName:
+        type: string
+      createdBy:
+        type: string
+      dischargeDate:
+        type: string
+      dischargeDiagnosis:
+        type: string
+      dischargeDoctor:
+        type: string
+      dischargeReason:
+        type: string
+      dischargeTime:
+        type: string
+      dispositionRemark:
+        type: string
+      dispositionStatus:
+        type: string
+      healthCheck:
+        type: string
+      hospitalCode:
+        type: string
+      mcrNo:
+        type: string
+      paymentClassCode:
+        type: string
+      prelimDischargeDate:
+        type: string
+      prelimDischargeTime:
+        type: string
+      primaryDoctor:
+        type: string
+      primarySpecialty:
+        type: string
+      prn:
+        type: string
+      referral:
+        type: string
+      referralText:
+        type: string
+      referrerCode:
+        type: string
+      registrationDate:
+        type: string
+      registrationTime:
+        type: string
+      roomNo:
+        type: string
+      syncDate:
+        type: string
+      transferChargeAccountNo:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+      visitStatus:
+        type: string
+      visitType:
+        type: string
+      wardNo:
+        type: string
+    type: object
+  healthCare.NovaVisitDetails:
+    properties:
+      novaBills:
+        items:
+          $ref: '#/definitions/healthCare.NovaBill'
+        type: array
+      novaHealthScreeningRptList:
+        items:
+          $ref: '#/definitions/healthCare.NovaHealthScreeningRpt'
+        type: array
+      novaPatientDiagnosisDetails:
+        items:
+          $ref: '#/definitions/healthCare.NovaPatientDiagnosisDetails'
+        type: array
+      novaVisit:
+        $ref: '#/definitions/healthCare.NovaVisit'
+      novaVisitInvestigationDetailList:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitInvestigationDetail'
+        type: array
+      novaVisitPatientRxList:
+        items:
+          $ref: '#/definitions/healthCare.NovaPatientRx'
+        type: array
+      novaVisitPrescriptionList:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitSummary'
+        type: array
+      novaVisitReferralLetterList:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitReferralLetter'
+        type: array
+      novaVisitSummaries:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitSummary'
+        type: array
+      novaVisitVitalSignsDetailList:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitVitalSignsDetail'
+        type: array
+    type: object
+  healthCare.NovaVisitInvestigationDetail:
+    properties:
+      accountNo:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      investigationRefNo:
+        type: string
+      investigationType:
+        type: string
+      panelCode:
+        type: string
+      panelDescription:
+        type: string
+      panelDetail:
+        items:
+          $ref: '#/definitions/healthCare.NovaVisitInvestigationPanelDetail'
+        type: array
+      rangeType:
+        type: string
+      referenceRange:
+        type: string
+      resultClob:
+        type: string
+      resultUnit:
+        type: string
+      resultValue:
+        type: string
+    type: object
+  healthCare.NovaVisitInvestigationPanelDetail:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      rangeType:
+        type: string
+      referenceRange:
+        type: string
+      resultClob:
+        type: string
+      resultUnit:
+        type: string
+      resultValue:
+        type: string
+    type: object
+  healthCare.NovaVisitReferralLetter:
+    properties:
+      accountNo:
+        type: string
+      prn:
+        type: string
+      referralAddressOrSubject:
+        type: string
+      referralDateTime:
+        type: string
+      referralDoctor:
+        type: string
+      referralLetter:
+        type: string
+      referralRefNo:
+        type: string
+      referralTitleDept:
+        type: string
+      referralType:
+        type: string
+      referrerDoctor:
+        type: string
+    type: object
+  healthCare.NovaVisitSummary:
+    properties:
+      accountNo:
+        type: string
+      category:
+        type: string
+      categoryData:
+        type: string
+      syncDate:
+        type: string
+      transferDateTime:
+        description: 'note: original TS has "transferDateTIme" (typo)'
+        type: string
+      transferFlag:
+        type: string
+      transferSystem:
+        type: string
+    type: object
+  healthCare.NovaVisitVitalSignsDetail:
+    properties:
+      code:
+        type: string
+      desc:
+        type: string
+      unit:
+        type: string
+      value1:
+        type: string
+      value2:
+        type: string
+    type: object
+  healthCare.NovaVitalSignsDashboard:
+    properties:
+      vitalSignCode:
+        type: string
+      vitalSignsData:
+        items:
+          $ref: '#/definitions/healthCare.NovaPatientVitalSignsDetailDto'
+        type: array
+    type: object
   hpackage.Package:
     properties:
       package_id:
@@ -2710,6 +3273,23 @@ definitions:
       description:
         type: string
     type: object
+  vesaliusGeo.OutstandingBill:
+    properties:
+      billAmount:
+        type: string
+      billInvoiceDateTime:
+        type: string
+      billNumber:
+        type: string
+      invoiceAmount:
+        type: string
+      invoiceNumber:
+        type: string
+      outstandingAmount:
+        type: string
+      regDateTime:
+        type: string
+    type: object
   vesaliusGeo.Patient:
     properties:
       contactNumber:
@@ -2732,6 +3312,17 @@ definitions:
         type: string
       sex:
         $ref: '#/definitions/vesaliusGeo.Sex'
+    type: object
+  vesaliusGeo.ResultOutstandingBills:
+    properties:
+      bills:
+        items:
+          $ref: '#/definitions/vesaliusGeo.OutstandingBill'
+        type: array
+      name:
+        type: string
+      prn:
+        type: string
     type: object
   vesaliusGeo.Sex:
     properties:
@@ -7014,6 +7605,27 @@ paths:
       - BearerAuth: []
       tags:
       - Vesalius
+  /vesalius/get-lab-history/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/healthCare.NovaLabHistoryDashboard'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
   /vesalius/get-next-available-slots/{branchId}/{prn}:
     post:
       parameters:
@@ -7041,6 +7653,79 @@ paths:
           schema:
             items:
               $ref: '#/definitions/vesaliusGeo.Slot'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/get-vital-signs-history/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/healthCare.NovaVitalSignsDashboard'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/get-vital-signs-history/{prn}/{visitDate}/{vitalSignsCode}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: visitDate
+        in: path
+        name: visitDate
+        required: true
+        type: string
+      - description: vitalSignsCode
+        in: path
+        name: vitalSignsCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/healthCare.NovaPatientVitalSignsDetailDto'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/health-screening-report/{hsrRefNo}:
+    get:
+      parameters:
+      - description: hsrRefNo
+        in: path
+        name: hsrRefNo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: integer
             type: array
       security:
       - BearerAuth: []
@@ -7107,6 +7792,51 @@ paths:
       - BearerAuth: []
       tags:
       - Vesalius
+  /vesalius/outstanding-bills/{branchId}/{prn}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.ResultOutstandingBills'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/patient-allergy/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/healthCare.NovaPatientAlert'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
   /vesalius/patient-data/{branchId}/{prn}:
     get:
       parameters:
@@ -7158,6 +7888,51 @@ paths:
             items:
               $ref: '#/definitions/model.PatientAppointment'
             type: array
+      tags:
+      - Vesalius
+  /vesalius/patient-visit/{prn}/{pageId}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: pageId
+        in: path
+        name: pageId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/healthCare.NovaVisitDetails'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /vesalius/patient/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/healthCare.NovaPatient'
+      security:
+      - BearerAuth: []
       tags:
       - Vesalius
   /vesalius/process-resize-image:

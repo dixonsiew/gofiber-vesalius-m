@@ -4,6 +4,7 @@ import (
     "context"
     "database/sql"
     "encoding/base64"
+    "strconv"
     "strings"
     "vesaliusm/config"
     "vesaliusm/database"
@@ -18,7 +19,7 @@ import (
     "vesaliusm/service/novaDoctor"
     "vesaliusm/service/novaDoctorPatientAppt"
     "vesaliusm/service/novaHealthScreenRpt"
-    "vesaliusm/service/novaHealthScreenrptDetail"
+    "vesaliusm/service/novaHealthScreenRptDetail"
     "vesaliusm/service/novaInvestigation"
     "vesaliusm/service/novaInvestigationDetail"
     "vesaliusm/service/novaPatient"
@@ -141,7 +142,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                 return nil, err
             }
             if len(novaVisitSummaries) > 0 {
-                for _, _ = range novaVisitSummaries {
+                for range novaVisitSummaries {
                     novaVisitDetail := model.NovaVisitDetails{
                         NovaVisit:          &novaVisit,
                         NovaVisitSummaries: novaVisitSummaries,
@@ -165,7 +166,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                 return nil, err
             }
             if len(novaVisitPatientRxList) > 0 {
-                for _, _ = range novaVisitPatientRxList {
+                for range novaVisitPatientRxList {
                     novaVisitDetail := model.NovaVisitDetails{
                         NovaVisit:              &novaVisit,
                         NovaVisitPatientRxList: novaVisitPatientRxList,
@@ -193,7 +194,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                 return nil, err
             }
             if len(novaPatientInvestigationList) > 0 || len(uniquePanelList) > 0 {
-                for _, _ = range novaPatientInvestigationList {
+                for range novaPatientInvestigationList {
                     novaVisitDetail := model.NovaVisitDetails{
                         NovaVisit: &novaVisit,
                     }
@@ -270,6 +271,7 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                                 novaVisitInvestigationDetailDto.PanelCode = novaPatientPanelInvestigationList[0].PanelCode.String
                                 novaVisitInvestigationDetailDto.PanelDescription = novaPatientPanelInvestigationList[0].PanelDescription.String
                                 novaVisitInvestigationDetailDto.PanelDetail = panelDetailList
+                                novaVisitInvestigationDetailList = append(novaVisitInvestigationDetailList, novaVisitInvestigationDetailDto)
                             }
                         }
                     }
@@ -598,7 +600,7 @@ func (s *HealthCareService) GetVitalSignsHistory(prn string, visitDate string, v
         }
     }
 
-    if len(patientVitalSignsHistoryList) < 0 {
+    if len(patientVitalSignsHistoryList) < 1 {
         return nil, fiber.NewError(fiber.StatusNoContent)
     }
 
@@ -791,9 +793,9 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
         }
 
         var (
-            sessionType      = ""
-            sessionStartTime = ""
-            sessionEndTime   = ""
+            sessionType      string = ""
+            sessionStartTime string = ""
+            sessionEndTime   string = ""
         )
 
         for j := range list {
@@ -818,7 +820,7 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
                     LEFT JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID 
                     WHERE ndpa.PATIENT_PRN = :prn AND ndpa.PACKAGE_PURCHASE_NO = :packagePurchaseNo
                 `
-                lp := make([]up.UserPackage, 0)
+                lp := make([]upck.UserPackage, 0)
                 err := s.db.SelectContext(s.ctx, &lp, q, f.NokPrn.String, o.Reason.String)
                 if err != nil {
                     utils.LogError(err)
@@ -881,7 +883,7 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
                         }
 
                         if docAppt.SessionType.String == "AFTERNOON" && appt.AfternoonStatus.String == "AVAILABLE" {
-                            vesStartTime, _ := goment.New(vesAppt.StartTime, "hh:mm")
+                            vesStartTime, _ := goment.New(o.AppointmentTime, "hh:mm")
                             docApptStartTime, _ := goment.New(docAppt.StartTime.String, "hh:mm")
                             docApptEndTime, _ := goment.New(docAppt.EndTime.String, "hh:mm")
                             isWithinAfternoonRange := !vesStartTime.IsBefore(docApptStartTime) && !vesStartTime.IsAfter(docApptEndTime)
@@ -910,6 +912,33 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
                 }
 
                 apptInfo := gm.VesaliusPastApptInfo{
+                    AppointmentRefNo:  int(o.AppointmentRefNo.Int64),
+                    HospitalCode:      o.HospitalCode.String,
+                    PatientPRN:        o.PatientPrn.String,
+                    PatientName:       o.PatientName.String,
+                    PatientDOB:        o.PatientDob.String,
+                    HomeContactNo:     o.HomeContactNo.String,
+                    MobileContactNo:   o.MobileContactNo.String,
+                    HomeAddress:       o.HomeAddress.String,
+                    AppointmentDate:   o.AppointmentDate.String,
+                    AppointmentTime:   o.AppointmentTime.String,
+                    DurationMins:      int(o.DurationMins.Int64),
+                    CaseType:          o.CaseType.String,
+                    Status:            o.Status.String,
+                    Reason:            o.Reason.String,
+                    MCR:               o.Mcr.String,
+                    DoctorName:        o.DoctorName.String,
+                    RoomNo:            o.RoomNo.String,
+                    ClinicName:        o.ClinicName.String,
+                    AccountNo:         o.AccountNo.String,
+                    AppointmentSource: o.AppointmentSource.String,
+                    SourceOfReferral:  o.SourceOfReferral.String,
+                    AppointmentType:   o.AppointmentType.String,
+                    SyncDate:          o.SyncDate.String,
+                    TransferFlg:       o.TransferFlg.String,
+                    TransferDateTime:  o.TransferDateTime.String,
+                    TransferSystem:    o.TransferSystem.String,
+
                     ApptPatientName:       rel,
                     ApptSessionType:       sessionType,
                     SessionStartTime:      sessionStartTime,
@@ -925,9 +954,33 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
                 }
 
                 patientPastAppointment.VesaliusPastApptInfo = apptInfo
+
+                lid = append(lid, strconv.FormatInt(doc.DoctorId.Int64, 10))
+                lx = append(lx, patientPastAppointment)
             }
         }
 
     }
+
+    if len(lid) > 0 {
+        doctorIds := strings.Join(lid, ",")
+        m3, _ := s.novaDoctorService.FindAllNovaDoctorSpecialities(doctorIds, s.db)
+        m4, _ := s.novaDoctorService.FindAllNovaDoctorClinicLocation(doctorIds, s.db)
+        m5, _ := s.novaDoctorService.FindAllNovaDoctorContact(doctorIds, s.db)
+
+        for i := range lx {
+            o := lx[i]
+            if list, ok := m3[o.DoctorId]; ok {
+                lx[i].DoctorSpecialities = list
+            }
+            if list, ok := m4[o.DoctorId]; ok {
+                lx[i].DoctorClinicLocation = list
+            }
+            if list, ok := m5[o.DoctorId]; ok {
+                lx[i].DoctorContact = list
+            }
+        }
+    }
+
     return lx, nil
 }

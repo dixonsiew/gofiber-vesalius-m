@@ -17,6 +17,10 @@ func Config(key string) string {
     return os.Getenv(key)
 }
 
+func GetPatientDocumentCode() string {
+    return Config("patient.document.code")
+}
+
 func GetIpayTestEnv() string {
     return Config("payment.ipay.testenv")
 }

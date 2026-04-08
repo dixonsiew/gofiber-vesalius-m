@@ -1,13 +1,14 @@
 package maintenance
 
 import (
-	"database/sql"
-	"strings"
-	"vesaliusm/dto"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/dto"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 func (s *MaintenanceService) ListAllParamSettings(page string, limit string) (*model.PagedList, error) {
@@ -65,12 +66,12 @@ func (s *MaintenanceService) CountParamSettingsByKeyword(keyword string, conn *s
     query := base + whereClause(conds)
 
     var count int
-	err := db.GetContext(s.ctx, &count, query, args...)
-	if err != nil {
-		utils.LogError(err)
-		return 0, err
-	}
-	return count, nil
+    err := db.GetContext(s.ctx, &count, query, args...)
+    if err != nil {
+        utils.LogError(err)
+        return 0, err
+    }
+    return count, nil
 }
 
 func (s *MaintenanceService) FindAllParamSettings(offset int, limit int, conn *sqlx.DB) ([]model.ParamSetting, error) {
@@ -90,7 +91,7 @@ func (s *MaintenanceService) FindParamSettingsByKeyword(keyword string, offset i
     db := database.GetFromCon(conn, s.db)
     conditions, args := buildParamSettingsConditions(keyword)
     args = append(args, sql.Named("offset", offset))
-	args = append(args, sql.Named("limit", limit))
+    args = append(args, sql.Named("limit", limit))
 
     base := `SELECT ps.* FROM PARAM_SETTINGS ps`
     query := base + whereClause(conditions) + ` OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
@@ -111,8 +112,8 @@ func (s *MaintenanceService) UpdateParamSettingByParamCode(data *dto.ParamSettin
         sql.Named("pCode", data.ParamCode),
     )
     if err != nil {
-		utils.LogError(err)
-		return err
+        utils.LogError(err)
+        return err
     }
     return err
 }

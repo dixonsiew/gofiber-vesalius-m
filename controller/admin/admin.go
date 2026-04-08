@@ -1,8 +1,12 @@
 package admin
 
 import (
+    "errors"
+    "fmt"
     "slices"
     "strconv"
+    "strings"
+    "vesaliusm/config"
     "vesaliusm/dto"
     "vesaliusm/middleware"
     "vesaliusm/model"
@@ -12,12 +16,15 @@ import (
     "vesaliusm/service/branch"
     "vesaliusm/service/groupModulePermission"
     "vesaliusm/service/mail"
+    "vesaliusm/service/sms"
     "vesaliusm/service/userGroup"
     "vesaliusm/service/userGroupModulePermission"
     "vesaliusm/service/userGroupModules"
+    "vesaliusm/service/vesalius"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
+    "github.com/nleeper/goment"
 )
 
 type AdminController struct {
@@ -29,7 +36,9 @@ type AdminController struct {
     userGroupService                 *userGroup.UserGroupService
     userGroupModulesService          *userGroupModules.UserGroupModulesService
     userGroupModulePermissionService *userGroupModulePermission.UserGroupModulePermissionService
+    vesaliusService                  *vesalius.VesaliusService
     mailService                      *mail.MailService
+    smsService                       *sms.SmsService
 }
 
 func NewAdminController() *AdminController {
@@ -42,7 +51,9 @@ func NewAdminController() *AdminController {
         userGroupService:                 userGroup.UserGroupSvc,
         userGroupModulesService:          userGroupModules.UserGroupModulesSvc,
         userGroupModulePermissionService: userGroupModulePermission.UserGroupModulePermissionSvc,
+        vesaliusService:                  vesalius.VesaliusSvc,
         mailService:                      mail.MailSvc,
+        smsService:                       sms.SmsSvc,
     }
 }
 
@@ -375,7 +386,7 @@ func (cr *AdminController) GetUserGroupList(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -427,10 +438,10 @@ func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
         }
 
         userGroupDetail := model.AllUserGroupDetails{
-            UserGroupId: userGroup.GroupId.Int64,
+            UserGroupId:   userGroup.GroupId.Int64,
             UserGroupName: userGroup.UserGroupName.String,
-            DateCreated: userGroup.DateCreated.String,
-            ActiveUser: admins,
+            DateCreated:   userGroup.DateCreated.String,
+            ActiveUser:    admins,
         }
 
         moduleList := make([]string, 0)
@@ -500,12 +511,12 @@ func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
     }
 
     o := model.UserGroup{
-        UserGroupName: utils.NewNullString(data.UserGroupName),
+        UserGroupName:                       utils.NewNullString(data.UserGroupName),
         UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
     }
     for _, x := range data.Permission {
         k := model.UserGroupModulePermission{
-            ModuleId: utils.NewInt64(int64(x.ModuleId)),
+            ModuleId:     utils.NewInt64(int64(x.ModuleId)),
             PermissionId: utils.NewInt64(int64(x.PermissionId)),
         }
         o.UserGroupModulePermissionStatesList = append(o.UserGroupModulePermissionStatesList, k)
@@ -554,9 +565,9 @@ func (cr *AdminController) GetUserGroup(c fiber.Ctx) error {
     }
 
     userGroupDetails := model.UserGroupDetails{
-        UserGroupId: o.GroupId.Int64,
+        UserGroupId:   o.GroupId.Int64,
         UserGroupName: o.UserGroupName.String,
-        Permission: permissionList,
+        Permission:    permissionList,
     }
 
     return c.JSON(userGroupDetails)
@@ -607,15 +618,15 @@ func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
     }
 
     o := model.UserGroup{
-        GroupId: utils.NewInt64(int64(data.UserGroupId)),
-        UserGroupName: utils.NewNullString(data.UserGroupName),
+        GroupId:                             utils.NewInt64(int64(data.UserGroupId)),
+        UserGroupName:                       utils.NewNullString(data.UserGroupName),
         UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
     }
     for _, x := range data.Permission {
         k := model.UserGroupModulePermission{
-            ModuleId: utils.NewInt64(int64(x.ModuleId)),
+            ModuleId:     utils.NewInt64(int64(x.ModuleId)),
             PermissionId: utils.NewInt64(int64(x.PermissionId)),
-            UserGroupId: utils.NewInt64(int64(data.UserGroupId)),
+            UserGroupId:  utils.NewInt64(int64(data.UserGroupId)),
         }
         o.UserGroupModulePermissionStatesList = append(o.UserGroupModulePermissionStatesList, k)
     }
@@ -834,85 +845,153 @@ func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
     o.Resident = utils.NewNullString(data.Resident)
     o.Sex = utils.NewNullString(data.Sex)
     o.Title = utils.NewNullString(data.Title)
-    cr.applicationUserService.SaveUserBranch(int64(data.BranchId), o)
+    err = cr.applicationUserService.SaveUserBranch(int64(data.BranchId), o)
+    if err != nil {
+        return err
+    }
 
-    // TODO: Implement link user PRN logic
-    // For now, just return success
     return c.JSON(fiber.Map{
         "successMessage": "Hospital has linked successfully",
     })
 }
 
-// ChangeSignInType
+// UnlinkUserPrn
 //
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.ChangeSignInTypeDto true "ChangeSignInTypeDto"
+// @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto"
 // @Success 200
-// @Router /admin/change-signin-type [post]
-func (cr *AdminController) ChangeSignInType(c fiber.Ctx) error {
-    data := new(dto.ChangeSignInTypeDto)
+// @Router /admin/unlink-user-prn [post]
+func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    data := new(dto.PostLinkUserPrnDto)
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
 
-    o, err := cr.applicationUserService.FindByUserId(data.UserId, nil)
+    o, err := cr.applicationUserService.FindByEmail(data.Email, nil)
     if err != nil {
         return err
     }
 
     if o == nil {
-        return fiber.NewError(fiber.StatusBadRequest, "User does not exist")
+        return fiber.NewError(fiber.StatusNotFound, "User not found")
     }
 
-    switch data.SignInType {
-    case 1:
-        if data.SignInMobileNumber != "" {
-            isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.SignInMobileNumber)
-            if err != nil {
-                return err
-            }
-
-            if isExistsByMobileNo {
-                return fiber.NewError(fiber.StatusBadRequest, "The entered Mobile Number already exist in our system")
-            }
-        } else {
-            return fiber.NewError(fiber.StatusBadRequest, "Mobile Number is required")
-        }
-    case 2:
-        if data.SignInEmailAddress != "" {
-            isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.SignInEmailAddress)
-            if err != nil {
-                return err
-            }
-
-            if isExistsByEmail {
-                return fiber.NewError(fiber.StatusBadRequest, "The entered Email Address already exist in our system")
-            } else {
-                err := cr.applicationUserService.UpdateVerificationCode(o.VerificationCode.String, o.UserId.Int64)
-                if err != nil {
-                    return err
-                }
-
-                go func() {
-                    cr.mailService.SendSignUp(o, data.SignInEmailAddress)
-                }()
-            }
-        } else {
-            return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
-        }
-    default:
-        return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
+    b, err := cr.assignBranchService.ExistsByUserIdNBranchIdNPRNinAssignBranch(o.UserId.Int64, int64(data.BranchId), data.Prn)
+    if err != nil {
+        return err
     }
 
-    err = cr.adminUserService.ChangeUserSignInType(*data)
+    if !b {
+        return fiber.NewError(fiber.StatusNotFound, "Hospital not found")
+    }
+
+    err = cr.assignBranchService.DeleteByUserIdNBranchIdNPRN(o.UserId.Int64, int64(data.BranchId), data.Prn)
     if err != nil {
         return err
     }
 
     return c.JSON(fiber.Map{
-        "successMessage": "Change User Sign In Type success",
+        "successMessage": "Hospital has unlinked successfully",
+    })
+}
+
+// SetMasterPrn
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto"
+// @Success 200
+// @Router /admin/set-master-profile [post]
+func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
+    _, user, err := middleware.ValidateAdminToken(c)
+    if err != nil {
+        return err
+    }
+
+    if user == nil {
+        return middleware.Unauthorized(c)
+    }
+
+    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+        return middleware.Unauthorized(c)
+    }
+
+    data := new(dto.PostLinkUserPrnDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    o, err := cr.applicationUserService.FindByEmail(data.Email, nil)
+    if err != nil {
+        return err
+    }
+
+    if o == nil {
+        return fiber.NewError(fiber.StatusNotFound, "User not found")
+    }
+
+    lx, err := cr.assignBranchService.FindAllPrimary(o.UserId.Int64)
+    if err != nil {
+        return err
+    }
+
+    if len(lx) < 1 {
+        return fiber.NewError(fiber.StatusNotFound, "Assign Branch not found")
+    }
+
+    patient, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(data.Prn)
+    if patient == nil {
+        return fiber.NewError(fiber.StatusNotFound, "PRN not found")
+    }
+
+    if err != nil {
+        return err
+    }
+
+    h := patient.HomeAddress
+    fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
+    passport := ""
+    for _, doc := range patient.Documents {
+        if doc.Code == "PASSPORT" {
+            passport = doc.Value
+        }
+    }
+
+    o.Address = utils.NewNullString(fullAddress)
+    o.ContactNumber = utils.NewNullString(patient.ContactNumber.Home)
+    o.Dob = utils.NewNullString(patient.DOB)
+    o.FirstName = utils.NewNullString(patient.Name.FirstName)
+    o.LastName = utils.NewNullString(patient.Name.LastName)
+    o.MiddleName = utils.NewNullString(patient.Name.MiddleName)
+    o.Nationality = utils.NewNullString(patient.Nationality.Description)
+    o.Passport = utils.NewNullString(passport)
+    o.Resident = utils.NewNullString(patient.Resident)
+    o.Sex = utils.NewNullString(patient.Sex.Description)
+    o.Title = utils.NewNullString(patient.Name.Title)
+    o.MasterPrn = utils.NewNullString(patient.Prn)
+    err = cr.applicationUserService.Update(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "Master Patient Record Number (PRN) has been set!",
     })
 }
 
@@ -1026,16 +1105,16 @@ func (cr *AdminController) EditAdminUser(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
+
     o, err := cr.adminUserService.FindByEmail(data.Email)
     if err != nil {
         return err
     }
-    
+
     if o == nil {
         return fiber.NewError(fiber.StatusNotFound, "User not found")
     }
-    
+
     o.FirstName = utils.NewNullString(data.FirstName)
     o.LastName = utils.NewNullString(data.LastName)
     o.UserGroupId = utils.NewInt64(data.UserGroupId)
@@ -1044,16 +1123,16 @@ func (cr *AdminController) EditAdminUser(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     o.UserGroupName = ug.UserGroupName
     o.Role = o.UserGroupName
-    
+
     adminBranchIds := data.AdminBranchIds
     err = cr.adminUserService.Update(o, adminBranchIds)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(fiber.Map{
         "successMessage": "User profile has been updated",
     })
@@ -1183,6 +1262,13 @@ func (cr *AdminController) SaveAdminPortalLog(c fiber.Ctx) error {
     })
 }
 
+// SelfSignUpUser
+//
+// @Tags Admin
+// @Produce json
+// @Param request body dto.PostSelfSignUpUserDto true "PostSelfSignUpUserDto"
+// @Success 200
+// @Router /admin/self-sign-up [post]
 func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
     data := new(dto.PostSelfSignUpUserDto)
     if err := utils.BindNValidate(c, data); err != nil {
@@ -1207,24 +1293,119 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "User with the PRN already exist. Please Sign In or Reset Password if forgot.")
     }
 
-    o := new(model.ApplicationUser)
-    o.Race = utils.NewNullString("-")
-    o.Dob = utils.NewNullString(data.UserDOB)
-    o.Email = utils.NewNullString(data.UserEmail)
-    o.Password = utils.NewNullString(data.UserPassword)
-    o.Role = utils.NewNullString(utils.ROLE_USER)
-    o.Username = utils.NewNullString(data.UserEmail)
-    o.FirstTimeLoginV = utils.NewInt32(1)
-    o.PlayerId = utils.NewNullString(data.PlayerId)
+    patient, ex, err := cr.vesaliusService.VesaliusGetPatientDataByNric(data.UserPersonNumber)
+    if patient == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "The provided information does not match our records. Please try again or contact customer service for assistance.")
+    }
+
+    if ex != nil {
+        if ex.Code == "99" {
+            return fiber.NewError(fiber.StatusBadRequest, "Duplicate Patient Profile found. Please contact customer service for assistance.")
+        } else {
+            return fiber.NewError(fiber.StatusBadRequest, ex.ToString())
+        }
+    }
+
+    if err != nil {
+        var e *fiber.Error
+        if errors.As(err, &e) {
+            if e.Code == fiber.StatusNoContent {
+                return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+            }
+        }
+        return err
+    }
+
+    patientDocIDValue := ""
+    if len(patient.Documents) > 0 {
+        for _, doc := range patient.Documents {
+            if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
+                patientDocIDValue = strings.TrimSpace(doc.Code)
+            }
+        }
+    } else {
+        return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+    }
+
+    if patientDocIDValue == "" {
+        return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+    }
+
+    if patient.ContactNumber.Email == "" {
+        return fiber.NewError(fiber.StatusBadRequest, "Email does not exist in hospital patient profile. Please contact hospital to update.")
+    } else if (strings.TrimSpace(patient.ContactNumber.Email) == "") {
+        return fiber.NewError(fiber.StatusBadRequest, "Email does not exist in hospital patient profile. Please contact hospital to update.")
+    } else {
+        if !strings.EqualFold(strings.TrimSpace(patient.ContactNumber.Email), strings.TrimSpace(data.UserEmail)) {
+            return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+        }
+    }
+
+    lname := []string{ strings.TrimSpace(patient.Name.FirstName) }
+    if len(strings.TrimSpace(patient.Name.MiddleName)) > 0 {
+        lname = append(lname, patient.Name.MiddleName)
+    }
+    if len(strings.TrimSpace(patient.Name.LastName)) > 0 {
+        lname = append(lname, patient.Name.LastName)
+    }
+    localPatientFullname := strings.Join(lname, " ")
+    if !strings.EqualFold(localPatientFullname, strings.TrimSpace(data.UserFullName)) {
+        return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+    }
+
+    g, _ := goment.New(strings.TrimSpace(patient.DOB), "DD-MMM-YYYY")
+    patientDOB := g.Format("YYYY-MM-DD[T]HH:mm:ssZ")
+    g, _ = goment.New(strings.TrimSpace(data.UserDOB), "DD/MM/YYYY")
+    signUpUserDOB := g.Format("YYYY-MM-DD[T]HH:mm:ssZ")
+
+    if patientDOB != signUpUserDOB {
+        return fiber.NewError(fiber.StatusBadRequest, "Information provided does not match with hospital patient profile. Please retry.")
+    }
+
+    h := patient.HomeAddress
+    fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
+    o := &model.ApplicationUser{
+        Address: utils.NewNullString(fullAddress),
+        Address1: utils.NewNullString(h.Address1),
+        Address2: utils.NewNullString(h.Address2),
+        Address3: utils.NewNullString(h.Address3),
+        CityState: utils.NewNullString(strings.TrimSpace(h.CityState)),
+        Postcode: utils.NewNullString(h.PostalCode),
+        Country: utils.NewNullString(h.Country),
+        Nationality: utils.NewNullString(utils.ToTitleCase(patient.Nationality.Description)),
+        Race: utils.NewNullString("-"),
+        Sex: utils.NewNullString(patient.Sex.Description),
+        Title: utils.NewNullString(patient.Name.Title),
+        ContactNumber: utils.NewNullString(patient.ContactNumber.Home),
+        Dob: utils.NewNullString(data.UserDOB),
+        Email: utils.NewNullString(data.UserEmail),
+        MasterPrn: utils.NewNullString(patient.Prn),
+        FirstName: utils.NewNullString(patient.Name.FirstName),
+        MiddleName: utils.NewNullString(patient.Name.MiddleName),
+        LastName: utils.NewNullString(patient.Name.LastName),
+        Password: utils.NewNullString(data.UserPassword),
+        Resident: utils.NewNullString(patient.Resident),
+        Role: utils.NewNullString(utils.ROLE_USER),
+        Username: utils.NewNullString(data.UserEmail),
+        FirstTimeLogin: true,
+        FirstTimeLoginV: utils.NewInt32(1),
+        PlayerId: utils.NewNullString(data.PlayerId),
+    }
     err = cr.applicationUserService.SaveSignup(int64(data.BranchId), o)
+
+    u, err := cr.applicationUserService.FindByPRN(patient.Prn, nil)
     if err != nil {
         return err
     }
 
-    go func() {
-        cr.mailService.SendSignUp(o, "")
-    }()
-
+    if u == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "Patient failed to be registered")
+    } else {
+        go func() {
+            cr.mailService.SendSignUp(o, "")
+        }()
+    }
+    
     return c.JSON(fiber.Map{
         "successMessage": "Thanks for signing up! Please check your email (or spam / junk folder) for an account activation email and follow the steps given.",
     })
@@ -1255,6 +1436,79 @@ func (cr *AdminController) ResendUserSignupEmail(c fiber.Ctx) error {
 
     return c.JSON(fiber.Map{
         "successMessage": "Email resent",
+    })
+}
+
+// ChangeSignInType
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.ChangeSignInTypeDto true "ChangeSignInTypeDto"
+// @Success 200
+// @Router /admin/change-signin-type [post]
+func (cr *AdminController) ChangeSignInType(c fiber.Ctx) error {
+    data := new(dto.ChangeSignInTypeDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    o, err := cr.applicationUserService.FindByUserId(data.UserId, nil)
+    if err != nil {
+        return err
+    }
+
+    if o == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "User does not exist")
+    }
+
+    switch data.SignInType {
+    case 1:
+        if data.SignInMobileNumber != "" {
+            isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.SignInMobileNumber)
+            if err != nil {
+                return err
+            }
+
+            if isExistsByMobileNo {
+                return fiber.NewError(fiber.StatusBadRequest, "The entered Mobile Number already exist in our system")
+            }
+        } else {
+            return fiber.NewError(fiber.StatusBadRequest, "Mobile Number is required")
+        }
+    case 2:
+        if data.SignInEmailAddress != "" {
+            isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.SignInEmailAddress)
+            if err != nil {
+                return err
+            }
+
+            if isExistsByEmail {
+                return fiber.NewError(fiber.StatusBadRequest, "The entered Email Address already exist in our system")
+            } else {
+                err := cr.applicationUserService.UpdateVerificationCode(o.VerificationCode.String, o.UserId.Int64)
+                if err != nil {
+                    return err
+                }
+
+                go func() {
+                    cr.mailService.SendSignUp(o, data.SignInEmailAddress)
+                }()
+            }
+        } else {
+            return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
+        }
+    default:
+        return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
+    }
+
+    err = cr.adminUserService.ChangeUserSignInType(*data)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "successMessage": "Change User Sign In Type success",
     })
 }
 
