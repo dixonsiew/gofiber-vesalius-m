@@ -1,31 +1,31 @@
 package vesalius
 
 import (
-	"context"
-	"database/sql"
-	"encoding/base64"
-	"errors"
-	"fmt"
-	"slices"
-	"strconv"
-	"strings"
-	"vesaliusm/database"
-	"vesaliusm/dto"
-	"vesaliusm/model"
-	upck "vesaliusm/model/userPackage"
-	gm "vesaliusm/model/vesaliusGeo"
-	"vesaliusm/service/applicationUser"
-	"vesaliusm/service/applicationUserFamily"
-	"vesaliusm/service/novaDoctor"
-	"vesaliusm/service/novaDoctorPatientAppt"
-	"vesaliusm/service/patientPurchaseDetails"
-	"vesaliusm/service/vesaliusGeo"
-	sqx "vesaliusm/sql"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "encoding/base64"
+    "errors"
+    "fmt"
+    "slices"
+    "strconv"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/dto"
+    "vesaliusm/model"
+    upck "vesaliusm/model/userPackage"
+    gm "vesaliusm/model/vesaliusGeo"
+    "vesaliusm/service/applicationUser"
+    "vesaliusm/service/applicationUserFamily"
+    "vesaliusm/service/novaDoctor"
+    "vesaliusm/service/novaDoctorPatientAppt"
+    "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/service/vesaliusGeo"
+    sqx "vesaliusm/sql"
+    "vesaliusm/utils"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/jmoiron/sqlx"
-	"github.com/nleeper/goment"
+    "github.com/gofiber/fiber/v3"
+    "github.com/jmoiron/sqlx"
+    "github.com/nleeper/goment"
 )
 
 var VesaliusSvc *VesaliusService = NewVesaliusService(database.GetDb(), database.GetCtx())
@@ -299,6 +299,10 @@ func (s *VesaliusService) VesaliusGetPatientFutureAppointments(prn string, isHom
     }
 
     familyMembers, err = s.applicationUserFamilyService.FindAllByUserPrnAppt(patient.MasterPrn.String, true, true, s.db)
+    if err != nil {
+        return nil, err
+    }
+
     lrx, mx := s.getAllPatientFutureAppointments(familyMembers)
 
     var (
@@ -419,41 +423,32 @@ func (s *VesaliusService) VesaliusGetPatientFutureAppointments(prn string, isHom
         }
 
         packageName := ""
-        if mobileAppt != nil {
-            packageName = mobileAppt.PackageName.String
-        }
-
         packagePurchaseNo := ""
-        if mobileAppt != nil {
-            packagePurchaseNo = mobileAppt.PackagePurchaseNo.String
-        }
-
         packageImage := ""
-        if mobileAppt != nil {
-            packageImage = mobileAppt.PackageImage.String
-        }
-
         expDateTime := ""
         if mobileAppt != nil {
+            packageName = mobileAppt.PackageName.String
+            packagePurchaseNo = mobileAppt.PackagePurchaseNo.String
+            packageImage = mobileAppt.PackageImage.String
             expDateTime = mobileAppt.ExpiredDateTime.String
         }
 
         apptInfo := model.VesaliusApptInfo{
-            ApptNo: vesAppt.AppointmentNumber,
-            ApptDate: vesAppt.Date,
-            ApptStartTime: vesAppt.StartTime,
-            ApptEndTime: vesAppt.EndTime,
-            ApptCaseType: vesAppt.CaseType,
-            ApptSessionType: sessionType,
-            ApptPatientPRN: auf.NokPrn.String,
-            ApptPatientName: rel,
-            ApptPackageName: packageName,
+            ApptNo:                vesAppt.AppointmentNumber,
+            ApptDate:              vesAppt.Date,
+            ApptStartTime:         vesAppt.StartTime,
+            ApptEndTime:           vesAppt.EndTime,
+            ApptCaseType:          vesAppt.CaseType,
+            ApptSessionType:       sessionType,
+            ApptPatientPRN:        auf.NokPrn.String,
+            ApptPatientName:       rel,
+            ApptPackageName:       packageName,
             ApptPackagePurchaseNo: packagePurchaseNo,
-            ApptPackageImage: packageImage,
-            PatientPackageExpiry: expDateTime,
-            SessionStartTime: sessionStartTime,
-            SessionEndTime: sessionEndTime,
-            ApptSlotType: "Normal",
+            ApptPackageImage:      packageImage,
+            PatientPackageExpiry:  expDateTime,
+            SessionStartTime:      sessionStartTime,
+            SessionEndTime:        sessionEndTime,
+            ApptSlotType:          "Normal",
         }
 
         if sessionType == "Morning" || sessionType == "Afternoon" {
@@ -477,13 +472,13 @@ func (s *VesaliusService) VesaliusGetPatientFutureAppointments(prn string, isHom
         for i := range lx {
             o := lx[i]
             if list, ok := m3[o.DoctorId]; ok {
-                o.DoctorSpecialities = list
+                lx[i].DoctorSpecialities = list
             }
             if list, ok := m4[o.DoctorId]; ok {
-                o.DoctorClinicLocation = list
+                lx[i].DoctorClinicLocation = list
             }
             if list, ok := m5[o.DoctorId]; ok {
-                o.DoctorContact = list
+                lx[i].DoctorContact = list
             }
         }
     }

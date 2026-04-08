@@ -190,6 +190,7 @@ func (s *NovaDoctorPatientApptService) ExistsByPrnDateSessionType(prn string, da
 
 func (s *NovaDoctorPatientApptService) FindApptSlotsByDoctorId(doctorId int64) ([]model.NovaDoctorApptSlot, error) {
     query := `SELECT * FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID = :doctorId`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorApptSlot{}, ""), 1)
     list := make([]model.NovaDoctorApptSlot, 0)
     err := s.db.SelectContext(s.ctx, &list, query, doctorId)
     if err != nil {
