@@ -5,15 +5,16 @@ import (
     "math/rand"
     "os"
     "reflect"
+    "regexp"
     "strings"
     "time"
 
-    "github.com/shopspring/decimal"
     "github.com/go-playground/validator/v10"
     "github.com/go-resty/resty/v2"
     "github.com/gofiber/fiber/v3"
     "github.com/guregu/null/v6"
     "github.com/rs/zerolog"
+    "github.com/shopspring/decimal"
     "github.com/ztrue/tracerr"
 )
 
@@ -232,10 +233,22 @@ func GetRandomStr(length int) string {
 }
 
 func ToTitleCase(text string) string {
-	if len(text) == 0 {
-		return text
-	}
-	return strings.ToUpper(string(text[0])) + strings.ToLower(text[1:])
+    if len(text) == 0 {
+        return text
+    }
+    return strings.ToUpper(string(text[0])) + strings.ToLower(text[1:])
+}
+
+func TrimCompletely(s any) string {
+    r := fmt.Sprintf("%v", s)
+    switch v := s.(type) {
+    case string:
+        r = v
+        re := regexp.MustCompile(`\s+`)
+        r = re.ReplaceAllString(v, "")
+    }
+
+    return r
 }
 
 func CatchPanic(funcName string) {

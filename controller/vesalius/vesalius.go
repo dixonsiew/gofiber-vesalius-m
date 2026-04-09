@@ -650,7 +650,7 @@ func (cr *VesaliusController) GetPatientOutstandingBillData(c fiber.Ctx) error {
 // @Router /vesalius/patient-data/{branchId}/{prn} [get]
 func (cr *VesaliusController) GetPatientData(c fiber.Ctx) error {
     prn := c.Params("prn")
-    o, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(prn)
+    o, _, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(prn)
     if err != nil {
         return err
     }

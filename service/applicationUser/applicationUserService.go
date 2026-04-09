@@ -757,7 +757,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
     if o.SignInType.Valid && o.SignInType.Int32 == 2 && o.Password.Valid && o.Password.String != "" {
         hashedPwd, err = bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
         if err != nil {
-            return 0, err
+            return -1, err
         }
     }
     verificationCode := utils.GetRandomStr(6)
@@ -827,7 +827,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         go_ora.Out{Dest: &userId},
     )
     if err != nil {
-        return 0, err
+        return -1, err
     }
 
     o.UserId.Int64, _ = userId.Int64()
@@ -838,7 +838,7 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
         sql.Named("branchId", branchId),
     )
     if err != nil {
-        return 0, err
+        return -1, err
     }
 
     err = tx.Commit()

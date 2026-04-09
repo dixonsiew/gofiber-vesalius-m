@@ -726,17 +726,17 @@ func (s *VesaliusService) VesaliusGetPatientOutstandingBillsByPrn(prn string) (*
     return res, nil
 }
 
-func (s *VesaliusService) VesaliusGetPatientDataByPrn(prn string) (*gm.Patient, error) {
-    res, _, err := s.vesaliusGeoService.GetPatientDataByPRN(prn)
+func (s *VesaliusService) VesaliusGetPatientDataByPrn(prn string) (*gm.Patient, *gm.VesaliusWSException, error) {
+    res, ex, err := s.vesaliusGeoService.GetPatientDataByPRN(prn)
     if err != nil {
-        return nil, fiber.NewError(fiber.StatusNotFound, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
+        return nil, ex, fiber.NewError(fiber.StatusNotFound, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
     }
 
     if res == nil {
-        return nil, fiber.NewError(fiber.StatusNoContent)
+        return nil, ex, fiber.NewError(fiber.StatusNoContent)
     }
 
-    return res, nil
+    return res, ex, nil
 }
 
 func (s *VesaliusService) VesaliusCheckpatientDataByNric(nric string) (*gm.Patient, *gm.VesaliusWSException) {

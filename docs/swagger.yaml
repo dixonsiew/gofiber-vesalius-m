@@ -1335,6 +1335,31 @@ definitions:
     - startDate
     - startTime
     type: object
+  dto.PostSelfSignUpUserDto:
+    properties:
+      branchId:
+        type: integer
+      playerId:
+        type: string
+      userDOB:
+        type: string
+      userEmail:
+        type: string
+      userFullName:
+        type: string
+      userPassword:
+        type: string
+      userPersonNumber:
+        type: string
+    required:
+    - branchId
+    - playerId
+    - userDOB
+    - userEmail
+    - userFullName
+    - userPassword
+    - userPersonNumber
+    type: object
   dto.PostUpdateAdminUserDto:
     properties:
       address:
@@ -3885,6 +3910,40 @@ paths:
           description: OK
       tags:
       - Admin
+  /admin/self-sign-up:
+    post:
+      parameters:
+      - description: PostSelfSignUpUserDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostSelfSignUpUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Admin
+  /admin/set-master-profile:
+    post:
+      parameters:
+      - description: PostLinkUserPrnDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostLinkUserPrnDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
   /admin/sign-up:
     post:
       parameters:
@@ -3894,6 +3953,24 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.PostAdminUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/unlink-user-prn:
+    post:
+      parameters:
+      - description: PostLinkUserPrnDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostLinkUserPrnDto'
       produces:
       - application/json
       responses:

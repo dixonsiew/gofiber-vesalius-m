@@ -12,6 +12,7 @@ import (
     "vesaliusm/model"
     "vesaliusm/service/adminUser"
     "vesaliusm/service/applicationUser"
+    "vesaliusm/service/applicationUserFamily"
     "vesaliusm/service/assignBranch"
     "vesaliusm/service/branch"
     "vesaliusm/service/groupModulePermission"
@@ -30,6 +31,7 @@ import (
 type AdminController struct {
     adminUserService                 *adminUser.AdminUserService
     applicationUserService           *applicationUser.ApplicationUserService
+    applicationUserFamilyService     *applicationUserFamily.ApplicationUserFamilyService
     assignBranchService              *assignBranch.AssignBranchService
     branchService                    *branch.BranchService
     groupModulePermissionService     *groupModulePermission.GroupModulePermissionService
@@ -45,6 +47,7 @@ func NewAdminController() *AdminController {
     return &AdminController{
         adminUserService:                 adminUser.AdminUserSvc,
         applicationUserService:           applicationUser.ApplicationUserSvc,
+        applicationUserFamilyService:     applicationUserFamily.ApplicationUserFamilySvc,
         assignBranchService:              assignBranch.AssignBranchSvc,
         branchService:                    branch.BranchSvc,
         groupModulePermissionService:     groupModulePermission.GroupModulePermissionSvc,
@@ -955,7 +958,7 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusNotFound, "Assign Branch not found")
     }
 
-    patient, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(data.Prn)
+    patient, ex, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(data.Prn)
     if patient == nil {
         return fiber.NewError(fiber.StatusNotFound, "PRN not found")
     }
@@ -966,6 +969,7 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
 
     h := patient.HomeAddress
     fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
+    fullAddress = strings.TrimSpace(fullAddress)
     passport := ""
     for _, doc := range patient.Documents {
         if doc.Code == "PASSPORT" {
@@ -993,6 +997,202 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
     return c.JSON(fiber.Map{
         "successMessage": "Master Patient Record Number (PRN) has been set!",
     })
+}
+
+func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
+    data := new(dto.NewSignupUserDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    username := data.UserEmail
+    if data.UserEmail == "" {
+        username = data.UserMobileNo
+    }
+
+    data.UserPrn = utils.TrimCompletely(data.UserPrn)
+    appPatient, err := cr.applicationUserService.FindByUsername(username, nil)
+    if err != nil {
+        return err
+    }
+
+    if appPatient != nil {
+
+    } else {
+        isExistsByPrn, err := cr.applicationUserService.ExistsByPRN(data.UserPrn)
+        if err != nil {
+            return err
+        }
+        if isExistsByPrn {
+            return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided PRN already exists. Please sign in to your existing account or contact our Customer Service for assistance at info@islandhospital.com")
+        }
+        vesPatient, ex, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(data.UserPrn)
+        if err != nil {
+            return err
+        }
+        if vesPatient == nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
+        }
+
+        isPatientWithPrn := vesPatient.Prn == data.UserPrn
+        if !isPatientWithPrn {
+            return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Your patient profile (PRN: %s) is inactive. Please reach out to our customer service at +604-238 3388 for further action", data.UserPrn))
+        }
+
+        if len(vesPatient.Documents) > 0 && vesPatient.DOB != "" {
+            checkDocument := true
+            checkDob := true
+            b := false
+
+            for _, doc := range vesPatient.Documents {
+                if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
+                    if strings.TrimSpace(doc.Value) == data.UserPersonNumber {
+                        b = true
+                    }
+                }
+            }
+            if !b {
+                checkDocument = false
+            }
+
+            vesPatientDOB, _ := goment.New(strings.TrimSpace(vesPatient.DOB), "DD-MMM-YYYY")
+            inputPatientDOB, _ := goment.New(strings.TrimSpace(data.UserDOB), "DD/MM/YYYY")
+            if !inputPatientDOB.IsSame(vesPatientDOB) {
+                checkDob = false
+            }
+
+            if !checkDocument && !checkDob {
+                return fiber.NewError(fiber.StatusBadRequest, "Please verify your PRN, NRIC / Passport / Birth Cert and Date of Birth as they do not match our hospital records. For assistance, contact our Customer Service at the Front Desk or at info@islandhospital.com")
+            }
+        }
+
+        patientDocIDValue := ""
+        if len(vesPatient.Documents) > 0 {
+            b := false
+            for _, doc := range vesPatient.Documents {
+                if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
+                    patientDocIDValue = strings.TrimSpace(doc.Value)
+                    if config.GetWSVesaliusConfig().NricWithDash == "N" {
+                        data.UserPersonNumber = strings.ReplaceAll("-", "")
+                    }
+                    if patientDocIDValue == data.UserPersonNumber {
+                        b = true
+                        if doc.ExpireDate != "" {
+                            patientDocExpiry, _ := goment.New(strings.TrimSpace(doc.ExpireDate), "DD-MMM-YYYY")
+                            currentDate, _ := goment.New()
+                            if patientDocExpiry.IsBefore(currentDate) {
+                                return fiber.NewError(fiber.StatusBadRequest, "The NRIC / Passport / Birth Cert provided is not valid. Please confirm your details at the Front Desk or contact Customer Service at info@islandhospital.com")
+                            }
+                        }
+                    }
+                }
+            }
+            if !b {
+                return fiber.NewError(fiber.StatusBadRequest, "The NRIC / Passport / Birth Cert provided does not match our hospital records. If you have updated your passport, kindly update it at the Front Desk or contact Customer Service at info@islandhospital.com")
+            }
+        } else {
+            return fiber.NewError(fiber.StatusBadRequest, "The NRIC / Passport / Birth Cert provided does not match our hospital records. If you have updated your passport, kindly update it at the Front Desk or contact Customer Service at info@islandhospital.com")
+        }
+
+        vesPatientDOB, _ := goment.New(strings.TrimSpace(vesPatient.DOB), "DD-MMM-YYYY")
+        inputPatientDOB, _ := goment.New(strings.TrimSpace(data.UserDOB), "DD/MM/YYYY")
+        if !inputPatientDOB.IsSame(vesPatientDOB) {
+            return fiber.NewError(fiber.StatusBadRequest, "Incorrect DOB: The Date of Birth provided does not match our hospital records. Please retry")
+        }
+
+        if data.SignInType == 1 {
+            if data.UserMobileNo != "" {
+                isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.UserMobileNo)
+                if err != nil {
+                    return err
+                }
+                if isExistsByMobileNo {
+                    return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided mobile number already exists. Please sign in or use a different mobile number to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                }
+            }
+        }
+
+        if data.SignInType == 2 {
+            if data.UserEmail != "" {
+                isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.UserEmail)
+                if err != nil {
+                    return err
+                }
+                if isExistsByEmail {
+                    return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided email address already exists. Please sign in or use a different email address to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                }
+            } else {
+                return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
+            }
+        } else {
+            return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
+        }
+
+        username := data.UserEmail
+        pw := data.UserPassword
+        if data.SignInType == 1 {
+            pw = ""
+            username = data.UserMobileNo
+        }
+
+        h := vesPatient.HomeAddress
+        fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
+        fullAddress = strings.TrimSpace(fullAddress)
+        o := &model.ApplicationUser{
+            Address:         utils.NewNullString(fullAddress),
+            Address1:        utils.NewNullString(h.Address1),
+            Address2:        utils.NewNullString(h.Address2),
+            Address3:        utils.NewNullString(h.Address3),
+            CityState:       utils.NewNullString(h.CityState),
+            Postcode:        utils.NewNullString(h.PostalCode),
+            Country:         utils.NewNullString(h.Country),
+            Nationality:     utils.NewNullString(utils.ToTitleCase(vesPatient.Nationality.Description)),
+            Race:            utils.NewNullString("-"),
+            Sex:             utils.NewNullString(vesPatient.Sex.Description),
+            Title:           utils.NewNullString(vesPatient.Name.Title),
+            ContactNumber:   utils.NewNullString(vesPatient.ContactNumber.Home),
+            Dob:             utils.NewNullString(data.UserDOB),
+            Email:           utils.NewNullString(vesPatient.ContactNumber.Email),
+            MasterPrn:       utils.NewNullString(vesPatient.Prn),
+            FirstName:       utils.NewNullString(vesPatient.Name.FirstName),
+            MiddleName:      utils.NewNullString(vesPatient.Name.MiddleName),
+            LastName:        utils.NewNullString(vesPatient.Name.LastName),
+            FullName:        utils.NewNullString(data.UserFullName),
+            Password:        utils.NewNullString(pw),
+            Resident:        utils.NewNullString(vesPatient.Resident),
+            Role:            utils.NewNullString(utils.ROLE_USER),
+            Username:        utils.NewNullString(username),
+            FirstTimeLogin:  true,
+            FirstTimeLoginV: utils.NewInt32(1),
+            PlayerId:        utils.NewNullString(data.PlayerId),
+            SignInType:      utils.NewInt32(int32(data.SignInType)), // 1 = Mobile No, 2 = Email Address
+            DocNoSignup:     utils.NewNullString(data.UserPersonNumber),
+            FullnameSignup:  utils.NewNullString(data.UserFullName),
+        }
+        userId, err := cr.applicationUserService.SaveNewSignup(int64(data.BranchId), o)
+        if err != nil {
+            return err
+        }
+
+        if userId < 0 {
+            return fiber.NewError(fiber.StatusBadRequest, "Patient failed to register")
+        }
+
+        appPatient, err := cr.applicationUserService.FindByUserId(userId, nil)
+        if err != nil {
+            return err
+        }
+
+        if appPatient == nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Patient failed to register")
+        }
+
+        err = cr.applicationUserFamilyService.SignupSync(appPatient.MasterPrn.String, appPatient.UserId.Int64)
+        if err != nil {
+            return err
+        }
+    }
+    return nil
 }
 
 // ChangePassword
@@ -1333,7 +1533,7 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
 
     if patient.ContactNumber.Email == "" {
         return fiber.NewError(fiber.StatusBadRequest, "Email does not exist in hospital patient profile. Please contact hospital to update.")
-    } else if (strings.TrimSpace(patient.ContactNumber.Email) == "") {
+    } else if strings.TrimSpace(patient.ContactNumber.Email) == "" {
         return fiber.NewError(fiber.StatusBadRequest, "Email does not exist in hospital patient profile. Please contact hospital to update.")
     } else {
         if !strings.EqualFold(strings.TrimSpace(patient.ContactNumber.Email), strings.TrimSpace(data.UserEmail)) {
@@ -1341,7 +1541,7 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
         }
     }
 
-    lname := []string{ strings.TrimSpace(patient.Name.FirstName) }
+    lname := []string{strings.TrimSpace(patient.Name.FirstName)}
     if len(strings.TrimSpace(patient.Name.MiddleName)) > 0 {
         lname = append(lname, patient.Name.MiddleName)
     }
@@ -1364,34 +1564,38 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
 
     h := patient.HomeAddress
     fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
+    fullAddress = strings.TrimSpace(fullAddress)
     o := &model.ApplicationUser{
-        Address: utils.NewNullString(fullAddress),
-        Address1: utils.NewNullString(h.Address1),
-        Address2: utils.NewNullString(h.Address2),
-        Address3: utils.NewNullString(h.Address3),
-        CityState: utils.NewNullString(strings.TrimSpace(h.CityState)),
-        Postcode: utils.NewNullString(h.PostalCode),
-        Country: utils.NewNullString(h.Country),
-        Nationality: utils.NewNullString(utils.ToTitleCase(patient.Nationality.Description)),
-        Race: utils.NewNullString("-"),
-        Sex: utils.NewNullString(patient.Sex.Description),
-        Title: utils.NewNullString(patient.Name.Title),
-        ContactNumber: utils.NewNullString(patient.ContactNumber.Home),
-        Dob: utils.NewNullString(data.UserDOB),
-        Email: utils.NewNullString(data.UserEmail),
-        MasterPrn: utils.NewNullString(patient.Prn),
-        FirstName: utils.NewNullString(patient.Name.FirstName),
-        MiddleName: utils.NewNullString(patient.Name.MiddleName),
-        LastName: utils.NewNullString(patient.Name.LastName),
-        Password: utils.NewNullString(data.UserPassword),
-        Resident: utils.NewNullString(patient.Resident),
-        Role: utils.NewNullString(utils.ROLE_USER),
-        Username: utils.NewNullString(data.UserEmail),
-        FirstTimeLogin: true,
+        Address:         utils.NewNullString(fullAddress),
+        Address1:        utils.NewNullString(h.Address1),
+        Address2:        utils.NewNullString(h.Address2),
+        Address3:        utils.NewNullString(h.Address3),
+        CityState:       utils.NewNullString(strings.TrimSpace(h.CityState)),
+        Postcode:        utils.NewNullString(h.PostalCode),
+        Country:         utils.NewNullString(h.Country),
+        Nationality:     utils.NewNullString(utils.ToTitleCase(patient.Nationality.Description)),
+        Race:            utils.NewNullString("-"),
+        Sex:             utils.NewNullString(patient.Sex.Description),
+        Title:           utils.NewNullString(patient.Name.Title),
+        ContactNumber:   utils.NewNullString(patient.ContactNumber.Home),
+        Dob:             utils.NewNullString(data.UserDOB),
+        Email:           utils.NewNullString(data.UserEmail),
+        MasterPrn:       utils.NewNullString(patient.Prn),
+        FirstName:       utils.NewNullString(patient.Name.FirstName),
+        MiddleName:      utils.NewNullString(patient.Name.MiddleName),
+        LastName:        utils.NewNullString(patient.Name.LastName),
+        Password:        utils.NewNullString(data.UserPassword),
+        Resident:        utils.NewNullString(patient.Resident),
+        Role:            utils.NewNullString(utils.ROLE_USER),
+        Username:        utils.NewNullString(data.UserEmail),
+        FirstTimeLogin:  true,
         FirstTimeLoginV: utils.NewInt32(1),
-        PlayerId: utils.NewNullString(data.PlayerId),
+        PlayerId:        utils.NewNullString(data.PlayerId),
     }
     err = cr.applicationUserService.SaveSignup(int64(data.BranchId), o)
+    if err != nil {
+        return err
+    }
 
     u, err := cr.applicationUserService.FindByPRN(patient.Prn, nil)
     if err != nil {
@@ -1405,7 +1609,7 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
             cr.mailService.SendSignUp(o, "")
         }()
     }
-    
+
     return c.JSON(fiber.Map{
         "successMessage": "Thanks for signing up! Please check your email (or spam / junk folder) for an account activation email and follow the steps given.",
     })
