@@ -6,13 +6,17 @@ import (
     "vesaliusm/controller/clubs/shared"
     "vesaliusm/dto"
     model "vesaliusm/model/clubs"
-    "vesaliusm/model/userPackage"
+    upck "vesaliusm/model/userPackage"
     "vesaliusm/service/clubs"
+    "vesaliusm/service/country"
     "vesaliusm/service/guest"
+    "vesaliusm/service/hpackage"
     "vesaliusm/service/mail"
     "vesaliusm/service/novaDoctor"
-    "vesaliusm/service/hpackage"
+    "vesaliusm/service/novaDoctorPatientAppt"
     "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/service/payment"
+    "vesaliusm/service/vesalius"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
@@ -21,9 +25,13 @@ import (
 type GuestController struct {
     clubService                   *clubs.ClubService
     guestService                  *guest.GuestService
+    countryService                *country.CountryService
     novaDoctorService             *novaDoctor.NovaDoctorService
+    novaDoctorPatientApptService  *novaDoctorPatientAppt.NovaDoctorPatientApptService
     packageService                *hpackage.PackageService
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
+    paymentService                *payment.PaymentService
+    vesaliusService               *vesalius.VesaliusService
     mailService                   *mail.MailService
 }
 
@@ -31,9 +39,13 @@ func NewGuestController() *GuestController {
     return &GuestController{
         clubService:                   clubs.ClubSvc,
         guestService:                  guest.GuestSvc,
+        countryService:                country.CountrySvc,
         novaDoctorService:             novaDoctor.NovaDoctorSvc,
+        novaDoctorPatientApptService:  novaDoctorPatientAppt.NovaDoctorPatientApptSvc,
         packageService:                hpackage.PackageSvc,
         patientPurchaseDetailsService: patientPurchaseDetails.PatientPurchaseDetailsSvc,
+        paymentService:                payment.PaymentSvc,
+        vesaliusService:               vesalius.VesaliusSvc,
         mailService:                   mail.MailSvc,
     }
 }
@@ -88,6 +100,49 @@ func (cr *GuestController) SearchAllDoctorInformation(c fiber.Ctx) error {
     c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
     c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
+}
+
+// GetGuestReturningPatient
+//
+// @Tags Guest
+// @Produce json
+// @Param        request  body        dto.GuestGetReturningPatientDto  false  "GuestGetReturningPatientDto"
+// @Success 200
+// @Router /guest/appointment/returning-patient [post]
+func (cr *GuestController) GetGuestReturningPatient(c fiber.Ctx) error {
+    data := new(dto.GuestGetReturningPatientDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    patient, _, err := cr.vesaliusService.VesaliusGetPatientDataByNric(data.IdentificationNumber)
+    if patient == nil {
+        return fiber.NewError(fiber.StatusBadRequest, "The Identification Number provided does not exist in our hospital records. Please retry.")
+    }
+
+    if err != nil {
+        return err
+    }
+
+    lname := []string{strings.TrimSpace(patient.Name.FirstName)}
+    if strings.TrimSpace(patient.Name.MiddleName) != "" {
+        lname = append(lname, strings.TrimSpace(patient.Name.MiddleName))
+    }
+
+    if strings.TrimSpace(patient.Name.LastName) != "" {
+        lname = append(lname, strings.TrimSpace(patient.Name.LastName))
+    }
+
+    patientFullName := strings.Join(lname, " ")
+    err = cr.guestService.SavePatientTempGuestInfo(patient, patientFullName)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "prn":  patient.Prn,
+        "name": patientFullName,
+    })
 }
 
 // GetAllGuestNotificationLists
@@ -208,11 +263,11 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -456,11 +511,11 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -695,6 +750,17 @@ func (cr *GuestController) GetPackageById(c fiber.Ctx) error {
     return c.JSON(o)
 }
 
+func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
+    paymentMethod := c.Params("paymentMethod")
+    data := new(dto.CreateGuestPackageDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    guestPackage := make([]upck.UserPackage, 0)
+    return nil
+}
+
 // CheckPackageExpiryMaxpurchase
 // @Tags Guest
 // @Produce json
@@ -708,7 +774,7 @@ func (cr *GuestController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
     }
 
     cartIsValid := true
-    cartResult := make([]*userPackage.PackageCheckResult, 0)
+    cartResult := make([]*upck.PackageCheckResult, 0)
     for _, pkg := range data.Package {
         r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageId, pkg.QuantityPurchased)
         if err != nil {

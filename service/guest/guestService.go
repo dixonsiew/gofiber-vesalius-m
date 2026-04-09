@@ -6,6 +6,7 @@ import (
     "strings"
     "vesaliusm/database"
     "vesaliusm/model"
+    vg "vesaliusm/model/vesaliusGeo"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
@@ -55,6 +56,40 @@ func (s *GuestService) GetTempGuestInfo(prn string) (*model.TempGuest, error) {
         return nil, err
     }
     return &o, err
+}
+
+func (s *GuestService) SavePatientTempGuestInfo(patient *vg.Patient, patientFullName string) error {
+    query := `
+        INSERT INTO APPLICATION_GUEST
+         (GUEST_PRN, GUEST_NAME, GUEST_EMAIL, DATE_CREATE)
+         VALUES
+        (:guestPrn, :guestName, :guestEmail, CURRENT_TIMESTAMP)
+    `
+    _, err := s.db.ExecContext(s.ctx, query, patient.Prn, patientFullName, patient.ContactNumber.Email)
+    if err != nil {
+        utils.LogError(err)
+        return err
+    }
+    
+    return nil
+}
+
+func (s *GuestService) SavePersonTempGuestInfo(person *vg.Person, personFullName string) error {
+    if person.Document[0].Code == "X2" {
+        query := `
+            INSERT INTO APPLICATION_GUEST
+            (GUEST_PRN, GUEST_NAME, GUEST_EMAIL, DATE_CREATE)
+            VALUES
+            (:guestPrn, :guestName, :guestEmail, CURRENT_TIMESTAMP)
+        `
+        _, err := s.db.ExecContext(s.ctx, query, person.Document[0].Value, personFullName, person.ContactNumber.Email)
+        if err != nil {
+            utils.LogError(err)
+            return err
+        }
+    }
+    
+    return nil
 }
 
 func (s *GuestService) DeleteTempGuestInfo(prn string) error {

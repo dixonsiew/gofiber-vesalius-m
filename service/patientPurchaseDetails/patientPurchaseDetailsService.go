@@ -384,12 +384,12 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
     return nil
 }
 
-func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId int64, packageStatus string) error {
+func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(tx *sqlx.Tx, paymentId int64, packageStatus string) error {
     var query string
 
     if packageStatus == utils.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PAYMENT_ID = :paymentId`
-        _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, paymentId)
+        _, err := tx.ExecContext(s.ctx, query, utils.PackageStatusPurchased, paymentId)
         if err != nil {
             utils.LogError(err)
             return err
@@ -407,7 +407,7 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(paymentId
         }
 
         query = fmt.Sprintf(`UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus, %s = CURRENT_TIMESTAMP WHERE PACKAGE_PAYMENT_ID = :paymentId`, fieldDt)
-        _, err := s.db.ExecContext(s.ctx, query, packageStatus, paymentId)
+        _, err := tx.ExecContext(s.ctx, query, packageStatus, paymentId)
         if err != nil {
             utils.LogError(err)
             return err

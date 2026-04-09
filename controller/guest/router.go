@@ -13,6 +13,7 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api := router.Group("/guest")
     api.Get("/vesalius/getAllDoctorInformation/:branchId", c.GetAllDoctorInformation)
     api.Post("/vesalius/getAllDoctorInformation/:branchId", c.SearchAllDoctorInformation)
+    api.Post("/appointment/returning-patient", c.GetGuestReturningPatient)
     api.Get("/notification/all/:playerId", c.getAllGuestNotificationLists)
     api.Get("/notification/seen/:notificationId/:playerId", c.GetGuestUnseenNotificationCount)
     api.Get("/clubs/littlekids/about-us", c.GetLittleKidsAboutUs)
