@@ -753,7 +753,7 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
 
 func (s *NovaDoctorService) FindAllNovaDoctorSpokenLanguage(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorSpokenLanguage, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPOKEN_LANGUAGE WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorSpokenLanguageCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorSpokenLanguage{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -775,7 +775,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorSpokenLanguage(doctorIds string, db
 
 func (s *NovaDoctorService) FindAllNovaDoctorQualifications(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorQualifications, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_QUALIFICATIONS WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorQualificationsCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorQualifications{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -797,7 +797,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorQualifications(doctorIds string, db
 
 func (s *NovaDoctorService) FindAllNovaDoctorSpecialities(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialities, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALITIES WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorSpecialitiesCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorSpecialities{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -819,7 +819,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorSpecialities(doctorIds string, db *
 
 func (s *NovaDoctorService) FindAllNovaDoctorClinicLocation(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorClinicLocation, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CLINIC_LOCATION WHERE DOCTOR_ID IN (%s)`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorClinicLocationCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorClinicLocation{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -841,7 +841,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorClinicLocation(doctorIds string, db
 
 func (s *NovaDoctorService) FindAllNovaDoctorClinicHours(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorClinicHours, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CLINIC_HOURS WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorClinicHoursCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorClinicHours{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -863,7 +863,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorClinicHours(doctorIds string, db *s
 
 func (s *NovaDoctorService) FindAllNovaDoctorContact(doctorIds string, db *sqlx.DB) (map[int64][]model.NovaDoctorContact, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_CONTACT WHERE DOCTOR_ID IN (%s) ORDER BY DISPLAY_SEQUENCE`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorContactCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorContact{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -907,7 +907,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorAppointments(doctorIds string, db *
 
 func (s *NovaDoctorService) FindAllNovaDoctorSpecialty(doctorIds string, specialtyMap map[int64]model.NovaSpecialty, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialty, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (%s)`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorSpecialtyCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorSpecialty{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -931,7 +931,7 @@ func (s *NovaDoctorService) FindAllNovaDoctorSpecialty(doctorIds string, special
 }
 func (s *NovaDoctorService) FindAllNovaDoctorSpecialtyPrimary(doctorIds string, specialtyMap map[int64]model.NovaSpecialty, db *sqlx.DB) (map[int64][]model.NovaDoctorSpecialty, error) {
     query := fmt.Sprintf(`SELECT * FROM NOVA_DOCTOR_SPECIALTY WHERE DOCTOR_ID IN (%s) AND PRIMARY_SPECIALTY = 1`, doctorIds)
-    query = strings.Replace(query, "*", getNovaDoctorSpecialtyCols(), 1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaDoctorSpecialty{}, ""), 1)
     rows, err := db.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -955,7 +955,8 @@ func (s *NovaDoctorService) FindAllNovaDoctorSpecialtyPrimary(doctorIds string, 
 }
 
 func (s *NovaDoctorService) findAllNovaSpecialtyMap(q *sqlx.DB) (map[int64]model.NovaSpecialty, error) {
-    query := `SELECT ` + getNovaSpecialtyCols() + ` FROM NOVA_SPECIALTY`
+    query := `SELECT * FROM NOVA_SPECIALTY`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaSpecialty{}, ""), 1)
     rows, err := q.QueryxContext(s.ctx, query)
     if err != nil {
         utils.LogError(err)
@@ -973,6 +974,18 @@ func (s *NovaDoctorService) findAllNovaSpecialtyMap(q *sqlx.DB) (map[int64]model
         result[spec.SpecialtyId.Int64] = spec
     }
     return result, rows.Err()
+}
+
+func (s *NovaDoctorService) FindAllNovaSpecialties() ([]model.NovaSpecialty, error) {
+    query := `SELECT * FROM NOVA_SPECIALTY ORDER BY SPECIALTY_DESC`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaSpecialty{}, ""), 1)
+    list := make([]model.NovaSpecialty, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    return list, nil
 }
 
 func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.NovaDoctor) error {
@@ -1174,55 +1187,6 @@ func (s *NovaDoctorService) saveDoctorSpokenLanguageTx(tx *sqlx.Tx, doctor *mode
     return nil
 }
 
-func getNovaDoctorSpokenLanguageCols() string {
-    return `
-        SPOKEN_LANGUAGE_ID,
-        DOCTOR_ID,
-        DISPLAY_SEQUENCE,
-        SPOKEN_LANGUAGE
-    `
-}
-
-func getNovaDoctorQualificationsCols() string {
-    return `
-        QUALIFICATION_ID,
-        DOCTOR_ID,
-        DISPLAY_SEQUENCE,
-        QUALIFICATION
-    `
-}
-
-func getNovaDoctorSpecialitiesCols() string {
-    return `
-        SPECIALITIES_ID,
-        DOCTOR_ID,
-        DISPLAY_SEQUENCE,
-        SPECIALITIES,
-        SUBSPECIALTY
-    `
-}
-
-func getNovaDoctorClinicLocationCols() string {
-    return `
-        CLINIC_LOCATION_ID,
-        DOCTOR_ID,
-        LOCATION,
-        BUILDING
-    `
-}
-
-func getNovaDoctorClinicHoursCols() string {
-    return `
-        CLINIC_HOUR_ID,
-        DOCTOR_ID,
-        DISPLAY_SEQUENCE,
-        DAY_OF_THE_WEEK,
-        DAY_START_TIME,
-        DAY_END_TIME,
-        BY_APPOINTMENT_ONLY
-    `
-}
-
 func getNovaDoctorAppointmentCols() string {
     return `
         DOCTOR_APPT_SLOT_ID,
@@ -1234,33 +1198,6 @@ func getNovaDoctorAppointmentCols() string {
         END_TIME,
         MAX_SLOTS,
         DISPLAY_SEQUENCE
-    `
-}
-
-func getNovaDoctorContactCols() string {
-    return `
-        CONTACT_ID,
-        DOCTOR_ID,
-        DISPLAY_SEQUENCE,
-        CONTACT_TYPE,
-        CONTACT_VALUE
-    `
-}
-
-func getNovaSpecialtyCols() string {
-    return `
-        SPECIALTY_ID,
-        SPECIALTY_CODE,
-        SPECIALTY_DESC
-    `
-}
-
-func getNovaDoctorSpecialtyCols() string {
-    return `
-        DOCTOR_SPECIALTY_ID,
-        DOCTOR_ID,
-        SPECIALTY_ID,
-        PRIMARY_SPECIALTY
     `
 }
 

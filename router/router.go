@@ -13,6 +13,7 @@ import (
 	"vesaliusm/controller/maintenance"
 	"vesaliusm/controller/myFamily"
 	"vesaliusm/controller/publicBranch"
+	"vesaliusm/controller/publicVesalius"
 	"vesaliusm/controller/user"
 	"vesaliusm/controller/userNotification"
 	"vesaliusm/controller/userPackage"
@@ -34,6 +35,7 @@ func SetupRoutes(app *fiber.App, basePath string) {
 	maintenance.SetupRoutes(api)
 	myFamily.SetupRoutes(api)
 	publicBranch.SetupRoutes(api)
+	publicVesalius.SetupRoutes(api)
 	user.SetupRoutes(api)
 	admin.SetupRoutes(api)
 	userNotification.SetupRoutes(api)
