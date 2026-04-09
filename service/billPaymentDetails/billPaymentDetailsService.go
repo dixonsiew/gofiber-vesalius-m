@@ -349,12 +349,12 @@ func (s *BillPaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId s
                 }
             }()
 
-            err = s.SetWallexPaymentStatusToPaid(tx, r.PaymentAmount.Float64, r.OutstandingBillPaymentID.Int64, r.PaymentRequestId.String)
+            err = s.SetWallexPaymentStatusToPaid(tx, r.PaymentAmount.Float64, r.OutstandingBillPaymentId.Int64, r.PaymentRequestId.String)
             if err != nil {
                 return err
             }
 
-            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentID.Int64, utils.PaymentStatusPaid, tx)
+            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, utils.PaymentStatusPaid, tx)
             if err != nil {
                 return err
             }
@@ -365,7 +365,7 @@ func (s *BillPaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId s
                 return err
             }
 
-            patientOutstandingBillRes, err := s.patientOutstandingBillService.GetOutstandingBillByBillPaymentId(s.db, r.OutstandingBillPaymentID.Int64)
+            patientOutstandingBillRes, err := s.patientOutstandingBillService.GetOutstandingBillByBillPaymentId(s.db, r.OutstandingBillPaymentId.Int64)
             if err != nil {
                 return err
             }
@@ -432,12 +432,12 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
                 }
             }()
 
-            err = s.SetIPayBillPaymentStatusToPaid(tx, r.PaymentAmount.Float64, r.OutstandingBillPaymentID.Int64, r.PaymentRequestNo.String)
+            err = s.SetIPayBillPaymentStatusToPaid(tx, r.PaymentAmount.Float64, r.OutstandingBillPaymentId.Int64, r.PaymentRequestNo.String)
             if err != nil {
                 return err
             }
 
-            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentID.Int64, utils.PaymentStatusPaid, tx)
+            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, utils.PaymentStatusPaid, tx)
             if err != nil {
                 return err
             }
@@ -448,7 +448,7 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
                 return err
             }
 
-            patientOutstandingBillRes, err := s.patientOutstandingBillService.GetOutstandingBillByBillPaymentId(s.db, r.OutstandingBillPaymentID.Int64)
+            patientOutstandingBillRes, err := s.patientOutstandingBillService.GetOutstandingBillByBillPaymentId(s.db, r.OutstandingBillPaymentId.Int64)
             if err != nil {
                 return err
             }

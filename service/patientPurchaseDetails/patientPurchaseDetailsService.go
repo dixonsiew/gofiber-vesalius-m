@@ -311,7 +311,8 @@ func (s *PatientPurchaseDetailsService) FindByPurchaseId(purchaseId int64) (*use
     return &o, nil
 }
 
-func (s *PatientPurchaseDetailsService) Save(paymentId int64, o userPackage.UserPackage) error {
+func (s *PatientPurchaseDetailsService) Save(paymentId int64, o userPackage.UserPackage, tx *sqlx.Tx) error {
+    var err error
     query := `
         INSERT INTO PATIENT_PURCHASE_DETAILS (
             PATIENT_PRN, PATIENT_NAME, PACKAGE_ID,
@@ -321,20 +322,8 @@ func (s *PatientPurchaseDetailsService) Save(paymentId int64, o userPackage.User
             :packageStatus, :payment_id, CURRENT_TIMESTAMP
         )
     `
-    tx, err := s.db.BeginTxx(s.ctx, nil)
-    if err != nil {
-        utils.LogError(err)
-        return err
-    }
-    defer func() {
-        if err != nil {
-            utils.LogError(err)
-            tx.Rollback()
-        }
-    }()
-
     for i := 0; i < o.QuantityPurchased; i++ {
-        args := []interface{}{
+        args := []any{
             sql.Named("patientPrn", o.PatientPrn.String),
             sql.Named("patientName", o.PatientName.String),
             sql.Named("package_id", o.PackageId.Int64),
@@ -343,14 +332,15 @@ func (s *PatientPurchaseDetailsService) Save(paymentId int64, o userPackage.User
         }
         _, err = tx.ExecContext(s.ctx, query, args...)
         if err != nil {
+            utils.LogError(err)
             return err
         }
     }
     return tx.Commit()
 }
 
-func (s *PatientPurchaseDetailsService) SaveGuest(payment_id int64, o userPackage.UserPackage) error {
-    return s.Save(payment_id, o)
+func (s *PatientPurchaseDetailsService) SaveGuest(payment_id int64, o userPackage.UserPackage, tx *sqlx.Tx) error {
+    return s.Save(payment_id, o, tx)
 }
 
 func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchaseNo string, packageStatus string, tx *sqlx.Tx) error {
@@ -458,14 +448,14 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchase
     return nil
 }
 
-func (s *PatientPurchaseDetailsService) GetAppointmentDetailsByPurchaseId(paymentId int64, status string) (*userPackage.ApptDetails, error) {
+func (s *PatientPurchaseDetailsService) GetAppointmentDetailsByPurchaseId(purchaseId int64) (*userPackage.ApptDetails, error) {
     var o userPackage.ApptDetails
     query := `
         SELECT ndpa.PATIENT_PRN, ndpa.PACKAGE_PURCHASE_NO, ndpa.APPT_NO FROM PATIENT_PURCHASE_DETAILS ppd
         JOIN NOVA_DOCTOR_PATIENT_APPT ndpa ON ppd.PACKAGE_PURCHASE_NO = ndpa.PACKAGE_PURCHASE_NO
-        WHERE ndpa.APPT_STATUS <> 'CANCELLED' AND ppd.PATIENT_PURCHASE_ID = :paymentId
+        WHERE ndpa.APPT_STATUS <> 'CANCELLED' AND ppd.PATIENT_PURCHASE_ID = :purchaseId
     `
-    err := s.db.GetContext(s.ctx, &o, query, paymentId)
+    err := s.db.GetContext(s.ctx, &o, query, purchaseId)
     if err != nil {
         if err == sql.ErrNoRows {
             return nil, err
@@ -565,7 +555,7 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(conn *sql
 
 func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId int64, quantityPurchased int) (*userPackage.PackageCheckResult, error) {
     result := &userPackage.PackageCheckResult{
-        PackageID:           packageId,
+        PackageId:           packageId,
         Expired:             0,
         Soldout:             0,
         ExceedPurchase:      0,

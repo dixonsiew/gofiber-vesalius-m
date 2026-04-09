@@ -47,7 +47,7 @@ type UserBilling struct {
 }
 
 type BillingPayment struct {
-    OutstandingBillPaymentID null.Int64  `json:"outstanding_bill_payment_id" db:"OUTSTANDING_BILL_PAYMENT_ID" swaggertype:"integer"`
+    OutstandingBillPaymentId null.Int64  `json:"outstanding_bill_payment_id" db:"OUTSTANDING_BILL_PAYMENT_ID" swaggertype:"integer"`
     PaymentGateway           null.Int32  `json:"paymentGateway" db:"PAYMENT_GATEWAY" swaggertype:"integer"`
     PaymentRequestId         null.String `json:"paymentRequestId" db:"PAYMENT_REQUEST_ID" swaggertype:"string"`
     PaymentRequestNo         null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO" swaggertype:"string"`

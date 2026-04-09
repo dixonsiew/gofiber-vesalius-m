@@ -8,7 +8,7 @@ import (
 
 type FeedbackAttachment struct {
     FeedbackAttachmentId null.Int64  `json:"feedback_attachment_id" db:"FEEDBACK_ATTACHMENT_ID" swaggertype:"integer"`
-    FeedbackID           null.Int64  `json:"feedback_id" db:"FEEDBACK_ID" swaggertype:"integer"`
+    FeedbackId           null.Int64  `json:"feedback_id" db:"FEEDBACK_ID" swaggertype:"integer"`
     AttachmentType       null.String `json:"attachmentType" db:"ATTACHMENT_TYPE" swaggertype:"string"`
     AttachmentContent    []byte      `json:"attachmentContent" db:"ATTACHMENT_CONTENT" swaggertype:"string"`
     AttachmentFilename   null.String `json:"attachmentFilename" db:"ATTACHMENT_FILENAME" swaggertype:"string"`

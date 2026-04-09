@@ -5,19 +5,26 @@ import (
     "strings"
     "vesaliusm/dto"
     "vesaliusm/middleware"
+    "vesaliusm/model/userPackage"
+    "vesaliusm/service/applicationUser"
     "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/service/vesalius"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
 )
 
 type UserPackageController struct {
+    applicationUserService        *applicationUser.ApplicationUserService
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
+    vesaliusService               *vesalius.VesaliusService
 }
 
 func NewUserPackageController() *UserPackageController {
     return &UserPackageController{
+        applicationUserService:        applicationUser.ApplicationUserSvc,
         patientPurchaseDetailsService: patientPurchaseDetails.PatientPurchaseDetailsSvc,
+        vesaliusService:               vesalius.VesaliusSvc,
     }
 }
 
@@ -36,7 +43,7 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
     }
 
     cartIsValid := true
-    cartResult := make([]interface{}, 0)
+    cartResult := make([]userPackage.PackageCheckResult, 0)
 
     for _, pkg := range data.Package {
         r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageId, pkg.QuantityPurchased)
@@ -48,7 +55,7 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
             cartIsValid = false
         }
 
-        cartResult = append(cartResult, r)
+        cartResult = append(cartResult, *r)
     }
 
     return c.JSON(fiber.Map{
@@ -162,15 +169,71 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
 // @Router /user-package/{purchaseId} [get]
 func (cr *UserPackageController) GetUserPackageById(c fiber.Ctx) error {
     purchaseId := c.Params("purchaseId")
-    ipurchaseId, err := strconv.ParseInt(purchaseId, 10, 64)
-    if err != nil {
-        return err
-    }
-
+    ipurchaseId, _ := strconv.ParseInt(purchaseId, 10, 64)
     o, err := cr.patientPurchaseDetailsService.FindByPurchaseId(ipurchaseId)
     if err != nil {
         return err
     }
 
     return c.JSON(o)
+}
+
+// UpdateUserPackageStatus
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param        purchaseId         path      string  true  "purchaseId"
+// @Success 200
+// @Router /user-package/status/{purchaseId} [post]
+func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
+    data := new(dto.UserPackageStatusDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    purchaseId := c.Params("purchaseId")
+    ipurchaseId, _ := strconv.ParseInt(purchaseId, 10, 64)
+
+    if data.Status != utils.PackageStatusPurchased &&
+        data.Status != utils.PackageStatusBooked &&
+        data.Status != utils.PackageStatusRedeemed &&
+        data.Status != utils.PackageStatusCancelled {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid Package Status",
+        })
+    } else {
+        if data.Status == utils.PackageStatusCancelled {
+            apptRes, err := cr.patientPurchaseDetailsService.GetAppointmentDetailsByPurchaseId(ipurchaseId)
+            if err != nil {
+                return err
+            }
+
+            if apptRes != nil {
+                dx := &dto.PostCancelAppointmentDto{
+                    AppointmentNumber: apptRes.ApptNo.String,
+                    Remark: apptRes.PackagePurchaseNo.String,
+                }
+                _, err = cr.vesaliusService.VesaliusGetCancelAppointment(apptRes.PatientPrn.String, dx)
+                if err != nil {
+                    return err
+                }
+            } else {
+                err := cr.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseId(ipurchaseId, utils.PackageStatusPurchased)
+                if err != nil {
+                    return err
+                }
+            }
+            
+        } else {
+            err := cr.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseId(ipurchaseId, data.Status)
+            if err != nil {
+                return err
+            }
+        }
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "User Package Status updated",
+    })
 }

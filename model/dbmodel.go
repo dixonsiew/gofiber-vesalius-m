@@ -412,7 +412,7 @@ type DoctorPatientAppointment struct {
     ApptRoom            null.String `json:"apptRoom" db:"APPT_ROOM" swaggertype:"string"`
     ApptCasetype        null.String `json:"apptCasetype" db:"APPT_CASETYPE" swaggertype:"string"`
     DateAppt            null.String `json:"dateAppt" db:"DATE_APPT" swaggertype:"string"`
-    PatientID           null.Int64  `json:"patientId" db:"PATIENT_ID" swaggertype:"integer"`
+    PatientId           null.Int64  `json:"patientId" db:"PATIENT_ID" swaggertype:"integer"`
     PatientPrn          null.String `json:"patientPrn" db:"PATIENT_PRN" swaggertype:"string"`
     PatientName         null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
 }
@@ -677,7 +677,7 @@ type OnesignalNotification struct {
     MsgType                 null.String `json:"msgType" db:"MSG_TYPE" swaggertype:"string"`
     ShortMessage            null.String `json:"shortMessage" db:"SHORT_MESSAGE" swaggertype:"string"`
     FullMessage             null.String `json:"fullMessage" db:"FULL_MESSAGE" swaggertype:"string"`
-    MasterID                null.Int64  `json:"master_id" db:"MASTER_ID" swaggertype:"integer"`
+    MasterId                null.Int64  `json:"master_id" db:"MASTER_ID" swaggertype:"integer"`
     IsSeenV                 null.String `json:"-" db:"IS_SEEN" swaggertype:"string"`
     IsSeen                  bool        `json:"isSeen"`
     DateCreate              null.String `json:"dateCreate" db:"DATE_SENT" swaggertype:"string"`
@@ -750,7 +750,7 @@ type EmailMaster struct {
 type AdminAuditLog struct {
     EventId          null.Int64  `json:"event_id" db:"EVENT_ID" swaggertype:"integer"`
     EventDateTime    null.String `json:"eventDateTime" db:"EVENT_DATE_TIME" swaggertype:"string"`
-    EventAdminID     null.Int64  `json:"eventAdminId" db:"EVENT_ADMIN_ID" swaggertype:"integer"`
+    EventAdminId     null.Int64  `json:"eventAdminId" db:"EVENT_ADMIN_ID" swaggertype:"integer"`
     EventAdminEmail  null.String `json:"eventAdminEmail" db:"EVENT_ADMIN_EMAIL" swaggertype:"string"`
     EventModule      null.String `json:"eventModule" db:"EVENT_MODULE" swaggertype:"string"`
     EventFunction    null.String `json:"eventFunction" db:"EVENT_FUNCTION" swaggertype:"string"`

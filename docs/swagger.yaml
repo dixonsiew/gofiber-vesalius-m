@@ -876,6 +876,37 @@ definitions:
     - signInType
     - username
     type: object
+  dto.NewSignupUserDto:
+    properties:
+      branchId:
+        type: integer
+      playerId:
+        type: string
+      signInType:
+        type: integer
+      userDOB:
+        type: string
+      userEmail:
+        type: string
+      userFullName:
+        type: string
+      userMobileNo:
+        type: string
+      userPassword:
+        type: string
+      userPersonNumber:
+        type: string
+      userPrn:
+        type: string
+    required:
+    - branchId
+    - playerId
+    - signInType
+    - userDOB
+    - userFullName
+    - userPersonNumber
+    - userPrn
+    type: object
   dto.NotificationSettingDto:
     properties:
       notificationCode:
@@ -3926,6 +3957,22 @@ paths:
           description: OK
       tags:
       - Admin
+  /admin/self-sign-up/v2:
+    post:
+      parameters:
+      - description: NewSignupUserDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewSignupUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Admin
   /admin/set-master-profile:
     post:
       parameters:
@@ -4032,6 +4079,21 @@ paths:
             type: array
       tags:
       - Admin
+  /check-file-size/:size:
+    get:
+      parameters:
+      - description: size
+        in: path
+        name: size
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Public Vesalius
   /clubs/goldenpearl/about-us:
     get:
       produces:
@@ -5446,6 +5508,150 @@ paths:
       - BearerAuth: []
       tags:
       - Future Order
+  /get-next-available-slots/:branchId/:prn:
+    post:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostNextAvailableSlotsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostNextAvailableSlotsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/vesaliusGeo.Slot'
+            type: array
+      tags:
+      - Public Vesalius
+  /get-next-session-available-slots/:branchId/:prn:
+    post:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostNextAvailableSlotsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostNextAvailableSlotsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/vesaliusGeo.Slot'
+            type: array
+      tags:
+      - Public Vesalius
+  /getAllDoctorInformation/:branchId:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Public Vesalius
+  /getAllDoctorInformation/:branchId/:webadmin:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: webadmin
+        in: path
+        name: webadmin
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Public Vesalius
+  /getAllHSDoctorInformation/:branchId:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Public Vesalius
+  /getDoctorInformationByMCR/:branchId/:mcr:
+    get:
+      parameters:
+      - description: mcr
+        in: path
+        name: mcr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaDoctor'
+            type: array
+      tags:
+      - Public Vesalius
   /guest/clubs/goldenpearl/about-us:
     get:
       produces:
@@ -6131,6 +6337,19 @@ paths:
       - BearerAuth: []
       tags:
       - Logistic
+  /lookup/specialty:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.NovaSpecialty'
+            type: array
+      tags:
+      - Public Vesalius
   /maintenance/cronjob-history/all:
     get:
       parameters:
@@ -6582,6 +6801,29 @@ paths:
       - BearerAuth: []
       tags:
       - Maintenance
+  /make-appointment/:branchId/:prn:
+    post:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostMakeAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostMakeAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostMakeAppointmentDto'
+      tags:
+      - Public Vesalius
   /my-family:
     get:
       parameters:
@@ -6933,6 +7175,25 @@ paths:
       - BearerAuth: []
       tags:
       - Package
+  /patient-data/:branchId/:prn:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/vesaliusGeo.Patient'
+            type: array
+      tags:
+      - Public Vesalius
   /public/branch/list:
     get:
       produces:
@@ -7063,6 +7324,23 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CheckPackageExpiryMaxpurchaseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User Package
+  /user-package/status/{purchaseId}:
+    post:
+      parameters:
+      - description: purchaseId
+        in: path
+        name: purchaseId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -7392,6 +7670,30 @@ paths:
           description: OK
       tags:
       - User
+  /vesalius-geo/authenticate:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Vesalius Geo
+  /vesalius-geo/logout/{token}:
+    get:
+      parameters:
+      - description: token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Vesalius Geo
   /vesalius/cancel-appointment/{branchId}/{prn}:
     post:
       parameters:

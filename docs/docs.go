@@ -923,6 +923,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/self-sign-up/v2": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "NewSignupUserDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.NewSignupUserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/admin/set-master-profile": {
             "post": {
                 "security": [
@@ -1102,6 +1128,30 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.UserGroupDetails"
                         }
+                    }
+                }
+            }
+        },
+        "/check-file-size/:size": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "size",
+                        "name": "size",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -3443,6 +3493,231 @@ const docTemplate = `{
                 }
             }
         },
+        "/get-next-available-slots/:branchId/:prn": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostNextAvailableSlotsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostNextAvailableSlotsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vesaliusGeo.Slot"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-next-session-available-slots/:branchId/:prn": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostNextAvailableSlotsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostNextAvailableSlotsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vesaliusGeo.Slot"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getAllDoctorInformation/:branchId": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getAllDoctorInformation/:branchId/:webadmin": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "webadmin",
+                        "name": "webadmin",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getAllHSDoctorInformation/:branchId": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getDoctorInformationByMCR/:branchId/:mcr": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "mcr",
+                        "name": "mcr",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaDoctor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/guest/clubs/goldenpearl/about-us": {
             "get": {
                 "produces": [
@@ -4558,6 +4833,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/lookup/specialty": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.NovaSpecialty"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/maintenance/cronjob-history/all": {
             "get": {
                 "security": [
@@ -5317,6 +5613,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/make-appointment/:branchId/:prn": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostMakeAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostMakeAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostMakeAppointmentDto"
+                        }
+                    }
+                }
+            }
+        },
         "/my-family": {
             "get": {
                 "security": [
@@ -5898,6 +6230,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/patient-data/:branchId/:prn": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Public Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vesaliusGeo.Patient"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/public/branch/list": {
             "get": {
                 "produces": [
@@ -6090,6 +6452,35 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.CheckPackageExpiryMaxpurchaseDto"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user-package/status/{purchaseId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "purchaseId",
+                        "name": "purchaseId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -6662,6 +7053,45 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UserMobileVerificationDto"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius-geo/authenticate": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius Geo"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius-geo/logout/{token}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius Geo"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -8972,6 +9402,50 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "default": "eugene.lim@nova-hub.com"
+                }
+            }
+        },
+        "dto.NewSignupUserDto": {
+            "type": "object",
+            "required": [
+                "branchId",
+                "playerId",
+                "signInType",
+                "userDOB",
+                "userFullName",
+                "userPersonNumber",
+                "userPrn"
+            ],
+            "properties": {
+                "branchId": {
+                    "type": "integer"
+                },
+                "playerId": {
+                    "type": "string"
+                },
+                "signInType": {
+                    "type": "integer"
+                },
+                "userDOB": {
+                    "type": "string"
+                },
+                "userEmail": {
+                    "type": "string"
+                },
+                "userFullName": {
+                    "type": "string"
+                },
+                "userMobileNo": {
+                    "type": "string"
+                },
+                "userPassword": {
+                    "type": "string"
+                },
+                "userPersonNumber": {
+                    "type": "string"
+                },
+                "userPrn": {
+                    "type": "string"
                 }
             }
         },

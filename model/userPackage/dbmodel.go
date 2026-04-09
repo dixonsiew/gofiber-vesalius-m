@@ -197,16 +197,16 @@ func (o *UserPackage) SetWebAdmin() {
 }
 
 type PackagePaymentDetails struct {
-    PaymentID              null.Int64  `json:"payment_id" db:"PACKAGE_PAYMENT_ID"`
+    PaymentId              null.Int64  `json:"payment_id" db:"PACKAGE_PAYMENT_ID"`
     PaymentGateway         null.Int32  `json:"paymentGateway" db:"PAYMENT_GATEWAY"`
-    PaymentRequestID       null.String `json:"paymentRequestId" db:"PAYMENT_REQUEST_ID"`
+    PaymentRequestId       null.String `json:"paymentRequestId" db:"PAYMENT_REQUEST_ID"`
     PaymentRequestNo       null.String `json:"paymentRequestNo" db:"PAYMENT_REQUEST_NO"`
-    PaymentRefID           null.String `json:"paymentRefId" db:"PAYMENT_REF_ID"`
+    PaymentRefId           null.String `json:"paymentRefId" db:"PAYMENT_REF_ID"`
     PaymentRequestCurrency null.String `json:"paymentRequestCurrency" db:"PAYMENT_REQUEST_CURRENCY"`
-    PaymentAmount          null.String `json:"paymentAmount" db:"PAYMENT_AMOUNT"`
+    PaymentAmount          null.Float  `json:"paymentAmount" db:"PAYMENT_AMOUNT"`
     PaymentPurpose         null.String `json:"paymentPurpose" db:"PAYMENT_PURPOSE"`
     PaymentCurrency        null.String `json:"paymentCurrency" db:"PAYMENT_CURRENCY"`
-    PaymentAmountCollected null.String `json:"paymentAmountCollected" db:"PAYMENT_AMOUNT_COLLECTED"`
+    PaymentAmountCollected null.Float  `json:"paymentAmountCollected" db:"PAYMENT_AMOUNT_COLLECTED"`
     PaymentRemarks         null.String `json:"paymentRemarks" db:"PAYMENT_REMARKS"`
     PaymentStatus          null.String `json:"paymentStatus" db:"PAYMENT_STATUS"`
     PaymentAuthCode        null.String `json:"paymentAuthCode" db:"PAYMENT_AUTH_CODE"`
