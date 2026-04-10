@@ -17,9 +17,11 @@ import (
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/service/payment"
     "vesaliusm/service/vesalius"
+    "vesaliusm/service/wallex"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
+    "github.com/nleeper/goment"
 )
 
 type GuestController struct {
@@ -32,6 +34,7 @@ type GuestController struct {
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
     paymentService                *payment.PaymentService
     vesaliusService               *vesalius.VesaliusService
+    wallexService                 *wallex.WallexService
     mailService                   *mail.MailService
 }
 
@@ -46,6 +49,7 @@ func NewGuestController() *GuestController {
         patientPurchaseDetailsService: patientPurchaseDetails.PatientPurchaseDetailsSvc,
         paymentService:                payment.PaymentSvc,
         vesaliusService:               vesalius.VesaliusSvc,
+        wallexService:                 wallex.WallexSvc,
         mailService:                   mail.MailSvc,
     }
 }
@@ -145,6 +149,198 @@ func (cr *GuestController) GetGuestReturningPatient(c fiber.Ctx) error {
     })
 }
 
+// MakeGuestNewPatient
+//
+// @Tags Guest
+// @Produce json
+// @Param        request  body        dto.GuestMakeNewPatientDto  false  "GuestMakeNewPatientDto"
+// @Success 200
+// @Router /guest/appointment/new-patient [post]
+func (cr *GuestController) MakeGuestNewPatient(c fiber.Ctx) error {
+    data := new(dto.GuestMakeNewPatientDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    vesCountryCode, err := cr.countryService.FindCountryCodeByNationality(data.Nationality)
+    if err != nil {
+        return err
+    }
+
+    if vesCountryCode == "" {
+        return fiber.NewError(fiber.StatusBadRequest, "Invalid Nationality")
+    } else {
+        data.Nationality = vesCountryCode
+    }
+
+    patient, ex := cr.vesaliusService.VesaliusCheckpatientDataByNric(data.IdentificationNumber)
+    if ex.Code == "WS-00014" {
+        newPerson, err := cr.vesaliusService.VesaliusProcessPersonBiodata(data)
+        if err != nil {
+            return err
+        }
+
+        lname := []string{strings.TrimSpace(newPerson.Name.FirstName)}
+        if strings.TrimSpace(newPerson.Name.MiddleName) != "" {
+            lname = append(lname, strings.TrimSpace(newPerson.Name.MiddleName))
+        }
+
+        if strings.TrimSpace(newPerson.Name.LastName) != "" {
+            lname = append(lname, strings.TrimSpace(newPerson.Name.LastName))
+        }
+
+        personFullName := strings.Join(lname, " ")
+        err = cr.guestService.SavePersonTempGuestInfo(newPerson, personFullName)
+        if err != nil {
+            return err
+        }
+
+        prn := "Invalid Person Number"
+        if newPerson.Document[0].Code == "X2" {
+            prn = newPerson.Document[0].Value
+        }
+        return c.JSON(fiber.Map{
+            "prn":  prn,
+            "name": personFullName,
+        })
+    } else {
+        lname := []string{strings.TrimSpace(patient.Name.FirstName)}
+        if strings.TrimSpace(patient.Name.MiddleName) != "" {
+            lname = append(lname, strings.TrimSpace(patient.Name.MiddleName))
+        }
+
+        if strings.TrimSpace(patient.Name.LastName) != "" {
+            lname = append(lname, strings.TrimSpace(patient.Name.LastName))
+        }
+
+        patientFullName := strings.Join(lname, " ")
+        err = cr.guestService.SavePatientTempGuestInfo(patient, patientFullName)
+        if err != nil {
+            return err
+        }
+
+        return c.JSON(fiber.Map{
+            "prn":  patient.Prn,
+            "name": patientFullName,
+        })
+    }
+}
+
+// GetDoctorAppointments
+//
+// @Tags Guest
+// @Produce json
+// @Param       doctorId       path      string       true  "doctorId"
+// @Param       month          path      string       true  "month"
+// @Param       year           path      string       true  "year"
+// @Param       needAppt       path      string       true  "needAppt"
+// @Success 200
+// @Router /guest/appointment/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt} [get]
+func (cr *GuestController) GetDoctorAppointments(c fiber.Ctx) error {
+    doctorId := c.Params("doctorId")
+    month := c.Params("month")
+    year := c.Params("year")
+    needAppt := c.Params("needAppt")
+    idoctorId, _ := strconv.ParseInt(doctorId, 10, 64)
+    imonth, _ := strconv.ParseInt(month, 10, 32)
+    iyear, _ := strconv.ParseInt(year, 10, 32)
+    la, lb, err := cr.novaDoctorPatientApptService.FindAllByDoctorId(idoctorId, int(imonth), int(iyear), needAppt)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "calendarDailyStatus": lb,
+        "doctorAppointment":   la,
+    })
+}
+
+// CheckGuestPatientAppointment
+//
+// @Tags Guest
+// @Produce json
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostCheckAppointmentDto    true  "PostCheckAppointmentDto"
+// @Success 200 {boolean} boolean
+// @Router /guest/appointment/check-make-appointment/{branchId}/{prn} [post]
+func (cr *GuestController) CheckGuestPatientAppointment(c fiber.Ctx) error {
+    data := new(dto.PostCheckAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    prn := c.Params("prn")
+    g, _ := goment.New(data.ApptDate, "YYYY-MM-DD")
+    convertedDate := g.Format("YYYY-MM-DD")
+    b, err := cr.novaDoctorPatientApptService.ExistsByPrnDateSessionType(prn, convertedDate, data.ApptSessionType)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(b)
+}
+
+// GetMakeGuestAppointment
+//
+// @Tags Guest
+// @Produce json
+// @Param       branchId     path      string                         true  "branchId"
+// @Param       prn          path      string                         true  "prn"
+// @Param       request      body      dto.PostMakeAppointmentDto     true  "PostMakeAppointmentDto"
+// @Success 200
+// @Router /guest/appointment/make-appointment/{branchId}/[prn] [post]
+func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
+    data := new(dto.PostMakeAppointmentDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    prn := c.Params("prn")
+    o, err := cr.vesaliusService.VesaliusGetMakeAppointment(prn, data)
+    if err != nil {
+        return err
+    }
+
+    if o != nil {
+        guest, err := cr.guestService.GetTempGuestInfo(prn)
+        if err != nil {
+            return err
+        }
+
+        email := ""
+        if guest.GuestEmail.Valid {
+            email = guest.GuestEmail.String
+        }
+
+        emailPrm := utils.Map{
+            "guestName":       guest.GuestName,
+            "doctorName":      o.DoctorName,
+            "appointmentDate": o.Date,
+            "appointmentTime": o.StartTime,
+            "clinicLocation":  o.Clinic,
+            "email":           email,
+        }
+        if email != "" {
+            go func() {
+                err := cr.mailService.SendGuestAppointmentConfirmationToPatient(emailPrm)
+                if err == nil {
+                    _ = cr.guestService.DeleteTempGuestInfo(guest.GuestPRN.String)
+                }
+            }()
+            emailPrm["email"] = ""
+        }
+
+        go func() {
+            cr.mailService.SendGuestAppointmentConfirmationToIH(emailPrm)
+        }()
+    }
+
+    return c.JSON(fiber.Map{
+        "success": 1,
+    })
+}
+
 // GetAllGuestNotificationLists
 //
 // @Tags Guest
@@ -154,7 +350,7 @@ func (cr *GuestController) GetGuestReturningPatient(c fiber.Ctx) error {
 // @Param        _limit            query       string  false  "_limit" default:"10"
 // @Success 200 {array} model.OnesignalNotification
 // @Router /guest/notification/all/{playerId} [get]
-func (cr *GuestController) getAllGuestNotificationLists(c fiber.Ctx) error {
+func (cr *GuestController) GetAllGuestNotificationLists(c fiber.Ctx) error {
     playerId := c.Params("playerId")
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))

@@ -24,7 +24,7 @@ type PaymentRequest struct {
     IssuedAt                string       `json:"issuedAt"`
     IssuedBy                string       `json:"issuedBy"`
     ExpiredAt               string       `json:"expiredAt"`
-    ExpiredGuaranteeAt      any          `json:"expiredGuaranteeAt,omitempty"`
+    ExpiredGuaranteeAt      any          `json:"expiredGuaranteeAt"`
     Products                []any        `json:"products"`
     Quotes                  []any        `json:"quotes"`
     CreatedAt               string       `json:"createdAt"`

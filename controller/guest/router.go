@@ -14,7 +14,12 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api.Get("/vesalius/getAllDoctorInformation/:branchId", c.GetAllDoctorInformation)
     api.Post("/vesalius/getAllDoctorInformation/:branchId", c.SearchAllDoctorInformation)
     api.Post("/appointment/returning-patient", c.GetGuestReturningPatient)
-    api.Get("/notification/all/:playerId", c.getAllGuestNotificationLists)
+    api.Post("/appointment/new-patient", c.MakeGuestNewPatient)
+    api.Get("/appointment/get-doctor-appointments/:doctorId/:month/:year/:needAppt", c.GetDoctorAppointments)
+    api.Post("/appointment/check-make-appointment/:branchId/:prn", c.CheckGuestPatientAppointment)
+    api.Post("/appointment/make-appointment/:branchId/:prn", c.GetMakeGuestAppointment)
+
+    api.Get("/notification/all/:playerId", c.GetAllGuestNotificationLists)
     api.Get("/notification/seen/:notificationId/:playerId", c.GetGuestUnseenNotificationCount)
     api.Get("/clubs/littlekids/about-us", c.GetLittleKidsAboutUs)
     api.Post("/clubs/littlekids/membership", c.CreateGuestLittleKidsMembership)

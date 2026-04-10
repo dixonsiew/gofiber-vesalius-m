@@ -756,7 +756,7 @@ func (s *VesaliusService) VesaliusGetPatientDataByNric(nric string) (*gm.Patient
     return res, ex, nil
 }
 
-func (s *VesaliusService) vesaliusProcessPersonBiodata(biodata dto.GuestMakeNewPatientDto) (*gm.Person, error) {
+func (s *VesaliusService) VesaliusProcessPersonBiodata(biodata *dto.GuestMakeNewPatientDto) (*gm.Person, error) {
     res, _, err := s.vesaliusGeoService.PersonProcessPersonBiodata(biodata)
     if err != nil {
         return nil, fiber.NewError(fiber.StatusNotFound, "Information provided does not match with hospital patient profile. Please retry.")

@@ -1,21 +1,22 @@
 package utils
 
 import (
-    "fmt"
-    "math/rand"
-    "os"
-    "reflect"
-    "regexp"
-    "strings"
-    "time"
+	"fmt"
+	"math/rand"
+	"os"
+	"reflect"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
 
-    "github.com/go-playground/validator/v10"
-    "github.com/go-resty/resty/v2"
-    "github.com/gofiber/fiber/v3"
-    "github.com/guregu/null/v6"
-    "github.com/rs/zerolog"
-    "github.com/shopspring/decimal"
-    "github.com/ztrue/tracerr"
+	"github.com/go-playground/validator/v10"
+	"github.com/go-resty/resty/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/guregu/null/v6"
+	"github.com/rs/zerolog"
+	"github.com/shopspring/decimal"
+	"github.com/ztrue/tracerr"
 )
 
 type Map map[string]any
@@ -221,6 +222,32 @@ func (m Map) GetString(key string) string {
 
     return r
 
+}
+
+func ToString(s any) string {
+    r := fmt.Sprintf("%v", s)
+    switch v := s.(type) {
+    case string:
+        r = v
+    case int:
+        r = strconv.Itoa(v)
+    default:
+        r = fmt.Sprintf("%v", s)
+    }
+
+    return r
+}
+
+func GetString(key string, mx fiber.Map) string {
+    r := ""
+    val, ok := mx[key]
+    if !ok {
+        return r
+    } else {
+        r = ToString(val)
+    }
+
+    return r
 }
 
 func GetRandomStr(length int) string {

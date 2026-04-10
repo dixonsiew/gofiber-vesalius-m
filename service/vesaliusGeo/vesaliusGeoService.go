@@ -750,7 +750,7 @@ func (s *VesaliusGeoService) patientProcessPatientBillPaymentResult(
     return result, ex
 }
 
-func (s *VesaliusGeoService) PersonProcessPersonBiodata(biodata dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException, error) {
+func (s *VesaliusGeoService) PersonProcessPersonBiodata(biodata *dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException, error) {
     result, ex := s.personProcessPersonBiodataResult(biodata)
     if ex != nil {
         return result, ex, fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Error encountered. Please contact Island Hospital. (Error Code: %s)", ex.Code))
@@ -759,7 +759,7 @@ func (s *VesaliusGeoService) PersonProcessPersonBiodata(biodata dto.GuestMakeNew
     return result, nil, nil
 }
 
-func (s *VesaliusGeoService) personProcessPersonBiodataResult(biodata dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException) {
+func (s *VesaliusGeoService) personProcessPersonBiodataResult(biodata *dto.GuestMakeNewPatientDto) (*model.ResultPerson, *model.VesaliusWSException) {
     var (
         result *model.ResultPerson = new(model.ResultPerson)
         ex     *model.VesaliusWSException
