@@ -347,6 +347,30 @@ definitions:
     required:
     - package
     type: object
+  dto.CreateGuestPackageDto:
+    properties:
+      guestPackage:
+        items:
+          $ref: '#/definitions/dto.GuestPackageDto'
+        type: array
+      guestPackagePayment:
+        $ref: '#/definitions/dto.GuestPackagePaymentDto'
+    required:
+    - guestPackage
+    - guestPackagePayment
+    type: object
+  dto.CreateUserPackageDto:
+    properties:
+      userPackage:
+        items:
+          $ref: '#/definitions/dto.UserPackageDto'
+        type: array
+      userPackagePayment:
+        $ref: '#/definitions/dto.UserPackagePaymentDto'
+    required:
+    - userPackage
+    - userPackagePayment
+    type: object
   dto.DeleteAccountDto:
     properties:
       contactNumber:
@@ -576,6 +600,107 @@ definitions:
     - preferredLanguage
     - relationship
     type: object
+  dto.GuestGetReturningPatientDto:
+    properties:
+      identificationNumber:
+        type: string
+    required:
+    - identificationNumber
+    type: object
+  dto.GuestMakeNewPatientDto:
+    properties:
+      address1:
+        type: string
+      address2:
+        type: string
+      contactNumber:
+        type: string
+      country:
+        type: string
+      dob:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      gender:
+        type: string
+      identificationNumber:
+        type: string
+      maritalStatus:
+        type: string
+      nationality:
+        type: string
+      postcode:
+        type: string
+      state:
+        type: string
+      townCity:
+        type: string
+    required:
+    - address1
+    - contactNumber
+    - dob
+    - fullName
+    - gender
+    - identificationNumber
+    - nationality
+    type: object
+  dto.GuestPackageDto:
+    properties:
+      package_id:
+        type: integer
+      packageName:
+        type: string
+      packagePrice:
+        type: number
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      quantityPurchased:
+        minimum: 0
+        type: integer
+    required:
+    - packageName
+    - packagePrice
+    - package_id
+    - patientName
+    - patientPrn
+    - quantityPurchased
+    type: object
+  dto.GuestPackagePaymentDto:
+    properties:
+      billingAddress1:
+        type: string
+      billingAddress2:
+        type: string
+      billingAddress3:
+        type: string
+      billingContactCode:
+        type: string
+      billingContactNo:
+        type: string
+      billingCountryCode:
+        type: string
+      billingEmail:
+        type: string
+      billingFullname:
+        type: string
+      billingPostcode:
+        type: string
+      billingState:
+        type: string
+      billingTowncity:
+        type: string
+    required:
+    - billingAddress1
+    - billingContactCode
+    - billingContactNo
+    - billingCountryCode
+    - billingEmail
+    - billingFullname
+    type: object
   dto.HospitalProfileDto:
     properties:
       profileDesc:
@@ -585,6 +710,47 @@ definitions:
     required:
     - profileDesc
     - profileValue
+    type: object
+  dto.IPayPaymentResponseDto:
+    properties:
+      Amount:
+        type: string
+      AuthCode:
+        type: string
+      CCName:
+        type: string
+      CCNo:
+        type: string
+      Currency:
+        type: string
+      ErrDesc:
+        type: string
+      MerchantCode:
+        type: string
+      PaymentId:
+        type: string
+      RefNo:
+        type: string
+      Remark:
+        type: string
+      S_bankname:
+        type: string
+      S_country:
+        type: string
+      Signature:
+        type: string
+      Status:
+        type: string
+      TransId:
+        type: string
+    required:
+    - Amount
+    - Currency
+    - MerchantCode
+    - PaymentId
+    - RefNo
+    - Signature
+    - Status
     type: object
   dto.KidsActvParticipationDto:
     properties:
@@ -1505,6 +1671,82 @@ definitions:
     required:
     - mobileNo
     - tac
+    type: object
+  dto.UserPackageDto:
+    properties:
+      package_id:
+        type: integer
+      packageName:
+        type: string
+      packagePrice:
+        type: number
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      quantityPurchased:
+        minimum: 0
+        type: integer
+    required:
+    - packageName
+    - packagePrice
+    - package_id
+    - patientName
+    - patientPrn
+    - quantityPurchased
+    type: object
+  dto.UserPackagePaymentDto:
+    properties:
+      billingAddress1:
+        type: string
+      billingAddress2:
+        type: string
+      billingAddress3:
+        type: string
+      billingContactCode:
+        type: string
+      billingContactNo:
+        maxLength: 20
+        type: string
+      billingCountryCode:
+        type: string
+      billingEmail:
+        type: string
+      billingFullname:
+        type: string
+      billingPostcode:
+        type: string
+      billingState:
+        type: string
+      billingTowncity:
+        type: string
+    required:
+    - billingAddress1
+    - billingContactCode
+    - billingContactNo
+    - billingCountryCode
+    - billingEmail
+    - billingFullname
+    type: object
+  dto.WallexWebhookDto:
+    properties:
+      accountId:
+        type: string
+      reason:
+        type: string
+      remarks:
+        type: string
+      resource:
+        type: string
+      resourceId:
+        type: string
+      status:
+        type: string
+    required:
+    - accountId
+    - resource
+    - resourceId
+    - status
     type: object
   feedback.Feedback:
     properties:
@@ -2955,6 +3197,31 @@ definitions:
       vesaliusApptInfo:
         $ref: '#/definitions/model.VesaliusApptInfo'
     type: object
+  model.PatientPastAppointment:
+    properties:
+      doctor_id:
+        type: integer
+      doctorClinicLocation:
+        items:
+          $ref: '#/definitions/model.NovaDoctorClinicLocation'
+        type: array
+      doctorContact:
+        items:
+          $ref: '#/definitions/model.NovaDoctorContact'
+        type: array
+      doctorSpecialities:
+        items:
+          $ref: '#/definitions/model.NovaDoctorSpecialities'
+        type: array
+      image:
+        type: string
+      mcr:
+        type: string
+      name:
+        type: string
+      vesaliusPastApptInfo:
+        $ref: '#/definitions/model.VesaliusPastApptInfo'
+    type: object
   model.ReleaseVersion:
     properties:
       dateUpdate:
@@ -3090,6 +3357,79 @@ definitions:
       sessionEndTime:
         type: string
       sessionStartTime:
+        type: string
+    type: object
+  model.VesaliusPastApptInfo:
+    properties:
+      accountNo:
+        type: string
+      appointmentDate:
+        type: string
+      appointmentRefNo:
+        type: integer
+      appointmentSource:
+        type: string
+      appointmentTime:
+        type: string
+      appointmentType:
+        type: string
+      apptPackageImage:
+        type: string
+      apptPackageName:
+        type: string
+      apptPackagePurchaseNo:
+        type: string
+      apptPatientName:
+        type: string
+      apptPatientPrn:
+        type: string
+      apptSessionType:
+        type: string
+      apptSlotType:
+        type: string
+      caseType:
+        type: string
+      clinicName:
+        type: string
+      doctorName:
+        type: string
+      durationMins:
+        type: integer
+      homeAddress:
+        type: string
+      homeContactNo:
+        type: string
+      hospitalCode:
+        type: string
+      mcr:
+        type: string
+      mobileContactNo:
+        type: string
+      patientDob:
+        type: string
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      reason:
+        type: string
+      roomNo:
+        type: string
+      sessionEndTime:
+        type: string
+      sessionStartTime:
+        type: string
+      sourceOfReferral:
+        type: string
+      status:
+        type: string
+      syncDate:
+        type: string
+      transferDateTime:
+        type: string
+      transferFlg:
+        type: string
+      transferSystem:
         type: string
     type: object
   userPackage.UserPackage:
@@ -5652,6 +5992,120 @@ paths:
             type: array
       tags:
       - Public Vesalius
+  /guest/appointment/check-make-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostCheckAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostCheckAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+      tags:
+      - Guest
+  /guest/appointment/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt}:
+    get:
+      parameters:
+      - description: doctorId
+        in: path
+        name: doctorId
+        required: true
+        type: string
+      - description: month
+        in: path
+        name: month
+        required: true
+        type: string
+      - description: year
+        in: path
+        name: year
+        required: true
+        type: string
+      - description: needAppt
+        in: path
+        name: needAppt
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/appointment/make-appointment/{branchId}/{prn}:
+    post:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      - description: PostMakeAppointmentDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostMakeAppointmentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/appointment/new-patient:
+    post:
+      parameters:
+      - description: GuestMakeNewPatientDto
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.GuestMakeNewPatientDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/appointment/returning-patient:
+    post:
+      parameters:
+      - description: GuestGetReturningPatientDto
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.GuestGetReturningPatientDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
   /guest/clubs/goldenpearl/about-us:
     get:
       produces:
@@ -5935,6 +6389,27 @@ paths:
         name: packageId
         required: true
         type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/purchase/{paymentMethod}:
+    post:
+      parameters:
+      - description: paymentMethod
+        in: path
+        name: paymentMethod
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateGuestPackageDto'
       produces:
       - application/json
       responses:
@@ -7194,6 +7669,70 @@ paths:
             type: array
       tags:
       - Public Vesalius
+  /payment/ipay88/backend/backend_response:
+    post:
+      parameters:
+      - description: IPayPaymentResponseDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.IPayPaymentResponseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - IPAY
+  /payment/ipay88/backend/response:
+    post:
+      parameters:
+      - description: IPayPaymentResponseDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.IPayPaymentResponseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - IPAY
+  /payment/ipay88/requery:
+    get:
+      parameters:
+      - description: refno
+        in: query
+        name: refno
+        type: string
+      - description: amount
+        in: query
+        name: amount
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - IPAY
+  /payment/ipay88/submit:
+    get:
+      parameters:
+      - description: requestNo
+        in: query
+        name: requestNo
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - IPAY
   /public/branch/list:
     get:
       produces:
@@ -7324,6 +7863,29 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.CheckPackageExpiryMaxpurchaseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User Package
+  /user-package/purchase/{paymentMethod}:
+    post:
+      parameters:
+      - description: paymentMethod
+        in: path
+        name: paymentMethod
+        required: true
+        type: string
+      - description: CreateUserPackageDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserPackageDto'
       produces:
       - application/json
       responses:
@@ -8195,6 +8757,25 @@ paths:
       - BearerAuth: []
       tags:
       - Vesalius
+  /vesalius/past-appointments/{branchId}/{prn}:
+    get:
+      parameters:
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.PatientPastAppointment'
+            type: array
+      tags:
+      - Vesalius
   /vesalius/patient-allergy/{prn}:
     get:
       parameters:
@@ -8323,6 +8904,55 @@ paths:
           description: OK
       tags:
       - Vesalius
+  /vesalius/search-patient-data/{prn}/{branchId}:
+    get:
+      parameters:
+      - description: branchId
+        in: path
+        name: branchId
+        required: true
+        type: string
+      - description: prn
+        in: path
+        name: prn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vesaliusGeo.Patient'
+      security:
+      - BearerAuth: []
+      tags:
+      - Vesalius
+  /wallex/authenticate:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Wallex
+  /wallex/backend/backend_response:
+    post:
+      parameters:
+      - description: WallexWebhookDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.WallexWebhookDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Wallex
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

@@ -747,7 +747,7 @@ func (cr *VesaliusController) GetFutureAppointments(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Param       prn              path      string       true  "prn"
-// @Success 200 {array} gm.PatientPastAppointment
+// @Success 200 {array} model.PatientPastAppointment
 // @Router /vesalius/past-appointments/{branchId}/{prn} [get]
 func (cr *VesaliusController) GetPastAppointments(c fiber.Ctx) error {
     prn := c.Params("prn")

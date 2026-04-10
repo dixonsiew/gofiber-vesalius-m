@@ -3711,6 +3711,184 @@
                 }
             }
         },
+        "/guest/appointment/check-make-appointment/{branchId}/{prn}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostCheckAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostCheckAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/guest/appointment/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "doctorId",
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "month",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "year",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "needAppt",
+                        "name": "needAppt",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/appointment/make-appointment/{branchId}/{prn}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "PostMakeAppointmentDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostMakeAppointmentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/appointment/new-patient": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "GuestMakeNewPatientDto",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GuestMakeNewPatientDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/appointment/returning-patient": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "description": "GuestGetReturningPatientDto",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GuestGetReturningPatientDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/guest/clubs/goldenpearl/about-us": {
             "get": {
                 "produces": [
@@ -4163,6 +4341,39 @@
                         "name": "packageId",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/purchase/{paymentMethod}": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "paymentMethod",
+                        "name": "paymentMethod",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateGuestPackageDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -6253,6 +6464,110 @@
                 }
             }
         },
+        "/payment/ipay88/backend/backend_response": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "IPAY"
+                ],
+                "parameters": [
+                    {
+                        "description": "IPayPaymentResponseDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.IPayPaymentResponseDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/payment/ipay88/backend/response": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "IPAY"
+                ],
+                "parameters": [
+                    {
+                        "description": "IPayPaymentResponseDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.IPayPaymentResponseDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/payment/ipay88/requery": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "IPAY"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "refno",
+                        "name": "refno",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "amount",
+                        "name": "amount",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/payment/ipay88/submit": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "IPAY"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "requestNo",
+                        "name": "requestNo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/public/branch/list": {
             "get": {
                 "produces": [
@@ -6444,6 +6759,44 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.CheckPackageExpiryMaxpurchaseDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user-package/purchase/{paymentMethod}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "paymentMethod",
+                        "name": "paymentMethod",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateUserPackageDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserPackageDto"
                         }
                     }
                 ],
@@ -7909,6 +8262,36 @@
                 }
             }
         },
+        "/vesalius/past-appointments/{branchId}/{prn}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.PatientPastAppointment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/vesalius/patient-allergy/{prn}": {
             "get": {
                 "security": [
@@ -8108,6 +8491,86 @@
                 ],
                 "tags": [
                     "Vesalius"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/vesalius/search-patient-data/{prn}/{branchId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vesalius"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "branchId",
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "prn",
+                        "name": "prn",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vesaliusGeo.Patient"
+                        }
+                    }
+                }
+            }
+        },
+        "/wallex/authenticate": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wallex"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/wallex/backend/backend_response": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wallex"
+                ],
+                "parameters": [
+                    {
+                        "description": "WallexWebhookDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.WallexWebhookDto"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -8639,6 +9102,42 @@
                 }
             }
         },
+        "dto.CreateGuestPackageDto": {
+            "type": "object",
+            "required": [
+                "guestPackage",
+                "guestPackagePayment"
+            ],
+            "properties": {
+                "guestPackage": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GuestPackageDto"
+                    }
+                },
+                "guestPackagePayment": {
+                    "$ref": "#/definitions/dto.GuestPackagePaymentDto"
+                }
+            }
+        },
+        "dto.CreateUserPackageDto": {
+            "type": "object",
+            "required": [
+                "userPackage",
+                "userPackagePayment"
+            ],
+            "properties": {
+                "userPackage": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.UserPackageDto"
+                    }
+                },
+                "userPackagePayment": {
+                    "$ref": "#/definitions/dto.UserPackagePaymentDto"
+                }
+            }
+        },
         "dto.DeleteAccountDto": {
             "type": "object",
             "required": [
@@ -8966,6 +9465,151 @@
                 }
             }
         },
+        "dto.GuestGetReturningPatientDto": {
+            "type": "object",
+            "required": [
+                "identificationNumber"
+            ],
+            "properties": {
+                "identificationNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GuestMakeNewPatientDto": {
+            "type": "object",
+            "required": [
+                "address1",
+                "contactNumber",
+                "dob",
+                "fullName",
+                "gender",
+                "identificationNumber",
+                "nationality"
+            ],
+            "properties": {
+                "address1": {
+                    "type": "string"
+                },
+                "address2": {
+                    "type": "string"
+                },
+                "contactNumber": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "identificationNumber": {
+                    "type": "string"
+                },
+                "maritalStatus": {
+                    "type": "string"
+                },
+                "nationality": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "townCity": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GuestPackageDto": {
+            "type": "object",
+            "required": [
+                "packageName",
+                "packagePrice",
+                "package_id",
+                "patientName",
+                "patientPrn",
+                "quantityPurchased"
+            ],
+            "properties": {
+                "packageName": {
+                    "type": "string"
+                },
+                "packagePrice": {
+                    "type": "number"
+                },
+                "package_id": {
+                    "type": "integer"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "quantityPurchased": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "dto.GuestPackagePaymentDto": {
+            "type": "object",
+            "required": [
+                "billingAddress1",
+                "billingContactCode",
+                "billingContactNo",
+                "billingCountryCode",
+                "billingEmail",
+                "billingFullname"
+            ],
+            "properties": {
+                "billingAddress1": {
+                    "type": "string"
+                },
+                "billingAddress2": {
+                    "type": "string"
+                },
+                "billingAddress3": {
+                    "type": "string"
+                },
+                "billingContactCode": {
+                    "type": "string"
+                },
+                "billingContactNo": {
+                    "type": "string"
+                },
+                "billingCountryCode": {
+                    "type": "string"
+                },
+                "billingEmail": {
+                    "type": "string"
+                },
+                "billingFullname": {
+                    "type": "string"
+                },
+                "billingPostcode": {
+                    "type": "string"
+                },
+                "billingState": {
+                    "type": "string"
+                },
+                "billingTowncity": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.HospitalProfileDto": {
             "type": "object",
             "required": [
@@ -8977,6 +9621,65 @@
                     "type": "string"
                 },
                 "profileValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.IPayPaymentResponseDto": {
+            "type": "object",
+            "required": [
+                "Amount",
+                "Currency",
+                "MerchantCode",
+                "PaymentId",
+                "RefNo",
+                "Signature",
+                "Status"
+            ],
+            "properties": {
+                "Amount": {
+                    "type": "string"
+                },
+                "AuthCode": {
+                    "type": "string"
+                },
+                "CCName": {
+                    "type": "string"
+                },
+                "CCNo": {
+                    "type": "string"
+                },
+                "Currency": {
+                    "type": "string"
+                },
+                "ErrDesc": {
+                    "type": "string"
+                },
+                "MerchantCode": {
+                    "type": "string"
+                },
+                "PaymentId": {
+                    "type": "string"
+                },
+                "RefNo": {
+                    "type": "string"
+                },
+                "Remark": {
+                    "type": "string"
+                },
+                "S_bankname": {
+                    "type": "string"
+                },
+                "S_country": {
+                    "type": "string"
+                },
+                "Signature": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "TransId": {
                     "type": "string"
                 }
             }
@@ -10301,6 +11004,114 @@
                     "type": "string"
                 },
                 "tac": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserPackageDto": {
+            "type": "object",
+            "required": [
+                "packageName",
+                "packagePrice",
+                "package_id",
+                "patientName",
+                "patientPrn",
+                "quantityPurchased"
+            ],
+            "properties": {
+                "packageName": {
+                    "type": "string"
+                },
+                "packagePrice": {
+                    "type": "number"
+                },
+                "package_id": {
+                    "type": "integer"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "quantityPurchased": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "dto.UserPackagePaymentDto": {
+            "type": "object",
+            "required": [
+                "billingAddress1",
+                "billingContactCode",
+                "billingContactNo",
+                "billingCountryCode",
+                "billingEmail",
+                "billingFullname"
+            ],
+            "properties": {
+                "billingAddress1": {
+                    "type": "string"
+                },
+                "billingAddress2": {
+                    "type": "string"
+                },
+                "billingAddress3": {
+                    "type": "string"
+                },
+                "billingContactCode": {
+                    "type": "string"
+                },
+                "billingContactNo": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "billingCountryCode": {
+                    "type": "string"
+                },
+                "billingEmail": {
+                    "type": "string"
+                },
+                "billingFullname": {
+                    "type": "string"
+                },
+                "billingPostcode": {
+                    "type": "string"
+                },
+                "billingState": {
+                    "type": "string"
+                },
+                "billingTowncity": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WallexWebhookDto": {
+            "type": "object",
+            "required": [
+                "accountId",
+                "resource",
+                "resourceId",
+                "status"
+            ],
+            "properties": {
+                "accountId": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remarks": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                },
+                "resourceId": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -12508,6 +13319,44 @@
                 }
             }
         },
+        "model.PatientPastAppointment": {
+            "type": "object",
+            "properties": {
+                "doctorClinicLocation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorClinicLocation"
+                    }
+                },
+                "doctorContact": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorContact"
+                    }
+                },
+                "doctorSpecialities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NovaDoctorSpecialities"
+                    }
+                },
+                "doctor_id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "vesaliusPastApptInfo": {
+                    "$ref": "#/definitions/model.VesaliusPastApptInfo"
+                }
+            }
+        },
         "model.ReleaseVersion": {
             "type": "object",
             "properties": {
@@ -12715,6 +13564,116 @@
                     "type": "string"
                 },
                 "sessionStartTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.VesaliusPastApptInfo": {
+            "type": "object",
+            "properties": {
+                "accountNo": {
+                    "type": "string"
+                },
+                "appointmentDate": {
+                    "type": "string"
+                },
+                "appointmentRefNo": {
+                    "type": "integer"
+                },
+                "appointmentSource": {
+                    "type": "string"
+                },
+                "appointmentTime": {
+                    "type": "string"
+                },
+                "appointmentType": {
+                    "type": "string"
+                },
+                "apptPackageImage": {
+                    "type": "string"
+                },
+                "apptPackageName": {
+                    "type": "string"
+                },
+                "apptPackagePurchaseNo": {
+                    "type": "string"
+                },
+                "apptPatientName": {
+                    "type": "string"
+                },
+                "apptPatientPrn": {
+                    "type": "string"
+                },
+                "apptSessionType": {
+                    "type": "string"
+                },
+                "apptSlotType": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "clinicName": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "durationMins": {
+                    "type": "integer"
+                },
+                "homeAddress": {
+                    "type": "string"
+                },
+                "homeContactNo": {
+                    "type": "string"
+                },
+                "hospitalCode": {
+                    "type": "string"
+                },
+                "mcr": {
+                    "type": "string"
+                },
+                "mobileContactNo": {
+                    "type": "string"
+                },
+                "patientDob": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "roomNo": {
+                    "type": "string"
+                },
+                "sessionEndTime": {
+                    "type": "string"
+                },
+                "sessionStartTime": {
+                    "type": "string"
+                },
+                "sourceOfReferral": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "syncDate": {
+                    "type": "string"
+                },
+                "transferDateTime": {
+                    "type": "string"
+                },
+                "transferFlg": {
+                    "type": "string"
+                },
+                "transferSystem": {
                     "type": "string"
                 }
             }

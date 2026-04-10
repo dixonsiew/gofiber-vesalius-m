@@ -291,7 +291,7 @@ func (cr *GuestController) CheckGuestPatientAppointment(c fiber.Ctx) error {
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostMakeAppointmentDto     true  "PostMakeAppointmentDto"
 // @Success 200
-// @Router /guest/appointment/make-appointment/{branchId}/[prn] [post]
+// @Router /guest/appointment/make-appointment/{branchId}/{prn} [post]
 func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
     data := new(dto.PostMakeAppointmentDto)
     if err := utils.BindNValidate(c, data); err != nil {
