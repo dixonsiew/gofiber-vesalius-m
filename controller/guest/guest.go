@@ -1122,8 +1122,6 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
 
         return c.JSON(paymentRefNo)
     }
-
-    return c.JSON(paymentRefNo)
 }
 
 // CheckPackageExpiryMaxpurchase

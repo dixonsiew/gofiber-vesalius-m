@@ -179,7 +179,7 @@ func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logis
 		FROM (
 			SELECT
 				lars.DAY_OF_WEEK AS DAY_OF_WEEK,
-				TO_CHAR(TO_DATE(:1, 'DD/MM/YYYY'), 'DD/MM/YYYY') AS PICK_UP_DATE,
+				TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY'), 'DD/MM/YYYY') AS PICK_UP_DATE,
 				lars.PICKUP_TIME AS PICK_UP_TIME,
 				lars.MAX_SLOTS - COALESCE(SUM(
 					CASE WHEN lar.VISIT_WITH_COMPANION = 'Y' THEN 2 ELSE 1 END * lar.REQUESTED_SLOTS
@@ -192,15 +192,15 @@ func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logis
 					VISIT_WITH_COMPANION,
 					COUNT(*) AS REQUESTED_SLOTS
 				FROM LOGISTIC_ARRANGEMENT_REQUESTER
-				WHERE REQUESTED_PICKUP_DATE >= TO_DATE(:2, 'DD/MM/YYYY')
-				AND REQUESTED_PICKUP_DATE <= TO_DATE(:3, 'DD/MM/YYYY')
+				WHERE REQUESTED_PICKUP_DATE >= TO_DATE(:flightArrivalDate, 'DD/MM/YYYY')
+				AND REQUESTED_PICKUP_DATE <= TO_DATE(:flightArrivalDate, 'DD/MM/YYYY')
 				AND LOGISTIC_REQUEST_STATUS IN ('Requested', 'Confirmed')
 				GROUP BY REQUESTED_PICKUP_DAY, REQUESTED_PICKUP_TIME, VISIT_WITH_COMPANION
 			) lar ON TRIM(lars.DAY_OF_WEEK) = TRIM(lar.REQUESTED_PICKUP_DAY)
 				AND TRIM(lars.PICKUP_TIME) = TRIM(lar.REQUESTED_PICKUP_TIME)
-			WHERE TRIM(lars.DAY_OF_WEEK) = TRIM(TO_CHAR(TO_DATE(:4, 'DD/MM/YYYY'), 'Day'))
-			AND lars.PICKUP_TIME > :5
-			GROUP BY lars.DAY_OF_WEEK, TO_CHAR(TO_DATE(:1, 'DD/MM/YYYY'), 'DD/MM/YYYY'), lars.PICKUP_TIME, lars.MAX_SLOTS
+			WHERE TRIM(lars.DAY_OF_WEEK) = TRIM(TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY'), 'Day'))
+			AND lars.PICKUP_TIME > :flightArrivalTime
+			GROUP BY lars.DAY_OF_WEEK, TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY'), 'DD/MM/YYYY'), lars.PICKUP_TIME, lars.MAX_SLOTS
 			HAVING lars.MAX_SLOTS - COALESCE(SUM(
 				CASE WHEN lar.VISIT_WITH_COMPANION = 'Y' THEN 2 ELSE 1 END * lar.REQUESTED_SLOTS
 			), 0) > 0
@@ -209,7 +209,7 @@ func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logis
 
 			SELECT
 				lars.DAY_OF_WEEK AS DAY_OF_WEEK,
-				TO_CHAR(TO_DATE(:6, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'DD/MM/YYYY') AS PICK_UP_DATE,
+				TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'DD/MM/YYYY') AS PICK_UP_DATE,
 				lars.PICKUP_TIME AS PICK_UP_TIME,
 				lars.MAX_SLOTS - COALESCE(SUM(
 					CASE WHEN lar.VISIT_WITH_COMPANION = 'Y' THEN 2 ELSE 1 END * lar.REQUESTED_SLOTS
@@ -222,14 +222,14 @@ func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logis
 					VISIT_WITH_COMPANION,
 					COUNT(*) AS REQUESTED_SLOTS
 				FROM LOGISTIC_ARRANGEMENT_REQUESTER
-				WHERE REQUESTED_PICKUP_DATE >= TO_DATE(:7, 'DD/MM/YYYY') + INTERVAL '1' DAY
-				AND REQUESTED_PICKUP_DATE <= TO_DATE(:8, 'DD/MM/YYYY') + INTERVAL '1' DAY
+				WHERE REQUESTED_PICKUP_DATE >= TO_DATE(:flightArrivalDate, 'DD/MM/YYYY') + INTERVAL '1' DAY
+				AND REQUESTED_PICKUP_DATE <= TO_DATE(:flightArrivalDate, 'DD/MM/YYYY') + INTERVAL '1' DAY
 				AND LOGISTIC_REQUEST_STATUS IN ('Requested', 'Confirmed')
 				GROUP BY REQUESTED_PICKUP_DAY, REQUESTED_PICKUP_TIME, VISIT_WITH_COMPANION
 			) lar ON TRIM(lars.DAY_OF_WEEK) = TRIM(lar.REQUESTED_PICKUP_DAY)
 				AND TRIM(lars.PICKUP_TIME) = TRIM(lar.REQUESTED_PICKUP_TIME)
-			WHERE TRIM(lars.DAY_OF_WEEK) = TRIM(TO_CHAR(TO_DATE(:9, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'Day'))
-			GROUP BY lars.DAY_OF_WEEK, TO_CHAR(TO_DATE(:10, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'DD/MM/YYYY'), lars.PICKUP_TIME, lars.MAX_SLOTS
+			WHERE TRIM(lars.DAY_OF_WEEK) = TRIM(TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'Day'))
+			GROUP BY lars.DAY_OF_WEEK, TO_CHAR(TO_DATE(:flightArrivalDate, 'DD/MM/YYYY') + INTERVAL '1' DAY, 'DD/MM/YYYY'), lars.PICKUP_TIME, lars.MAX_SLOTS
 			HAVING lars.MAX_SLOTS - COALESCE(SUM(
 				CASE WHEN lar.VISIT_WITH_COMPANION = 'Y' THEN 2 ELSE 1 END * lar.REQUESTED_SLOTS
 			), 0) > 0
@@ -238,16 +238,8 @@ func (s *LogisticService) FindAppSlots(data *dto.LogisticSlotMobileDto) ([]logis
 
 	slots := make([]logisticModel.LogisticSlot, 0)
 	err := s.db.SelectContext(s.ctx, &slots, query,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalTime,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
-		data.FlightArrivalDate,
+        sql.Named("flightArrivalDate", data.FlightArrivalDate),
+        sql.Named("flightArrivalTime", data.FlightArrivalTime),
 	)
 	if err != nil {
 		utils.LogError(err)

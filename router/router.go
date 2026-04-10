@@ -9,6 +9,7 @@ import (
     "vesaliusm/controller/futureOrder"
     "vesaliusm/controller/guest"
     "vesaliusm/controller/hpackage"
+    "vesaliusm/controller/ipay"
     "vesaliusm/controller/logistic"
     "vesaliusm/controller/maintenance"
     "vesaliusm/controller/myFamily"
@@ -19,6 +20,7 @@ import (
     "vesaliusm/controller/userPackage"
     "vesaliusm/controller/vesalius"
     "vesaliusm/controller/vesaliusGeo"
+    "vesaliusm/controller/wallex"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -32,6 +34,7 @@ func SetupRoutes(app *fiber.App, basePath string) {
     futureOrder.SetupRoutes(api)
     guest.SetupRoutes(api)
     hpackage.SetupRoutes(api)
+    ipay.SetupRoutes(api)
     logistic.SetupRoutes(api)
     maintenance.SetupRoutes(api)
     myFamily.SetupRoutes(api)
@@ -43,4 +46,5 @@ func SetupRoutes(app *fiber.App, basePath string) {
     userPackage.SetupRoutes(api)
     vesalius.SetupRoutes(api)
     vesaliusGeo.SetupRoutes(api)
+    wallex.SetupRoutes(api)
 }

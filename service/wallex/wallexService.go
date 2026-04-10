@@ -30,7 +30,7 @@ func NewWallexService() *WallexService {
     }
 }
 
-func (s *WallexService) authenticate() (string, error) {
+func (s *WallexService) Authenticate() (string, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
     defer cancel()
     prm := map[string]string{
@@ -66,7 +66,7 @@ func (s *WallexService) authenticate() (string, error) {
 
 func (s* WallexService) SubmitPaymentRequest(prm utils.Map) (*payment.PaymentRequest, error) {
     var o *payment.PaymentRequest
-    token, err := s.authenticate()
+    token, err := s.Authenticate()
     if err != nil {
         return nil, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to payment gateway Wallex at the moment.\nPlease try again later.")
     }
@@ -75,7 +75,7 @@ func (s* WallexService) SubmitPaymentRequest(prm utils.Map) (*payment.PaymentReq
     o, err = s.submitPaymentRequest(token, prm)
     if err != nil {
         if err.Error() == "Authorization token is invalid" {
-            stoken, err := s.authenticate()
+            stoken, err := s.Authenticate()
             if err != nil {
                 return nil, fiber.NewError(fiber.StatusBadRequest, "Encountered connection issue to payment gateway Wallex at the moment.\nPlease try again later.")
             }

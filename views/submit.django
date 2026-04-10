@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Payment</title>
+</head>
+<body>
+  <form name="frm" method="post" action="https://payment.ipay88.com.my/ePayment/entry.asp">
+    <input type="hidden" name="MerchantCode" value="{{MerchantCode}}">
+    <input type="hidden" name="PaymentId" value="{{PaymentId}}">
+    <input type="hidden" name="RefNo" value="{{RefNo}}">
+    <input type="hidden" name="Amount" value="{{Amount}}">
+    <input type="hidden" name="Currency" value="{{Currency}}">
+    <input type="hidden" name="ProdDesc" value="{{ProdDesc}}">
+    <input type="hidden" name="UserName" value="{{UserName}}">
+    <input type="hidden" name="UserEmail" value="{{UserEmail}}">
+    <input type="hidden" name="UserContact" value="{{UserContact}}">
+    <input type="hidden" name="Remark" value="{{Remark}}">
+    <input type="hidden" name="Lang" value="UTF-8">
+    <input type="hidden" name="SignatureType" value="HMACSHA512">
+    <input type="hidden" name="Signature" value="{{Signature}}">
+    <input type="hidden" name="ResponseURL" value="https://imcgo.islandhospital.com:43900/nest-vesalius-m/payment/ipay88/backend/response">
+    <input type="hidden" name="BackendURL" value="https://imcgo.islandhospital.com:43900/nest-vesalius-m/payment/ipay88/backend/backend_response">
+    <input type="submit" value="Submit" name="Submit" id="btnsubmit" style="display: none">
+  </form>
+</body>
+</html>
+<script>
+  function submit() {
+    document.getElementById('btnsubmit').click();
+  }
+
+  submit();
+</script>

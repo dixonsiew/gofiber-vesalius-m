@@ -55,16 +55,20 @@ func (s *BillPaymentDetailsService) UpdateReceiptNoByRequestNo(conn *sqlx.DB, re
     return nil
 }
 
-func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) ([]model.BillingPayment, error) {
+func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) (*model.BillingPayment, error) {
     query := `SELECT * FROM OUTSTANDING_BILL_PAYMENT WHERE PAYMENT_REQUEST_NO = :requestNo`
     query = strings.Replace(query, "*", utils.GetDbCols(model.BillingPayment{}, ""), 1)
+    var o *model.BillingPayment
     list := make([]model.BillingPayment, 0)
     err := s.db.SelectContext(s.ctx, &list, query, requestNo)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    return list, nil
+    if len(list) > 0 {
+        o = &list[0]
+    }
+    return o, nil
 }
 
 func (s *BillPaymentDetailsService) BillPaymentFindByRequestNo(conn *sqlx.DB, paymentRequestNo string) ([]model.BillingPayment, error) {

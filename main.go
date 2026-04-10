@@ -1,27 +1,28 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"html/template"
-	"os"
-	"strings"
-	"vesaliusm/config"
-	"vesaliusm/database"
-	_ "vesaliusm/docs"
-	"vesaliusm/router"
-	"vesaliusm/utils"
+    "errors"
+    "fmt"
+    "html/template"
+    "os"
+    "strings"
+    "vesaliusm/config"
+    "vesaliusm/database"
+    _ "vesaliusm/docs"
+    "vesaliusm/router"
+    "vesaliusm/utils"
 
-	"github.com/go-playground/validator/v10"
-	// jwtware "github.com/gofiber/contrib/jwt"
-	swaggo "github.com/gofiber/contrib/v3/swaggo"
-	fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/compress"
-	"github.com/gofiber/fiber/v3/middleware/cors"
-	"github.com/gofiber/fiber/v3/middleware/healthcheck"
-	"github.com/gofiber/fiber/v3/middleware/recover"
-	"github.com/gofiber/fiber/v3/middleware/static"
+    "github.com/go-playground/validator/v10"
+    // jwtware "github.com/gofiber/contrib/jwt"
+    swaggo "github.com/gofiber/contrib/v3/swaggo"
+    fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
+    "github.com/gofiber/fiber/v3"
+    "github.com/gofiber/fiber/v3/middleware/compress"
+    "github.com/gofiber/fiber/v3/middleware/cors"
+    "github.com/gofiber/fiber/v3/middleware/healthcheck"
+    "github.com/gofiber/fiber/v3/middleware/recover"
+    "github.com/gofiber/fiber/v3/middleware/static"
+    "github.com/gofiber/template/django/v3"
 )
 
 // convert this to go using go-ora with github.com/jmoiron/sqlx
@@ -45,6 +46,7 @@ func main() {
     utils.SetClient()
     utils.SetLogger(runLogFile)
     port := config.Config("port")
+    engine := django.New("./views", ".django")
     app := fiber.New(fiber.Config{
         StructValidator: &utils.StructValidator{Xvalidate: validator.New()},
         ErrorHandler: func(c fiber.Ctx, err error) error {
@@ -65,6 +67,7 @@ func main() {
                 "message":    ms,
             })
         },
+        Views: engine,
     })
     app.Use(recover.New())
     app.Use(compress.New())

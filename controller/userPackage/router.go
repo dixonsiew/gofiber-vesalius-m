@@ -16,6 +16,7 @@ func (c *UserPackageController) registerRoutes(router fiber.Router) {
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Post("/check/expiry-maxpurchase", c.CheckPackageExpiryMaxpurchase)
+    api.Post("/purchase/:paymentMethod", c.CreateUserPurchaseDetails)
     api.Get("/all/mobile", c.GetAllUserPurchaseHistory)
     api.Get("/all", c.GetAllPurchaseHistory)
     api.Post("/all", c.SearchAllPurchaseHistory)

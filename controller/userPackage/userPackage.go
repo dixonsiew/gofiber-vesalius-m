@@ -1,11 +1,13 @@
 package userPackage
 
 import (
+    "fmt"
     "strconv"
     "strings"
+    "time"
     "vesaliusm/dto"
     "vesaliusm/middleware"
-    "vesaliusm/model/userPackage"
+    upck "vesaliusm/model/userPackage"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/service/payment"
@@ -49,7 +51,7 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
     }
 
     cartIsValid := true
-    cartResult := make([]userPackage.PackageCheckResult, 0)
+    cartResult := make([]upck.PackageCheckResult, 0)
 
     for _, pkg := range data.Package {
         r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageId, pkg.QuantityPurchased)
@@ -68,6 +70,185 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
         "cartIsValid": cartIsValid,
         "cartResult":  cartResult,
     })
+}
+
+// CreateUserPurchaseDetails
+//
+// @Tags User Package
+// @Produce json
+// @Security BearerAuth
+// @Param        paymentMethod     path      string                   true   "paymentMethod"
+// @Param        request           body      dto.CreateUserPackageDto true   "CreateUserPackageDto"
+// @Success 200
+// @Router /user-package/purchase/{paymentMethod} [post]
+func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
+    paymentMethod := c.Params("paymentMethod")
+    ipaymentMethod, _ := strconv.ParseInt(paymentMethod, 10, 32)
+    data := new(dto.CreateUserPackageDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    fullContact := fmt.Sprintf("%s%s", data.UserPackagePayment.BillingContactCode, data.UserPackagePayment.BillingContactNo)
+    if len(fullContact) > 20 {
+        return fiber.NewError(fiber.StatusBadRequest, "Billing Contact Number is too long")
+    }
+
+    userPackage := make([]upck.UserPackage, 0)
+    products := make([]utils.Map, 0)
+    totalPrice := 0.0
+
+    paymentRefNo, err := cr.paymentService.GeneratePaymentRefNo()
+    if err != nil {
+        return err
+    }
+
+    for _, pkg := range data.UserPackage {
+        p := utils.Map{
+            "name":        pkg.PackageName,
+            "description": pkg.PackageName,
+            "price":       pkg.PackagePrice,
+            "quantity":    pkg.QuantityPurchased,
+            "createdAt":   strconv.FormatInt(time.Now().UnixMilli(), 10),
+            "updatedAt":   strconv.FormatInt(time.Now().UnixMilli(), 10),
+            "deletedAt":   "",
+        }
+        products = append(products, p)
+
+        totalPrice = totalPrice + pkg.PackagePrice*float64(pkg.QuantityPurchased)
+
+        o := upck.UserPackage{
+            PatientPrn:        utils.NewNullString("-"),
+            PatientName:       utils.NewNullString(data.UserPackagePayment.BillingFullname),
+            PackageId:         utils.NewInt64(pkg.PackageId),
+            QuantityPurchased: pkg.QuantityPurchased,
+            PackageStatus:     utils.NewNullString(string(utils.PackageStatusOrdered)),
+        }
+        userPackage = append(userPackage, o)
+    }
+
+    lsaddr := make([]string, 0)
+    pyt := data.UserPackagePayment
+    if pyt.BillingAddress1 != "" {
+        lsaddr = append(lsaddr, pyt.BillingAddress1)
+    }
+
+    if pyt.BillingAddress2 != "" {
+        lsaddr = append(lsaddr, pyt.BillingAddress2)
+    }
+
+    if pyt.BillingAddress3 != "" {
+        lsaddr = append(lsaddr, pyt.BillingAddress3)
+    }
+
+    if pyt.BillingTowncity != "" {
+        lsaddr = append(lsaddr, pyt.BillingTowncity)
+    }
+
+    if pyt.BillingState != "" {
+        lsaddr = append(lsaddr, pyt.BillingState)
+    }
+
+    addr := strings.Join(lsaddr, ", ")
+
+    if ipaymentMethod == utils.PaymentMethodWallex {
+        wallexPrm := utils.Map{
+            "collectionRequestNumber": paymentRefNo,
+            "currency":                "MYR",
+            "paymentPurpose":          "SCVE",
+            "paymentCurrency":         "IDR",
+            "paymentPartial":          false,
+            "remarks":                 paymentRefNo,
+            "customerInfo": utils.Map{
+                "name":             pyt.BillingFullname,
+                "ituTelephoneCode": pyt.BillingContactCode,
+                "mobileNumber":     pyt.BillingContactNo,
+                "email":            pyt.BillingEmail,
+                "address":          addr,
+            },
+            "products": products,
+        }
+        wallexRes, err := cr.wallexService.SubmitPaymentRequest(wallexPrm)
+        if err != nil {
+            return err
+        }
+
+        if totalPrice != wallexRes.Amount {
+            return fiber.NewError(fiber.StatusBadRequest, "Incorrect Total Price")
+        }
+
+        userPackagePayment := upck.PackagePaymentDetails{
+            PaymentGateway:         utils.NewInt32(int32(ipaymentMethod)),
+            PaymentRequestId:       utils.NewNullString(wallexRes.ID),
+            PaymentRequestNo:       utils.NewNullString(wallexRes.CollectionRequestNumber),
+            PaymentRefId:           utils.NewNullString(wallexRes.ReferenceId),
+            PaymentRequestCurrency: utils.NewNullString(wallexRes.Currency),
+            PaymentAmount:          utils.NewFloat(wallexRes.Amount),
+            PaymentPurpose:         utils.NewNullString(wallexRes.PaymentPurpose),
+            PaymentCurrency:        utils.NewNullString(wallexRes.PaymentCurrency),
+            PaymentAmountCollected: utils.NewFloat(wallexRes.PaymentAmountCollected),
+            PaymentRemarks:         utils.NewNullString(wallexRes.Remarks),
+            PaymentStatus:          utils.NewNullString(wallexRes.Status),
+            PaymentAuthCode:        utils.NewNullString(""),
+            PaymentErrorDesc:       utils.NewNullString(""),
+            PaymentTransDate:       utils.NewNullString(""),
+            BillingFullname:        utils.NewNullString(pyt.BillingFullname),
+            BillingAddress1:        utils.NewNullString(pyt.BillingAddress1),
+            BillingAddress2:        utils.NewNullString(pyt.BillingAddress2),
+            BillingAddress3:        utils.NewNullString(pyt.BillingAddress3),
+            BillingTowncity:        utils.NewNullString(pyt.BillingTowncity),
+            BillingState:           utils.NewNullString(pyt.BillingState),
+            BillingPostcode:        utils.NewNullString(pyt.BillingPostcode),
+            BillingCountryCode:     utils.NewNullString(pyt.BillingCountryCode),
+            BillingContactNo:       utils.NewNullString(pyt.BillingContactNo),
+            BillingContactCode:     utils.NewNullString(pyt.BillingContactCode),
+            BillingEmail:           utils.NewNullString(pyt.BillingEmail),
+            PaymentUrl:             wallexRes.PaymentUrl,
+        }
+        err = cr.paymentService.SaveGuestWallex(userPackagePayment, userPackage)
+        if err != nil {
+            return err
+        }
+
+        return  c.JSON(fiber.Map{
+            "message": "User Purchase Details created",
+            "wallexDetails": fiber.Map{
+                "expiredAt": wallexRes.ExpiredAt,
+                "paymentUrl": wallexRes.PaymentUrl,
+            },
+        })
+    } else {
+        userPackagePayment := &upck.PackagePaymentDetails{
+            PaymentGateway:         utils.NewInt32(int32(ipaymentMethod)),
+            PaymentRequestNo:       utils.NewNullString(paymentRefNo),
+            PaymentRequestCurrency: utils.NewNullString("MYR"),
+            PaymentAmount:          utils.NewFloat(totalPrice),
+            PaymentPurpose:         utils.NewNullString("Hospital Pkg Purchase"),
+            PaymentCurrency:        utils.NewNullString("MYR"),
+            PaymentRemarks:         utils.NewNullString(paymentRefNo),
+            PaymentStatus:          utils.NewNullString("unpaid"),
+            PaymentAuthCode:        utils.NewNullString(""),
+            PaymentErrorDesc:       utils.NewNullString(""),
+            PaymentTransDate:       utils.NewNullString(""),
+            BillingFullname:        utils.NewNullString(pyt.BillingFullname),
+            BillingAddress1:        utils.NewNullString(pyt.BillingAddress1),
+            BillingAddress2:        utils.NewNullString(pyt.BillingAddress2),
+            BillingAddress3:        utils.NewNullString(pyt.BillingAddress3),
+            BillingTowncity:        utils.NewNullString(pyt.BillingTowncity),
+            BillingState:           utils.NewNullString(pyt.BillingState),
+            BillingPostcode:        utils.NewNullString(pyt.BillingPostcode),
+            BillingCountryCode:     utils.NewNullString(pyt.BillingCountryCode),
+            BillingContactNo:       utils.NewNullString(pyt.BillingContactNo),
+            BillingContactCode:     utils.NewNullString(pyt.BillingContactCode),
+            BillingEmail:           utils.NewNullString(pyt.BillingEmail),
+        }
+        err = cr.paymentService.SaveGuestIPay(*userPackagePayment, userPackage)
+        if err != nil {
+            return err
+        }
+
+        return c.JSON(paymentRefNo)
+    }
 }
 
 // GetAllUserPurchaseHistory

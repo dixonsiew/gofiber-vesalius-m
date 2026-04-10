@@ -3,7 +3,6 @@ package publicVesalius
 import (
     "strconv"
     "vesaliusm/dto"
-    "vesaliusm/service/applicationUser"
     "vesaliusm/service/novaDoctor"
     "vesaliusm/service/vesalius"
     "vesaliusm/utils"
@@ -12,14 +11,12 @@ import (
 )
 
 type PublicVesaliusController struct {
-    applicationUserService *applicationUser.ApplicationUserService
     novaDoctorService      *novaDoctor.NovaDoctorService
     vesaliusService        *vesalius.VesaliusService
 }
 
 func NewPublicVesaliusController() *PublicVesaliusController {
     return &PublicVesaliusController{
-        applicationUserService: applicationUser.ApplicationUserSvc,
         novaDoctorService:      novaDoctor.NovaDoctorSvc,
         vesaliusService:        vesalius.VesaliusSvc,
     }
