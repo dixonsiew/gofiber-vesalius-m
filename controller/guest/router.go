@@ -18,7 +18,6 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api.Get("/appointment/get-doctor-appointments/:doctorId/:month/:year/:needAppt", c.GetDoctorAppointments)
     api.Post("/appointment/check-make-appointment/:branchId/:prn", c.CheckGuestPatientAppointment)
     api.Post("/appointment/make-appointment/:branchId/:prn", c.GetMakeGuestAppointment)
-
     api.Get("/notification/all/:playerId", c.GetAllGuestNotificationLists)
     api.Get("/notification/seen/:notificationId/:playerId", c.GetGuestUnseenNotificationCount)
     api.Get("/clubs/littlekids/about-us", c.GetLittleKidsAboutUs)
@@ -31,5 +30,6 @@ func (c *GuestController) registerRoutes(router fiber.Router) {
     api.Get("/package/all/mobile/:isHome", c.GetAllAppPackages)
     api.Get("/package/packageStatus/:packageId", c.GetPackageStatusById)
     api.Get("/package/:packageId", c.GetPackageById)
+    api.Post("/purchase/:paymentMethod", c.CreateGuestPurchaseDetails)
     api.Post("/package/check/expiry-maxpurchase", c.CheckPackageExpiryMaxpurchase)
 }
