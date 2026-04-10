@@ -15,6 +15,7 @@ func (c *VesaliusController) registerRoutes(router fiber.Router) {
     api := router.Group("/vesalius")
     api.Post("/process-resize-image", c.ProcessResizeImage)
     api.Get("/patient-future-appointments/:branchId/:prn/:isHome", c.GetPatientFutureAppointments)
+    api.Get("/past-appointments/:branchId/:prn", c.GetPastAppointments)
 
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/doctor/appointment/all", c.GetAllAppointments)
@@ -35,6 +36,7 @@ func (c *VesaliusController) registerRoutes(router fiber.Router) {
     api.Get("/outstanding-bills/:branchId/:prn", c.GetPatientOutstandingBills)
     api.Get("/outstanding-bill/:branchId/:prn/:billNumber", c.GetPatientOutstandingBillData)
     api.Get("/patient-data/:branchId/:prn", c.GetPatientData)
+    api.Get("/search-patient-data/:prn/:branchId", c.SearchPatientData)
     api.Get("/future-appointments/:branchId/:prn", c.GetFutureAppointments)
     api.Post("/get-next-available-slots/:branchId/:prn", c.GetNextAvailableSlots)
     api.Post("/check-make-appointment/:branchId/:prn", c.CheckPatientAppointment)

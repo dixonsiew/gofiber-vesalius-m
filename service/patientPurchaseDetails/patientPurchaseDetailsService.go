@@ -144,22 +144,14 @@ func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 s
         ` ORDER BY ppd.DATE_CREATE DESC, ppd.PACKAGE_PURCHASE_NO DESC
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
-    rows, err := s.db.QueryxContext(s.ctx, query, args...)
+    list := make([]userPackage.UserPackage, 0)
+    err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    defer rows.Close()
-
-    list := make([]userPackage.UserPackage, 0)
-    for rows.Next() {
-        var o userPackage.UserPackage
-        if err = rows.StructScan(&o); err != nil {
-            utils.LogError(err)
-            return nil, err
-        }
-        o.SetWebAdmin()
-        list = append(list, o)
+    for i := range list {
+        list[i].SetWebAdmin()
     }
     return list, nil
 }

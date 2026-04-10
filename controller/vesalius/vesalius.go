@@ -658,6 +658,51 @@ func (cr *VesaliusController) GetPatientData(c fiber.Ctx) error {
     return c.JSON(o)
 }
 
+// SearchPatientData
+//
+// @Tags Vesalius
+// @Produce json
+// @Security BearerAuth
+// @Param       branchId         path      string       true  "branchId"
+// @Param       prn              path      string       true  "prn"
+// @Success 200 {object} vesaliusGeo.Patient
+// @Router /vesalius/search-patient-data/{prn}/{branchId} [get]
+func (cr *VesaliusController) SearchPatientData(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    b, err := cr.applicationUserService.ExistsByPRN(prn)
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("Existing mobile application user: [%s] already exist!", prn))
+    }
+
+    patient, _, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(prn)
+    if patient == nil {
+        return fiber.NewError(fiber.StatusNotFound, "Patient not found!")
+    }
+
+    if err != nil {
+        return err
+    }
+
+    if patient.ContactNumber.Email == "" {
+        return fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("Email does not exist in VESALIUS for Patient: [%s]. Please update in VESALIUS and try again.", prn))
+    }
+
+    b1, err := cr.applicationUserService.ExistsByEmail(patient.ContactNumber.Email)
+    if err != nil {
+        return err
+    }
+
+    if b1 {
+        return fiber.NewError(fiber.StatusBadGateway, fmt.Sprintf("Existing mobile application user with email: [%s] already exist!", patient.ContactNumber.Email))
+    }
+    
+    return c.JSON(patient)
+}
+
 // GetPatientFutureAppointments
 //
 // @Tags Vesalius
@@ -690,6 +735,23 @@ func (cr *VesaliusController) GetPatientFutureAppointments(c fiber.Ctx) error {
 func (cr *VesaliusController) GetFutureAppointments(c fiber.Ctx) error {
     prn := c.Params("prn")
     lx, err := cr.vesaliusService.VesaliusGetFutureAppointments(prn)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetPastAppointments
+//
+// @Tags Vesalius
+// @Produce json
+// @Param       prn              path      string       true  "prn"
+// @Success 200 {array} gm.PatientPastAppointment
+// @Router /vesalius/past-appointments/{branchId}/{prn} [get]
+func (cr *VesaliusController) GetPastAppointments(c fiber.Ctx) error {
+    prn := c.Params("prn")
+    lx, err := cr.healthCareService.VesaliusGetPastAppointments(prn)
     if err != nil {
         return err
     }

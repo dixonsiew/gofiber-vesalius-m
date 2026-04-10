@@ -8,7 +8,9 @@ import (
     "vesaliusm/model/userPackage"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/service/payment"
     "vesaliusm/service/vesalius"
+    "vesaliusm/service/wallex"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
@@ -17,14 +19,18 @@ import (
 type UserPackageController struct {
     applicationUserService        *applicationUser.ApplicationUserService
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
+    paymentService                *payment.PaymentService
     vesaliusService               *vesalius.VesaliusService
+    wallexService                 *wallex.WallexService
 }
 
 func NewUserPackageController() *UserPackageController {
     return &UserPackageController{
         applicationUserService:        applicationUser.ApplicationUserSvc,
         patientPurchaseDetailsService: patientPurchaseDetails.PatientPurchaseDetailsSvc,
+        paymentService:                payment.PaymentSvc,
         vesaliusService:               vesalius.VesaliusSvc,
+        wallexService:                 wallex.WallexSvc,
     }
 }
 
@@ -212,7 +218,7 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
             if apptRes != nil {
                 dx := &dto.PostCancelAppointmentDto{
                     AppointmentNumber: apptRes.ApptNo.String,
-                    Remark: apptRes.PackagePurchaseNo.String,
+                    Remark:            apptRes.PackagePurchaseNo.String,
                 }
                 _, err = cr.vesaliusService.VesaliusGetCancelAppointment(apptRes.PatientPrn.String, dx)
                 if err != nil {
@@ -224,7 +230,7 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
                     return err
                 }
             }
-            
+
         } else {
             err := cr.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseId(ipurchaseId, data.Status)
             if err != nil {

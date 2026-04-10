@@ -6,7 +6,7 @@ import (
     "strings"
     "vesaliusm/database"
     "vesaliusm/model"
-    vg "vesaliusm/model/vesaliusGeo"
+    gm "vesaliusm/model/vesaliusGeo"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
@@ -58,7 +58,7 @@ func (s *GuestService) GetTempGuestInfo(prn string) (*model.TempGuest, error) {
     return &o, err
 }
 
-func (s *GuestService) SavePatientTempGuestInfo(patient *vg.Patient, patientFullName string) error {
+func (s *GuestService) SavePatientTempGuestInfo(patient *gm.Patient, patientFullName string) error {
     query := `
         INSERT INTO APPLICATION_GUEST
          (GUEST_PRN, GUEST_NAME, GUEST_EMAIL, DATE_CREATE)
@@ -74,7 +74,7 @@ func (s *GuestService) SavePatientTempGuestInfo(patient *vg.Patient, patientFull
     return nil
 }
 
-func (s *GuestService) SavePersonTempGuestInfo(person *vg.Person, personFullName string) error {
+func (s *GuestService) SavePersonTempGuestInfo(person *gm.Person, personFullName string) error {
     if person.Document[0].Code == "X2" {
         query := `
             INSERT INTO APPLICATION_GUEST

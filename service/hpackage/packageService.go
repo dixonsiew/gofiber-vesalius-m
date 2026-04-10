@@ -94,29 +94,22 @@ func (s *PackageService) FindByKeyword(keyword string, keyword2 string, keyword3
     query := base + whereClause(conditions) +
         ` ORDER BY hp.PACKAGE_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
-    rows, err := db.QueryxContext(s.ctx, query, args...)
+    list := make([]hpackage.Package, 0)
+    err := db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
     }
-    defer rows.Close()
 
-    list := make([]hpackage.Package, 0)
-    for rows.Next() {
-        var o hpackage.Package
-        if err = rows.StructScan(&o); err != nil {
-            utils.LogError(err)
-            return nil, err
-        }
-        if o.PackageAssignedDoctor.Valid {
-            doctorName, err := s.novaDoctorService.FindDoctorNameByDoctorId(o.PackageAssignedDoctor.Int64, s.db)
+    for i := range list {
+        if list[i].PackageAssignedDoctor.Valid {
+            doctorName, err := s.novaDoctorService.FindDoctorNameByDoctorId(list[i].PackageAssignedDoctor.Int64, s.db)
             if err != nil {
                 utils.LogError(err)
                 return nil, err
             }
-            o.PackageAssignedDoctorName = doctorName
+            list[i].PackageAssignedDoctorName = doctorName
         }
-        list = append(list, o)
     }
     return list, nil
 }
