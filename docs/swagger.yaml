@@ -3432,6 +3432,27 @@ definitions:
       transferSystem:
         type: string
     type: object
+  qms.QueueResult:
+    properties:
+      asAt:
+        type: string
+      doctorName:
+        type: string
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      patientsAheadOfYou:
+        type: string
+      queueNumber:
+        type: string
+      relationship:
+        type: string
+      roomNumber:
+        type: string
+      ticketStatus:
+        type: string
+    type: object
   userPackage.UserPackage:
     properties:
       appointmentDateTime:
@@ -7746,6 +7767,30 @@ paths:
             type: array
       tags:
       - Public Branch
+  /qms/backend/qms_request:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/qms.QueueResult'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - QMS
+  /qms/backend/qms_response:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - QMS
   /user:
     get:
       produces:

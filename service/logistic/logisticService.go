@@ -42,7 +42,6 @@ func (s *LogisticService) ExistsSetup() (bool, error) {
 		utils.LogError(err)
 		return false, err
 	}
-
 	return count == 1, nil
 }
 
@@ -118,7 +117,6 @@ func (s *LogisticService) FindSetup() (*logisticModel.LogisticSetup, error) {
 		utils.LogError(err)
 		return nil, err
 	}
-
 	return &setup, nil
 }
 
@@ -288,7 +286,6 @@ func (s *LogisticService) FindAllSlots() ([]logisticModel.LogisticSlot, error) {
 	if err != nil {
 		utils.LogError(err)
 	}
-
 	return slots, err
 }
 
@@ -403,7 +400,6 @@ func (s *LogisticService) CreateRequest(data *dto.LogisticRequestDto) (*logistic
 		utils.LogError(err)
 		return nil, err
 	}
-
 	return request, nil
 }
 
@@ -412,19 +408,20 @@ func (s *LogisticService) ListAppRequests(userID int64, page string, limit strin
 	if err != nil {
 		return nil, err
 	}
-
 	total, err := s.CountAppRequests(user.MasterPrn.String)
 	if err != nil {
 		return nil, err
 	}
-
 	pager := model.GetPager(total, page, limit)
 	list, err := s.FindAllAppRequests(user.MasterPrn.String, pager.GetLowerBound(), pager.PageSize)
 	if err != nil {
 		return nil, err
 	}
-
-	return &model.PagedList{List: list, Total: total, TotalPages: pager.GetTotalPages()}, nil
+	return &model.PagedList{
+		List: list, 
+		Total: total, 
+		TotalPages: pager.GetTotalPages(),
+	}, nil
 }
 
 func (s *LogisticService) CountAppRequests(prn string) (int, error) {
@@ -473,11 +470,9 @@ func (s *LogisticService) FindAllAppRequests(prn string, offset int, limit int) 
 		utils.LogError(err)
 		return list, err
 	}
-
 	for i := range list {
 		list[i].SetApp()
 	}
-
 	return list, nil
 }
 
@@ -486,14 +481,16 @@ func (s *LogisticService) List(page string, limit string) (*model.PagedList, err
 	if err != nil {
 		return nil, err
 	}
-
 	pager := model.GetPager(total, page, limit)
 	list, err := s.FindAll(pager.GetLowerBound(), pager.PageSize)
 	if err != nil {
 		return nil, err
 	}
-
-	return &model.PagedList{List: list, Total: total, TotalPages: pager.GetTotalPages()}, nil
+	return &model.PagedList{
+		List: list, 
+		Total: total, 
+		TotalPages: pager.GetTotalPages(),
+	}, nil
 }
 
 func (s *LogisticService) Count() (int, error) {
@@ -516,11 +513,9 @@ func (s *LogisticService) FindAll(offset int, limit int) ([]logisticModel.Logist
 		utils.LogError(err)
 		return list, err
 	}
-
 	for i := range list {
 		list[i].SetWebAdmin()
 	}
-
 	return list, nil
 }
 
@@ -529,20 +524,21 @@ func (s *LogisticService) ListByKeyword(keyword string, keyword2 string, keyword
 	if err != nil {
 		return nil, err
 	}
-
 	pager := model.GetPager(total, page, limit)
 	list, err := s.FindByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize)
 	if err != nil {
 		return nil, err
 	}
-
-	return &model.PagedList{List: list, Total: total, TotalPages: pager.GetTotalPages()}, nil
+	return &model.PagedList{
+		List: list, 
+		Total: total, 
+		TotalPages: pager.GetTotalPages(),
+	}, nil
 }
 
 func (s *LogisticService) CountByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string) (int, error) {
 	whereClause, args := buildLogisticSearchConditions(keyword, keyword2, keyword3, keyword4)
 	query := `SELECT COUNT(lar.LOGISTIC_REQUEST_ID) FROM LOGISTIC_ARRANGEMENT_REQUESTER lar` + whereClause
-
 	var count int
 	err := s.db.GetContext(s.ctx, &count, query, args...)
 	if err != nil {
@@ -558,18 +554,15 @@ func (s *LogisticService) FindByKeyword(keyword string, keyword2 string, keyword
 		ORDER BY lar.FLIGHT_ARRIVAL_DATE
 		OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 	args = append(args, sql.Named("offset", offset), sql.Named("limit", limit))
-
 	list := make([]logisticModel.LogisticRequest, 0)
 	err := s.db.SelectContext(s.ctx, &list, query, args...)
 	if err != nil {
 		utils.LogError(err)
 		return list, err
 	}
-
 	for i := range list {
 		list[i].SetWebAdmin()
 	}
-
 	return list, nil
 }
 
@@ -579,12 +572,11 @@ func (s *LogisticService) FindByRequestID(requestID int64) (*logisticModel.Logis
 	err := s.db.GetContext(s.ctx, &request, query, requestID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil
+			return nil, err
 		}
 		utils.LogError(err)
 		return nil, err
 	}
-
 	request.SetWebAdmin()
 	return &request, nil
 }
@@ -605,7 +597,6 @@ func (s *LogisticService) UpdateRequestStatusByNumber(requestNumber string, stat
 		fieldDate = "ADMIN_DATE_UPDATE"
 		updatedBy = adminID
 	}
-
 	_, err := s.db.ExecContext(s.ctx, fmt.Sprintf(query, field, fieldDate),
 		sql.Named("status", status),
 		sql.Named("updatedBy", updatedBy),
@@ -614,7 +605,6 @@ func (s *LogisticService) UpdateRequestStatusByNumber(requestNumber string, stat
 	if err != nil {
 		utils.LogError(err)
 	}
-
 	return err
 }
 
@@ -629,18 +619,16 @@ func (s *LogisticService) FindByRequestNumberForMail(requestNumber string) (*log
 			TO_CHAR(REQUESTED_PICKUP_DATE, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS REQUESTED_PICKUP_DATE,
 			REQUESTED_PICKUP_TIME
 		FROM LOGISTIC_ARRANGEMENT_REQUESTER
-		WHERE LOGISTIC_REQUEST_NUMBER = :1`
-
+		WHERE LOGISTIC_REQUEST_NUMBER = :requestNumber`
 	var request logisticModel.LogisticRequest
 	err := s.db.GetContext(s.ctx, &request, query, requestNumber)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil
+			return nil, err
 		}
 		utils.LogError(err)
 		return nil, err
 	}
-
 	return &request, nil
 }
 

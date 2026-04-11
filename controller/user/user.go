@@ -5,6 +5,7 @@ import (
     "strconv"
     "vesaliusm/dto"
     "vesaliusm/middleware"
+    mm "vesaliusm/model/mail"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/applicationUserNotification"
     "vesaliusm/service/assignBranch"
@@ -393,13 +394,13 @@ func (cr *UserController) VerifyUser(c fiber.Ctx) error {
     }
 
     if verified {
-        emailPrm := utils.Map{
-            "patientName": user.FirstName.String,
-            "username":    user.Username.String,
-            "email":       "",
+        emailPrm := mm.MailSignUpSuccess{
+            PatientName: user.FirstName.String,
+            Username: user.Username.String,
+            Email: "",
         }
         if user.Email.Valid {
-            emailPrm["email"] = user.Email.String
+            emailPrm.Email = user.Email.String
             go func() {
                 cr.mailService.SendSignUpSuccess(emailPrm)
             }()
@@ -443,13 +444,13 @@ func (cr *UserController) VerifyUserEmail(c fiber.Ctx) error {
     }
 
     if verified && user.FirstTimeLogin {
-        emailPrm := utils.Map{
-            "patientName": user.FirstName.String,
-            "username":    user.Username.String,
-            "email":       "",
+        emailPrm := mm.MailSignUpSuccess{
+            PatientName: user.FirstName.String,
+            Username: user.Username.String,
+            Email: "",
         }
         if user.Username.Valid {
-            emailPrm["email"] = user.Username.String
+            emailPrm.Email = user.Username.String
             go func() {
                 cr.mailService.SendSignUpSuccess(emailPrm)
             }()
@@ -493,13 +494,13 @@ func (cr *UserController) VerifyUserSmsTac(c fiber.Ctx) error {
     }
 
     if verified && user.FirstTimeLogin {
-        emailPrm := utils.Map{
-            "patientName": user.FirstName.String,
-            "username":    user.Username.String,
-            "email":       "",
+        emailPrm := mm.MailSignUpSuccess{
+            PatientName: user.FirstName.String,
+            Username: user.Username.String,
+            Email: "",
         }
         if user.Email.Valid {
-            emailPrm["email"] = user.Email.String
+            emailPrm.Email = user.Email.String
             go func() {
                 cr.mailService.SendSignUpSuccess(emailPrm)
             }()

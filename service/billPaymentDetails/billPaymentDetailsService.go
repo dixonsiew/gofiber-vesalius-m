@@ -6,6 +6,7 @@ import (
     "strings"
     "vesaliusm/database"
     gm "vesaliusm/model"
+    mm "vesaliusm/model/mail"
     model "vesaliusm/model/userBilling"
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/mail"
@@ -376,19 +377,19 @@ func (s *BillPaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId s
 
             r2 := patientOutstandingBillRes[0]
 
-            emailPrm := utils.Map{
-                "amount":        r.PaymentAmount.Float64,
-                "paymentMethod": "Wallex",
-                "billNumber":    "",
-                "invoiceNumber": "",
-                "email":         "",
+            emailPrm := mm.MailSuccessOutstandingBillPayment{
+                Amount:        utils.GetAmount(r.PaymentAmount.Float64),
+                PaymentMethod: "Wallex",
+                BillNumber:    "",
+                InvoiceNumber: "",
+                Email:         "",
             }
 
             if r.BillingEmail.Valid {
-                emailPrm["email"] = r.BillingEmail.String
+                emailPrm.Email = r.BillingEmail.String
                 if r2.PaymentStatus.String == utils.PaymentStatusPaid {
-                    emailPrm["billNumber"] = r2.BillNumber.String
-                    emailPrm["invoiceNumber"] = r2.InvoiceNumber.String
+                    emailPrm.BillNumber = r2.BillNumber.String
+                    emailPrm.InvoiceNumber = r2.InvoiceNumber.String
                     go func() {
                         s.mailService.SendSuccessOutstandingBillPayment(emailPrm)
                     }()
@@ -460,19 +461,19 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
             r2 := patientOutstandingBillRes[0]
 
             if r2.PaymentStatus.String == utils.PaymentStatusPaid {
-                emailPrm := utils.Map{
-                    "amount":        r.PaymentAmount.Float64,
-                    "paymentMethod": "iPay88",
-                    "billNumber":    "",
-                    "invoiceNumber": "",
-                    "email":         "",
+                emailPrm := mm.MailSuccessOutstandingBillPayment{
+                    Amount:        utils.GetAmount(r.PaymentAmount.Float64),
+                    PaymentMethod: "iPay88",
+                    BillNumber:    "",
+                    InvoiceNumber: "",
+                    Email:         "",
                 }
 
                 if r.BillingEmail.Valid {
-                    emailPrm["email"] = r.BillingEmail.String
+                    emailPrm.Email = r.BillingEmail.String
                     if r2.PaymentStatus.String == utils.PaymentStatusPaid {
-                        emailPrm["billNumber"] = r2.BillNumber.String
-                        emailPrm["invoiceNumber"] = r2.InvoiceNumber.String
+                        emailPrm.BillNumber = r2.BillNumber.String
+                        emailPrm.InvoiceNumber = r2.InvoiceNumber.String
                         go func() {
                             s.mailService.SendSuccessOutstandingBillPayment(emailPrm)
                         }()

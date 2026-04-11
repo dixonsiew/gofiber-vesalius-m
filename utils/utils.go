@@ -1,22 +1,23 @@
 package utils
 
 import (
-	"fmt"
-	"math/rand"
-	"os"
-	"reflect"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
+    "crypto/tls"
+    "fmt"
+    "math/rand"
+    "os"
+    "reflect"
+    "regexp"
+    "strconv"
+    "strings"
+    "time"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/go-resty/resty/v2"
-	"github.com/gofiber/fiber/v3"
-	"github.com/guregu/null/v6"
-	"github.com/rs/zerolog"
-	"github.com/shopspring/decimal"
-	"github.com/ztrue/tracerr"
+    "github.com/go-playground/validator/v10"
+    "github.com/go-resty/resty/v2"
+    "github.com/gofiber/fiber/v3"
+    "github.com/guregu/null/v6"
+    "github.com/rs/zerolog"
+    "github.com/shopspring/decimal"
+    "github.com/ztrue/tracerr"
 )
 
 type Map map[string]any
@@ -38,6 +39,7 @@ var (
 func SetClient() {
     client = resty.New()
     client.SetTimeout(time.Minute * 5)
+    client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 }
 
 func SetLogger(runLogFile *os.File) {
@@ -225,12 +227,13 @@ func (m Map) GetString(key string) string {
 }
 
 func ToString(s any) string {
-    r := fmt.Sprintf("%v", s)
+    r := ""
     switch v := s.(type) {
     case string:
         r = v
     case int:
         r = strconv.Itoa(v)
+    case nil:
     default:
         r = fmt.Sprintf("%v", s)
     }

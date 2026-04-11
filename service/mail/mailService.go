@@ -8,6 +8,8 @@ import (
     "strings"
     "vesaliusm/config"
     "vesaliusm/model"
+    lgm "vesaliusm/model/logistic"
+    mm "vesaliusm/model/mail"
     "vesaliusm/service/emailMaster"
     "vesaliusm/utils"
 
@@ -209,7 +211,7 @@ func (s *MailService) SendSignUp(o *model.ApplicationUser, newEmail string) erro
     return err
 }
 
-func (s *MailService) SendSignUpSuccess(o utils.Map) error {
+func (s *MailService) SendSignUpSuccess(o mm.MailSignUpSuccess) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendSignUpSuccess")
     if err != nil {
         utils.LogError(err)
@@ -217,11 +219,11 @@ func (s *MailService) SendSignUpSuccess(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{patient_name}}", o.GetString("patientName"),
-        "{{username}}", o.GetString("username"),
+        "{{patient_name}}", o.PatientName,
+        "{{username}}", o.Username,
     ).Replace(em.EmailTemplate.String)
 
-    to := o.GetString("email")
+    to := o.Email
     if em.EmailRecipient.Valid {
         to = em.EmailRecipient.String
     }
@@ -240,7 +242,7 @@ func (s *MailService) SendSignUpSuccess(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendGuestAppointmentConfirmationToPatient(o utils.Map) error {
+func (s *MailService) SendGuestAppointmentConfirmationToPatient(o mm.MailGuestAppointmentConfirmation) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendGuestAppointmentConfirmationToPatient")
     if err != nil {
         utils.LogError(err)
@@ -248,20 +250,20 @@ func (s *MailService) SendGuestAppointmentConfirmationToPatient(o utils.Map) err
     }
 
     html := strings.NewReplacer(
-        "{{guest_name}}", o.GetString("guestName"),
-        "{{doctor_name}}", o.GetString("doctorName"),
-        "{{appointment_date}}", o.GetString("appointmentDate"),
-        "{{appointment_time}}", o.GetString("appointmentTime"),
-        "{{clinic_location}}", o.GetString("clinicLocation"),
+        "{{guest_name}}", o.GuestName,
+        "{{doctor_name}}", o.DoctorName,
+        "{{appointment_date}}", o.AppointmentDate,
+        "{{appointment_time}}", o.AppointmentTime,
+        "{{clinic_location}}", o.ClinicLocation,
     ).Replace(em.EmailTemplate.String)
 
     subject := strings.NewReplacer(
-        "{{doctor_name}}", o.GetString("doctorName"),
+        "{{doctor_name}}", o.DoctorName,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
     m.SetHeader("From", fmt.Sprintf("%s <%s>", em.EmailSenderName.String, em.EmailSender.String))
-    m.SetHeader("To", o.GetString("email"))
+    m.SetHeader("To", o.Email)
     m.SetHeader("Subject", subject)
     m.SetBody("text/html", html)
 
@@ -273,7 +275,7 @@ func (s *MailService) SendGuestAppointmentConfirmationToPatient(o utils.Map) err
     return err
 }
 
-func (s *MailService) SendGuestAppointmentConfirmationToIH(o utils.Map) error {
+func (s *MailService) SendGuestAppointmentConfirmationToIH(o mm.MailGuestAppointmentConfirmation) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendGuestAppointmentConfirmationToPatient")
     if err != nil {
         utils.LogError(err)
@@ -281,20 +283,20 @@ func (s *MailService) SendGuestAppointmentConfirmationToIH(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{guest_name}}", o.GetString("guestName"),
-        "{{doctor_name}}", o.GetString("doctorName"),
-        "{{appointment_date}}", o.GetString("appointmentDate"),
-        "{{appointment_time}}", o.GetString("appointmentTime"),
-        "{{clinic_location}}", o.GetString("clinicLocation"),
+        "{{guest_name}}", o.GuestName,
+        "{{doctor_name}}", o.DoctorName,
+        "{{appointment_date}}", o.AppointmentDate,
+        "{{appointment_time}}", o.AppointmentTime,
+        "{{clinic_location}}", o.ClinicLocation,
     ).Replace(em.EmailTemplate.String)
 
-    to := o.GetString("email")
+    to := o.Email
     if em.EmailRecipient.Valid {
         to = em.EmailRecipient.String
     }
 
     subject := strings.NewReplacer(
-        "{{doctor_name}}", o.GetString("doctorName"),
+        "{{doctor_name}}", o.DoctorName,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
@@ -353,7 +355,7 @@ func (s *MailService) SendTest(senderEmail string) error {
     return err
 }
 
-func (s *MailService) SendLittleKids(o utils.Map) error {
+func (s *MailService) SendLittleKids(o mm.MailLittleKids) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendLittleKids")
     if err != nil {
         utils.LogError(err)
@@ -361,10 +363,10 @@ func (s *MailService) SendLittleKids(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{name}}", o.GetString("kidsName"),
+        "{{name}}", o.KidsName,
     ).Replace(em.EmailTemplate.String)
 
-    to := o.GetString("email")
+    to := o.Email
     if em.EmailRecipient.Valid {
         to = em.EmailRecipient.String
     }
@@ -385,7 +387,7 @@ func (s *MailService) SendLittleKids(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendGoldenPearl(o utils.Map) error {
+func (s *MailService) SendGoldenPearl(o mm.MailGoldenPearl) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendGoldenPearl")
     if err != nil {
         utils.LogError(err)
@@ -393,10 +395,10 @@ func (s *MailService) SendGoldenPearl(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{name}}", o.GetString("goldenName"),
+        "{{name}}", o.GoldenName,
     ).Replace(em.EmailTemplate.String)
 
-    to := o.GetString("email")
+    to := o.Email
     if em.EmailRecipient.Valid {
         to = em.EmailRecipient.String
     }
@@ -417,7 +419,7 @@ func (s *MailService) SendGoldenPearl(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendClubsEventRegistrationToMember(o utils.Map) error {
+func (s *MailService) SendClubsEventRegistrationToMember(o mm.MailClubsEventRegistrationToMember) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendClubsEventRegistrationToMember")
     if err != nil {
         utils.LogError(err)
@@ -425,17 +427,17 @@ func (s *MailService) SendClubsEventRegistrationToMember(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{member_name}}", o.GetString("memberName"),
-        "{{event_name}}", o.GetString("activityName"),
+        "{{member_name}}", o.MemberName,
+        "{{event_name}}", o.ActivityName,
     ).Replace(em.EmailTemplate.String)
 
     subject := strings.NewReplacer(
-        "{{activity_name}}", o.GetString("activityName"),
+        "{{activity_name}}", o.ActivityName,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
     m.SetHeader("From", fmt.Sprintf("%s <%s>", em.EmailSenderName.String, em.EmailSender.String))
-    m.SetHeader("To", o.GetString("email"))
+    m.SetHeader("To", o.Email)
     m.SetHeader("Subject", subject)
     m.SetBody("text/html", html)
 
@@ -447,7 +449,7 @@ func (s *MailService) SendClubsEventRegistrationToMember(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendClubsEventRegistrationToIH(o utils.Map) error {
+func (s *MailService) SendClubsEventRegistrationToIH(o mm.MailClubsEventRegistrationToMember) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendClubsEventRegistrationToIH")
     if err != nil {
         utils.LogError(err)
@@ -455,17 +457,17 @@ func (s *MailService) SendClubsEventRegistrationToIH(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{member_name}}", o.GetString("memberName"),
-        "{{event_name}}", o.GetString("activityName"),
+        "{{member_name}}", o.MemberName,
+        "{{event_name}}", o.ActivityName,
     ).Replace(em.EmailTemplate.String)
 
-    to := o.GetString("email")
+    to := o.Email
     if em.EmailRecipient.Valid {
         to = em.EmailRecipient.String
     }
 
     subject := strings.NewReplacer(
-        "{{activity_name}}", o.GetString("activityName"),
+        "{{activity_name}}", o.ActivityName,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
@@ -482,7 +484,7 @@ func (s *MailService) SendClubsEventRegistrationToIH(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendLogisticConfirmation(o utils.Map) error {
+func (s *MailService) SendLogisticConfirmation(o *lgm.LogisticRequest) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendLogisticConfirmation")
     if err != nil {
         utils.LogError(err)
@@ -490,26 +492,26 @@ func (s *MailService) SendLogisticConfirmation(o utils.Map) error {
     }
 
     withCompanion := "No"
-    if o.GetString("visitWithCompanion") == "Y" {
+    if o.VisitWithCompanion.String == "Y" {
         withCompanion = "Yes"
     }
 
     companionName := "-"
-    if o.GetString("visitWithCompanion") == "Y" {
-        companionName = o.GetString("companionName")
+    if o.VisitWithCompanion.String == "Y" {
+        companionName = o.CompanionName.String
     }
 
     html := strings.NewReplacer(
-        "{{requester_name}}", o.GetString("requesterName"),
-        "{{requester_prn}}", o.GetString("requesterPrn"),
+        "{{requester_name}}", o.RequesterName.String,
+        "{{requester_prn}}", o.RequesterPrn.String,
         "{{with_companion}}", withCompanion,
         "{{companion_name}}", companionName,
-        "{{pickup_datetime}}", fmt.Sprintf("%s %s", o.GetString("requestedPickupDate"), o.GetString("requestedPickupTime")),
-        "{{logistic_number}}", o.GetString("logisticRequestNumber"),
+        "{{pickup_datetime}}", fmt.Sprintf("%s %s", o.RequestedPickupDate.String, o.RequestedPickupTime.String),
+        "{{logistic_number}}", o.LogisticRequestNumber.String,
     ).Replace(em.EmailTemplate.String)
 
     subject := strings.NewReplacer(
-        "{{logistic_request_number}}", o.GetString("logisticRequestNumber"),
+        "{{logistic_request_number}}", o.LogisticRequestNumber.String,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
@@ -526,39 +528,39 @@ func (s *MailService) SendLogisticConfirmation(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendLogisticCancellation(o utils.Map) error {
+func (s *MailService) SendLogisticCancellation(o *lgm.LogisticRequest) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendLogisticCancellation")
     if err != nil {
         utils.LogError(err)
         return err
     }
 
-    if o["requestedPickupDate"] != nil && o["requestedPickupDate"] != "" {
-        g, _ := goment.New(o.GetString("requestedPickupDate"), "YYYY-MM-DD[T]HH:mm:ssZ")
-        o["requestedPickupDate"] = g.Format("DD/MM/YYYY")
+    if o.RequestedPickupDate.Valid && o.RequestedPickupDate.String != "" {
+        g, _ := goment.New(o.RequestedPickupDate.String, "YYYY-MM-DD[T]HH:mm:ssZ")
+        o.RequestedPickupDate = utils.NewNullString(g.Format("DD/MM/YYYY"))
     }
 
     withCompanion := "No"
-    if o.GetString("visitWithCompanion") == "Y" {
+    if o.VisitWithCompanion.String == "Y" {
         withCompanion = "Yes"
     }
 
     companionName := "-"
-    if o.GetString("visitWithCompanion") == "Y" {
-        companionName = o.GetString("companionName")
+    if o.VisitWithCompanion.String == "Y" {
+        companionName = o.CompanionName.String
     }
 
     html := strings.NewReplacer(
-        "{{requester_name}}", o.GetString("requesterName"),
-        "{{requester_prn}}", o.GetString("requesterPrn"),
+        "{{requester_name}}", o.RequesterName.String,
+        "{{requester_prn}}", o.RequesterPrn.String,
         "{{with_companion}}", withCompanion,
         "{{companion_name}}", companionName,
-        "{{pickup_datetime}}", fmt.Sprintf("%s %s", o.GetString("requestedPickupDate"), o.GetString("requestedPickupTime")),
-        "{{logistic_number}}", o.GetString("logisticRequestNumber"),
+        "{{pickup_datetime}}", fmt.Sprintf("%s %s", o.RequestedPickupDate.String, o.RequestedPickupTime.String),
+        "{{logistic_number}}", o.LogisticRequestNumber.String,
     ).Replace(utils.EmailTemplateConstantLogisticRequestCancellation)
 
     subject := strings.NewReplacer(
-        "{{logistic_request_number}}", o.GetString("logisticRequestNumber"),
+        "{{logistic_request_number}}", o.LogisticRequestNumber.String,
     ).Replace(em.EmailSubject.String)
 
     m := gomail.NewMessage()
@@ -575,7 +577,7 @@ func (s *MailService) SendLogisticCancellation(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendSuccessOutstandingBillPayment(o utils.Map) error {
+func (s *MailService) SendSuccessOutstandingBillPayment(o mm.MailSuccessOutstandingBillPayment) error {
     em, err := s.emailMasterSvc.FindByEmailFunctionName("sendSuccessOutstandingBillPayment")
     if err != nil {
         utils.LogError(err)
@@ -583,15 +585,15 @@ func (s *MailService) SendSuccessOutstandingBillPayment(o utils.Map) error {
     }
 
     html := strings.NewReplacer(
-        "{{amount}}", fmt.Sprintf("RM%s", o.GetString("amount")),
-        "{{payment_method}}", o.GetString("paymentMethod"),
-        "{{bill_number}}", o.GetString("billNumber"),
-        "{{invoice_number}}", o.GetString("invoiceNumber"),
+        "{{amount}}", fmt.Sprintf("RM%s", o.Amount),
+        "{{payment_method}}", o.PaymentMethod,
+        "{{bill_number}}", o.BillNumber,
+        "{{invoice_number}}", o.InvoiceNumber,
     ).Replace(em.EmailTemplate.String)
 
     m := gomail.NewMessage()
     m.SetHeader("From", fmt.Sprintf("%s <%s>", em.EmailSenderName.String, em.EmailSender.String))
-    m.SetHeader("To", o.GetString("email"))
+    m.SetHeader("To", o.Email)
     m.SetHeader("Subject", em.EmailSubject.String)
     m.SetBody("text/html", html)
 
@@ -603,23 +605,30 @@ func (s *MailService) SendSuccessOutstandingBillPayment(o utils.Map) error {
     return err
 }
 
-func (s *MailService) SendSuccessPackagePayment(o utils.Map) error {
-    em, err := s.emailMasterSvc.FindByEmailFunctionName("sendSuccessOutstandingBillPayment")
+func (s *MailService) SendSuccessPackagePayment(o mm.MailSuccessPackagePayment) error {
+    em, err := s.emailMasterSvc.FindByEmailFunctionName("sendSuccessPackagePayment")
     if err != nil {
         utils.LogError(err)
         return err
     }
 
     html := strings.NewReplacer(
-        "{{amount}}", fmt.Sprintf("RM%s", o.GetString("amount")),
-        "{{payment_method}}", o.GetString("paymentMethod"),
-        "{{bill_number}}", o.GetString("billNumber"),
-        "{{invoice_number}}", o.GetString("invoiceNumber"),
+        "{{patient_name}}", o.PatientName,
+        "{{order_number}}", o.OrderNumber,
+        "{{date_of_purchase}}", o.DateOfPurchase,
+        "{{product_name}}", o.ProductName,
+        "{{product_quantity}}", o.ProductQuantity,
+        "{{product_price}}", fmt.Sprintf("RM%s", o.ProductPrice),
+        "{{subtotal_price}}", fmt.Sprintf("RM%s", o.SubtotalPrice),
+        "{{payment_method}}", o.PaymentMethod,
+        "{{total_price}}", fmt.Sprintf("RM%s", o.TotalPrice),
+        "{{package_expiry_date}}", o.PackageExpiryDate,
+        "{{billing_address}}", o.BillingAddress,
     ).Replace(em.EmailTemplate.String)
 
     m := gomail.NewMessage()
     m.SetHeader("From", fmt.Sprintf("%s <%s>", em.EmailSenderName.String, em.EmailSender.String))
-    m.SetHeader("To", o.GetString("email"))
+    m.SetHeader("To", o.Email)
     m.SetHeader("Subject", em.EmailSubject.String)
     m.SetBody("text/html", html)
 

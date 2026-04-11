@@ -7,6 +7,7 @@ import (
     "vesaliusm/dto"
     "vesaliusm/middleware"
     model "vesaliusm/model/clubs"
+    mm "vesaliusm/model/mail"
     "vesaliusm/service/clubs"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
@@ -135,23 +136,23 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         return err
     }
 
-    emailPrm := utils.Map{
-        "kidsName": o.KidsName.String,
-        "email":    "",
+    emailPrm := mm.MailLittleKids{
+        KidsName: o.KidsName.String,
+        Email:    "",
     }
     if o.KidsEmail.Valid {
-        emailPrm["email"] = o.KidsEmail.String
+        emailPrm.Email = o.KidsEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
     if o.GuardianEmail.Valid {
-        emailPrm["email"] = o.GuardianEmail.String
+        emailPrm.Email = o.GuardianEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
 
     go func() {
@@ -276,23 +277,23 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         return err
     }
 
-    emailPrm := utils.Map{
-        "kidsName": o.KidsName.String,
-        "email":    "",
+    emailPrm := mm.MailLittleKids{
+        KidsName: o.KidsName.String,
+        Email:    "",
     }
     if o.KidsEmail.Valid {
-        emailPrm["email"] = o.KidsEmail.String
+        emailPrm.Email = o.KidsEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
     if o.GuardianEmail.Valid {
-        emailPrm["email"] = o.GuardianEmail.String
+        emailPrm.Email = o.GuardianEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
 
     go func() {
@@ -590,17 +591,17 @@ func (cr *ClubsLittleKidsController) ParticipateLittleKidsActivity(c fiber.Ctx) 
             return err
         }
 
-        emailPrm := utils.Map{
-            "activityName": activity.KidsActivityName.String,
-            "memberName":   kidsMember.KidsName.String,
-            "email":        "",
+        emailPrm := mm.MailClubsEventRegistrationToMember{
+            ActivityName: activity.KidsActivityName.String,
+            MemberName:   kidsMember.KidsName.String,
+            Email:        "",
         }
         if kidsMember.KidsEmail.Valid {
-            emailPrm["email"] = kidsMember.KidsEmail.String
+            emailPrm.Email = kidsMember.KidsEmail.String
             go func() {
                 cr.mailService.SendClubsEventRegistrationToMember(emailPrm)
             }()
-            emailPrm["email"] = ""
+            emailPrm.Email = ""
         }
 
         go func() {

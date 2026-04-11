@@ -6596,6 +6596,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/qms/backend/qms_request": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "QMS"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/qms.QueueResult"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/qms/backend/qms_response": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "QMS"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -13681,6 +13722,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "qms.QueueResult": {
+            "type": "object",
+            "properties": {
+                "asAt": {
+                    "type": "string"
+                },
+                "doctorName": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "patientsAheadOfYou": {
+                    "type": "string"
+                },
+                "queueNumber": {
+                    "type": "string"
+                },
+                "relationship": {
+                    "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
+                },
+                "ticketStatus": {
                     "type": "string"
                 }
             }

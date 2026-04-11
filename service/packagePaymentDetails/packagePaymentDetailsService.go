@@ -3,16 +3,18 @@ package packagePaymentDetails
 import (
     "context"
     "database/sql"
-	"strings"
+    "strconv"
+    "strings"
     "vesaliusm/database"
-	upck "vesaliusm/model/userPackage"
-	"vesaliusm/service/mail"
-	"vesaliusm/service/patientPurchaseDetails"
-	"vesaliusm/utils"
+    mm "vesaliusm/model/mail"
+    upck "vesaliusm/model/userPackage"
+    "vesaliusm/service/mail"
+    "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
-    go_ora "github.com/sijms/go-ora/v2"
+    "github.com/jmoiron/sqlx"
     "github.com/nleeper/goment"
+    go_ora "github.com/sijms/go-ora/v2"
 )
 
 var PackagePaymentDetailsSvc *PackagePaymentDetailsService = NewPackagePaymentDetailsService(database.GetDb(), database.GetCtx())
@@ -542,19 +544,19 @@ func (s *PackagePaymentDetailsService) sendPackagePayment(paymentId int64) error
             email = r2.BillingEmail.String
         }
         
-        emailPrm := utils.Map{
-            "patientName": r2.PatientName.String,
-            "orderNumber": r2.PaymentRequestNo.String,
-            "dateOfPurchase": dateOfPurStr,
-            "productName": r2.PackageName.String,
-            "productQuantity": r2.PackageQuantity.Int32,
-            "productPrice": utils.GetAmount(r2.PackagePrice.Float64),
-            "subtotalPrice": utils.GetAmount(subtotalPrice),
-            "paymentMethod": r2.PaymentGateway,
-            "totalPrice": utils.GetAmount(subtotalPrice),
-            "packageExpiryDate": packageExpiryDateStr,
-            "billingAddress": addr,
-            "email": email,
+        emailPrm := mm.MailSuccessPackagePayment{
+            PatientName: r2.PatientName.String,
+            OrderNumber: r2.PaymentRequestNo.String,
+            DateOfPurchase: dateOfPurStr,
+            ProductName: r2.PackageName.String,
+            ProductQuantity: strconv.FormatInt(int64(r2.PackageQuantity.Int32), 10),
+            ProductPrice: utils.GetAmount(r2.PackagePrice.Float64),
+            SubtotalPrice: utils.GetAmount(subtotalPrice),
+            PaymentMethod: r2.PaymentGateway,
+            TotalPrice: utils.GetAmount(subtotalPrice),
+            PackageExpiryDate: packageExpiryDateStr,
+            BillingAddress: addr,
+            Email: email,
         }
         go func() {
             s.mailService.SendSuccessPackagePayment(emailPrm)

@@ -8,6 +8,7 @@ import (
 	"vesaliusm/controller/clubs/shared"
 	"vesaliusm/dto"
 	model "vesaliusm/model/clubs"
+    mm "vesaliusm/model/mail"
 	upck "vesaliusm/model/userPackage"
 	"vesaliusm/service/clubs"
 	"vesaliusm/service/country"
@@ -315,13 +316,13 @@ func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
             email = guest.GuestEmail.String
         }
 
-        emailPrm := utils.Map{
-            "guestName":       guest.GuestName,
-            "doctorName":      o.DoctorName,
-            "appointmentDate": o.Date,
-            "appointmentTime": o.StartTime,
-            "clinicLocation":  o.Clinic,
-            "email":           email,
+        emailPrm := mm.MailGuestAppointmentConfirmation{
+            GuestName:       guest.GuestName.String,
+            DoctorName:      o.DoctorName,
+            AppointmentDate: o.Date,
+            AppointmentTime: o.StartTime,
+            ClinicLocation:  o.Clinic,
+            Email:           email,
         }
         if email != "" {
             go func() {
@@ -330,7 +331,7 @@ func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
                     _ = cr.guestService.DeleteTempGuestInfo(guest.GuestPRN.String)
                 }
             }()
-            emailPrm["email"] = ""
+            emailPrm.Email = ""
         }
 
         go func() {
@@ -514,23 +515,23 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         return err
     }
 
-    emailPrm := utils.Map{
-        "kidsName": o.KidsName.String,
-        "email":    "",
+    emailPrm := mm.MailLittleKids{
+        KidsName: o.KidsName.String,
+        Email:    "",
     }
     if o.KidsEmail.Valid {
-        emailPrm["email"] = o.KidsEmail.String
+        emailPrm.Email = o.KidsEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
     if o.GuardianEmail.Valid {
-        emailPrm["email"] = o.GuardianEmail.String
+        emailPrm.Email = o.GuardianEmail.String
         go func() {
             cr.mailService.SendLittleKids(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
 
     go func() {
@@ -614,17 +615,17 @@ func (cr *GuestController) ParticipateLittleKidsActivity(c fiber.Ctx) error {
             return err
         }
 
-        emailPrm := utils.Map{
-            "activityName": activity.KidsActivityName.String,
-            "memberName":   kidsMember.KidsName.String,
-            "email":        "",
+        emailPrm := mm.MailClubsEventRegistrationToMember{
+            ActivityName: activity.KidsActivityName.String,
+            MemberName:   kidsMember.KidsName.String,
+            Email:        "",
         }
         if kidsMember.KidsEmail.Valid {
-            emailPrm["email"] = kidsMember.KidsEmail.String
+            emailPrm.Email = kidsMember.KidsEmail.String
             go func() {
                 cr.mailService.SendClubsEventRegistrationToMember(emailPrm)
             }()
-            emailPrm["email"] = ""
+            emailPrm.Email = ""
         }
 
         go func() {
@@ -762,23 +763,23 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         return err
     }
 
-    emailPrm := utils.Map{
-        "goldenName": o.GoldenName.String,
-        "email":      "",
+    emailPrm := mm.MailGoldenPearl{
+        GoldenName: o.GoldenName.String,
+        Email:      "",
     }
     if o.GoldenEmail.Valid {
-        emailPrm["email"] = o.GoldenEmail.String
+        emailPrm.Email = o.GoldenEmail.String
         go func() {
             cr.mailService.SendGoldenPearl(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
     if o.NokEmail.Valid {
-        emailPrm["email"] = o.NokEmail.String
+        emailPrm.Email = o.NokEmail.String
         go func() {
             cr.mailService.SendGoldenPearl(emailPrm)
         }()
-        emailPrm["email"] = ""
+        emailPrm.Email = ""
     }
 
     go func() {
@@ -864,17 +865,17 @@ func (cr *GuestController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
             return err
         }
 
-        emailPrm := utils.Map{
-            "activityName": activity.GoldenActivityName,
-            "memberName":   goldenMember.GoldenName,
-            "email":        "",
+        emailPrm := mm.MailClubsEventRegistrationToMember{
+            ActivityName: activity.GoldenActivityName.String,
+            MemberName:   goldenMember.GoldenName.String,
+            Email:        "",
         }
         if goldenMember.GoldenEmail.Valid {
-            emailPrm["email"] = goldenMember.GoldenEmail.String
+            emailPrm.Email = goldenMember.GoldenEmail.String
             go func() {
                 cr.mailService.SendClubsEventRegistrationToMember(emailPrm)
             }()
-            emailPrm["email"] = ""
+            emailPrm.Email = ""
         }
 
         go func() {
