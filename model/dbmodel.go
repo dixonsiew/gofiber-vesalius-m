@@ -302,49 +302,50 @@ func (o *ApplicationUserFamily) Set() {
 }
 
 type ApplicationUser struct {
-    UserId               null.Int64     `json:"user_id" db:"USER_ID" swaggertype:"integer"`
-    Username             null.String    `json:"username" db:"USERNAME" swaggertype:"string"`
-    Email                null.String    `json:"email" db:"EMAIL" swaggertype:"string"`
-    IsKidsExplorer       null.String    `json:"isKidsExplorer" db:"IS_KIDS_EXPLORER" swaggertype:"string"`
-    IsGoldenPearl        null.String    `json:"isGoldenPearl" db:"IS_GOLDEN_PEARL" swaggertype:"string"`
-    Password             null.String    `json:"-" db:"PASSWORD" swaggertype:"string"`
-    Title                null.String    `json:"title" db:"TITLE" swaggertype:"string"`
-    FirstName            null.String    `json:"firstName" db:"FIRST_NAME" swaggertype:"string"`
-    MiddleName           null.String    `json:"middleName" db:"MIDDLE_NAME" swaggertype:"string"`
-    LastName             null.String    `json:"lastName" db:"LAST_NAME" swaggertype:"string"`
-    FullName             null.String    `json:"fullName" db:"FIRST_NAME" swaggertype:"string"`
-    Resident             null.String    `json:"resident" db:"RESIDENT" swaggertype:"string"`
-    Dob                  null.String    `json:"dob" db:"DOB" swaggertype:"string"`
-    Sex                  null.String    `json:"sex" db:"SEX" swaggertype:"string"`
-    Race                 null.String    `json:"race" db:"RACE" swaggertype:"string"`
-    Address              null.String    `json:"address" db:"ADDRESS" swaggertype:"string"`
-    Address1             null.String    `json:"address1" db:"ADDRESS_1" swaggertype:"string"`
-    Address2             null.String    `json:"address2" db:"ADDRESS_2" swaggertype:"string"`
-    Address3             null.String    `json:"address3" db:"ADDRESS_3" swaggertype:"string"`
-    CityState            null.String    `json:"cityState" db:"CITYSTATE" swaggertype:"string"`
-    Postcode             null.String    `json:"postalCode" db:"POSTCODE" swaggertype:"string"`
-    Country              null.String    `json:"country" db:"COUNTRY" swaggertype:"string"`
-    ContactNumber        null.String    `json:"contactNumber" db:"CONTACT_NUMBER" swaggertype:"string"`
-    Passport             null.String    `json:"passport" db:"PASSPORT" swaggertype:"string"`
-    Nationality          null.String    `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
-    VerificationCode     null.String    `json:"verificationCode" db:"VERIFICATION_CODE" swaggertype:"string"`
-    FirstTimeLoginV      null.Int32     `json:"-" db:"FIRST_TIME_LOGIN" swaggertype:"integer"`
-    FirstTimeBiometricV  null.Int32     `json:"-" db:"FIRST_TIME_BIOMETRIC" swaggertype:"integer"`
-    FirstTimeLogin       bool           `json:"firstTimeLogin"`
-    FirstTimeBiometric   bool           `json:"firstTimeBiometric"`
-    Role                 null.String    `json:"role" db:"ROLE" swaggertype:"string"`
-    MasterPrn            null.String    `json:"masterPrn" db:"MASTER_PRN" swaggertype:"string"`
-    PlayerId             null.String    `json:"playerId" db:"PLAYER_ID" swaggertype:"string"`
-    MachineId            null.String    `json:"machineId" db:"MACHINE_ID" swaggertype:"string"`
-    RegistrationDateTime null.String    `json:"registration_date_time" db:"REGISTRATION_DATE_TIME" swaggertype:"string"`
-    InactiveFlag         null.String    `json:"inactive" db:"INACTIVE_FLAG" swaggertype:"string"`
-    IsLoggedIn           null.Int64     `json:"isLoggedIn" db:"IS_LOGGED_IN" swaggertype:"integer"`
-    DateLoggedIn         null.String    `json:"dateLoggedIn" db:"DATE_LOGGED_IN" swaggertype:"string"`
-    SignInType           null.Int32     `json:"signInType" db:"SIGN_IN_TYPE" swaggertype:"integer"`
-    DocNoSignup          null.String    `json:"docNoSignUp" db:"DOC_NO_SIGNUP" swaggertype:"string"`
-    FullnameSignup       null.String    `json:"fullNameSignUp" db:"FULLNAME_SIGNUP" swaggertype:"string"`
-    UserBranches         []AssignBranch `json:"userBranches"`
-    SessionId            null.String    `json:"sessionId" db:"SESSION_ID" swaggertype:"string"`
+    UserId              null.Int64     `json:"user_id" db:"USER_ID" swaggertype:"integer"`
+    Username            null.String    `json:"username" db:"USERNAME" swaggertype:"string"`
+    Email               null.String    `json:"email" db:"EMAIL" swaggertype:"string"`
+    IsKidsExplorer      null.String    `json:"isKidsExplorer" db:"IS_KIDS_EXPLORER" swaggertype:"string"`
+    IsGoldenPearl       null.String    `json:"isGoldenPearl" db:"IS_GOLDEN_PEARL" swaggertype:"string"`
+    Password            null.String    `json:"-" db:"PASSWORD" swaggertype:"string"`
+    Title               null.String    `json:"title" db:"TITLE" swaggertype:"string"`
+    FirstName           null.String    `json:"firstName" db:"FIRST_NAME" swaggertype:"string"`
+    MiddleName          null.String    `json:"middleName" db:"MIDDLE_NAME" swaggertype:"string"`
+    LastName            null.String    `json:"lastName" db:"LAST_NAME" swaggertype:"string"`
+    FullName            null.String    `json:"fullName" db:"FIRST_NAME" swaggertype:"string"`
+    Resident            null.String    `json:"resident" db:"RESIDENT" swaggertype:"string"`
+    Dob                 null.String    `json:"dob" db:"DOB" swaggertype:"string"`
+    Sex                 null.String    `json:"sex" db:"SEX" swaggertype:"string"`
+    Race                null.String    `json:"race" db:"RACE" swaggertype:"string"`
+    Address             null.String    `json:"address" db:"ADDRESS" swaggertype:"string"`
+    Address1            null.String    `json:"address1" db:"ADDRESS_1" swaggertype:"string"`
+    Address2            null.String    `json:"address2" db:"ADDRESS_2" swaggertype:"string"`
+    Address3            null.String    `json:"address3" db:"ADDRESS_3" swaggertype:"string"`
+    CityState           null.String    `json:"cityState" db:"CITYSTATE" swaggertype:"string"`
+    Postcode            null.String    `json:"postalCode" db:"POSTCODE" swaggertype:"string"`
+    Country             null.String    `json:"country" db:"COUNTRY" swaggertype:"string"`
+    ContactNumber       null.String    `json:"contactNumber" db:"CONTACT_NUMBER" swaggertype:"string"`
+    Passport            null.String    `json:"passport" db:"PASSPORT" swaggertype:"string"`
+    Nationality         null.String    `json:"nationality" db:"NATIONALITY" swaggertype:"string"`
+    VerificationCode    null.String    `json:"verificationCode" db:"VERIFICATION_CODE" swaggertype:"string"`
+    FirstTimeLoginV     null.Int32     `json:"-" db:"FIRST_TIME_LOGIN" swaggertype:"integer"`
+    FirstTimeBiometricV null.Int32     `json:"-" db:"FIRST_TIME_BIOMETRIC" swaggertype:"integer"`
+    FirstTimeLogin      bool           `json:"firstTimeLogin"`
+    FirstTimeBiometric  bool           `json:"firstTimeBiometric"`
+    Role                null.String    `json:"role" db:"ROLE" swaggertype:"string"`
+    MasterPrn           null.String    `json:"masterPrn" db:"MASTER_PRN" swaggertype:"string"`
+    PlayerId            null.String    `json:"playerId" db:"PLAYER_ID" swaggertype:"string"`
+    MachineId           null.String    `json:"machineId" db:"MACHINE_ID" swaggertype:"string"`
+    RegisterDate        null.String    `json:"registerDate" db:"REGISTRATION_DATE_TIME" swaggertype:"string"`
+    InactiveFlag        null.String    `json:"inactive" db:"INACTIVE_FLAG" swaggertype:"string"`
+    IsLoggedIn          null.Int64     `json:"isLoggedIn" db:"IS_LOGGED_IN" swaggertype:"integer"`
+    DateLoggedIn        null.String    `json:"dateLoggedIn" db:"DATE_LOGGED_IN" swaggertype:"string"`
+    SignInType          null.Int32     `json:"signInType" db:"SIGN_IN_TYPE" swaggertype:"integer"`
+    DocNoSignup         null.String    `json:"docNoSignUp" db:"DOC_NO_SIGNUP" swaggertype:"string"`
+    FullnameSignup      null.String    `json:"fullNameSignUp" db:"FULLNAME_SIGNUP" swaggertype:"string"`
+    UserBranches        []AssignBranch `json:"userBranches"`
+    SessionId           null.String    `json:"sessionId" db:"SESSION_ID" swaggertype:"string"`
+    RegisterDateExcel   string         `json:"registerDateExcel"`
 }
 
 func (o *ApplicationUserFamily) SetFromFamilyMember(m ApplicationUser) {
@@ -397,6 +398,8 @@ func (o *ApplicationUser) Set() {
     } else {
         o.FirstTimeBiometric = false
     }
+
+    o.RegisterDateExcel = o.RegisterDate.String
 }
 
 type DoctorPatientAppointment struct {
@@ -725,15 +728,16 @@ func (o *GeneralNotification) Set() {
 }
 
 type MobileUserAuditLog struct {
-    AuditId     null.Int64  `json:"audit_id" db:"AUDIT_ID" swaggertype:"integer"`
-    Prn         null.String `json:"prn" db:"PRN" swaggertype:"string"`
-    Username    null.String `json:"username" db:"USERNAME" swaggertype:"string"`
-    PatientName null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
-    Action      null.String `json:"action" db:"ACTION" swaggertype:"string"`
-    ActionDesc  null.String `json:"actionDesc" db:"ACTION_DESC" swaggertype:"string"`
-    Remarks     null.String `json:"remarks" db:"REMARKS" swaggertype:"string"`
-    UserCreate  null.String `json:"userCreate" db:"USER_CREATE" swaggertype:"string"`
-    DateCreate  null.String `json:"dateCreate" db:"DATE_CREATE" swaggertype:"string"`
+    AuditId         null.Int64  `json:"audit_id" db:"AUDIT_ID" swaggertype:"integer"`
+    Prn             null.String `json:"prn" db:"PRN" swaggertype:"string"`
+    Username        null.String `json:"username" db:"USERNAME" swaggertype:"string"`
+    PatientName     null.String `json:"patientName" db:"PATIENT_NAME" swaggertype:"string"`
+    Action          null.String `json:"action" db:"ACTION" swaggertype:"string"`
+    ActionDesc      null.String `json:"actionDesc" db:"ACTION_DESC" swaggertype:"string"`
+    Remarks         null.String `json:"remarks" db:"REMARKS" swaggertype:"string"`
+    UserCreate      null.String `json:"userCreate" db:"USER_CREATE" swaggertype:"string"`
+    DateCreate      null.String `json:"dateCreate" db:"DATE_CREATE" swaggertype:"string"`
+    DateCreateExcel string      `json:"dateCreateExcel"`
 }
 
 type EmailMaster struct {

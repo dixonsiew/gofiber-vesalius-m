@@ -1,7 +1,7 @@
 package hpackage
 
 import (
-    "github.com/guregu/null/v6"
+	"github.com/guregu/null/v6"
 )
 
 type Package struct {
