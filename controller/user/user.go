@@ -9,6 +9,7 @@ import (
     "vesaliusm/service/applicationUser"
     "vesaliusm/service/applicationUserNotification"
     "vesaliusm/service/assignBranch"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/service/token"
     "vesaliusm/utils"
@@ -21,6 +22,7 @@ type UserController struct {
     applicationUserNotificationService *applicationUserNotification.ApplicationUserNotificationService
     assignBranchService                *assignBranch.AssignBranchService
     tokenService                       *token.TokenService
+    exportExcelService                 *exportExcel.ExportExcelService
     mailService                        *mail.MailService
 }
 
@@ -30,8 +32,51 @@ func NewUserController() *UserController {
         applicationUserNotificationService: applicationUserNotification.ApplicationUserNotificationSvc,
         assignBranchService:                assignBranch.AssignBranchSvc,
         tokenService:                       token.TokenSvc,
+        exportExcelService:                 exportExcel.ExportExcelSvc,
         mailService:                        mail.MailSvc,
     }
+}
+
+// GetAllExportMobileUser
+//
+// @Tags User
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.ApplicationUser
+// @Router /user/export/all [get]
+func (cr *UserController) GetAllExportMobileUser(c fiber.Ctx) error {
+    lx, err :=  cr.exportExcelService.ExportAllMobileUser()
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(lx)
+}
+
+//
+// @Tags User
+// @Produce json
+// @Security BearerAuth
+// @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
+// @Success 200 {array} model.ApplicationUser
+// @Router /user/export/search [post]
+func (cr *UserController) GetSearchExportMobileUser(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportMobileUserByKeyword(key)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllUsers

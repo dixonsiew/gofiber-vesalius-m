@@ -23,4 +23,6 @@ func (c *PackageController) registerRoutes(router fiber.Router) {
     api.Get("/:packageId", c.GetPackageById)
     api.Post("/", c.CreatePackage)
     api.Put("/:packageId", c.UpdatePackage)
+    api.Get("/export/all", c.GetAllExportHospitalPackage)
+    api.Post("/export/search", c.GetSearchExportHospitalPackage)
 }

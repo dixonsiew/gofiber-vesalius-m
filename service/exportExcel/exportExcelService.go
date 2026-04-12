@@ -84,7 +84,7 @@ func (s *ExportExcelService) ExportAllHospitalPackage() ([]hp.Package, error) {
         FROM HOSPITAL_PACKAGE hp
         ORDER BY hp.PACKAGE_NAME
     `
-    query = strings.Replace(base, "hp.*", getHospitalPackageCols("hp."), 1)
+    query = strings.Replace(query, "hp.*", getHospitalPackageCols("hp."), 1)
     list := make([]hp.Package, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {
@@ -107,7 +107,7 @@ func (s *ExportExcelService) ExportHospitalPackageByKeyword(keyword string, keyw
         WHERE ppd.PACKAGE_ID = hp.PACKAGE_ID) AS PACKAGE_TOTAL_SOLD
         FROM HOSPITAL_PACKAGE hp
     `
-    query = strings.Replace(base, "hp.*", getHospitalPackageCols("hp."), 1)
+    query = strings.Replace(query, "hp.*", getHospitalPackageCols("hp."), 1)
     lq := []string{query}
     lc := []string{}
     args := []any{}
@@ -674,7 +674,7 @@ func (s *ExportExcelService) ExportLittleKidsAttendeesByKeyword(kidsActivityId i
     lq = append(lq, " ORDER BY kcm.KIDS_MEMBERSHIP_NUMBER DESC")
     query = strings.Join(lq, "")
 
-    list := make([]model.LittleExplorersKidsMembership, 0)
+    list := make([]clubs.LittleExplorersKidsMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
@@ -745,7 +745,7 @@ func (s *ExportExcelService) ExportGoldenPearlAttendeesByKeyword(goldenActivityI
     lq = append(lq, " ORDER BY gcm.GOLDEN_MEMBERSHIP_NUMBER DESC")
     query = strings.Join(lq, "")
 
-    list := make([]model.GoldenPearlMembership, 0)
+    list := make([]clubs.GoldenPearlMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)

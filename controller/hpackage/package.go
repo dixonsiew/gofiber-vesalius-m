@@ -11,6 +11,7 @@ import (
     "vesaliusm/dto"
     "vesaliusm/middleware"
     model "vesaliusm/model/hpackage"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/hpackage"
     "vesaliusm/utils"
 
@@ -20,12 +21,14 @@ import (
 )
 
 type PackageController struct {
-    packageService *hpackage.PackageService
+    packageService     *hpackage.PackageService
+    exportExcelService *exportExcel.ExportExcelService
 }
 
 func NewPackageController() *PackageController {
     return &PackageController{
-        packageService: hpackage.PackageSvc,
+        packageService:     hpackage.PackageSvc,
+        exportExcelService: exportExcel.ExportExcelSvc,
     }
 }
 
@@ -294,9 +297,60 @@ func (cr *PackageController) UpdatePackage(c fiber.Ctx) error {
     })
 }
 
-// func (cr *PackageController)
+// GetAllExportHospitalPackage
+//
+// @Tags Package
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} hpackage.Package
+// @Router /package/export/all [get]
+func (cr *PackageController) GetAllExportHospitalPackage(c fiber.Ctx) error {
+    lx, err := cr.exportExcelService.ExportAllHospitalPackage()
+    if err != nil {
+        return err
+    }
 
-// func (cr *PackageController)
+    return c.JSON(lx)
+}
+
+// GetSearchExportHospitalPackage
+//
+// @Tags Package
+// @Produce json
+// @Security BearerAuth
+// @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
+// @Success 200 {array} hpackage.Package
+// @Router /package/export/search [post]
+func (cr *PackageController) GetSearchExportHospitalPackage(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
+        }
+    }
+    if key3 != "" {
+        if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
+        }
+    }
+
+    lx, err := cr.exportExcelService.ExportHospitalPackageByKeyword(key, key2, key3)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
 
 func resizeBase64Image(base64s string) (string, error) {
     i := strings.Index(base64s, "base64,")
