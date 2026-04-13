@@ -14,3 +14,10 @@ type SearchKeyword3Dto struct {
     Keyword2 string `json:"keyword2" default:""`
     Keyword3 string `json:"keyword3" default:""`
 }
+
+type SearchKeyword4Dto struct {
+    Keyword  string `json:"keyword" default:""`
+    Keyword2 string `json:"keyword2" default:""`
+    Keyword3 string `json:"keyword3" default:""`
+    Keyword4 string `json:"keyword4" default:""`
+}
