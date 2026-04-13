@@ -16,6 +16,7 @@ import (
 	"vesaliusm/service/applicationUserFamily"
 	"vesaliusm/service/applicationUserNotification"
 	"vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v3"
@@ -200,8 +201,8 @@ func (s *QmsService) SaveQMS(data *dto.QMSServerWebhookDto) error {
     notification := &model.OnesignalNotification{
         VisitType:         utils.NewNullString(""),
         AccountNo:         utils.NewNullString(""),
-        NotificationTitle: utils.NewNullString(utils.NotificationTitleQueueNotification),
-        MsgType:           utils.NewNullString(utils.MsgTypeQueueNotification),
+        NotificationTitle: utils.NewNullString(constants.NotificationTitleQueueNotification),
+        MsgType:           utils.NewNullString(constants.MsgTypeQueueNotification),
         ShortMessage:      utils.NewNullString(""),
         FullMessage:       utils.NewNullString(""),
     }
@@ -241,13 +242,13 @@ func (s *QmsService) SaveQMS(data *dto.QMSServerWebhookDto) error {
     }
 
     switch data.Method {
-    case utils.QmsMethodNew:
+    case constants.QmsMethodNew:
         notification.ShortMessage = utils.NewNullString(fmt.Sprintf("A queue number %s has been assigned for your visit. Click for more information.", data.TicketStr))
         notification.FullMessage = utils.NewNullString(fmt.Sprintf("Dear *%s*, we've generated a queue number *%s* for you after your registration. We'll be sending you timely push notifications to keep you updated on your queue status. Alternatively, you can also track your queue's progress using our Queue Tracker feature. Thank you. \n \nDoctor name : *%s* \nRoom number : *%s* \nPatients ahead of you : *%s*", patientName, data.TicketStr, data.IndService.ServiceName, data.IndService.ShortName, data.TicketInfo.TotalWaitingAhead))
-    case utils.QmsMethodNear:
+    case constants.QmsMethodNear:
         notification.ShortMessage = utils.NewNullString(fmt.Sprintf("Your queue number %s will be calling soon. Click for more information.", data.TicketStr))
         notification.FullMessage = utils.NewNullString(fmt.Sprintf("Dear *%s*, your queue number *%s* is getting closer to the front. We'll be with you shortly. Your patience is appreciated. Thank you. \n \nDoctor name : *%s* \nRoom number : *%s* \nPatients ahead of you : *%s*", patientName, data.TicketStr, data.IndService.ServiceName, data.IndService.ShortName, data.TicketInfo.TotalWaitingAhead))
-    case utils.QmsMethodCall:
+    case constants.QmsMethodCall:
         notification.ShortMessage = utils.NewNullString(fmt.Sprintf("Your queue number %s is now been called. Click for more information.", data.TicketStr))
         notification.FullMessage = utils.NewNullString(fmt.Sprintf("Dear *%s*, it's time to meet *%s*! Your queue number *%s*, has been called. Kindly make your way to *%s* now. Thank you.", patientName, data.IndService.ServiceName, data.TicketStr, data.IndService.ShortName))
     }

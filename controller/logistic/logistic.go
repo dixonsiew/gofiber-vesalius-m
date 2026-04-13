@@ -1,17 +1,18 @@
 package logistic
 
 import (
-	"strconv"
-	"vesaliusm/dto"
-	"vesaliusm/middleware"
-	lg "vesaliusm/model/logistic"
-	"vesaliusm/service/exportExcel"
-	"vesaliusm/service/logistic"
-	"vesaliusm/service/mail"
-	"vesaliusm/utils"
+    "strconv"
+    "vesaliusm/dto"
+    "vesaliusm/middleware"
+    lg "vesaliusm/model/logistic"
+    "vesaliusm/service/exportExcel"
+    "vesaliusm/service/logistic"
+    "vesaliusm/service/mail"
+    "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/nleeper/goment"
+    "github.com/gofiber/fiber/v3"
+    "github.com/nleeper/goment"
 )
 
 type LogisticController struct {
@@ -33,7 +34,7 @@ func NewLogisticController() *LogisticController {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.LogisticSetupDto true "LogisticSetupDto"
+// @Param    request    body    dto.LogisticSetupDto    true    "LogisticSetupDto"
 // @Success 200
 // @Router /logistic/setup [post]
 func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
@@ -75,7 +76,7 @@ func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param     logisticSetupId    path    string                   true     "LogisticSetupId"
+// @Param     logisticSetupId    path    string                   true     "logisticSetupId"
 // @Param     request            body    dto.LogisticSetupDto     true     "LogisticSetupDto"
 // @Success 200
 // @Router /logistic/setup/{logisticSetupId} [put]
@@ -154,7 +155,7 @@ func (cr *LogisticController) CreateLogisticSlot(c fiber.Ctx) error {
     o := lg.LogisticSlots{
         LogisticSlots: []lg.LogisticSlot{},
     }
-    if len(data.LogisticSlots) >0 {
+    if len(data.LogisticSlots) > 0 {
         for i := range data.LogisticSlots {
             x := data.LogisticSlots[i]
             o.LogisticSlots = append(o.LogisticSlots, x.ToDbModel())
@@ -234,28 +235,28 @@ func (cr *LogisticController) CreateLogisticRequest(c fiber.Ctx) error {
     requestedPickupDay := g.Format("dddd")
 
     o := lg.LogisticRequest{
-        LogisticRequestNumber: utils.NewNullString(logisticRequestNumber),
-        RequesterPrn: utils.NewNullString(data.RequesterPrn),
-        RequesterName: utils.NewNullString(data.RequesterName),
-        RequesterDob: utils.NewNullString(data.RequesterDob),
-        RequesterDocType: utils.NewNullString(data.RequesterDocType),
-        RequesterDocNumber: utils.NewNullString(data.RequesterDocNumber),
-        RequesterNationality: utils.NewNullString(data.RequesterNationality),
-        RequesterEmail: utils.NewNullString(data.RequesterEmail),
-        PrimaryDoctor: utils.NewNullString(data.PrimaryDoctor),
-        VisitWithCompanion: utils.NewNullString(data.VisitWithCompanion),
-        CompanionName: utils.NewNullString(data.CompanionName),
-        CompanionDob: utils.NewNullString(data.CompanionDob),
-        CompanionDocType: utils.NewNullString(data.CompanionDocType),
-        CompanionDocNumber: utils.NewNullString(data.CompanionDocNumber),
+        LogisticRequestNumber:   utils.NewNullString(logisticRequestNumber),
+        RequesterPrn:            utils.NewNullString(data.RequesterPrn),
+        RequesterName:           utils.NewNullString(data.RequesterName),
+        RequesterDob:            utils.NewNullString(data.RequesterDob),
+        RequesterDocType:        utils.NewNullString(data.RequesterDocType),
+        RequesterDocNumber:      utils.NewNullString(data.RequesterDocNumber),
+        RequesterNationality:    utils.NewNullString(data.RequesterNationality),
+        RequesterEmail:          utils.NewNullString(data.RequesterEmail),
+        PrimaryDoctor:           utils.NewNullString(data.PrimaryDoctor),
+        VisitWithCompanion:      utils.NewNullString(data.VisitWithCompanion),
+        CompanionName:           utils.NewNullString(data.CompanionName),
+        CompanionDob:            utils.NewNullString(data.CompanionDob),
+        CompanionDocType:        utils.NewNullString(data.CompanionDocType),
+        CompanionDocNumber:      utils.NewNullString(data.CompanionDocNumber),
         RelationshipToRequester: utils.NewNullString(data.RelationshipToRequester),
-        FlightAirlineName: utils.NewNullString(data.FlightAirlineName),
-        FlightNumber: utils.NewNullString(data.FlightNumber),
-        FlightArrivalDate: utils.NewNullString(data.FlightArrivalDate),
-        FlightArrivalTime: utils.NewNullString(data.FlightArrivalTime),
-        RequestedPickupDate: utils.NewNullString(data.RequestedPickupDate),
-        RequestedPickupTime: utils.NewNullString(data.RequestedPickupTime),
-        RequestedPickupDay: utils.NewNullString(requestedPickupDay),
+        FlightAirlineName:       utils.NewNullString(data.FlightAirlineName),
+        FlightNumber:            utils.NewNullString(data.FlightNumber),
+        FlightArrivalDate:       utils.NewNullString(data.FlightArrivalDate),
+        FlightArrivalTime:       utils.NewNullString(data.FlightArrivalTime),
+        RequestedPickupDate:     utils.NewNullString(data.RequestedPickupDate),
+        RequestedPickupTime:     utils.NewNullString(data.RequestedPickupTime),
+        RequestedPickupDay:      utils.NewNullString(requestedPickupDay),
     }
     err = cr.logisticService.SaveLogisticRequest(o)
     if err != nil {
@@ -287,14 +288,14 @@ func (cr *LogisticController) GetAllAppLogisticRequests(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.logisticService.ListAppLogisticRequests(userId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -309,14 +310,14 @@ func (cr *LogisticController) GetAllAppLogisticRequests(c fiber.Ctx) error {
 // @Router /logistic/request/all [get]
 func (cr *LogisticController) GetAllLogisticRequests(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.logisticService.ListLogisticRequests(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -325,10 +326,10 @@ func (cr *LogisticController) GetAllLogisticRequests(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
-// @Param request body dto.SearchKeyword4Dto false "Keyword"
-// @Success 200 {array} logistic.LogisticRequest
+// @Param        _page             query       string                   false  "_page"  default:"1"
+// @Param        _limit            query       string                   false  "_limit" default:"10"
+// @Param        request           body        dto.SearchKeyword4Dto    false  "Keyword"
+// @Success 200 {array} lg.LogisticRequest
 // @Router /logistic/request/all [post]
 func (cr *LogisticController) SearchAllLogisticRequests(c fiber.Ctx) error {
     var data utils.Map
@@ -356,14 +357,14 @@ func (cr *LogisticController) SearchAllLogisticRequests(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.logisticService.ListLogisticRequestsByKeyword(key, key2, key3, key4, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -461,10 +462,10 @@ func (cr *LogisticController) UpdateAppLogisticRequestStatus(c fiber.Ctx) error 
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
-    if data.Status != utils.LogisticRequestStatusConfirmed &&
-        data.Status != utils.LogisticRequestStatusCancelled &&
-        data.Status != utils.LogisticRequestStatusRejected {
+
+    if data.Status != constants.LogisticRequestStatusConfirmed &&
+        data.Status != constants.LogisticRequestStatusCancelled &&
+        data.Status != constants.LogisticRequestStatusRejected {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Logistic Request Status")
     } else {
         err := cr.logisticService.UpdateLogisticRequestStatusByRequestNumber(data.RequestNumber, data.Status, 0, userId)
@@ -472,18 +473,18 @@ func (cr *LogisticController) UpdateAppLogisticRequestStatus(c fiber.Ctx) error 
             return err
         }
 
-        if data.Status == utils.LogisticRequestStatusCancelled {
+        if data.Status == constants.LogisticRequestStatusCancelled {
             o, err := cr.logisticService.FindLogisticRequestByRequestNumber(data.RequestNumber)
             if err != nil {
                 return err
             }
-           
-            go func () {
+
+            go func() {
                 cr.mailService.SendLogisticCancellation(o)
             }()
         }
     }
-    
+
     return c.JSON(fiber.Map{
         "message": "Logistic Request Status updated",
     })
@@ -507,10 +508,10 @@ func (cr *LogisticController) UpdateLogisticRequestStatus(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
-    if data.Status != utils.LogisticRequestStatusConfirmed &&
-        data.Status != utils.LogisticRequestStatusCancelled &&
-        data.Status != utils.LogisticRequestStatusRejected {
+
+    if data.Status != constants.LogisticRequestStatusConfirmed &&
+        data.Status != constants.LogisticRequestStatusCancelled &&
+        data.Status != constants.LogisticRequestStatusRejected {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Logistic Request Status")
     } else {
         err := cr.logisticService.UpdateLogisticRequestStatusByRequestNumber(data.RequestNumber, data.Status, adminId, 0)

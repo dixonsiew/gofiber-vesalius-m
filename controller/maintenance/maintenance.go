@@ -7,6 +7,7 @@ import (
     "vesaliusm/service/exportExcel"
     "vesaliusm/service/maintenance"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/nleeper/goment"
@@ -35,14 +36,14 @@ func NewMaintenanceController() *MaintenanceController {
 // @Router /maintenance/hospital-profile/all [get]
 func (cr *MaintenanceController) GetAllHospitalProfiles(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.ListAllHospitalProfiles(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -68,14 +69,14 @@ func (cr *MaintenanceController) SearchAllHospitalProfiles(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.SearchAllHospitalProfilesByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -114,14 +115,14 @@ func (cr *MaintenanceController) UpdateHospitalProfile(c fiber.Ctx) error {
 // @Router /maintenance/param-setting/all [get]
 func (cr *MaintenanceController) GetAllParamSettings(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.ListAllParamSettings(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -147,14 +148,14 @@ func (cr *MaintenanceController) SearchAllParamSettings(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.SearchAllParamSettingsByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -193,14 +194,14 @@ func (cr *MaintenanceController) UpdateParamSetting(c fiber.Ctx) error {
 // @Router /maintenance/notification-setting/all [get]
 func (cr *MaintenanceController) GetAllNotificationSettings(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.ListAllNotificationSettings(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -226,14 +227,14 @@ func (cr *MaintenanceController) SearchAllNotificationSettings(c fiber.Ctx) erro
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.SearchAllNotificationSettingsByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -272,14 +273,14 @@ func (cr *MaintenanceController) UpdateNotificationSetting(c fiber.Ctx) error {
 // @Router /maintenance/cronjob-history/all [get]
 func (cr *MaintenanceController) GetAllCronjobHistories(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.ListAllCronjobHistories(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -315,14 +316,14 @@ func (cr *MaintenanceController) SearchAllCronjobHistories(c fiber.Ctx) error {
 
     cronjobName := c.Params("cronjobName")
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.SearchAllCronjobHistoriesByKeyword(cronjobName, key, key2, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -337,14 +338,14 @@ func (cr *MaintenanceController) SearchAllCronjobHistories(c fiber.Ctx) error {
 // @Router /maintenance/dynamic-email-master/all [get]
 func (cr *MaintenanceController) GetAllDynamicEmailSettings(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.ListAllDynamicEmailSettings(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -370,14 +371,14 @@ func (cr *MaintenanceController) SearchAllDynamicEmailSettings(c fiber.Ctx) erro
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.maintenanceService.SearchAllDynamicEmailSettingsByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 

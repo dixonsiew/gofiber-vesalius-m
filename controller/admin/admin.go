@@ -15,8 +15,8 @@ import (
     "vesaliusm/service/applicationUserFamily"
     "vesaliusm/service/assignBranch"
     "vesaliusm/service/branch"
-    "vesaliusm/service/groupModulePermission"
     "vesaliusm/service/exportExcel"
+    "vesaliusm/service/groupModulePermission"
     "vesaliusm/service/mail"
     "vesaliusm/service/sms"
     "vesaliusm/service/userGroup"
@@ -24,6 +24,7 @@ import (
     "vesaliusm/service/userGroupModules"
     "vesaliusm/service/vesalius"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/nleeper/goment"
@@ -95,14 +96,14 @@ func (cr *AdminController) GetAdmin(c fiber.Ctx) error {
 // @Router /admin/all [get]
 func (cr *AdminController) GetAllAdmin(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.List(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -128,14 +129,14 @@ func (cr *AdminController) SearchAllAdmin(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.ListByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -197,14 +198,14 @@ func (cr *AdminController) GetSearchExportAduitMobileUser(c fiber.Ctx) error {
 // @Router /admin/adminportal/mobile-user/log/all [get]
 func (cr *AdminController) GetAllAuditMobileUser(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.ListMobileUserAuditLog(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -234,14 +235,14 @@ func (cr *AdminController) SearchAllAuditMobileUser(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.ListMobileUserAuditLogByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -256,14 +257,14 @@ func (cr *AdminController) SearchAllAuditMobileUser(c fiber.Ctx) error {
 // @Router /admin/adminportal/log/all [get]
 func (cr *AdminController) GetAllAuditLog(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.ListAuditLog(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -272,9 +273,9 @@ func (cr *AdminController) GetAllAuditLog(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
-// @Param        keyword           body        dto.SearchKeyword2Dto  false  "Search"
+// @Param        _page             query       string  false          "_page"  default:"1"
+// @Param        _limit            query       string                 false          "_limit" default:"10"
+// @Param        keyword           body        dto.SearchKeyword2Dto  false          "Search"
 // @Success 200 {array} model.AdminAuditLog
 // @Router /admin/adminportal/log/all [post]
 func (cr *AdminController) SearchAllAuditLog(c fiber.Ctx) error {
@@ -293,14 +294,14 @@ func (cr *AdminController) SearchAllAuditLog(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.adminUserService.ListAuditByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -368,7 +369,7 @@ func (cr *AdminController) ResetAdminPassword(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -470,7 +471,7 @@ func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.userGroupService.List(page, limit)
     if err != nil {
         return err
@@ -523,8 +524,8 @@ func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
         lx = append(lx, userGroupDetail)
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(lx)
 }
 
@@ -545,7 +546,7 @@ func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -601,7 +602,7 @@ func (cr *AdminController) GetUserGroup(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -643,7 +644,7 @@ func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -711,7 +712,7 @@ func (cr *AdminController) DeleteUserGroup(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -834,7 +835,7 @@ func (cr *AdminController) GetUserGroupPermission(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        userId           path        string  true  "UserId"
+// @Param        userId           path        string  true  "userId"
 // @Success 200
 // @Router /admin/delete-user/{userId} [post]
 func (cr *AdminController) DeleteUser(c fiber.Ctx) error {
@@ -855,7 +856,7 @@ func (cr *AdminController) DeleteUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto"
+// @Param    request    body    dto.PostLinkUserPrnDto    true    "PostLinkUserPrnDto"
 // @Success 200
 // @Router /admin/link-user-prn [post]
 func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
@@ -868,7 +869,7 @@ func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -913,7 +914,7 @@ func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto"
+// @Param    request    body    dto.PostLinkUserPrnDto    true    "PostLinkUserPrnDto"
 // @Success 200
 // @Router /admin/unlink-user-prn [post]
 func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
@@ -926,7 +927,7 @@ func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -968,7 +969,7 @@ func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostLinkUserPrnDto true "PostLinkUserPrnDto"
+// @Param    request    body    dto.PostLinkUserPrnDto    true    "PostLinkUserPrnDto"
 // @Success 200
 // @Router /admin/set-master-profile [post]
 func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
@@ -981,7 +982,7 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != utils.ROLE_SUPER_ADMIN && user.Role.String != utils.ROLE_ADMIN {
+    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -1053,7 +1054,7 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
 //
 // @Tags Admin
 // @Produce json
-// @Param request body dto.NewSignupUserDto true "NewSignupUserDto"
+// @Param    request    body    dto.NewSignupUserDto    true    "NewSignupUserDto"
 // @Success 200
 // @Router /admin/self-sign-up/v2 [post]
 func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
@@ -1237,7 +1238,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 FullName:        utils.NewNullString(data.UserFullName),
                 Password:        utils.NewNullString(pw),
                 Resident:        utils.NewNullString(vesPatient.Resident),
-                Role:            utils.NewNullString(utils.ROLE_USER),
+                Role:            utils.NewNullString(constants.ROLE_USER),
                 Username:        utils.NewNullString(username),
                 FirstTimeLogin:  true,
                 FirstTimeLoginV: utils.NewInt32(1),
@@ -1439,7 +1440,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
             FullName:        utils.NewNullString(data.UserFullName),
             Password:        utils.NewNullString(pw),
             Resident:        utils.NewNullString(vesPatient.Resident),
-            Role:            utils.NewNullString(utils.ROLE_USER),
+            Role:            utils.NewNullString(constants.ROLE_USER),
             Username:        utils.NewNullString(username),
             FirstTimeLogin:  true,
             FirstTimeLoginV: utils.NewInt32(1),
@@ -1493,7 +1494,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostChangePasswordDto true "PostChangePasswordDto"
+// @Param    request    body    dto.PostChangePasswordDto    true    "PostChangePasswordDto"
 // @Success 200
 // @Router /admin/change-password [post]
 func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
@@ -1537,7 +1538,7 @@ func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostAdminUserDto true "PostAdminUserDto"
+// @Param    request    body    dto.PostAdminUserDto    true    "PostAdminUserDto"
 // @Success 200
 // @Router /admin/sign-up [post]
 func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
@@ -1590,7 +1591,7 @@ func (cr *AdminController) AddAdminUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostUpdateAdminUserDto true "PostUpdateAdminUserDto"
+// @Param    request    body    dto.PostUpdateAdminUserDto    true    "PostUpdateAdminUserDto"
 // @Success 200
 // @Router /admin/edit-admin-user [post]
 func (cr *AdminController) EditAdminUser(c fiber.Ctx) error {
@@ -1636,7 +1637,7 @@ func (cr *AdminController) EditAdminUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        email           path        string  true  "Email"
+// @Param        email           path        string  true  "email"
 // @Success 200
 // @Router /admin/delete-admin/{email} [post]
 func (cr *AdminController) DeleteAdmin(c fiber.Ctx) error {
@@ -1664,7 +1665,7 @@ func (cr *AdminController) DeleteAdmin(c fiber.Ctx) error {
 //
 // @Tags Admin
 // @Produce json
-// @Param        email           path        string  true  "Email"
+// @Param        email           path        string  true  "email"
 // @Success 200
 // @Router /admin/reset-signup-email/user/{email} [post]
 func (cr *AdminController) ResetSignUpUserByEmail(c fiber.Ctx) error {
@@ -1697,7 +1698,7 @@ func (cr *AdminController) ResetSignUpUserByEmail(c fiber.Ctx) error {
 //
 // @Tags Admin
 // @Produce json
-// @Param        mobile           path        string  true  "Mobile"
+// @Param        mobile           path        string  true  "mobile"
 // @Success 200
 // @Router /admin/reset-signup-mobile/user/{mobile} [post]
 func (cr *AdminController) ResetSignUpUserByMobile(c fiber.Ctx) error {
@@ -1731,7 +1732,7 @@ func (cr *AdminController) ResetSignUpUserByMobile(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.AdminPortalLogDto true "AdminPortalLogDto"
+// @Param    request    body    dto.AdminPortalLogDto    true    "AdminPortalLogDto"
 // @Success 200
 // @Router /admin/adminportal/save-log [post]
 func (cr *AdminController) SaveAdminPortalLog(c fiber.Ctx) error {
@@ -1759,7 +1760,7 @@ func (cr *AdminController) SaveAdminPortalLog(c fiber.Ctx) error {
 //
 // @Tags Admin
 // @Produce json
-// @Param request body dto.PostSelfSignUpUserDto true "PostSelfSignUpUserDto"
+// @Param    request    body    dto.PostSelfSignUpUserDto    true    "PostSelfSignUpUserDto"
 // @Success 200
 // @Router /admin/self-sign-up [post]
 func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
@@ -1879,7 +1880,7 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
         LastName:        utils.NewNullString(patient.Name.LastName),
         Password:        utils.NewNullString(data.UserPassword),
         Resident:        utils.NewNullString(patient.Resident),
-        Role:            utils.NewNullString(utils.ROLE_USER),
+        Role:            utils.NewNullString(constants.ROLE_USER),
         Username:        utils.NewNullString(data.UserEmail),
         FirstTimeLogin:  true,
         FirstTimeLoginV: utils.NewInt32(1),
@@ -1913,7 +1914,7 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param email path string true "Email"
+// @Param    email    path    string    true    "email"
 // @Success 200
 // @Router /admin/resend-user-signup-email/{email} [post]
 func (cr *AdminController) ResendUserSignupEmail(c fiber.Ctx) error {
@@ -1941,7 +1942,7 @@ func (cr *AdminController) ResendUserSignupEmail(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.ChangeSignInTypeDto true "ChangeSignInTypeDto"
+// @Param    request    body    dto.ChangeSignInTypeDto    true    "ChangeSignInTypeDto"
 // @Success 200
 // @Router /admin/change-signin-type [post]
 func (cr *AdminController) ChangeSignInType(c fiber.Ctx) error {
@@ -2014,7 +2015,7 @@ func (cr *AdminController) ChangeSignInType(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostChangeUserPasswordDto true "PostChangeUserPasswordDto"
+// @Param    request    body    dto.PostChangeUserPasswordDto    true    "PostChangeUserPasswordDto"
 // @Success 200
 // @Router /admin/change-user-password [post]
 func (cr *AdminController) ChangeUserPassword(c fiber.Ctx) error {

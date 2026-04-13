@@ -11,6 +11,7 @@ import (
     _ "vesaliusm/docs"
     "vesaliusm/router"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/go-playground/validator/v10"
     // jwtware "github.com/gofiber/contrib/jwt"
@@ -73,7 +74,7 @@ func main() {
     app.Use(compress.New())
     app.Use(cors.New(cors.Config{
         AllowOrigins:  []string{"*"},
-        ExposeHeaders: []string{"Authorization", "filename", utils.X_TOTAL_COUNT, utils.X_TOTAL_PAGE},
+        ExposeHeaders: []string{"Authorization", "filename", constants.X_TOTAL_COUNT, constants.X_TOTAL_PAGE},
     }))
     app.Use(fiberzerolog.New(fiberzerolog.Config{
         Logger: &utils.Logger,

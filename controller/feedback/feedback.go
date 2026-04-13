@@ -12,6 +12,7 @@ import (
     "vesaliusm/service/feedback"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/nfnt/resize"
@@ -40,14 +41,14 @@ func NewFeedbackController() *FeedbackController {
 // @Router /feedback/all [get]
 func (cr *FeedbackController) GetAllFeedbacks(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.feedbackService.List(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -160,7 +161,7 @@ func (cr *FeedbackController) CreateFeedback(c fiber.Ctx) error {
             mimeType := fbFile.MimeType
             filename := fbFile.Filename
 
-            if mimeType != "application/pdf" && file.Size >= utils.FILE_SIZE_LIMIT {
+            if mimeType != "application/pdf" && file.Size >= constants.FILE_SIZE_LIMIT {
                 src, err := file.Open()
                 if err != nil {
                     return err

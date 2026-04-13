@@ -12,6 +12,7 @@ import (
     mm "vesaliusm/model/mail"
     "vesaliusm/service/emailMaster"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     //"github.com/go-gomail/gomail"
     "github.com/nleeper/goment"
@@ -138,7 +139,7 @@ func (s *MailService) SendResetPassword(o *model.ApplicationUser) error {
         "{{first_name}}", o.FirstName.String,
         "{{email_appname}}", s.emailAppName,
         "{{verification_code}}", o.VerificationCode.String,
-    ).Replace(utils.EmailTemplateConstantResetPw)
+    ).Replace(constants.EmailTemplateConstantResetPw)
 
     m := gomail.NewMessage()
     m.SetHeader("From", fmt.Sprintf("%s <%s>", s.emailFromName, s.infoEmailSender))
@@ -557,7 +558,7 @@ func (s *MailService) SendLogisticCancellation(o *lgm.LogisticRequest) error {
         "{{companion_name}}", companionName,
         "{{pickup_datetime}}", fmt.Sprintf("%s %s", o.RequestedPickupDate.String, o.RequestedPickupTime.String),
         "{{logistic_number}}", o.LogisticRequestNumber.String,
-    ).Replace(utils.EmailTemplateConstantLogisticRequestCancellation)
+    ).Replace(constants.EmailTemplateConstantLogisticRequestCancellation)
 
     subject := strings.NewReplacer(
         "{{logistic_request_number}}", o.LogisticRequestNumber.String,

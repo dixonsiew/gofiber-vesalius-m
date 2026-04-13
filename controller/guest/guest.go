@@ -22,6 +22,7 @@ import (
 	"vesaliusm/service/vesalius"
 	"vesaliusm/service/wallex"
 	"vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/nleeper/goment"
@@ -68,14 +69,14 @@ func NewGuestController() *GuestController {
 // @Router /guest/vesalius/getAllDoctorInformation/{branchId} [get]
 func (cr *GuestController) GetAllDoctorInformation(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.novaDoctorService.List(page, limit, false)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -98,14 +99,14 @@ func (cr *GuestController) SearchAllDoctorInformation(c fiber.Ctx) error {
     key = "%" + key + "%"
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.novaDoctorService.ListByKeywordGuest(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -356,14 +357,14 @@ func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
 func (cr *GuestController) GetAllGuestNotificationLists(c fiber.Ctx) error {
     playerId := c.Params("playerId")
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.guestService.ListGuestNotification(playerId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -446,35 +447,35 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
 
-    if !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Kids Document Type")
     }
 
-    if !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Guardian Document Type")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) {
         data.KidsDocNumber = strings.ReplaceAll(data.KidsDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) {
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
@@ -572,14 +573,14 @@ func (cr *GuestController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
 func (cr *GuestController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
     isHome := c.Params("isHome")
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListAppLittleKidsActivities(isHome == "1", page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -694,35 +695,35 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
 
-    if !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Golden Pearl Document Type")
     }
 
-    if !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid NOK Document Type")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) {
         data.GoldenDocNumber = strings.ReplaceAll(data.GoldenDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
@@ -820,14 +821,14 @@ func (cr *GuestController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
 func (cr *GuestController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
     isHome := c.Params("isHome")
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListAppGoldenPearlActivities(isHome == "1", page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -904,14 +905,14 @@ func (cr *GuestController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
 func (cr *GuestController) GetAllAppPackages(c fiber.Ctx) error {
     isHome := c.Params("isHome")
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.packageService.ListApp(isHome == "1", page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -992,7 +993,7 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
             PatientName:       utils.NewNullString(data.GuestPackagePayment.BillingFullname),
             PackageId:         utils.NewInt64(pkg.PackageId),
             QuantityPurchased: pkg.QuantityPurchased,
-            PackageStatus:     utils.NewNullString(string(utils.PackageStatusOrdered)),
+            PackageStatus:     utils.NewNullString(string(constants.PackageStatusOrdered)),
         }
         guestPackage = append(guestPackage, o)
     }
@@ -1021,7 +1022,7 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
 
     addr := strings.Join(lsaddr, ", ")
 
-    if ipaymentMethod == utils.PaymentMethodWallex {
+    if ipaymentMethod == constants.PaymentMethodWallex {
         wallexPrm := utils.Map{
             "collectionRequestNumber": paymentRefNo,
             "currency":                "MYR",

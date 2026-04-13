@@ -4,7 +4,7 @@ import (
     "strconv"
     "vesaliusm/middleware"
     "vesaliusm/service/applicationUserFamily"
-    "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -37,7 +37,7 @@ func (cr *MyFamilyController) GetAllActiveUserFamilies(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     self := c.Query("_self", "0")
     isForAppt := c.Query("_isForAppt", "0")
     m, err := cr.applicationUserFamilyService.ListActiveByUserId(userId, self != "0", isForAppt != "0", self, page, limit)
@@ -45,8 +45,8 @@ func (cr *MyFamilyController) GetAllActiveUserFamilies(c fiber.Ctx) error {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -66,7 +66,7 @@ func (cr *MyFamilyController) GetAllUserFamilies(c fiber.Ctx) error {
     userId := c.Params("userId")
     iuserId, _ := strconv.ParseInt(userId, 10, 64)
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     self := c.Query("_self", "0")
     isForAppt := c.Query("_isForAppt", "0")
     m, err := cr.applicationUserFamilyService.ListByUserId(iuserId, self != "0", isForAppt != "0", self, page, limit)
@@ -74,8 +74,8 @@ func (cr *MyFamilyController) GetAllUserFamilies(c fiber.Ctx) error {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 

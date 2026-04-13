@@ -10,6 +10,7 @@ import (
     "vesaliusm/model/userPackage"
     "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/jmoiron/sqlx"
 )
@@ -339,12 +340,12 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
     var query string
     var err error
 
-    if packageStatus == utils.PackageStatusCancelled {
+    if packageStatus == constants.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PURCHASE_NO = :purchaseNo`
         if tx == nil {
-            _, err = s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
+            _, err = s.db.ExecContext(s.ctx, query, constants.PackageStatusPurchased, purchaseNo)
         } else {
-            _, err = tx.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseNo)
+            _, err = tx.ExecContext(s.ctx, query, constants.PackageStatusPurchased, purchaseNo)
         }
         if err != nil {
             utils.LogError(err)
@@ -352,10 +353,10 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
         }
     } else {
         fieldMap := map[string]string{
-            utils.PackageStatusPurchased: "PURCHASED_DATETIME",
-            utils.PackageStatusBooked:    "BOOKED_DATETIME",
-            utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
-            utils.PackageStatusCancelled: "CANCELLED_DATETIME",
+            constants.PackageStatusPurchased: "PURCHASED_DATETIME",
+            constants.PackageStatusBooked:    "BOOKED_DATETIME",
+            constants.PackageStatusRedeemed:  "REDEEMED_DATETIME",
+            constants.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
         fieldDt, ok := fieldMap[packageStatus]
         if !ok {
@@ -379,19 +380,19 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseNo(purchase
 func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(tx *sqlx.Tx, paymentId int64, packageStatus string) error {
     var query string
 
-    if packageStatus == utils.PackageStatusCancelled {
+    if packageStatus == constants.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PACKAGE_PAYMENT_ID = :paymentId`
-        _, err := tx.ExecContext(s.ctx, query, utils.PackageStatusPurchased, paymentId)
+        _, err := tx.ExecContext(s.ctx, query, constants.PackageStatusPurchased, paymentId)
         if err != nil {
             utils.LogError(err)
             return err
         }
     } else {
         fieldMap := map[string]string{
-            utils.PackageStatusPurchased: "PURCHASED_DATETIME",
-            utils.PackageStatusBooked:    "BOOKED_DATETIME",
-            utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
-            utils.PackageStatusCancelled: "CANCELLED_DATETIME",
+            constants.PackageStatusPurchased: "PURCHASED_DATETIME",
+            constants.PackageStatusBooked:    "BOOKED_DATETIME",
+            constants.PackageStatusRedeemed:  "REDEEMED_DATETIME",
+            constants.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
         fieldDt, ok := fieldMap[packageStatus]
         if !ok {
@@ -411,19 +412,19 @@ func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPaymentId(tx *sqlx.
 func (s *PatientPurchaseDetailsService) UpdatePackageStatusByPurchaseId(purchaseId int64, packageStatus string) error {
     var query string
 
-    if packageStatus == utils.PackageStatusCancelled {
+    if packageStatus == constants.PackageStatusCancelled {
         query = `UPDATE PATIENT_PURCHASE_DETAILS SET PACKAGE_STATUS = :packageStatus WHERE PATIENT_PURCHASE_ID = :purchaseId`
-        _, err := s.db.ExecContext(s.ctx, query, utils.PackageStatusPurchased, purchaseId)
+        _, err := s.db.ExecContext(s.ctx, query, constants.PackageStatusPurchased, purchaseId)
         if err != nil {
             utils.LogError(err)
             return err
         }
     } else {
         fieldMap := map[string]string{
-            utils.PackageStatusPurchased: "PURCHASED_DATETIME",
-            utils.PackageStatusBooked:    "BOOKED_DATETIME",
-            utils.PackageStatusRedeemed:  "REDEEMED_DATETIME",
-            utils.PackageStatusCancelled: "CANCELLED_DATETIME",
+            constants.PackageStatusPurchased: "PURCHASED_DATETIME",
+            constants.PackageStatusBooked:    "BOOKED_DATETIME",
+            constants.PackageStatusRedeemed:  "REDEEMED_DATETIME",
+            constants.PackageStatusCancelled: "CANCELLED_DATETIME",
         }
         fieldDt, ok := fieldMap[packageStatus]
         if !ok {

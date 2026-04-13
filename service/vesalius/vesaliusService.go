@@ -22,6 +22,7 @@ import (
     "vesaliusm/service/vesaliusGeo"
     sqx "vesaliusm/sql"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/jmoiron/sqlx"
@@ -108,7 +109,7 @@ func (s *VesaliusService) handleCancelAppointment(prn string, data *dto.PostCanc
     if err != nil {
         return err
     }
-    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, utils.PackageStatusCancelled, tx)
+    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, constants.PackageStatusCancelled, tx)
     if err != nil {
         return err
     }
@@ -166,7 +167,7 @@ func (s *VesaliusService) handleChangeAppointment(prn string, data *dto.PostChan
     if err != nil {
         return err
     }
-    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, utils.PackageStatusBooked, tx)
+    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, constants.PackageStatusBooked, tx)
     if err != nil {
         return err
     }
@@ -230,7 +231,7 @@ func (s *VesaliusService) handleMakeAppointment(prn string, doctorId int64, data
     if err != nil {
         return err
     }
-    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, utils.PackageStatusBooked, tx)
+    err = s.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseNo(data.Remark, constants.PackageStatusBooked, tx)
     if err != nil {
         return err
     }

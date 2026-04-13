@@ -1,4 +1,4 @@
-package utils
+package constants
 
 const (
 	FILE_SIZE_LIMIT  = 5242880 // 5MB

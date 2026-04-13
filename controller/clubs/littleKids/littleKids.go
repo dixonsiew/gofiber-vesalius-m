@@ -12,6 +12,7 @@ import (
     "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/nleeper/goment"
@@ -68,36 +69,36 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
 
-    if !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Kids Document Type")
     }
 
-    if !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Guardian Document Type")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.KidsDocNumber = strings.ReplaceAll(data.KidsDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
@@ -209,36 +210,36 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
 
-    if !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Kids Document Type")
     }
 
-    if !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Guardian Document Type")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.KidsDocNumber = strings.ReplaceAll(data.KidsDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
@@ -336,36 +337,36 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         return fiber.NewError(fiber.StatusBadRequest, "Only 12 years old and below")
     }
 
-    if !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Kids Document Type")
     }
 
-    if !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Guardian Document Type")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypePassport) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
-        strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeBirthCert) &&
             strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.KidsDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.KidsDocNumber = strings.ReplaceAll(data.KidsDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GuardianDocType, constants.ClubsDocTypeNRIC) {
         // remove the dash from the NRIC
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
@@ -503,14 +504,14 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber
 // @Router /clubs/littlekids/membership/all [get]
 func (cr *ClubsLittleKidsController) GetAllLittleKidsMemberships(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListLittleKidsMemberships(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -540,14 +541,14 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsMembership(c fiber.Ctx) 
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListLittleKidsMembershipByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -785,14 +786,14 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.C
 // @Router /clubs/littlekids/activity/all [get]
 func (cr *ClubsLittleKidsController) GetAllLittleKidsActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListLittleKidsActivities(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -807,15 +808,15 @@ func (cr *ClubsLittleKidsController) GetAllLittleKidsActivities(c fiber.Ctx) err
 // @Router /clubs/littlekids/activity/all/mobile/{isHome} [get]
 func (cr *ClubsLittleKidsController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     isHome := c.Params("isHome")
     m, err := cr.clubService.ListAppLittleKidsActivities(isHome == "1", page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -853,14 +854,14 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsActivities(c fiber.Ctx) 
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListLittleKidsActivitiesByKeyword(key, key2, key3, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -932,14 +933,14 @@ func (cr *ClubsLittleKidsController) GetLittleKidsActivityAttendeesById(c fiber.
     activityId := c.Params("activityId")
     iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListLittleKidsActivityAttendees(iactivityId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -958,7 +959,7 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) e
     activityId := c.Params("activityId")
     iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
 
     var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
@@ -979,8 +980,8 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) e
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 

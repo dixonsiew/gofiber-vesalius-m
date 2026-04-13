@@ -8,6 +8,7 @@ import (
     "vesaliusm/service/adminUser"
     "vesaliusm/service/applicationUser"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     jwtware "github.com/gofiber/contrib/v3/jwt"
     "github.com/gofiber/fiber/v3"
@@ -20,7 +21,7 @@ var applicationUserService *applicationUser.ApplicationUserService = application
 
 func JWTProtected(c fiber.Ctx) error {
     return jwtware.New(jwtware.Config{
-        SigningKey: jwtware.SigningKey{Key: []byte(utils.JWT_SECRET)},
+        SigningKey: jwtware.SigningKey{Key: []byte(constants.JWT_SECRET)},
         //ContextKey: "jwt",
         Extractor: extractors.FromAuthHeader("Bearer"),
         ErrorHandler: func(c fiber.Ctx, err error) error {
@@ -36,7 +37,7 @@ func DecodeToken(c fiber.Ctx) (string, int64, string, string, error) {
     tokenStr := c.Get("Authorization")
     tokenStr = strings.ReplaceAll(tokenStr, "Bearer ", "")
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
-        return []byte(utils.JWT_SECRET), nil
+        return []byte(constants.JWT_SECRET), nil
     })
 
     if err != nil {

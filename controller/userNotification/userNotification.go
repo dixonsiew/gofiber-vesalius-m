@@ -8,6 +8,7 @@ import (
     "vesaliusm/service/generalNotificationMaster"
     "vesaliusm/service/notification"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/OneSignal/onesignal-go-api"
     "github.com/gofiber/fiber/v3"
@@ -117,14 +118,14 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.applicationUserNotificationService.ListByUserId(user.UserId.Int64, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -139,14 +140,14 @@ func (cr *UserNotificationController) GetNotificationList(c fiber.Ctx) error {
 // @Router /notification/general/master/all [get]
 func (cr *UserNotificationController) GetGeneralNotificationList(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.generalNotificationMasterService.List(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 

@@ -15,6 +15,7 @@ import (
     "vesaliusm/service/wallex"
     "vesaliusm/service/exportExcel"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -125,7 +126,7 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
             PatientName:       utils.NewNullString(data.UserPackagePayment.BillingFullname),
             PackageId:         utils.NewInt64(pkg.PackageId),
             QuantityPurchased: pkg.QuantityPurchased,
-            PackageStatus:     utils.NewNullString(string(utils.PackageStatusOrdered)),
+            PackageStatus:     utils.NewNullString(string(constants.PackageStatusOrdered)),
         }
         userPackage = append(userPackage, o)
     }
@@ -154,7 +155,7 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
 
     addr := strings.Join(lsaddr, ", ")
 
-    if ipaymentMethod == utils.PaymentMethodWallex {
+    if ipaymentMethod == constants.PaymentMethodWallex {
         wallexPrm := utils.Map{
             "collectionRequestNumber": paymentRefNo,
             "currency":                "MYR",
@@ -270,14 +271,14 @@ func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.patientPurchaseDetailsService.ListByUserId(userId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -292,14 +293,14 @@ func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
 // @Router /user-package/all [get]
 func (cr *UserPackageController) GetAllPurchaseHistory(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.patientPurchaseDetailsService.List(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -338,14 +339,14 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.patientPurchaseDetailsService.ListByKeyword(key, key2, key3, key4, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -385,15 +386,15 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
     purchaseId := c.Params("purchaseId")
     ipurchaseId, _ := strconv.ParseInt(purchaseId, 10, 64)
 
-    if data.Status != utils.PackageStatusPurchased &&
-        data.Status != utils.PackageStatusBooked &&
-        data.Status != utils.PackageStatusRedeemed &&
-        data.Status != utils.PackageStatusCancelled {
+    if data.Status != constants.PackageStatusPurchased &&
+        data.Status != constants.PackageStatusBooked &&
+        data.Status != constants.PackageStatusRedeemed &&
+        data.Status != constants.PackageStatusCancelled {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "error": "Invalid Package Status",
         })
     } else {
-        if data.Status == utils.PackageStatusCancelled {
+        if data.Status == constants.PackageStatusCancelled {
             apptRes, err := cr.patientPurchaseDetailsService.GetAppointmentDetailsByPurchaseId(ipurchaseId)
             if err != nil {
                 return err
@@ -409,7 +410,7 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
                     return err
                 }
             } else {
-                err := cr.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseId(ipurchaseId, utils.PackageStatusPurchased)
+                err := cr.patientPurchaseDetailsService.UpdatePackageStatusByPurchaseId(ipurchaseId, constants.PackageStatusPurchased)
                 if err != nil {
                     return err
                 }

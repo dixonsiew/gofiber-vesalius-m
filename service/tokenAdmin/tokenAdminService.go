@@ -7,6 +7,7 @@ import (
     "vesaliusm/model"
     "vesaliusm/service/adminUser"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/golang-jwt/jwt/v5"
@@ -32,7 +33,7 @@ func (s *TokenAdminService) GenerateAccessToken(user model.AdminUser) (string, e
         "exp":      time.Now().Add(time.Hour * 720).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    t, err := token.SignedString([]byte(utils.JWT_SECRET))
+    t, err := token.SignedString([]byte(constants.JWT_SECRET))
     if err != nil {
         utils.LogError(err)
         return "", err
@@ -49,7 +50,7 @@ func (s *TokenAdminService) GenerateRefreshToken(user model.AdminUser) (string, 
         "exp":      time.Now().Add(time.Hour * 87600).Unix(),
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    t, err := token.SignedString([]byte(utils.JWT_SECRET))
+    t, err := token.SignedString([]byte(constants.JWT_SECRET))
     if err != nil {
         utils.LogError(err)
         return "", err
@@ -91,7 +92,7 @@ func (s *TokenAdminService) CreateAccessTokenFromRefreshToken(refresh string) (f
 
 func (s *TokenAdminService) decodeRefreshToken(tokenStr string) (string, int64, error) {
     token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
-        return []byte(utils.JWT_SECRET), nil
+        return []byte(constants.JWT_SECRET), nil
     })
 
     if err != nil {

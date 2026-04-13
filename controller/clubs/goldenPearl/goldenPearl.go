@@ -12,6 +12,7 @@ import (
     "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
     "github.com/nleeper/goment"
@@ -68,35 +69,35 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
 
-    if !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Golden Pearl Document Type")
     }
 
-    if !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid NOK Document Type")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) {
         data.GoldenDocNumber = strings.ReplaceAll(data.GoldenDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
@@ -207,35 +208,35 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
 
-    if !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Golden Pearl Document Type")
     }
 
-    if !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid NOK Document Type")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) {
         data.GoldenDocNumber = strings.ReplaceAll(data.GoldenDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
@@ -332,35 +333,35 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
         return fiber.NewError(fiber.StatusBadRequest, "Only 60 years old and above")
     }
 
-    if !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid Golden Pearl Document Type")
     }
 
-    if !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        !strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) {
+    if !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
+        !strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) {
         return fiber.NewError(fiber.StatusBadRequest, "Invalid NOK Document Type")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) &&
+        strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypePassport) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypePassport) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
-        strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+        strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(data.NokDocType, constants.ClubsDocTypeBirthCert) &&
             strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
-    if strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.GoldenDocType, constants.ClubsDocTypeNRIC) {
         data.GoldenDocNumber = strings.ReplaceAll(data.GoldenDocNumber, "-", "")
     }
 
-    if strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) {
+    if strings.EqualFold(data.NokDocType, constants.ClubsDocTypeNRIC) {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
@@ -495,14 +496,14 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlMembership(c fib
 // @Router /clubs/goldenpearl/membership/all [get]
 func (cr *ClubsGoldenPearlController) GetAllGoldenPearlMemberships(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListGoldenPearlMemberships(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -532,14 +533,14 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlMembership(c fiber.Ctx
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListGoldenPearlMembershipByKeyword(key, key2, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -779,14 +780,14 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber
 // @Router /clubs/goldenpearl/activity/all [get]
 func (cr *ClubsGoldenPearlController) GetAllGoldenPearlActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListGoldenPearlActivities(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -801,15 +802,15 @@ func (cr *ClubsGoldenPearlController) GetAllGoldenPearlActivities(c fiber.Ctx) e
 // @Router /clubs/goldenpearl/activity/all/mobile/{isHome} [get]
 func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     isHome := c.Params("isHome")
     m, err := cr.clubService.ListAppGoldenPearlActivities(isHome == "1", page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -847,14 +848,14 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlActivities(c fiber.Ctx
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListGoldenPearlActivitiesByKeyword(key, key2, key3, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -925,14 +926,14 @@ func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityAttendeesById(c fibe
     activityId := c.Params("activityId")
     iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.clubService.ListGoldenPearlActivityAttendees(iactivityId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -950,7 +951,7 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx)
     activityId := c.Params("activityId")
     iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
 
     var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
@@ -971,8 +972,8 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx)
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 

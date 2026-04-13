@@ -11,6 +11,7 @@ import (
     "vesaliusm/service/mail"
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/jmoiron/sqlx"
     "github.com/nleeper/goment"
@@ -441,7 +442,7 @@ func (s *PackagePaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestI
         if err != nil {
             return nil
         }
-        err = s.patientPurchaseDetailsService.UpdatePackageStatusByPaymentId(tx, r.PaymentId.Int64, utils.PackageStatusPurchased)
+        err = s.patientPurchaseDetailsService.UpdatePackageStatusByPaymentId(tx, r.PaymentId.Int64, constants.PackageStatusPurchased)
         if err != nil {
             return err
         }
@@ -486,7 +487,7 @@ func (s *PackagePaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo 
         if err != nil {
             return err
         }
-        err = s.patientPurchaseDetailsService.UpdatePackageStatusByPaymentId(tx, r.PaymentId.Int64, utils.PackageStatusPurchased)
+        err = s.patientPurchaseDetailsService.UpdatePackageStatusByPaymentId(tx, r.PaymentId.Int64, constants.PackageStatusPurchased)
         if err != nil {
             return err
         }

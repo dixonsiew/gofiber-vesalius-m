@@ -9,6 +9,7 @@ import (
     "vesaliusm/service/country"
     "vesaliusm/service/requestDeleteAccount"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -183,7 +184,7 @@ func (cr *CommonController) GetGuestModeServices(c fiber.Ctx) error {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
     return c.JSON(m.List)
 }
 
@@ -199,7 +200,7 @@ func (cr *CommonController) GetAuthModeServices(c fiber.Ctx) error {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
     return c.JSON(m.List)
 }
 

@@ -13,6 +13,7 @@ import (
     "vesaliusm/service/patientOutstandingBill"
     "vesaliusm/service/vesaliusGeo"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/jmoiron/sqlx"
     go_ora "github.com/sijms/go-ora/v2"
@@ -357,7 +358,7 @@ func (s *BillPaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId s
                 return err
             }
 
-            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, utils.PaymentStatusPaid, tx)
+            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, constants.PaymentStatusPaid, tx)
             if err != nil {
                 return err
             }
@@ -385,7 +386,7 @@ func (s *BillPaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId s
 
             if r.BillingEmail.Valid {
                 emailPrm.Email = r.BillingEmail.String
-                if r2.PaymentStatus.String == utils.PaymentStatusPaid {
+                if r2.PaymentStatus.String == constants.PaymentStatusPaid {
                     emailPrm.BillNumber = r2.BillNumber.String
                     emailPrm.InvoiceNumber = r2.InvoiceNumber.String
                     go func() {
@@ -440,7 +441,7 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
                 return err
             }
 
-            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, utils.PaymentStatusPaid, tx)
+            err = s.patientOutstandingBillService.UpdatePaymentStatusByBillPaymentId(r.OutstandingBillPaymentId.Int64, constants.PaymentStatusPaid, tx)
             if err != nil {
                 return err
             }
@@ -458,7 +459,7 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
 
             r2 := patientOutstandingBillRes[0]
 
-            if r2.PaymentStatus.String == utils.PaymentStatusPaid {
+            if r2.PaymentStatus.String == constants.PaymentStatusPaid {
                 emailPrm := mm.MailSuccessOutstandingBillPayment{
                     Amount:        utils.GetAmount(r.PaymentAmount.Float64),
                     PaymentMethod: "iPay88",
@@ -469,7 +470,7 @@ func (s *BillPaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo str
 
                 if r.BillingEmail.Valid {
                     emailPrm.Email = r.BillingEmail.String
-                    if r2.PaymentStatus.String == utils.PaymentStatusPaid {
+                    if r2.PaymentStatus.String == constants.PaymentStatusPaid {
                         emailPrm.BillNumber = r2.BillNumber.String
                         emailPrm.InvoiceNumber = r2.InvoiceNumber.String
                         go func() {

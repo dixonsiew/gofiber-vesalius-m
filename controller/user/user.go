@@ -13,6 +13,7 @@ import (
     "vesaliusm/service/mail"
     "vesaliusm/service/token"
     "vesaliusm/utils"
+    "vesaliusm/utils/constants"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -90,14 +91,14 @@ func (cr *UserController) GetSearchExportMobileUser(c fiber.Ctx) error {
 // @Router /user/all [get]
 func (cr *UserController) GetAllUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.applicationUserService.List(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -139,14 +140,14 @@ func (cr *UserController) GetOldAppNotificationLists(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.applicationUserNotificationService.ListByUserId(userId, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -161,14 +162,14 @@ func (cr *UserController) GetOldAppNotificationLists(c fiber.Ctx) error {
 // @Router /user/all/active [get]
 func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.applicationUserService.ListActive(page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -177,7 +178,7 @@ func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        userId              path      string  true  "UserId"
+// @Param        userId              path      string  true  "userId"
 // @Success 200
 // @Router /user/active-user/{userId} [post]
 func (cr *UserController) SetActive(c fiber.Ctx) error {
@@ -198,7 +199,7 @@ func (cr *UserController) SetActive(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        userId              path      string  true  "UserId"
+// @Param        userId              path      string  true  "userId"
 // @Success 200
 // @Router /user/inactive-user/{userId} [post]
 func (cr *UserController) SetInactive(c fiber.Ctx) error {
@@ -237,8 +238,8 @@ func (cr *UserController) SetInactive(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       string                false  "_page"  default:"1"
+// @Param        _limit            query       string                false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all [post]
@@ -254,14 +255,14 @@ func (cr *UserController) SearchAllUsers(c fiber.Ctx) error {
     }
 
     page := c.Query("_page", "1")
-    limit := c.Query("_limit", strconv.Itoa(utils.PAGE_SIZE))
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
     m, err := cr.applicationUserService.ListByKeyword(key, page, limit)
     if err != nil {
         return err
     }
 
-    c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
-    c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
 }
 
@@ -270,7 +271,7 @@ func (cr *UserController) SearchAllUsers(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        userId              path      string  true  "UserId"
+// @Param        userId              path      string  true  "userId"
 // @Success 200 {object} model.ApplicationUser
 // @Router /user/userId/{userId} [get]
 func (cr *UserController) GetUserById(c fiber.Ctx) error {
@@ -627,7 +628,7 @@ func (cr *UserController) DisableFirstTimeBiometricUser(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        playerId              path      string  true  "PlayerId"
+// @Param    playerId    path    string    true    "playerId"
 // @Success 200
 // @Router /user/update-playerid/{playerId} [post]
 func (cr *UserController) UpdatePlayerId(c fiber.Ctx) error {
@@ -652,7 +653,7 @@ func (cr *UserController) UpdatePlayerId(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PostMachineInfo true "AddMachineId"
+// @Param    request    body    dto.PostMachineInfo    true    "AddMachineId"
 // @Success 200
 // @Router /user/add-machine-id [post]
 func (cr *UserController) AddMachineId(c fiber.Ctx) error {
