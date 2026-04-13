@@ -9,6 +9,7 @@ import (
     model "vesaliusm/model/clubs"
     mm "vesaliusm/model/mail"
     "vesaliusm/service/clubs"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
 
@@ -17,14 +18,16 @@ import (
 )
 
 type ClubsLittleKidsController struct {
-    clubService *clubs.ClubService
-    mailService *mail.MailService
+    clubService        *clubs.ClubService
+    exportExcelService *exportExcel.ExportExcelService
+    mailService        *mail.MailService
 }
 
 func NewClubsLittleKidsController() *ClubsLittleKidsController {
     return &ClubsLittleKidsController{
-        clubService: clubs.ClubSvc,
-        mailService: mail.MailSvc,
+        clubService:        clubs.ClubSvc,
+        exportExcelService: exportExcel.ExportExcelSvc,
+        mailService:        mail.MailSvc,
     }
 }
 
@@ -81,11 +84,11 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembership(c fiber.Ctx) err
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -222,11 +225,11 @@ func (cr *ClubsLittleKidsController) CreateLittleKidsMembershipViaWebportal(c fi
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -349,11 +352,11 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsMembership(c fiber.Ctx) err
         strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeNRIC) &&
         strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypePassport) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) ||
         strings.EqualFold(data.KidsDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
+            strings.EqualFold(data.GuardianDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.TrimSpace(data.KidsDocNumber) == strings.TrimSpace(data.GuardianDocNumber) {
         return fiber.NewError(fiber.StatusBadRequest, "Kids Identification Number and Guardian Identification Number cannot be same")
     }
 
@@ -450,7 +453,12 @@ func (cr *ClubsLittleKidsController) GetAllAppLittleKidsMemberships(c fiber.Ctx)
 // @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/membership/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsMembership(c fiber.Ctx) error {
-    return nil
+    lx, err := cr.exportExcelService.ExportAllLittleKidsMembership()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetSearchExportLittleKidsMembership
@@ -476,7 +484,12 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber
         key2 = "%" + key2 + "%"
     }
 
-    return nil
+    lx, err := cr.exportExcelService.ExportLittleKidsMembershipByKeyword(key, key2)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllLittleKidsMemberships
@@ -715,7 +728,12 @@ func (cr *ClubsLittleKidsController) UpdateLittleKidsActivity(c fiber.Ctx) error
 // @Success 200 {array} model.LittleExplorersKidsActivity
 // @Router /clubs/littlekids/activity/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsActivity(c fiber.Ctx) error {
-    return nil
+    lx, err := cr.exportExcelService.ExportAllLittleKidsActivity()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetSearchExportLittleKidsActivity
@@ -749,7 +767,12 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.C
         }
     }
 
-    return nil
+    lx, err := cr.exportExcelService.ExportLittleKidsActivityByKeyword(key, key2, key3)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllLittleKidsActivities
@@ -850,7 +873,14 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsActivities(c fiber.Ctx) 
 // @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/{activityId}/export/all [get]
 func (cr *ClubsLittleKidsController) GetAllExportLittleKidsAttendees(c fiber.Ctx) error {
-    return nil
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    lx, err := cr.exportExcelService.ExportAllLittleKidsAttendees(iactivityId)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(lx)
 }
 
 // GetSearchExportLittleKidsAttendees
@@ -863,7 +893,29 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsAttendees(c fiber.Ctx
 // @Success 200 {array} model.LittleExplorersKidsMembership
 // @Router /clubs/littlekids/activity/attendees/:activityId/export/search [post]
 func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsAttendees(c fiber.Ctx) error {
-    return nil
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportLittleKidsAttendeesByKeyword(iactivityId, key, key2)
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(lx)
 }
 
 // GetLittleKidsActivityAttendeesById

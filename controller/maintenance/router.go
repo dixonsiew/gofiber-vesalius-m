@@ -28,6 +28,8 @@ func (c *MaintenanceController) registerRoutes(router fiber.Router) {
     api.Post("/cronjob-history/search/:cronjobName", c.SearchAllCronjobHistories)
     api.Get("/dynamic-email-master/all", c.GetAllDynamicEmailSettings)
     api.Post("/dynamic-email-master/search", c.SearchAllDynamicEmailSettings)
+    api.Get("/dynamic-email-master/export/all", c.GetAllExportDynamicEmailSettings)
+    api.Post("/dynamic-email-master/export/search", c.GetSearchDynamicEmailSettings)
     api.Get("/dynamic-email-master/view/:emailFunctionName", c.GetDynamicEmailSettingByFunctionName)
     api.Post("/dynamic-email-master/update", c.UpdateDynamicEmailSetting)
     api.Get("/statistic-appointment/all", c.GetAllStatisticAppointments)

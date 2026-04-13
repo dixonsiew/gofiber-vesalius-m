@@ -114,7 +114,6 @@ func (s *MaintenanceService) UpdateHospitalProfileByDescName(data *dto.HospitalP
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

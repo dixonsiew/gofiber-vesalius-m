@@ -245,7 +245,6 @@ func (s *BillPaymentDetailsService) SaveIPay(o model.BillingPayment, o2 model.Us
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }
@@ -328,7 +327,6 @@ func (s *BillPaymentDetailsService) SaveWallex(o model.BillingPayment, o2 model.
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

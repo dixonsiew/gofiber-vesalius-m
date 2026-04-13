@@ -9,6 +9,7 @@ import (
     model "vesaliusm/model/clubs"
     mm "vesaliusm/model/mail"
     "vesaliusm/service/clubs"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/utils"
 
@@ -17,14 +18,16 @@ import (
 )
 
 type ClubsGoldenPearlController struct {
-    clubService *clubs.ClubService
-    mailService *mail.MailService
+    clubService        *clubs.ClubService
+    exportExcelService *exportExcel.ExportExcelService
+    mailService        *mail.MailService
 }
 
 func NewClubsGoldenPearlController() *ClubsGoldenPearlController {
     return &ClubsGoldenPearlController{
-        clubService: clubs.ClubSvc,
-        mailService: mail.MailSvc,
+        clubService:        clubs.ClubSvc,
+        exportExcelService: exportExcel.ExportExcelSvc,
+        mailService:        mail.MailSvc,
     }
 }
 
@@ -81,11 +84,11 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -220,11 +223,11 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -345,11 +348,11 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
         strings.EqualFold(data.NokDocType, utils.ClubsDocTypeNRIC) &&
         strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypePassport) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) ||
         strings.EqualFold(data.GoldenDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
-        strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
+            strings.EqualFold(data.NokDocType, utils.ClubsDocTypeBirthCert) &&
+            strings.EqualFold(strings.TrimSpace(data.GoldenDocNumber), strings.TrimSpace(data.NokDocNumber)) {
         return fiber.NewError(fiber.StatusBadRequest, "Golden Pearl Identification Number and NOK Identification Number cannot be same")
     }
 
@@ -420,7 +423,7 @@ func (cr *ClubsGoldenPearlController) GetGoldenPearlMembershipById(c fiber.Ctx) 
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} []clubs.GoldenPearlMembership
+// @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/all/mobile [get]
 func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
     _, user, err := middleware.ValidateToken(c)
@@ -444,7 +447,12 @@ func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlMemberships(c fiber.Ct
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/export/all [get]
 func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlMembership(c fiber.Ctx) error {
-    return nil
+    lx, err := cr.exportExcelService.ExportAllGoldenPearlMembership()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetSearchExportGoldenPearlMembership
@@ -470,7 +478,12 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlMembership(c fib
         key2 = "%" + key2 + "%"
     }
 
-    return nil
+    lx, err := cr.exportExcelService.ExportGoldenPearlMembershipByKeyword(key, key2)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllGoldenPearlMemberships
@@ -607,7 +620,7 @@ func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx
     if err != nil {
         return err
     }
-    
+
     return c.JSON(fiber.Map{
         "message": "Activity Participate successfully",
     })
@@ -709,7 +722,12 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlActivity(c fiber.Ctx) err
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/export/all [get]
 func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlActivity(c fiber.Ctx) error {
-    return nil
+    lx, err := cr.exportExcelService.ExportAllGoldenPearlActivity()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetSearchExportGoldenPearlActivity
@@ -721,12 +739,34 @@ func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlActivity(c fiber.Ct
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/export/search [post]
 func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber.Ctx) error {
-    var data fiber.Map
+    var data utils.Map
     if err := c.Bind().Body(&data); err != nil {
         return err
     }
-    
-    return nil
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        if _, err := goment.New(key2, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong start date format")
+        }
+    }
+    if key3 != "" {
+        if _, err := goment.New(key3, "DD/MM/YYYY"); err != nil {
+            return fiber.NewError(fiber.StatusBadRequest, "Wrong end date format")
+        }
+    }
+
+    lx, err := cr.exportExcelService.ExportGoldenPearlActivityByKeyword(key, key2, key3)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllGoldenPearlActivities
@@ -827,7 +867,14 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlActivities(c fiber.Ctx
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/all [get]
 func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlAttendees(c fiber.Ctx) error {
-    return nil
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+    lx, err := cr.exportExcelService.ExportAllGoldenPearlAttendees(iactivityId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetSearchExportGoldenPearlAttendees
@@ -839,7 +886,29 @@ func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlAttendees(c fiber.C
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/search [post]
 func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlAttendees(c fiber.Ctx) error {
-    return nil
+    activityId := c.Params("activityId")
+    iactivityId, _ := strconv.ParseInt(activityId, 10, 64)
+
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportGoldenPearlAttendeesByKeyword(iactivityId, key, key2)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetGoldenPearlActivityAttendeesById
@@ -978,13 +1047,13 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) erro
     o.GoldenClubTnc = utils.NewNullString(data.GoldenClubTnc)
     o.GoldenClubExtLink = utils.NewNullString(data.GoldenClubExtLink)
 
-    goldenClubId, err :=cr.clubService.SaveGoldenPearlAboutUs(o, user.AdminId.Int64)
+    goldenClubId, err := cr.clubService.SaveGoldenPearlAboutUs(o, user.AdminId.Int64)
     if err != nil {
         return err
     }
 
     return c.JSON(fiber.Map{
-        "message":      "Golden Pearl About Us created",
+        "message":        "Golden Pearl About Us created",
         "golden_club_id": goldenClubId,
     })
 }

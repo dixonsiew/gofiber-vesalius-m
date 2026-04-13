@@ -143,7 +143,6 @@ func (s *MaintenanceService) UpdateDynamicEmailSettingByFunctionName(data *dto.D
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

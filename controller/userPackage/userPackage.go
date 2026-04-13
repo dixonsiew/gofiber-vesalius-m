@@ -13,6 +13,7 @@ import (
     "vesaliusm/service/payment"
     "vesaliusm/service/vesalius"
     "vesaliusm/service/wallex"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/utils"
 
     "github.com/gofiber/fiber/v3"
@@ -24,6 +25,7 @@ type UserPackageController struct {
     paymentService                *payment.PaymentService
     vesaliusService               *vesalius.VesaliusService
     wallexService                 *wallex.WallexService
+    exportExcelService            *exportExcel.ExportExcelService
 }
 
 func NewUserPackageController() *UserPackageController {
@@ -33,6 +35,7 @@ func NewUserPackageController() *UserPackageController {
         paymentService:                payment.PaymentSvc,
         vesaliusService:               vesalius.VesaliusSvc,
         wallexService:                 wallex.WallexSvc,
+        exportExcelService:            exportExcel.ExportExcelSvc,
     }
 }
 
@@ -322,16 +325,16 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
     key4 := data.GetString("keyword4")
 
     if key != "" {
-        key = "%" + strings.ToLower(key) + "%"
+        key = "%" + key + "%"
     }
     if key2 != "" {
-        key2 = "%" + strings.ToLower(key2) + "%"
+        key2 = "%" + key2 + "%"
     }
     if key3 != "" {
-        key3 = "%" + strings.ToLower(key3) + "%"
+        key3 = "%" + key3 + "%"
     }
     if key4 != "" && key4 != "All" {
-        key4 = "%" + strings.ToLower(key4) + "%"
+        key4 = "%" + key4 + "%"
     }
 
     page := c.Query("_page", "1")
@@ -423,4 +426,61 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
     return c.JSON(fiber.Map{
         "message": "User Package Status updated",
     })
+}
+
+// GetAllExportPurchaseHistory
+//
+// @Tags User Package
+// @Accept  json
+// @Produce  json
+// @Security BearerAuth
+// @Success 200 {array} upck.UserPackage
+// @Router /user-package/export-purchase-history [get]
+func (cr *UserPackageController) GetAllExportPurchaseHistory(c fiber.Ctx) error {
+    lx, err := cr.exportExcelService.ExportAllPurchaseHistory()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetSearchExportPurchaseHistory
+//
+// @Tags User Package
+// @Accept  json
+// @Produce  json
+// @Security BearerAuth
+// @Success 200 {array} upck.UserPackage
+// @Router /user-package/export/search [post]
+func (cr *UserPackageController) GetSearchExportPurchaseHistory(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    key4 := data.GetString("keyword4")
+
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
+    }
+    if key3 != "" {
+        key3 = "%" + key3 + "%"
+    }
+    if key4 != "" && key4 != "All" {
+        key4 = "%" + key4 + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportPurchaseHistoryByKeyword(key, key2, key3, key4)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }

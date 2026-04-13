@@ -113,7 +113,6 @@ func (s *MaintenanceService) UpdateParamSettingByParamCode(data *dto.ParamSettin
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

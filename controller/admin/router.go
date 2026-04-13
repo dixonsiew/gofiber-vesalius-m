@@ -23,6 +23,8 @@ func (c *AdminController) registerRoutes(router fiber.Router) {
     api.Get("/", c.GetAdmin)
     api.Get("/all", c.GetAllAdmin)
     api.Post("/all", c.SearchAllAdmin)
+    api.Get("/adminportal/mobile-user/export/all", c.GetAllExportAuditMobileUser)
+    api.Post("/adminportal/mobile-user/export/search", c.GetSearchExportAduitMobileUser)
     api.Get("/adminportal/mobile-user/log/all", c.GetAllAuditMobileUser)
     api.Post("/adminportal/mobile-user/log/all", c.SearchAllAuditMobileUser)
     api.Get("/adminportal/log/all", c.GetAllAuditLog)

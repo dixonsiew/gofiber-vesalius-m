@@ -4,6 +4,7 @@ import (
     "strconv"
     // "vesaliusm/model"
     "vesaliusm/dto"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/maintenance"
     "vesaliusm/utils"
 
@@ -13,11 +14,13 @@ import (
 
 type MaintenanceController struct {
     maintenanceService *maintenance.MaintenanceService
+    exportExcelService *exportExcel.ExportExcelService
 }
 
 func NewMaintenanceController() *MaintenanceController {
     return &MaintenanceController{
         maintenanceService: maintenance.MaintenanceSvc,
+        exportExcelService: exportExcel.ExportExcelSvc,
     }
 }
 
@@ -376,6 +379,49 @@ func (cr *MaintenanceController) SearchAllDynamicEmailSettings(c fiber.Ctx) erro
     c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
     c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
+}
+
+// GetAllExportDynamicEmailSettings
+//
+// @Tags Maintenance
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.DynamicEmailMaster
+// @Router /maintenance/dynamic-email-master/export/all [get]
+func (cr *MaintenanceController) GetAllExportDynamicEmailSettings(c fiber.Ctx) error {
+    lx, err := cr.exportExcelService.ExportAllDynamicEmailSettings()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetSearchDynamicEmailSettings
+//
+// @Tags Maintenance
+// @Produce json
+// @Security BearerAuth
+// @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
+// @Success 200 {array} model.DynamicEmailMaster
+// @Router /maintenance/dynamic-email-master/export/search [post]
+func (cr *MaintenanceController) GetSearchDynamicEmailSettings(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportDynamicEmailSettingsByKeyword(key)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetDynamicEmailSettingByFunctionName

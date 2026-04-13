@@ -574,7 +574,6 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

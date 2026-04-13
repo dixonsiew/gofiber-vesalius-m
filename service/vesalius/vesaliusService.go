@@ -115,7 +115,6 @@ func (s *VesaliusService) handleCancelAppointment(prn string, data *dto.PostCanc
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }
@@ -174,7 +173,6 @@ func (s *VesaliusService) handleChangeAppointment(prn string, data *dto.PostChan
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }
@@ -239,7 +237,6 @@ func (s *VesaliusService) handleMakeAppointment(prn string, doctorId int64, data
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

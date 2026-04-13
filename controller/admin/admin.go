@@ -16,6 +16,7 @@ import (
     "vesaliusm/service/assignBranch"
     "vesaliusm/service/branch"
     "vesaliusm/service/groupModulePermission"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/mail"
     "vesaliusm/service/sms"
     "vesaliusm/service/userGroup"
@@ -39,6 +40,7 @@ type AdminController struct {
     userGroupModulesService          *userGroupModules.UserGroupModulesService
     userGroupModulePermissionService *userGroupModulePermission.UserGroupModulePermissionService
     vesaliusService                  *vesalius.VesaliusService
+    exportExcelService               *exportExcel.ExportExcelService
     mailService                      *mail.MailService
     smsService                       *sms.SmsService
 }
@@ -55,6 +57,7 @@ func NewAdminController() *AdminController {
         userGroupModulesService:          userGroupModules.UserGroupModulesSvc,
         userGroupModulePermissionService: userGroupModulePermission.UserGroupModulePermissionSvc,
         vesaliusService:                  vesalius.VesaliusSvc,
+        exportExcelService:               exportExcel.ExportExcelSvc,
         mailService:                      mail.MailSvc,
         smsService:                       sms.SmsSvc,
     }
@@ -134,6 +137,53 @@ func (cr *AdminController) SearchAllAdmin(c fiber.Ctx) error {
     c.Set(utils.X_TOTAL_COUNT, strconv.Itoa(m.Total))
     c.Set(utils.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
     return c.JSON(m.List)
+}
+
+// GetAllExportAuditMobileUser
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} model.MobileUserAuditLog
+// @Router /admin/adminportal/mobile-user/export/all [get]
+func (cr *AdminController) GetAllExportAuditMobileUser(c fiber.Ctx) error {
+    lx, err := cr.exportExcelService.ExportAllMobileUserAuditLog()
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
+}
+
+// GetSearchExportAduitMobileUser
+//
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param        keyword           body        dto.SearchKeyword2Dto  false  "Search"
+// @Success 200 {array} model.MobileUserAuditLog
+// @Router /admin/adminportal/mobile-user/export/search [post]
+func (cr *AdminController) GetSearchExportAduitMobileUser(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
+    }
+
+    lx, err := cr.exportExcelService.ExportMobileUserAuditLogByKeyword(key, key2)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(lx)
 }
 
 // GetAllAuditMobileUser

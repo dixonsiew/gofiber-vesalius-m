@@ -176,6 +176,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/adminportal/mobile-user/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MobileUserAuditLog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/adminportal/mobile-user/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MobileUserAuditLog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/adminportal/mobile-user/log/all": {
             "get": {
                 "security": [
@@ -5200,6 +5262,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/maintenance/dynamic-email-master/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DynamicEmailMaster"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/maintenance/dynamic-email-master/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Maintenance"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DynamicEmailMaster"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/maintenance/dynamic-email-master/search": {
             "post": {
                 "security": [
@@ -6339,6 +6463,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/package/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/hpackage.Package"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/package/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Package"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword3Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/hpackage.Package"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/package/process-resize-image": {
             "post": {
                 "produces": [
@@ -6817,6 +7003,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-package/export-purchase-history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userPackage.UserPackage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user-package/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Package"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userPackage.UserPackage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user-package/purchase/{paymentMethod}": {
             "post": {
                 "security": [
@@ -7195,6 +7439,68 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/export/all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/export/search": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ApplicationUser"
+                            }
+                        }
                     }
                 }
             }
@@ -12585,7 +12891,10 @@ const docTemplate = `{
                 "race": {
                     "type": "string"
                 },
-                "registration_date_time": {
+                "registerDate": {
+                    "type": "string"
+                },
+                "registerDateExcel": {
                     "type": "string"
                 },
                 "resident": {
@@ -12937,6 +13246,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "dateCreate": {
+                    "type": "string"
+                },
+                "dateCreateExcel": {
                     "type": "string"
                 },
                 "patientName": {

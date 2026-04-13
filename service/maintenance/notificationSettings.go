@@ -110,7 +110,6 @@ func (s *MaintenanceService) UpdateNotificationSettingByNotificationCode(data *d
     _, err := s.db.ExecContext(s.ctx, query, data.NotificationParam1, data.NotificationParam2, data.NotificationCode)
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }

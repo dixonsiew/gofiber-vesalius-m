@@ -2685,7 +2685,9 @@ definitions:
         type: string
       race:
         type: string
-      registration_date_time:
+      registerDate:
+        type: string
+      registerDateExcel:
         type: string
       resident:
         type: string
@@ -2916,6 +2918,8 @@ definitions:
       audit_id:
         type: integer
       dateCreate:
+        type: string
+      dateCreateExcel:
         type: string
       patientName:
         type: string
@@ -3869,6 +3873,42 @@ paths:
           schema:
             items:
               $ref: '#/definitions/model.AdminAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/adminportal/mobile-user/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MobileUserAuditLog'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Admin
+  /admin/adminportal/mobile-user/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword2Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MobileUserAuditLog'
             type: array
       security:
       - BearerAuth: []
@@ -6928,6 +6968,42 @@ paths:
       - BearerAuth: []
       tags:
       - Maintenance
+  /maintenance/dynamic-email-master/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DynamicEmailMaster'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
+  /maintenance/dynamic-email-master/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DynamicEmailMaster'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Maintenance
   /maintenance/dynamic-email-master/search:
     post:
       parameters:
@@ -7645,6 +7721,42 @@ paths:
             type: array
       tags:
       - Package
+  /package/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hpackage.Package'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
+  /package/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword3Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hpackage.Package'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Package
   /package/process-resize-image:
     post:
       produces:
@@ -7917,6 +8029,40 @@ paths:
       - BearerAuth: []
       tags:
       - User Package
+  /user-package/export-purchase-history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/userPackage.UserPackage'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User Package
+  /user-package/export/search:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/userPackage.UserPackage'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User Package
   /user-package/purchase/{paymentMethod}:
     post:
       parameters:
@@ -8119,6 +8265,42 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/export/all:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUser'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User
+  /user/export/search:
+    post:
+      parameters:
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ApplicationUser'
+            type: array
       security:
       - BearerAuth: []
       tags:

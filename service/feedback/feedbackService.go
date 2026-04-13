@@ -196,7 +196,6 @@ func (s *FeedbackService) Save(o feedback.Feedback, la []feedback.FeedbackAttach
     err = tx.Commit()
     if err != nil {
         utils.LogError(err)
-        return err
     }
     return err
 }
