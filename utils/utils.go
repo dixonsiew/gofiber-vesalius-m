@@ -6,7 +6,6 @@ import (
     "math/rand"
     "os"
     "reflect"
-    "regexp"
     "strconv"
     "strings"
     "time"
@@ -267,18 +266,6 @@ func ToTitleCase(text string) string {
         return text
     }
     return strings.ToUpper(string(text[0])) + strings.ToLower(text[1:])
-}
-
-func TrimCompletely(s any) string {
-    r := fmt.Sprintf("%v", s)
-    switch v := s.(type) {
-    case string:
-        r = v
-        re := regexp.MustCompile(`\s+`)
-        r = re.ReplaceAllString(v, "")
-    }
-
-    return r
 }
 
 func CatchPanic(funcName string) {

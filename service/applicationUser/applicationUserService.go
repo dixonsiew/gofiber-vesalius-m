@@ -625,13 +625,14 @@ func (s *ApplicationUserService) SaveSignup(branchId int64, o *model.Application
 
 func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) error {
     var hashedPwd []byte
-    var err error
+    //var err error
     if o.SignInType.Valid && o.SignInType.Int32 == 2 && o.Password.Valid && o.Password.String != "" {
-        hashedPwd, err = bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
+        hpw, err := bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
         if err != nil {
             utils.LogError(err)
             return err
         }
+        hashedPwd = hpw
     }
     verificationCode := utils.GetRandomStr(6)
 
@@ -753,12 +754,12 @@ func (s *ApplicationUserService) UpdateInactiveSignup(o *model.ApplicationUser) 
 
 func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.ApplicationUser) (int64, error) {
     var hashedPwd []byte
-    var err error
     if o.SignInType.Valid && o.SignInType.Int32 == 2 && o.Password.Valid && o.Password.String != "" {
-        hashedPwd, err = bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
+        hpw, err := bcrypt.GenerateFromPassword([]byte(o.Password.String), saltRounds)
         if err != nil {
             return -1, err
         }
+        hashedPwd = hpw
     }
     verificationCode := utils.GetRandomStr(6)
     firstTimeLogin := 0
@@ -843,7 +844,6 @@ func (s *ApplicationUserService) SaveNewSignup(branchId int64, o *model.Applicat
 
     err = tx.Commit()
     if err != nil {
-        utils.LogError(err)
         return -1, err
     }
     return o.UserId.Int64, err
@@ -1006,7 +1006,6 @@ func (s *ApplicationUserService) VerifyUserSms(o *model.ApplicationUser) (bool, 
     o.SessionId = utils.NewNullString(sessionID)
     err = tx.Commit()
     if err != nil {
-        utils.LogError(err)
         return false, err
     }
     return err == nil, err

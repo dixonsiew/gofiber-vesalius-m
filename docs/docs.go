@@ -3224,21 +3224,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/common/index": {
-            "get": {
-                "produces": [
-                    "text/html"
-                ],
-                "tags": [
-                    "Common"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/common/nationality/list": {
             "get": {
                 "produces": [

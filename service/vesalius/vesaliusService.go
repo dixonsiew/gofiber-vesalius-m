@@ -113,11 +113,7 @@ func (s *VesaliusService) handleCancelAppointment(prn string, data *dto.PostCanc
     if err != nil {
         return err
     }
-    err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+    return tx.Commit()
 }
 
 func (s *VesaliusService) VesaliusGetChangeAppointment(prn string, data *dto.PostChangeAppointmentDto) (*gm.AppointmentChangeConfirmation, error) {
@@ -171,11 +167,7 @@ func (s *VesaliusService) handleChangeAppointment(prn string, data *dto.PostChan
     if err != nil {
         return err
     }
-    err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+    return tx.Commit()
 }
 
 func (s *VesaliusService) VesaliusGetMakeAppointment(prn string, data *dto.PostMakeAppointmentDto) (*gm.AppointmentBookingConfirmation, error) {
@@ -235,11 +227,7 @@ func (s *VesaliusService) handleMakeAppointment(prn string, doctorId int64, data
     if err != nil {
         return err
     }
-    err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+    return tx.Commit()
 }
 
 func (s *VesaliusService) getAllPatientFutureAppointments(familyMembers []model.ApplicationUserFamily) ([]gm.Appointment, map[string]model.ApplicationUserFamily) {

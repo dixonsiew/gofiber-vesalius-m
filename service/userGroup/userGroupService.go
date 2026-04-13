@@ -63,11 +63,7 @@ func (s *UserGroupService) Save(o model.UserGroup) error {
 		}
 	}
 	
-	err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+	return tx.Commit()
 }
 
 func (s *UserGroupService) Update(o model.UserGroup) error {
@@ -120,11 +116,7 @@ func (s *UserGroupService) Update(o model.UserGroup) error {
 		return err
 	}
     
-    err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+    return tx.Commit()
 }
 
 func (s *UserGroupService) DeleteByGroupId(groupId int64) error {
@@ -161,12 +153,7 @@ func (s *UserGroupService) DeleteByGroupId(groupId int64) error {
 		return err
 	}
 	
-	err = tx.Commit()
-	if err != nil {
-		utils.LogError(err)
-		return err
-	}
-	return err
+	return tx.Commit()
 }
 
 func (s *UserGroupService) ListAll() ([]model.UserGroup, error) {

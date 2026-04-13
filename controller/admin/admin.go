@@ -1068,7 +1068,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
         username = data.UserMobileNo
     }
 
-    data.UserPrn = utils.TrimCompletely(data.UserPrn)
+    data.UserPrn = middleware.TrimCompletely(data.UserPrn)
     appPatient, err := cr.applicationUserService.FindByUsername(username, nil)
     if err != nil {
         return err
@@ -1180,27 +1180,33 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
 
             if data.SignInType == 1 {
                 if data.UserMobileNo != "" {
-                    isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.UserMobileNo)
-                    if err != nil {
-                        return err
-                    }
-                    if isExistsByMobileNo {
-                        return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided mobile number already exists. Please sign in or use a different mobile number to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                    isSameMobileNo := strings.EqualFold(strings.TrimSpace(data.UserMobileNo), strings.TrimSpace(appPatient.Username.String))
+                    if !isSameMobileNo {
+                        isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.UserMobileNo)
+                        if err != nil {
+                            return err
+                        }
+                        if isExistsByMobileNo {
+                            return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided mobile number already exists. Please sign in or use a different mobile number to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                        }
                     }
                 } else {
                     return fiber.NewError(fiber.StatusBadRequest, "Mobile Number is required")
                 }
             } else if data.SignInType == 2 {
                 if data.UserEmail != "" {
-                    isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.UserEmail)
-                    if err != nil {
-                        return err
-                    }
-                    if isExistsByEmail {
-                        return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided email already exists. Please sign in or use a different email to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                    isSameEmail := strings.EqualFold(strings.TrimSpace(data.UserEmail), strings.TrimSpace(appPatient.Username.String))
+                    if !isSameEmail {
+                        isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.UserEmail)
+                        if err != nil {
+                            return err
+                        }
+                        if isExistsByEmail {
+                            return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided email already exists. Please sign in or use a different email to register. Contact our Customer Service for assistance at info@islandhospital.com")
+                        }
                     }
                 } else {
-                    return fiber.NewError(fiber.StatusBadRequest, "Email is required")
+                    return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
                 }
             } else {
                 return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
@@ -1247,22 +1253,10 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 DocNoSignup:     utils.NewNullString(data.UserPersonNumber),
                 FullnameSignup:  utils.NewNullString(data.UserFullName),
             }
-            userId, err := cr.applicationUserService.SaveNewSignup(int64(data.BranchId), o)
+            middleware.TrimStructFieldsRecursive(o)
+            err = cr.applicationUserService.UpdateInactiveSignup(o)
             if err != nil {
                 return err
-            }
-
-            if userId < 0 {
-                return fiber.NewError(fiber.StatusBadRequest, "Patient failed to register")
-            }
-
-            appPatient, err := cr.applicationUserService.FindByUserId(userId, nil)
-            if err != nil {
-                return err
-            }
-
-            if appPatient == nil {
-                return fiber.NewError(fiber.StatusBadRequest, "Patient failed to register")
             }
 
             err = cr.applicationUserFamilyService.SignupSync(appPatient.MasterPrn.String, appPatient.UserId.Int64)

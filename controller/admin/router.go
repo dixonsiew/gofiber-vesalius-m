@@ -17,7 +17,7 @@ func (c *AdminController) registerRoutes(router fiber.Router) {
     api.Post("/self-reset-password/:branchId/:email", c.SelfResetPassword)
     api.Get("/user-group/list", c.GetUserGroupList)
     api.Post("/self-sign-up", c.SelfSignUpUser)
-    api.Post("/self-sign-up/v2", c.MobileSignUpUser)
+    api.Post("/self-sign-up/v2", middleware.TrimMiddleware, c.MobileSignUpUser)
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/", c.GetAdmin)

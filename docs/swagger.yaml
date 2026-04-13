@@ -5718,15 +5718,6 @@ paths:
           description: OK
       tags:
       - Common
-  /common/index:
-    get:
-      produces:
-      - text/html
-      responses:
-        "200":
-          description: OK
-      tags:
-      - Common
   /common/nationality/list:
     get:
       produces:

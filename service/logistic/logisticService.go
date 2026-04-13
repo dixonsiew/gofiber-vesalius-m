@@ -142,11 +142,7 @@ func (s *LogisticService) SaveLogisticSlot(o lg.LogisticSlots, adminId int64) er
         }
     }
 
-    err = tx.Commit()
-    if err != nil {
-        utils.LogError(err)
-    }
-    return err
+    return tx.Commit()
 }
 
 func (s *LogisticService) FindAllAppLogisticSlots(data *dto.LogisticSlotMobileDto) ([]lg.LogisticSlot, error) {

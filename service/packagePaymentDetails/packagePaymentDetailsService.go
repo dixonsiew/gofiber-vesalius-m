@@ -448,7 +448,6 @@ func (s *PackagePaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestI
         }
         err = tx.Commit()
         if err != nil {
-            utils.LogError(err)
             return err
         }
         err = s.sendPackagePayment(r.PaymentId.Int64)
@@ -493,7 +492,6 @@ func (s *PackagePaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo 
         }
         err = tx.Commit()
         if err != nil {
-            utils.LogError(err)
             return err
         }
         err = s.sendPackagePayment(r.PaymentId.Int64)
