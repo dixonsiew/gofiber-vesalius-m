@@ -576,7 +576,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Email",
+                        "description": "email",
                         "name": "email",
                         "in": "path",
                         "required": true
@@ -634,7 +634,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "UserId",
+                        "description": "userId",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -777,7 +777,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Email",
+                        "description": "email",
                         "name": "email",
                         "in": "path",
                         "required": true
@@ -830,7 +830,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Email",
+                        "description": "email",
                         "name": "email",
                         "in": "path",
                         "required": true
@@ -854,7 +854,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Mobile",
+                        "description": "mobile",
                         "name": "mobile",
                         "in": "path",
                         "required": true
@@ -3224,6 +3224,21 @@ const docTemplate = `{
                 }
             }
         },
+        "/common/index": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Common"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/common/nationality/list": {
             "get": {
                 "produces": [
@@ -4613,11 +4628,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -4691,7 +4702,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                            "$ref": "#/definitions/dto.SearchKeyword4Dto"
                         }
                     }
                 ],
@@ -4789,11 +4800,11 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "Keyword",
-                        "name": "request",
+                        "description": "Search",
+                        "name": "keyword",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/dto.SearchKeyword2Dto"
+                            "$ref": "#/definitions/dto.SearchKeyword4Dto"
                         }
                     }
                 ],
@@ -4836,11 +4847,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -4871,11 +4878,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -4896,7 +4899,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "RequestId",
+                        "description": "requestId",
                         "name": "requestId",
                         "in": "path",
                         "required": true
@@ -4959,11 +4962,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -4984,7 +4983,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "LogisticSetupId",
+                        "description": "logisticSetupId",
                         "name": "logisticSetupId",
                         "in": "path",
                         "required": true
@@ -5001,11 +5000,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -5036,11 +5031,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -5062,8 +5053,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/logistic.LogisticSlot"
+                            }
                         }
                     }
                 }
@@ -7176,7 +7169,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "UserId",
+                        "description": "userId",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -7521,7 +7514,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "UserId",
+                        "description": "userId",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -7639,7 +7632,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "PlayerId",
+                        "description": "playerId",
                         "name": "playerId",
                         "in": "path",
                         "required": true
@@ -7668,7 +7661,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "UserId",
+                        "description": "userId",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -11303,6 +11296,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword3": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SearchKeyword4Dto": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                },
+                "keyword2": {
+                    "type": "string"
+                },
+                "keyword3": {
+                    "type": "string"
+                },
+                "keyword4": {
                     "type": "string"
                 }
             }

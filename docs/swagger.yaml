@@ -1636,6 +1636,17 @@ definitions:
       keyword3:
         type: string
     type: object
+  dto.SearchKeyword4Dto:
+    properties:
+      keyword:
+        type: string
+      keyword2:
+        type: string
+      keyword3:
+        type: string
+      keyword4:
+        type: string
+    type: object
   dto.SearchKeywordDto:
     properties:
       keyword:
@@ -4108,7 +4119,7 @@ paths:
   /admin/delete-admin/{email}:
     post:
       parameters:
-      - description: Email
+      - description: email
         in: path
         name: email
         required: true
@@ -4142,7 +4153,7 @@ paths:
   /admin/delete-user/{userId}:
     post:
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true
@@ -4225,7 +4236,7 @@ paths:
   /admin/resend-user-signup-email/{email}:
     post:
       parameters:
-      - description: Email
+      - description: email
         in: path
         name: email
         required: true
@@ -4259,7 +4270,7 @@ paths:
   /admin/reset-signup-email/user/{email}:
     post:
       parameters:
-      - description: Email
+      - description: email
         in: path
         name: email
         required: true
@@ -4274,7 +4285,7 @@ paths:
   /admin/reset-signup-mobile/user/{mobile}:
     post:
       parameters:
-      - description: Mobile
+      - description: mobile
         in: path
         name: mobile
         required: true
@@ -5707,6 +5718,15 @@ paths:
           description: OK
       tags:
       - Common
+  /common/index:
+    get:
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Common
   /common/nationality/list:
     get:
       produces:
@@ -6577,9 +6597,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6587,7 +6604,7 @@ paths:
   /logistic/request/{requestId}:
     get:
       parameters:
-      - description: RequestId
+      - description: requestId
         in: path
         name: requestId
         required: true
@@ -6641,7 +6658,7 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/dto.SearchKeyword2Dto'
+          $ref: '#/definitions/dto.SearchKeyword4Dto'
       produces:
       - application/json
       responses:
@@ -6697,11 +6714,11 @@ paths:
   /logistic/request/export/search:
     post:
       parameters:
-      - description: Keyword
+      - description: Search
         in: body
-        name: request
+        name: keyword
         schema:
-          $ref: '#/definitions/dto.SearchKeyword2Dto'
+          $ref: '#/definitions/dto.SearchKeyword4Dto'
       produces:
       - application/json
       responses:
@@ -6729,9 +6746,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6750,9 +6764,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6783,9 +6794,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6793,7 +6801,7 @@ paths:
   /logistic/setup/{logisticSetupId}:
     put:
       parameters:
-      - description: LogisticSetupId
+      - description: logisticSetupId
         in: path
         name: logisticSetupId
         required: true
@@ -6809,9 +6817,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6830,9 +6835,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            additionalProperties: true
-            type: object
       security:
       - BearerAuth: []
       tags:
@@ -6845,8 +6847,9 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            items:
+              $ref: '#/definitions/logistic.LogisticSlot'
+            type: array
       security:
       - BearerAuth: []
       tags:
@@ -8106,7 +8109,7 @@ paths:
   /user/active-user/{userId}:
     post:
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true
@@ -8308,7 +8311,7 @@ paths:
   /user/inactive-user/{userId}:
     post:
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true
@@ -8378,7 +8381,7 @@ paths:
   /user/update-playerid/{playerId}:
     post:
       parameters:
-      - description: PlayerId
+      - description: playerId
         in: path
         name: playerId
         required: true
@@ -8395,7 +8398,7 @@ paths:
   /user/userId/{userId}:
     get:
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true

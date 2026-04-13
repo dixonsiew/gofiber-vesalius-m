@@ -139,7 +139,7 @@ func (cr *LogisticController) GetLogisticSetup(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param    request    body    dto.LogisticSlotsDto    true    "LogisticSlotsDto"
-// @Success
+// @Success 200
 // @Router /logistic/slot [post]
 func (cr *LogisticController) CreateLogisticSlot(c fiber.Ctx) error {
     data := new(dto.LogisticSlotsDto)

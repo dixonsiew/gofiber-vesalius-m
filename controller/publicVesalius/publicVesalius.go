@@ -12,14 +12,14 @@ import (
 )
 
 type PublicVesaliusController struct {
-    novaDoctorService      *novaDoctor.NovaDoctorService
-    vesaliusService        *vesalius.VesaliusService
+    novaDoctorService *novaDoctor.NovaDoctorService
+    vesaliusService   *vesalius.VesaliusService
 }
 
 func NewPublicVesaliusController() *PublicVesaliusController {
     return &PublicVesaliusController{
-        novaDoctorService:      novaDoctor.NovaDoctorSvc,
-        vesaliusService:        vesalius.VesaliusSvc,
+        novaDoctorService: novaDoctor.NovaDoctorSvc,
+        vesaliusService:   vesalius.VesaliusSvc,
     }
 }
 
@@ -82,7 +82,7 @@ func (cr *PublicVesaliusController) GetNextAvailableSlots(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -99,13 +99,13 @@ func (cr *PublicVesaliusController) GetMakeAppointment(c fiber.Ctx) error {
     if err := utils.BindNValidate(c, data); err != nil {
         return err
     }
-    
+
     prn := c.Params("prn")
     o, err := cr.vesaliusService.VesaliusGetMakeAppointment(prn, data)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(o)
 }
 
@@ -143,7 +143,7 @@ func (cr *PublicVesaliusController) GetAllHSDoctorInformation(c fiber.Ctx) error
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -193,7 +193,7 @@ func (cr *PublicVesaliusController) GetDoctorInformationByMCR(c fiber.Ctx) error
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -208,7 +208,7 @@ func (cr *PublicVesaliusController) GetSpecialtyLookup(c fiber.Ctx) error {
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 

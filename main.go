@@ -23,7 +23,7 @@ import (
     "github.com/gofiber/fiber/v3/middleware/healthcheck"
     "github.com/gofiber/fiber/v3/middleware/recover"
     "github.com/gofiber/fiber/v3/middleware/static"
-    "github.com/gofiber/template/django/v3"
+    "github.com/gofiber/template/html/v2"
 )
 
 // convert this to go using go-ora with github.com/jmoiron/sqlx
@@ -47,7 +47,7 @@ func main() {
     utils.SetClient()
     utils.SetLogger(runLogFile)
     port := config.Config("port")
-    engine := django.New("./views", ".django")
+    engine := html.New("./views", ".html")
     app := fiber.New(fiber.Config{
         StructValidator: &utils.StructValidator{Xvalidate: validator.New()},
         ErrorHandler: func(c fiber.Ctx, err error) error {

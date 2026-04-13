@@ -16,7 +16,7 @@ func (c *LogisticController) registerRoutes(router fiber.Router) {
 	
 	api.Use(middleware.JWTProtected, middleware.ValidateUser)
 	api.Post("/setup", c.CreateLogisticSetup)
-	api.Put("/:logisticSetupId", c.UpdateLogisticSetup)
+	api.Put("/setup/:logisticSetupId", c.UpdateLogisticSetup)
 	api.Get("/setup", c.GetLogisticSetup)
 	api.Post("/slot", c.CreateLogisticSlot)
 	api.Post("/slot/all/mobile", c.GetAllAppLogisticSlots)
