@@ -1264,11 +1264,12 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 return err
             }
 
-            if data.SignInType == 1 {
+            switch data.SignInType {
+            case 1:
                 return c.JSON(fiber.Map{
                     "successMessage": "Sign up successful",
                 })
-            } else if data.SignInType == 2 {
+            case 2:
                 go func() {
                     cr.mailService.SendSignUp(o, "")
                 }()
@@ -1374,7 +1375,8 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
             return fiber.NewError(fiber.StatusBadRequest, "Incorrect DOB: The Date of Birth provided does not match our hospital records. Please retry")
         }
 
-        if data.SignInType == 1 {
+        switch data.SignInType {
+        case 1:
             if data.UserMobileNo != "" {
                 isExistsByMobileNo, err := cr.applicationUserService.ExistsByMobileNo(data.UserMobileNo)
                 if err != nil {
@@ -1386,7 +1388,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
             } else {
                 return fiber.NewError(fiber.StatusBadRequest, "Mobile Number is required")
             }
-        } else if data.SignInType == 2 {
+        case 2:
             if data.UserEmail != "" {
                 isExistsByEmail, err := cr.applicationUserService.ExistsByEmail(data.UserEmail)
                 if err != nil {
@@ -1398,7 +1400,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
             } else {
                 return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
             }
-        } else {
+        default:
             return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
         }
 
@@ -1466,11 +1468,12 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
             return err
         }
 
-        if data.SignInType == 1 {
+        switch data.SignInType {
+        case 1:
             return c.JSON(fiber.Map{
                 "successMessage": "Sign up successful",
             })
-        } else if data.SignInType == 2 {
+        case 2:
             go func() {
                 cr.mailService.SendSignUp(o, "")
             }()
@@ -1506,21 +1509,21 @@ func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
         return err
     }
 
-    valid := cr.adminUserService.ValidateCredentials(*user, data.OldPassword)
+    valid := cr.adminUserService.ValidateCredentials(user, data.OldPassword)
     if !valid {
         return fiber.NewError(fiber.StatusBadRequest, "Old password is invalid")
     }
 
-    valid1 := cr.adminUserService.ValidateCredentials(*user, data.NewPassword)
+    valid1 := cr.adminUserService.ValidateCredentials(user, data.NewPassword)
     if valid1 {
         return fiber.NewError(fiber.StatusBadRequest, "New Password is not allowed to be the same with Old Password")
     }
 
     user.Password = utils.NewNullString(data.NewPassword)
-    // err = adminUserService.SavePassword(user)
-    // if err != nil {
-    //     return err
-    // }
+    err = cr.adminUserService.SavePassword(user)
+    if err != nil {
+        return err
+    }
 
     return c.JSON(fiber.Map{
         "successMessage": "Password has been updated",

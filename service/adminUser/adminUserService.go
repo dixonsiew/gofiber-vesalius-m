@@ -716,7 +716,7 @@ func (s *AdminUserService) ChangeUserSignInType(prm dto.ChangeSignInTypeDto) err
     return nil
 }
 
-func (s *AdminUserService) ValidateCredentials(user model.AdminUser, password string) bool {
+func (s *AdminUserService) ValidateCredentials(user *model.AdminUser, password string) bool {
     if user.Password.String == "" {
         return false
     }

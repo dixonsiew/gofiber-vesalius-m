@@ -71,7 +71,7 @@ func (cr *AuthController) Login(c fiber.Ctx) error {
 
         valid := false
         if user != nil {
-            valid = cr.adminUserService.ValidateCredentials(*user, data.Password)
+            valid = cr.adminUserService.ValidateCredentials(user, data.Password)
         }
 
         if valid == false {
