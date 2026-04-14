@@ -22,6 +22,6 @@ func (c *UserPackageController) registerRoutes(router fiber.Router) {
     api.Post("/all", c.SearchAllPurchaseHistory)
     api.Get("/:purchaseId", c.GetUserPackageById)
     api.Post("/status/:purchaseId", c.UpdateUserPackageStatus)
-    api.Get("/export/purchase-history", c.GetAllExportPurchaseHistory)
+    api.Get("/export/all", c.GetAllExportPurchaseHistory)
     api.Post("/export/search", c.GetSearchExportPurchaseHistory)
 }

@@ -37,7 +37,7 @@ func NewClubsGoldenPearlController() *ClubsGoldenPearlController {
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.GoldenPearlMembershipDto true "GoldenPearlMembershipDto"
+// @Param    request    body    dto.GoldenPearlMembershipDto    true    "GoldenPearlMembershipDto"
 // @Success 200
 // @Router /clubs/goldenpearl/membership [post]
 func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) error {
@@ -171,11 +171,11 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembership(c fiber.Ctx) e
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.GoldenPearlMembershipDto true "GoldenPearlMembershipDto"
+// @Param    request    body    dto.GoldenPearlMembershipDto    true    "GoldenPearlMembershipDto"
 // @Success 200
 // @Router /clubs/goldenpearl/membership/webadmin [post]
 func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -272,7 +272,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
     o.Relationship = utils.NewNullString(data.Relationship)
     o.PreferredLanguage = utils.NewNullString(data.PreferredLanguage)
 
-    err = cr.clubService.SaveGoldenPearlMembershipViaWebportal(o, user.AdminId.Int64)
+    err = cr.clubService.SaveGoldenPearlMembershipViaWebportal(o, adminId)
     if err != nil {
         return err
     }
@@ -310,12 +310,12 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlMembershipViaWebportal(c 
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param        membershipId               path        string  true  "membershipId"
+// @Param        membershipId               path        int                           true  "membershipId"
 // @Param        request                    body        dto.GoldenPearlMembershipDto  true  "GoldenPearlMembershipDto"
 // @Success 200
 // @Router /clubs/goldenpearl/membership/webadmin/{membershipId} [put]
 func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -390,7 +390,7 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlMembership(c fiber.Ctx) e
     o.Relationship = utils.NewNullString(data.Relationship)
     o.PreferredLanguage = utils.NewNullString(data.PreferredLanguage)
 
-    err = cr.clubService.UpdateGoldenPearlMembershipViaWebportal(o, user.AdminId.Int64)
+    err = cr.clubService.UpdateGoldenPearlMembershipViaWebportal(o, adminId)
     if err != nil {
         return err
     }
@@ -427,12 +427,12 @@ func (cr *ClubsGoldenPearlController) GetGoldenPearlMembershipById(c fiber.Ctx) 
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/all/mobile [get]
 func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateToken(c)
+    userId, _, err := middleware.ValidateToken(c)
     if err != nil {
         return err
     }
 
-    lx, err := cr.clubService.FindAllAppGoldenPearlMemberships(user.UserId.Int64)
+    lx, err := cr.clubService.FindAllAppGoldenPearlMemberships(userId)
     if err != nil {
         return err
     }
@@ -512,8 +512,8 @@ func (cr *ClubsGoldenPearlController) GetAllGoldenPearlMemberships(c fiber.Ctx) 
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param         _page        query       string                false  "_page"  default:"1"
-// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         _page        query       int                   false  "_page"  default:"1"
+// @Param         _limit       query       int                   false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword2Dto false  "Search"
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/membership/all [post]
@@ -552,12 +552,12 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlMembership(c fiber.Ctx
 // @Success 200 {array} model.GoldenPearlMyActivity
 // @Router /clubs/goldenpearl/my-activity/all [get]
 func (cr *ClubsGoldenPearlController) GetAllUserGoldenPearlActivities(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateToken(c)
+    userId, _, err := middleware.ValidateToken(c)
     if err != nil {
         return err
     }
 
-    lx, err := cr.clubService.FindAllUserGoldenPearlActivities(user.UserId.Int64)
+    lx, err := cr.clubService.FindAllUserGoldenPearlActivities(userId)
     if err != nil {
         return err
     }
@@ -569,7 +569,7 @@ func (cr *ClubsGoldenPearlController) GetAllUserGoldenPearlActivities(c fiber.Ct
 //
 // @Tags Clubs
 // @Produce json
-// @Param data body dto.GoldenPearlActvParticipationDto true "GoldenPearlActvParticipationDto"
+// @Param    request    body    dto.GoldenPearlActvParticipationDto    true    "GoldenPearlActvParticipationDto"
 // @Success 200
 // @Router /clubs/goldenpearl/activity/participate [post]
 func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
@@ -632,11 +632,11 @@ func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.GoldenPearlActivityDto true "GoldenPearlActivityDto"
+// @Param    request    body    dto.GoldenPearlActivityDto    true    "GoldenPearlActivityDto"
 // @Success 200
 // @Router /clubs/goldenpearl/activity [post]
 func (cr ClubsGoldenPearlController) CreateGoldenPearlActivity(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -659,7 +659,7 @@ func (cr ClubsGoldenPearlController) CreateGoldenPearlActivity(c fiber.Ctx) erro
     o.ActivityTnc = utils.NewNullString(data.ActivityTnc)
     o.ActivityDisplayOrder = utils.NewNullString(data.ActivityDisplayOrder)
 
-    err = cr.clubService.SaveGoldenPearlActivity(o, user.AdminId.Int64)
+    err = cr.clubService.SaveGoldenPearlActivity(o, adminId)
     if err != nil {
         return err
     }
@@ -674,12 +674,12 @@ func (cr ClubsGoldenPearlController) CreateGoldenPearlActivity(c fiber.Ctx) erro
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param        activityId      path      string                             true  "activityId"
+// @Param        activityId      path      int                        true  "activityId"
 // @Param        request         body      dto.GoldenPearlActivityDto true  "GoldenPearlActivityDto"
 // @Success 200
 // @Router /clubs/goldenpearl/activity/{activityId} [put]
 func (cr *ClubsGoldenPearlController) UpdateGoldenPearlActivity(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -705,7 +705,7 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlActivity(c fiber.Ctx) err
     o.ActivityTnc = utils.NewNullString(data.ActivityTnc)
     o.ActivityDisplayOrder = utils.NewNullString(data.ActivityDisplayOrder)
 
-    err = cr.clubService.UpdateGoldenPearlActivity(o, user.AdminId.Int64)
+    err = cr.clubService.UpdateGoldenPearlActivity(o, adminId)
     if err != nil {
         return err
     }
@@ -736,7 +736,7 @@ func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlActivity(c fiber.Ct
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param keyword body dto.SearchKeyword3Dto false "Search"
+// @Param    keyword    body    dto.SearchKeyword3Dto false "Search"
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/export/search [post]
 func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber.Ctx) error {
@@ -774,8 +774,8 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber
 //
 // @Tags Clubs
 // @Produce json
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/all [get]
 func (cr *ClubsGoldenPearlController) GetAllGoldenPearlActivities(c fiber.Ctx) error {
@@ -795,9 +795,9 @@ func (cr *ClubsGoldenPearlController) GetAllGoldenPearlActivities(c fiber.Ctx) e
 //
 // @Tags Clubs
 // @Produce json
-// @Param         _page        query       string                false  "_page"  default:"1"
-// @Param         _limit       query       string                false  "_limit" default:"10"
-// @Param         isHome       path        string                true   "isHome"
+// @Param         _page        query       int                false  "_page"  default:"1"
+// @Param         _limit       query       int                false  "_limit" default:"10"
+// @Param         isHome       path        int                true   "isHome"
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/all/mobile/{isHome} [get]
 func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
@@ -819,8 +819,8 @@ func (cr *ClubsGoldenPearlController) GetAllAppGoldenPearlActivities(c fiber.Ctx
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param         _page        query       string                false  "_page"  default:"1"
-// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         _page        query       int                   false  "_page"  default:"1"
+// @Param         _limit       query       int                   false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/all [post]
@@ -864,7 +864,7 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlActivities(c fiber.Ctx
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param        activityId      path      string                             true  "activityId"
+// @Param        activityId      path      int                             true  "activityId"
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/all [get]
 func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlAttendees(c fiber.Ctx) error {
@@ -883,7 +883,7 @@ func (cr *ClubsGoldenPearlController) GetAllExportGoldenPearlAttendees(c fiber.C
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param        activityId      path      string                             true  "activityId"
+// @Param        activityId      path      int                             true  "activityId"
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId}/export/search [post]
 func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlAttendees(c fiber.Ctx) error {
@@ -917,9 +917,9 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlAttendees(c fibe
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param         activityId      path     string                true   "activityId"
-// @Param         _page           query    string                false  "_page"  default:"1"
-// @Param         _limit          query    string                false  "_limit" default:"10"
+// @Param         activityId      path     int                true   "activityId"
+// @Param         _page           query    int                false  "_page"  default:"1"
+// @Param         _limit          query    int                false  "_limit" default:"10"
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId} [get]
 func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityAttendeesById(c fiber.Ctx) error {
@@ -942,9 +942,9 @@ func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityAttendeesById(c fibe
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param         activityId      path     string                true   "activityId"
-// @Param         _page           query    string                false  "_page"  default:"1"
-// @Param         _limit          query    string                false  "_limit" default:"10"
+// @Param         activityId      path     int                true   "activityId"
+// @Param         _page           query    int                false  "_page"  default:"1"
+// @Param         _limit          query    int                false  "_limit" default:"10"
 // @Success 200 {array} model.GoldenPearlMembership
 // @Router /clubs/goldenpearl/activity/attendees/{activityId} [post]
 func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx) error {
@@ -982,7 +982,7 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlAttendees(c fiber.Ctx)
 // @Tags Clubs
 // @Produce json
 // @Security BearerAuth
-// @Param         activityId   path        string                true   "activityId"
+// @Param         activityId   path        int                true   "activityId"
 // @Success 200 {object} model.GoldenPearlActivity
 // @Router /clubs/goldenpearl/activity/name/{activityId} [get]
 func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityNameById(c fiber.Ctx) error {
@@ -1018,11 +1018,11 @@ func (cr *ClubsGoldenPearlController) GetGoldenPearlActivityById(c fiber.Ctx) er
 //
 // @Tags Clubs
 // @Produce json
-// @Param request body dto.GoldenPearlAboutUsDto true "GoldenPearlAboutUsDto"
+// @Param    request    body    dto.GoldenPearlAboutUsDto    true    "GoldenPearlAboutUsDto"
 // @Success 200
 // @Router /clubs/goldenpearl/about-us [post]
 func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -1048,7 +1048,7 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) erro
     o.GoldenClubTnc = utils.NewNullString(data.GoldenClubTnc)
     o.GoldenClubExtLink = utils.NewNullString(data.GoldenClubExtLink)
 
-    goldenClubId, err := cr.clubService.SaveGoldenPearlAboutUs(o, user.AdminId.Int64)
+    goldenClubId, err := cr.clubService.SaveGoldenPearlAboutUs(o, adminId)
     if err != nil {
         return err
     }
@@ -1063,15 +1063,15 @@ func (cr *ClubsGoldenPearlController) CreateGoldenPearlAboutUs(c fiber.Ctx) erro
 //
 // @Tags Clubs
 // @Produce json
-// @Param goldenPearlId path int true "goldenPearlId"
-// @Param request body dto.GoldenPearlAboutUsDto true "GoldenPearlAboutUsDto"
+// @Param    goldenPearlId    path    int                       true    "goldenPearlId"
+// @Param    request          body    dto.GoldenPearlAboutUsDto true    "GoldenPearlAboutUsDto"
 // @Success 200
 // @Router /clubs/goldenpearl/about-us/{goldenPearlId} [put]
 func (cr *ClubsGoldenPearlController) UpdateGoldenPearlAboutUs(c fiber.Ctx) error {
     goldenPearlId := c.Params("goldenPearlId")
     igoldenPearlId, _ := strconv.ParseInt(goldenPearlId, 10, 64)
 
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
@@ -1098,7 +1098,7 @@ func (cr *ClubsGoldenPearlController) UpdateGoldenPearlAboutUs(c fiber.Ctx) erro
     o.GoldenClubTnc = utils.NewNullString(data.GoldenClubTnc)
     o.GoldenClubExtLink = utils.NewNullString(data.GoldenClubExtLink)
 
-    err = cr.clubService.UpdateGoldenPearlAboutUs(o, user.AdminId.Int64)
+    err = cr.clubService.UpdateGoldenPearlAboutUs(o, adminId)
     if err != nil {
         return err
     }

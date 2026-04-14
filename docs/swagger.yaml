@@ -359,6 +359,16 @@ definitions:
     - guestPackage
     - guestPackagePayment
     type: object
+  dto.CreateUserBillingDto:
+    properties:
+      userBilling:
+        $ref: '#/definitions/dto.UserBillingDto'
+      userBillingPayment:
+        $ref: '#/definitions/dto.UserBillingPaymentDto'
+    required:
+    - userBilling
+    - userBillingPayment
+    type: object
   dto.CreateUserPackageDto:
     properties:
       userPackage:
@@ -468,6 +478,43 @@ definitions:
     required:
     - filename
     - mimeType
+    type: object
+  dto.GeneralNotificationDto:
+    properties:
+      endDate:
+        type: string
+      fullMessage:
+        type: string
+      notificationTitle:
+        type: string
+      shortMessage:
+        type: string
+      startDate:
+        type: string
+      targetAgeFrom:
+        type: integer
+      targetAgeTo:
+        type: integer
+      targetCity:
+        type: string
+      targetGender:
+        type: string
+      targetNationality:
+        type: string
+      targetState:
+        type: string
+    required:
+    - endDate
+    - fullMessage
+    - notificationTitle
+    - shortMessage
+    - startDate
+    - targetAgeFrom
+    - targetAgeTo
+    - targetCity
+    - targetGender
+    - targetNationality
+    - targetState
     type: object
   dto.GoldenActvParticipationDto:
     properties:
@@ -1662,6 +1709,76 @@ definitions:
         type: string
       keyword4:
         type: string
+    type: object
+  dto.UserBillingDto:
+    properties:
+      patientDocNumber:
+        type: string
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      vesBillNumber:
+        type: string
+      vesInvoiceAmount:
+        type: string
+      vesInvoiceDateTime:
+        type: string
+      vesInvoiceNumber:
+        type: string
+      vesOutstandingAmount:
+        type: string
+      vesRegDateTime:
+        type: string
+    required:
+    - patientDocNumber
+    - patientName
+    - patientPrn
+    - vesBillNumber
+    - vesInvoiceAmount
+    - vesInvoiceDateTime
+    - vesInvoiceNumber
+    - vesOutstandingAmount
+    - vesRegDateTime
+    type: object
+  dto.UserBillingPaymentDto:
+    properties:
+      billingAddress1:
+        type: string
+      billingAddress2:
+        type: string
+      billingAddress3:
+        type: string
+      billingContactCode:
+        type: string
+      billingContactNo:
+        type: string
+      billingCountryCode:
+        type: string
+      billingEmail:
+        type: string
+      billingFullname:
+        type: string
+      billingPostcode:
+        type: string
+      billingState:
+        type: string
+      billingTowncity:
+        type: string
+    required:
+    - billingAddress1
+    - billingContactCode
+    - billingContactNo
+    - billingCountryCode
+    - billingEmail
+    - billingFullname
+    type: object
+  dto.UserBillingPaymentStatusDto:
+    properties:
+      status:
+        type: string
+    required:
+    - status
     type: object
   dto.UserEmailVerificationDto:
     properties:
@@ -3466,6 +3583,35 @@ definitions:
       roomNumber:
         type: string
       ticketStatus:
+        type: string
+    type: object
+  userBilling.UserBillingPayment:
+    properties:
+      billingFullname:
+        type: string
+      patientDocNumber:
+        type: string
+      patientName:
+        type: string
+      patientPrn:
+        type: string
+      paymentAmountCollected:
+        type: string
+      paymentGateway:
+        type: string
+      paymentRequestNo:
+        type: string
+      paymentTransDate:
+        type: string
+      vesBillNumber:
+        type: string
+      vesInvoiceAmount:
+        type: string
+      vesInvoiceDateTime:
+        type: string
+      vesOutstandingAmount:
+        type: string
+      vesPaymentReceiptNo:
         type: string
     type: object
   userPackage.UserPackage:
@@ -5891,6 +6037,21 @@ paths:
       - BearerAuth: []
       tags:
       - Feedback
+  /feedback/export:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/feedback.Feedback'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Feedback
   /future-order/all/{prn}:
     get:
       parameters:
@@ -6380,6 +6541,26 @@ paths:
       tags:
       - Guest
   /guest/notification/seen/{notificationId}/{playerId}:
+    get:
+      parameters:
+      - description: notificationId
+        in: path
+        name: notificationId
+        required: true
+        type: string
+      - description: playerId
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Guest
+  /guest/notification/unseen/count/{playerId}:
     get:
       parameters:
       - description: notificationId
@@ -7277,7 +7458,7 @@ paths:
       - BearerAuth: []
       tags:
       - Maintenance
-  /maintenance/statistic-appointment/all:
+  /maintenance/statistic/appointment/all:
     get:
       produces:
       - application/json
@@ -7481,11 +7662,11 @@ paths:
   /notification/{notificationId}:
     get:
       parameters:
-      - description: Notification Id
+      - description: notificationId
         in: path
         name: notificationId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7503,11 +7684,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7521,14 +7702,32 @@ paths:
       - BearerAuth: []
       tags:
       - Notification
+  /notification/general/master:
+    post:
+      parameters:
+      - description: GeneralNotificationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GeneralNotificationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Notification
   /notification/general/master/{notificationMasterId}:
     get:
       parameters:
-      - description: Notification MasterId
+      - description: notificationMasterId
         in: path
         name: notificationMasterId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7540,17 +7739,39 @@ paths:
       - BearerAuth: []
       tags:
       - Notification
+    put:
+      parameters:
+      - description: notificationMasterId
+        in: path
+        name: notificationMasterId
+        required: true
+        type: integer
+      - description: GeneralNotificationDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GeneralNotificationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Notification
   /notification/general/master/all:
     get:
       parameters:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7560,6 +7781,23 @@ paths:
             items:
               $ref: '#/definitions/model.GeneralNotification'
             type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Notification
+  /notification/seen/{notificationId}:
+    post:
+      parameters:
+      - description: notificationId
+        in: path
+        name: notificationId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
       security:
       - BearerAuth: []
       tags:
@@ -7910,6 +8148,76 @@ paths:
       - BearerAuth: []
       tags:
       - User
+  /user-billing/paid/all/mobile:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: string
+      - description: _limit
+        in: query
+        name: _limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/userBilling.UserBillingPayment'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - User Billing
+  /user-billing/pay/{paymentMethod}:
+    post:
+      parameters:
+      - description: paymentMethod
+        in: path
+        name: paymentMethod
+        required: true
+        type: integer
+      - description: CreateUserBillingDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserBillingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User Billing
+  /user-billing/status/{billPaymentId}:
+    post:
+      parameters:
+      - description: billPaymentId
+        in: path
+        name: billPaymentId
+        required: true
+        type: string
+      - description: UserBillingPaymentStatusDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserBillingPaymentStatusDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - User Billing
   /user-package/{purchaseId}:
     get:
       parameters:
@@ -8023,7 +8331,7 @@ paths:
       - BearerAuth: []
       tags:
       - User Package
-  /user-package/export-purchase-history:
+  /user-package/export/all:
     get:
       consumes:
       - application/json
@@ -8044,6 +8352,12 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword4Dto'
       produces:
       - application/json
       responses:

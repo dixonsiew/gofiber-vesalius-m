@@ -77,8 +77,8 @@ func (cr *VesaliusController) ProcessResizeImage(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.DoctorPatientAppointment
 // @Router /vesalius/doctor/appointment/all [get]
 func (cr *VesaliusController) GetAllAppointments(c fiber.Ctx) error {
@@ -99,8 +99,8 @@ func (cr *VesaliusController) GetAllAppointments(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param         _page        query       string                false  "_page"  default:"1"
-// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         _page        query       int                   false  "_page"  default:"1"
+// @Param         _limit       query       int                   false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
 // @Success 200 {array} model.DoctorPatientAppointment
 // @Router /vesalius/doctor/appointment/all [post]
@@ -250,7 +250,7 @@ func (cr *VesaliusController) CreateDoctor(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       doctorId       path      string  true  "doctorId"
+// @Param       doctorId       path      int  true  "doctorId"
 // @Success 200
 // @Router /vesalius/doctor/{doctorId} [get]
 func (cr *VesaliusController) GetDoctorInformationByDoctorId(c fiber.Ctx) error {
@@ -269,7 +269,7 @@ func (cr *VesaliusController) GetDoctorInformationByDoctorId(c fiber.Ctx) error 
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       doctorId       path      string             true  "doctorId"
+// @Param       doctorId       path      int                true  "doctorId"
 // @Param       request        body      dto.NovaDoctorDto  true  "NovaDoctorDto"
 // @Success 200
 // @Router /vesalius/doctor/{doctorId} [put]
@@ -381,7 +381,7 @@ func (cr *VesaliusController) UpdateDoctor(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       doctorId       path      string       true  "doctorId"
+// @Param       doctorId       path      int       true  "doctorId"
 // @Success 200
 // @Router /vesalius/doctor-image-delete/{doctorId} [put]
 func (cr *VesaliusController) RemoveDoctorImage(c fiber.Ctx) error {
@@ -402,7 +402,7 @@ func (cr *VesaliusController) RemoveDoctorImage(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       doctorId       path      string       true  "doctorId"
+// @Param       doctorId       path      int       true  "doctorId"
 // @Success 200
 // @Router /vesalius/doctor/{doctorId} [delete]
 func (cr *VesaliusController) Remove(c fiber.Ctx) error {
@@ -423,10 +423,10 @@ func (cr *VesaliusController) Remove(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       doctorId       path      string       true  "doctorId"
-// @Param       month          path      string       true  "month"
-// @Param       year           path      string       true  "year"
-// @Param       needAppt       path      string       true  "needAppt"
+// @Param       doctorId       path      int          true  "doctorId"
+// @Param       month          path      int          true  "month"
+// @Param       year           path      int          true  "year"
+// @Param       needAppt       path      int          true  "needAppt"
 // @Success 200
 // @Router /vesalius/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt} [get]
 func (cr *VesaliusController) GetDoctorAppointments(c fiber.Ctx) error {
@@ -530,7 +530,7 @@ func (cr *VesaliusController) GetPatientAllergy(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param       prn            path      string       true  "prn"
-// @Param       pageId         path      string       true  "pageId"
+// @Param       pageId         path      int          true  "pageId"
 // @Success 200 {array} healthCare.NovaVisitDetails
 // @Router /vesalius/patient-visit/{prn}/{pageId} [get]
 func (cr *VesaliusController) GetPatientVisit(c fiber.Ctx) error {
@@ -585,7 +585,7 @@ func (cr *VesaliusController) GetPatientFromReportSchemaByPrn(c fiber.Ctx) error
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId       path      string       true  "branchId"
+// @Param       branchId       path      int          true  "branchId"
 // @Param       prn            path      string       true  "prn"
 // @Success 200 {object} gm.ResultOutstandingBills
 // @Router /vesalius/outstanding-bills/{branchId}/{prn} [get]
@@ -624,7 +624,7 @@ func (cr *VesaliusController) GetPatientOutstandingBills(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId         path      string       true  "branchId"
+// @Param       branchId         path      int          true  "branchId"
 // @Param       prn              path      string       true  "prn"
 // @Param       billNumber       path      string       true  "billNumber"
 // @Success 200 {array} byte
@@ -645,7 +645,7 @@ func (cr *VesaliusController) GetPatientOutstandingBillData(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId         path      string       true  "branchId"
+// @Param       branchId         path      int          true  "branchId"
 // @Param       prn              path      string       true  "prn"
 // @Success 200 {object} vesaliusGeo.Patient
 // @Router /vesalius/patient-data/{branchId}/{prn} [get]
@@ -664,7 +664,7 @@ func (cr *VesaliusController) GetPatientData(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId         path      string       true  "branchId"
+// @Param       branchId         path      int          true  "branchId"
 // @Param       prn              path      string       true  "prn"
 // @Success 200 {object} vesaliusGeo.Patient
 // @Router /vesalius/search-patient-data/{prn}/{branchId} [get]
@@ -708,9 +708,9 @@ func (cr *VesaliusController) SearchPatientData(c fiber.Ctx) error {
 //
 // @Tags Vesalius
 // @Produce json
-// @Param       branchId         path      string       true  "branchId"
+// @Param       branchId         path      int          true  "branchId"
 // @Param       prn              path      string       true  "prn"
-// @Param       isHome           path      string       true  "isHome"
+// @Param       isHome           path      int          true  "isHome"
 // @Success 200 {array} model.PatientAppointment
 // @Router /vesalius/patient-future-appointments/{branchId}/{prn}/{isHome} [get]
 func (cr *VesaliusController) GetPatientFutureAppointments(c fiber.Ctx) error {
@@ -729,7 +729,7 @@ func (cr *VesaliusController) GetPatientFutureAppointments(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId         path      string       true  "branchId"
+// @Param       branchId         path      int          true  "branchId"
 // @Param       prn              path      string       true  "prn"
 // @Success 200 {array} vesaliusGeo.Appointment
 // @Router /vesalius/future-appointments/{branchId}/{prn} [get]
@@ -765,7 +765,7 @@ func (cr *VesaliusController) GetPastAppointments(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostNextAvailableSlotsDto  true  "PostNextAvailableSlotsDto"
 // @Success 200 {array} vesaliusGeo.Slot
@@ -790,7 +790,7 @@ func (cr *VesaliusController) GetNextAvailableSlots(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostCheckAppointmentDto    true  "PostCheckAppointmentDto"
 // @Success 200 {boolean} boolean
@@ -817,7 +817,7 @@ func (cr *VesaliusController) CheckPatientAppointment(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostMakeAppointmentDto     true  "PostMakeAppointmentDto"
 // @Success 200 {object} vesaliusGeo.AppointmentBookingConfirmation
@@ -842,7 +842,7 @@ func (cr *VesaliusController) GetMakeAppointment(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostChangeAppointmentDto   true  "PostChangeAppointmentDto"
 // @Success 200 {object} vesaliusGeo.AppointmentChangeConfirmation
@@ -867,7 +867,7 @@ func (cr *VesaliusController) GetChangeAppointment(c fiber.Ctx) error {
 // @Tags Vesalius
 // @Produce json
 // @Security BearerAuth
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostCancelAppointmentDto   true  "PostCancelAppointmentDto"
 // @Success 200 {object} vesaliusGeo.AppointmentCancelConfirmation

@@ -3476,6 +3476,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/feedback/export": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedback"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/feedback.Feedback"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/feedback/{feedbackId}": {
             "get": {
                 "security": [
@@ -4279,6 +4305,37 @@ const docTemplate = `{
             }
         },
         "/guest/notification/seen/{notificationId}/{playerId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Guest"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "notificationId",
+                        "name": "notificationId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "playerId",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/guest/notification/unseen/count/{playerId}": {
             "get": {
                 "produces": [
                     "application/json"
@@ -5770,7 +5827,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/maintenance/statistic-appointment/all": {
+        "/maintenance/statistic/appointment/all": {
             "get": {
                 "security": [
                     {
@@ -6120,13 +6177,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6141,6 +6198,37 @@ const docTemplate = `{
                                 "$ref": "#/definitions/model.OnesignalNotification"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/notification/general/master": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "description": "GeneralNotificationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralNotificationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -6160,13 +6248,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6200,8 +6288,8 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Notification MasterId",
+                        "type": "integer",
+                        "description": "notificationMasterId",
                         "name": "notificationMasterId",
                         "in": "path",
                         "required": true
@@ -6213,6 +6301,71 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.GeneralNotification"
                         }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "notificationMasterId",
+                        "name": "notificationMasterId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "GeneralNotificationDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralNotificationDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/notification/seen/{notificationId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "notificationId",
+                        "name": "notificationId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -6270,8 +6423,8 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Notification Id",
+                        "type": "integer",
+                        "description": "notificationId",
                         "name": "notificationId",
                         "in": "path",
                         "required": true
@@ -6824,6 +6977,122 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-billing/paid/all/mobile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Billing"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/userBilling.UserBillingPayment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user-billing/pay/{paymentMethod}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Billing"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "paymentMethod",
+                        "name": "paymentMethod",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateUserBillingDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserBillingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user-billing/status/{billPaymentId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Billing"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "billPaymentId",
+                        "name": "billPaymentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserBillingPaymentStatusDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserBillingPaymentStatusDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user-package/all": {
             "get": {
                 "security": [
@@ -6981,7 +7250,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-package/export-purchase-history": {
+        "/user-package/export/all": {
             "get": {
                 "security": [
                     {
@@ -7025,6 +7294,16 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "User Package"
+                ],
+                "parameters": [
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword4Dto"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -9452,6 +9731,21 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateUserBillingDto": {
+            "type": "object",
+            "required": [
+                "userBilling",
+                "userBillingPayment"
+            ],
+            "properties": {
+                "userBilling": {
+                    "$ref": "#/definitions/dto.UserBillingDto"
+                },
+                "userBillingPayment": {
+                    "$ref": "#/definitions/dto.UserBillingPaymentDto"
+                }
+            }
+        },
         "dto.CreateUserPackageDto": {
             "type": "object",
             "required": [
@@ -9605,6 +9899,57 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "mimeType": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GeneralNotificationDto": {
+            "type": "object",
+            "required": [
+                "endDate",
+                "fullMessage",
+                "notificationTitle",
+                "shortMessage",
+                "startDate",
+                "targetAgeFrom",
+                "targetAgeTo",
+                "targetCity",
+                "targetGender",
+                "targetNationality",
+                "targetState"
+            ],
+            "properties": {
+                "endDate": {
+                    "type": "string"
+                },
+                "fullMessage": {
+                    "type": "string"
+                },
+                "notificationTitle": {
+                    "type": "string"
+                },
+                "shortMessage": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "targetAgeFrom": {
+                    "type": "integer"
+                },
+                "targetAgeTo": {
+                    "type": "integer"
+                },
+                "targetCity": {
+                    "type": "string"
+                },
+                "targetGender": {
+                    "type": "string"
+                },
+                "targetNationality": {
+                    "type": "string"
+                },
+                "targetState": {
                     "type": "string"
                 }
             }
@@ -11323,6 +11668,106 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "keyword4": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserBillingDto": {
+            "type": "object",
+            "required": [
+                "patientDocNumber",
+                "patientName",
+                "patientPrn",
+                "vesBillNumber",
+                "vesInvoiceAmount",
+                "vesInvoiceDateTime",
+                "vesInvoiceNumber",
+                "vesOutstandingAmount",
+                "vesRegDateTime"
+            ],
+            "properties": {
+                "patientDocNumber": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "vesBillNumber": {
+                    "type": "string"
+                },
+                "vesInvoiceAmount": {
+                    "type": "string"
+                },
+                "vesInvoiceDateTime": {
+                    "type": "string"
+                },
+                "vesInvoiceNumber": {
+                    "type": "string"
+                },
+                "vesOutstandingAmount": {
+                    "type": "string"
+                },
+                "vesRegDateTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserBillingPaymentDto": {
+            "type": "object",
+            "required": [
+                "billingAddress1",
+                "billingContactCode",
+                "billingContactNo",
+                "billingCountryCode",
+                "billingEmail",
+                "billingFullname"
+            ],
+            "properties": {
+                "billingAddress1": {
+                    "type": "string"
+                },
+                "billingAddress2": {
+                    "type": "string"
+                },
+                "billingAddress3": {
+                    "type": "string"
+                },
+                "billingContactCode": {
+                    "type": "string"
+                },
+                "billingContactNo": {
+                    "type": "string"
+                },
+                "billingCountryCode": {
+                    "type": "string"
+                },
+                "billingEmail": {
+                    "type": "string"
+                },
+                "billingFullname": {
+                    "type": "string"
+                },
+                "billingPostcode": {
+                    "type": "string"
+                },
+                "billingState": {
+                    "type": "string"
+                },
+                "billingTowncity": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserBillingPaymentStatusDto": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
                     "type": "string"
                 }
             }
@@ -14061,6 +14506,50 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ticketStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "userBilling.UserBillingPayment": {
+            "type": "object",
+            "properties": {
+                "billingFullname": {
+                    "type": "string"
+                },
+                "patientDocNumber": {
+                    "type": "string"
+                },
+                "patientName": {
+                    "type": "string"
+                },
+                "patientPrn": {
+                    "type": "string"
+                },
+                "paymentAmountCollected": {
+                    "type": "string"
+                },
+                "paymentGateway": {
+                    "type": "string"
+                },
+                "paymentRequestNo": {
+                    "type": "string"
+                },
+                "paymentTransDate": {
+                    "type": "string"
+                },
+                "vesBillNumber": {
+                    "type": "string"
+                },
+                "vesInvoiceAmount": {
+                    "type": "string"
+                },
+                "vesInvoiceDateTime": {
+                    "type": "string"
+                },
+                "vesOutstandingAmount": {
+                    "type": "string"
+                },
+                "vesPaymentReceiptNo": {
                     "type": "string"
                 }
             }

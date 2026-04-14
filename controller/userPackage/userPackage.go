@@ -9,11 +9,11 @@ import (
     "vesaliusm/middleware"
     upck "vesaliusm/model/userPackage"
     "vesaliusm/service/applicationUser"
+    "vesaliusm/service/exportExcel"
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/service/payment"
     "vesaliusm/service/vesalius"
     "vesaliusm/service/wallex"
-    "vesaliusm/service/exportExcel"
     "vesaliusm/utils"
     "vesaliusm/utils/constants"
 
@@ -81,7 +81,7 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        paymentMethod     path      string                   true   "paymentMethod"
+// @Param        paymentMethod     path      int                      true   "paymentMethod"
 // @Param        request           body      dto.CreateUserPackageDto true   "CreateUserPackageDto"
 // @Success 200
 // @Router /user-package/purchase/{paymentMethod} [post]
@@ -214,10 +214,10 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
             return err
         }
 
-        return  c.JSON(fiber.Map{
+        return c.JSON(fiber.Map{
             "message": "User Purchase Details created",
             "wallexDetails": fiber.Map{
-                "expiredAt": wallexRes.ExpiredAt,
+                "expiredAt":  wallexRes.ExpiredAt,
                 "paymentUrl": wallexRes.PaymentUrl,
             },
         })
@@ -260,8 +260,8 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all/mobile [get]
 func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
@@ -287,8 +287,8 @@ func (cr *UserPackageController) GetAllUserPurchaseHistory(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all [get]
 func (cr *UserPackageController) GetAllPurchaseHistory(c fiber.Ctx) error {
@@ -309,8 +309,8 @@ func (cr *UserPackageController) GetAllPurchaseHistory(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Param request body dto.SearchPurchaseHistoryDto false "Keyword"
 // @Success 200 {array} userPackage.UserPackage
 // @Router /user-package/all [post]
@@ -355,7 +355,7 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param        purchaseId         path      string  true  "purchaseId"
+// @Param        purchaseId         path      int  true  "purchaseId"
 // @Success 200 {object} userPackage.UserPackage
 // @Router /user-package/{purchaseId} [get]
 func (cr *UserPackageController) GetUserPackageById(c fiber.Ctx) error {
@@ -436,7 +436,7 @@ func (cr *UserPackageController) UpdateUserPackageStatus(c fiber.Ctx) error {
 // @Produce  json
 // @Security BearerAuth
 // @Success 200 {array} upck.UserPackage
-// @Router /user-package/export-purchase-history [get]
+// @Router /user-package/export/all [get]
 func (cr *UserPackageController) GetAllExportPurchaseHistory(c fiber.Ctx) error {
     lx, err := cr.exportExcelService.ExportAllPurchaseHistory()
     if err != nil {
@@ -452,6 +452,7 @@ func (cr *UserPackageController) GetAllExportPurchaseHistory(c fiber.Ctx) error 
 // @Accept  json
 // @Produce  json
 // @Security BearerAuth
+// @Param        request           body        dto.SearchKeyword4Dto    false  "Keyword"
 // @Success 200 {array} upck.UserPackage
 // @Router /user-package/export/search [post]
 func (cr *UserPackageController) GetSearchExportPurchaseHistory(c fiber.Ctx) error {

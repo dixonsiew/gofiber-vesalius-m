@@ -17,6 +17,7 @@ import (
     "vesaliusm/controller/publicVesalius"
     "vesaliusm/controller/qms"
     "vesaliusm/controller/user"
+    "vesaliusm/controller/userBilling"
     "vesaliusm/controller/userNotification"
     "vesaliusm/controller/userPackage"
     "vesaliusm/controller/vesalius"
@@ -28,9 +29,10 @@ import (
 
 func SetupRoutes(app *fiber.App, basePath string) {
     api := app.Group(basePath)
-    common.SetupRoutes(api)
+    admin.SetupRoutes(api)
     auth.SetupRoutes(api)
     clubs.SetupRoutes(api)
+    common.SetupRoutes(api)
     feedback.SetupRoutes(api)
     futureOrder.SetupRoutes(api)
     guest.SetupRoutes(api)
@@ -43,7 +45,7 @@ func SetupRoutes(app *fiber.App, basePath string) {
     publicVesalius.SetupRoutes(api)
     qms.SetupRoutes(api)
     user.SetupRoutes(api)
-    admin.SetupRoutes(api)
+    userBilling.SetupRoutes(api)
     userNotification.SetupRoutes(api)
     userPackage.SetupRoutes(api)
     vesalius.SetupRoutes(api)

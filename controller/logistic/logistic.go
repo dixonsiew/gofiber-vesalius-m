@@ -76,7 +76,7 @@ func (cr *LogisticController) CreateLogisticSetup(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param     logisticSetupId    path    string                   true     "logisticSetupId"
+// @Param     logisticSetupId    path    int                      true     "logisticSetupId"
 // @Param     request            body    dto.LogisticSetupDto     true     "LogisticSetupDto"
 // @Success 200
 // @Router /logistic/setup/{logisticSetupId} [put]
@@ -277,8 +277,8 @@ func (cr *LogisticController) CreateLogisticRequest(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} lg.LogisticRequest
 // @Router /logistic/request/all/mobile [get]
 func (cr *LogisticController) GetAllAppLogisticRequests(c fiber.Ctx) error {
@@ -304,8 +304,8 @@ func (cr *LogisticController) GetAllAppLogisticRequests(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} lg.LogisticRequest
 // @Router /logistic/request/all [get]
 func (cr *LogisticController) GetAllLogisticRequests(c fiber.Ctx) error {
@@ -326,8 +326,8 @@ func (cr *LogisticController) GetAllLogisticRequests(c fiber.Ctx) error {
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string                   false  "_page"  default:"1"
-// @Param        _limit            query       string                   false  "_limit" default:"10"
+// @Param        _page             query       int                      false  "_page"  default:"1"
+// @Param        _limit            query       int                      false  "_limit" default:"10"
 // @Param        request           body        dto.SearchKeyword4Dto    false  "Keyword"
 // @Success 200 {array} lg.LogisticRequest
 // @Router /logistic/request/all [post]
@@ -430,7 +430,7 @@ func (cr *LogisticController) GetSearchExportLogisticRequest(c fiber.Ctx) error 
 // @Tags Logistic
 // @Produce json
 // @Security BearerAuth
-// @Param    requestId    path    string    true    "requestId"
+// @Param    requestId    path    int    true    "requestId"
 // @Success 200 {object} lg.LogisticRequest
 // @Router /logistic/request/{requestId} [get]
 func (cr *LogisticController) GetLogisticRequestById(c fiber.Ctx) error {

@@ -242,7 +242,7 @@ func (cr *UserBillingController) GetAllUserPaidBillingHistory(c fiber.Ctx) error
 // @Tags User Billing
 // @Produce json
 // @Security BearerAuth
-// @Param    billPaymentId    path    string                             true    "billPaymentId"
+// @Param    billPaymentId    path    int                                true    "billPaymentId"
 // @Param    request          body    dto.UserBillingPaymentStatusDto    true    "UserBillingPaymentStatusDto"
 // @Success 200
 // @Router /user-billing/status/{billPaymentId} [post]

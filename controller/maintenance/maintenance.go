@@ -30,8 +30,8 @@ func NewMaintenanceController() *MaintenanceController {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.HospitalProfile
 // @Router /maintenance/hospital-profile/all [get]
 func (cr *MaintenanceController) GetAllHospitalProfiles(c fiber.Ctx) error {
@@ -52,8 +52,8 @@ func (cr *MaintenanceController) GetAllHospitalProfiles(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.HospitalProfile
 // @Router /maintenance/hospital-profile/search [post]
@@ -109,8 +109,8 @@ func (cr *MaintenanceController) UpdateHospitalProfile(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.ParamSetting
 // @Router /maintenance/param-setting/all [get]
 func (cr *MaintenanceController) GetAllParamSettings(c fiber.Ctx) error {
@@ -131,8 +131,8 @@ func (cr *MaintenanceController) GetAllParamSettings(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.ParamSetting
 // @Router /maintenance/param-setting/search [post]
@@ -188,8 +188,8 @@ func (cr *MaintenanceController) UpdateParamSetting(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.NotificationSetting
 // @Router /maintenance/notification-setting/all [get]
 func (cr *MaintenanceController) GetAllNotificationSettings(c fiber.Ctx) error {
@@ -210,8 +210,8 @@ func (cr *MaintenanceController) GetAllNotificationSettings(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.NotificationSetting
 // @Router /maintenance/notification-setting/search [post]
@@ -267,8 +267,8 @@ func (cr *MaintenanceController) UpdateNotificationSetting(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.CronjobHistory
 // @Router /maintenance/cronjob-history/all [get]
 func (cr *MaintenanceController) GetAllCronjobHistories(c fiber.Ctx) error {
@@ -289,9 +289,9 @@ func (cr *MaintenanceController) GetAllCronjobHistories(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        cronjobName       path        string  true   "cronjobName"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        cronjobName       path        string            true   "cronjobName"
+// @Param        _page             query       int               false  "_page"  default:"1"
+// @Param        _limit            query       int               false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword2Dto false  "Search"
 // @Success 200 {array} model.CronjobHistory
 // @Router /maintenance/cronjob-history/search/{cronjobName} [post]
@@ -332,8 +332,8 @@ func (cr *MaintenanceController) SearchAllCronjobHistories(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.DynamicEmailMaster
 // @Router /maintenance/dynamic-email-master/all [get]
 func (cr *MaintenanceController) GetAllDynamicEmailSettings(c fiber.Ctx) error {
@@ -354,8 +354,8 @@ func (cr *MaintenanceController) GetAllDynamicEmailSettings(c fiber.Ctx) error {
 // @Tags Maintenance
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.DynamicEmailMaster
 // @Router /maintenance/dynamic-email-master/search [post]

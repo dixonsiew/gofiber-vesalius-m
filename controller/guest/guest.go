@@ -62,9 +62,9 @@ func NewGuestController() *GuestController {
 //
 // @Tags Guest
 // @Produce json
-// @Param        branchId          path        string  true  "branchId"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        branchId          path        int  true  "branchId"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.NovaDoctor
 // @Router /guest/vesalius/getAllDoctorInformation/{branchId} [get]
 func (cr *GuestController) GetAllDoctorInformation(c fiber.Ctx) error {
@@ -84,8 +84,8 @@ func (cr *GuestController) GetAllDoctorInformation(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.NovaDoctor
 // @Router /guest/vesalius/getAllDoctorInformation/{branchId} [post]
@@ -234,10 +234,10 @@ func (cr *GuestController) MakeGuestNewPatient(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param       doctorId       path      string       true  "doctorId"
-// @Param       month          path      string       true  "month"
-// @Param       year           path      string       true  "year"
-// @Param       needAppt       path      string       true  "needAppt"
+// @Param       doctorId       path      int       true  "doctorId"
+// @Param       month          path      int       true  "month"
+// @Param       year           path      int       true  "year"
+// @Param       needAppt       path      int       true  "needAppt"
 // @Success 200
 // @Router /guest/appointment/get-doctor-appointments/{doctorId}/{month}/{year}/{needAppt} [get]
 func (cr *GuestController) GetDoctorAppointments(c fiber.Ctx) error {
@@ -263,7 +263,7 @@ func (cr *GuestController) GetDoctorAppointments(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostCheckAppointmentDto    true  "PostCheckAppointmentDto"
 // @Success 200 {boolean} boolean
@@ -289,7 +289,7 @@ func (cr *GuestController) CheckGuestPatientAppointment(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param       branchId     path      string                         true  "branchId"
+// @Param       branchId     path      int                            true  "branchId"
 // @Param       prn          path      string                         true  "prn"
 // @Param       request      body      dto.PostMakeAppointmentDto     true  "PostMakeAppointmentDto"
 // @Success 200
@@ -350,8 +350,8 @@ func (cr *GuestController) GetMakeGuestAppointment(c fiber.Ctx) error {
 // @Tags Guest
 // @Produce json
 // @Param        playerId          path        string  true  "playerId"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int     false  "_page"  default:"1"
+// @Param        _limit            query       int     false  "_limit" default:"10"
 // @Success 200 {array} model.OnesignalNotification
 // @Router /guest/notification/all/{playerId} [get]
 func (cr *GuestController) GetAllGuestNotificationLists(c fiber.Ctx) error {
@@ -372,7 +372,7 @@ func (cr *GuestController) GetAllGuestNotificationLists(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        notificationId    path        string  true  "notificationId"
+// @Param        notificationId    path        int     true  "notificationId"
 // @Param        playerId          path        string  true  "playerId"
 // @Success 200
 // @Router /guest/notification/unseen/count/{playerId} [get]
@@ -390,7 +390,7 @@ func (cr *GuestController) GetGuestUnseenNotificationCount(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        notificationId    path        string  true  "notificationId"
+// @Param        notificationId    path        int     true  "notificationId"
 // @Param        playerId          path        string  true  "playerId"
 // @Success 200
 // @Router /guest/notification/seen/{notificationId}/{playerId} [get]
@@ -584,9 +584,9 @@ func (cr *GuestController) GetAllAppLittleKidsMemberships(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        isHome    path        string  true   "isHome"
-// @Param        _page     query       string  false  "_page"  default:"1"
-// @Param        _limit    query       string  false  "_limit" default:"10"
+// @Param        isHome    path        int  true   "isHome"
+// @Param        _page     query       int  false  "_page"  default:"1"
+// @Param        _limit    query       int  false  "_limit" default:"10"
 // @Success 200 {object} model.PagedList
 // @Router /guest/clubs/littlekids/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppLittleKidsActivities(c fiber.Ctx) error {
@@ -833,9 +833,9 @@ func (cr *GuestController) GetAllAppGoldenPearlMemberships(c fiber.Ctx) error {
 //
 // @Tags Guest
 // @Produce json
-// @Param        isHome            path        string  true   "isHome"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        isHome            path        int  true   "isHome"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.GoldenPearlActivity
 // @Router /guest/clubs/goldenpearl/activity/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppGoldenPearlActivities(c fiber.Ctx) error {
@@ -917,9 +917,9 @@ func (cr *GuestController) ParticipateGoldenPearlActivity(c fiber.Ctx) error {
 // GetAllAppPackages
 // @Tags Guest
 // @Produce json
-// @Param        isHome            path        string  true   "isHome"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        isHome            path        int  true   "isHome"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200
 // @Router /guest/package/all/mobile/{isHome} [get]
 func (cr *GuestController) GetAllAppPackages(c fiber.Ctx) error {
@@ -939,7 +939,7 @@ func (cr *GuestController) GetAllAppPackages(c fiber.Ctx) error {
 // GetPackageStatusById
 // @Tags Guest
 // @Produce json
-// @Param        packageId            path        string  true   "packageId"
+// @Param        packageId            path        int  true   "packageId"
 // @Success 200
 // @Router /guest/package/packageStatus/{packageId} [get]
 func (cr *GuestController) GetPackageStatusById(c fiber.Ctx) error {
@@ -956,7 +956,7 @@ func (cr *GuestController) GetPackageStatusById(c fiber.Ctx) error {
 // GetPackageById
 // @Tags Guest
 // @Produce json
-// @Param        packageId            path        string  true   "packageId"
+// @Param        packageId            path        int  true   "packageId"
 // @Success 200
 // @Router /guest/package/{packageId} [get]
 func (cr *GuestController) GetPackageById(c fiber.Ctx) error {
@@ -973,7 +973,7 @@ func (cr *GuestController) GetPackageById(c fiber.Ctx) error {
 // CreateGuestPurchaseDetails
 // @Tags Guest
 // @Produce json
-// @Param        paymentMethod      path      string                     true   "paymentMethod"
+// @Param        paymentMethod      path      int                        true   "paymentMethod"
 // @Param        request            body      dto.CreateGuestPackageDto  true   "request"
 // @Success 200
 // @Router /guest/purchase/{paymentMethod} [post]

@@ -51,8 +51,8 @@ func (cr *FeedbackController) GetAllExportFeedbacks(c fiber.Ctx) error {
 // @Tags Feedback
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} feedback.FeedbackAttachment
 // @Router /feedback/all [get]
 func (cr *FeedbackController) GetAllFeedbacks(c fiber.Ctx) error {
@@ -73,7 +73,7 @@ func (cr *FeedbackController) GetAllFeedbacks(c fiber.Ctx) error {
 // @Tags Feedback
 // @Produce json
 // @Security BearerAuth
-// @Param        feedbackId        path        string  true  "feedbackId"
+// @Param        feedbackId        path        int  true  "feedbackId"
 // @Success 200 {object} feedback.Feedback
 // @Router /feedback/{feedbackId} [get]
 func (cr *FeedbackController) GetFeedbackById(c fiber.Ctx) error {
@@ -92,7 +92,7 @@ func (cr *FeedbackController) GetFeedbackById(c fiber.Ctx) error {
 // @Tags Feedback
 // @Produce json
 // @Security BearerAuth
-// @Param        feedbackId        path        string  true  "feedbackId"
+// @Param        feedbackId        path        int  true  "feedbackId"
 // @Success 200 {object} feedback.FeedbackAttachment
 // @Router /feedback/attachment/{feedbackId} [get]
 func (cr *FeedbackController) GetFeedbackAttachmentById(c fiber.Ctx) error {
@@ -111,7 +111,7 @@ func (cr *FeedbackController) GetFeedbackAttachmentById(c fiber.Ctx) error {
 // @Tags Feedback
 // @Produce json
 // @Security BearerAuth
-// @Param        attachmentId        path        string  true  "attachmentId"
+// @Param        attachmentId        path        int  true  "attachmentId"
 // @Success 200 {file} binary
 // @Router /feedback/attachment-download/{attachmentId} [get]
 func (cr *FeedbackController) DownloadAttachmentById(c fiber.Ctx) error {
@@ -137,8 +137,8 @@ func (cr *FeedbackController) DownloadAttachmentById(c fiber.Ctx) error {
 // @Tags Feedback
 // @Accept multipart/form-data
 // @Produce json
-// @Param files formData file false "Files"
-// @Param request body dto.FeedbackDto true "FeedbackDto"
+// @Param    files      formData    file               false    "Files"
+// @Param    request    body        dto.FeedbackDto    true     "FeedbackDto"
 // @Success 200
 // @Router /feedback [post]
 func (cr *FeedbackController) CreateFeedback(c fiber.Ctx) error {

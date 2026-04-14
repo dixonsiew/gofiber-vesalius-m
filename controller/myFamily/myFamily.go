@@ -24,10 +24,10 @@ func NewMyFamilyController() *MyFamilyController {
 // @Tags MyFamily
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"       default:"1"
-// @Param        _limit             query      string  false  "_limit"      default:"10"
-// @Param        _self              query      string  false  "_self"       default:"0"
-// @Param        _isForAppt         query      string  false  "_isForAppt"  default:"0"
+// @Param        _page              query      int  false  "_page"       default:"1"
+// @Param        _limit             query      int  false  "_limit"      default:"10"
+// @Param        _self              query      int  false  "_self"       default:"0"
+// @Param        _isForAppt         query      int  false  "_isForAppt"  default:"0"
 // @Success 200 {array} model.ApplicationUserFamily
 // @Router /my-family [get]
 func (cr *MyFamilyController) GetAllActiveUserFamilies(c fiber.Ctx) error {
@@ -55,11 +55,11 @@ func (cr *MyFamilyController) GetAllActiveUserFamilies(c fiber.Ctx) error {
 // @Tags MyFamily
 // @Produce json
 // @Security BearerAuth
-// @Param        userId             path       string  true   "UserId"
-// @Param        _page              query      string  false  "_page"       default:"1"
-// @Param        _limit             query      string  false  "_limit"      default:"10"
-// @Param        _self              query      string  false  "_self"       default:"0"
-// @Param        _isForAppt         query      string  false  "_isForAppt"  default:"0"
+// @Param        userId             path       int  true   "UserId"
+// @Param        _page              query      int  false  "_page"       default:"1"
+// @Param        _limit             query      int  false  "_limit"      default:"10"
+// @Param        _self              query      int  false  "_self"       default:"0"
+// @Param        _isForAppt         query      int  false  "_isForAppt"  default:"0"
 // @Success 200 {array} model.ApplicationUserFamily
 // @Router /my-family/all/{userId} [get]
 func (cr *MyFamilyController) GetAllUserFamilies(c fiber.Ctx) error {
@@ -84,7 +84,7 @@ func (cr *MyFamilyController) GetAllUserFamilies(c fiber.Ctx) error {
 // @Tags MyFamily
 // @Produce json
 // @Security BearerAuth
-// @Param        familyId             path       string  true   "FamilyId"
+// @Param        familyId             path       int  true   "FamilyId"
 // @Success 200 {object} model.ApplicationUserFamily
 // @Router /my-family/familyId/{familyId} [get]
 func (cr *MyFamilyController) GetFamilyById(c fiber.Ctx) error {

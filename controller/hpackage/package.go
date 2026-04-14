@@ -63,8 +63,8 @@ func (cr *PackageController) ProcessResizeImage(c fiber.Ctx) error {
 //
 // @Tags Package
 // @Produce json
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} hpackage.Package
 // @Router /package/all [get]
 func (cr *PackageController) GetAllPackages(c fiber.Ctx) error {
@@ -84,9 +84,9 @@ func (cr *PackageController) GetAllPackages(c fiber.Ctx) error {
 //
 // @Tags Package
 // @Produce json
-// @Param        isHome            path        string  true   "isHome" default:"1"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        isHome            path        int  true   "isHome" default:"1"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} hpackage.Package
 // @Router /package/all/mobile/{isHome} [get]
 func (cr *PackageController) GetAllAppPackages(c fiber.Ctx) error {
@@ -108,8 +108,8 @@ func (cr *PackageController) GetAllAppPackages(c fiber.Ctx) error {
 // @Tags Package
 // @Produce json
 // @Security BearerAuth
-// @Param         _page        query       string                false  "_page"  default:"1"
-// @Param         _limit       query       string                false  "_limit" default:"10"
+// @Param         _page        query       int                   false  "_page"  default:"1"
+// @Param         _limit       query       int                   false  "_limit" default:"10"
 // @Param         keyword      body        dto.SearchKeyword3Dto false  "Search"
 // @Success 200 {array} hpackage.Package
 // @Router /package/all [post]
@@ -153,7 +153,7 @@ func (cr *PackageController) SearchAllPackages(c fiber.Ctx) error {
 // @Tags Package
 // @Produce json
 // @Security BearerAuth
-// @Param         packageId    path        string                true  "packageId"
+// @Param         packageId    path        int        true  "packageId"
 // @Success 200
 // @Router /packageStatus/{packageId} [get]
 func (cr *PackageController) GetPackageStatusById(c fiber.Ctx) error {
@@ -172,7 +172,7 @@ func (cr *PackageController) GetPackageStatusById(c fiber.Ctx) error {
 // @Tags Package
 // @Produce json
 // @Security BearerAuth
-// @Param         packageId    path        string                true  "packageId"
+// @Param         packageId    path        int        true  "packageId"
 // @Success 200
 // @Router /package/{packageId} [get]
 func (cr *PackageController) GetPackageById(c fiber.Ctx) error {
@@ -191,7 +191,7 @@ func (cr *PackageController) GetPackageById(c fiber.Ctx) error {
 // @Tags Package
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PackageDto true "PackageDto"
+// @Param    request    body    dto.PackageDto    true    "PackageDto"
 // @Success 200
 // @Router /package [post]
 func (cr *PackageController) CreatePackage(c fiber.Ctx) error {
@@ -245,7 +245,7 @@ func (cr *PackageController) CreatePackage(c fiber.Ctx) error {
 // @Tags Package
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.PackageDto true "PackageDto"
+// @Param    request    body    dto.PackageDto    true    "PackageDto"
 // @Success 200
 // @Router /package/{packageId} [put]
 func (cr *PackageController) UpdatePackage(c fiber.Ctx) error {

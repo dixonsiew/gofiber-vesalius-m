@@ -72,12 +72,12 @@ func NewAdminController() *AdminController {
 // @Success 200 {object} model.AdminUser
 // @Router /admin [get]
 func (cr *AdminController) GetAdmin(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    admin, err := cr.adminUserService.FindWithAssignBranchByAdminId(user.AdminId.Int64)
+    admin, err := cr.adminUserService.FindWithAssignBranchByAdminId(adminId)
     if err != nil {
         return err
     }
@@ -90,8 +90,8 @@ func (cr *AdminController) GetAdmin(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.AdminUser
 // @Router /admin/all [get]
 func (cr *AdminController) GetAllAdmin(c fiber.Ctx) error {
@@ -112,8 +112,8 @@ func (cr *AdminController) GetAllAdmin(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.AdminUser
 // @Router /admin/all [post]
@@ -192,8 +192,8 @@ func (cr *AdminController) GetSearchExportAduitMobileUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.MobileUserAuditLog
 // @Router /admin/adminportal/mobile-user/log/all [get]
 func (cr *AdminController) GetAllAuditMobileUser(c fiber.Ctx) error {
@@ -214,8 +214,8 @@ func (cr *AdminController) GetAllAuditMobileUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int                    false  "_page"  default:"1"
+// @Param        _limit            query       int                    false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeyword2Dto  false  "Search"
 // @Success 200 {array} model.MobileUserAuditLog
 // @Router /admin/adminportal/mobile-user/log/all [post]
@@ -251,8 +251,8 @@ func (cr *AdminController) SearchAllAuditMobileUser(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        _page             query       int  false  "_page"  default:"1"
+// @Param        _limit            query       int  false  "_limit" default:"10"
 // @Success 200 {array} model.AdminAuditLog
 // @Router /admin/adminportal/log/all [get]
 func (cr *AdminController) GetAllAuditLog(c fiber.Ctx) error {
@@ -273,8 +273,8 @@ func (cr *AdminController) GetAllAuditLog(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string  false          "_page"  default:"1"
-// @Param        _limit            query       string                 false          "_limit" default:"10"
+// @Param        _page             query       int                    false          "_page"  default:"1"
+// @Param        _limit            query       int                    false          "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeyword2Dto  false          "Search"
 // @Success 200 {array} model.AdminAuditLog
 // @Router /admin/adminportal/log/all [post]
@@ -360,16 +360,16 @@ func (cr *AdminController) GetUserByEmail(c fiber.Ctx) error {
 // @Router /admin/reset-admin-password/{email} [post]
 func (cr *AdminController) ResetAdminPassword(c fiber.Ctx) error {
     email := c.Params("email")
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -452,16 +452,12 @@ func (cr *AdminController) GetUserGroupList(c fiber.Ctx) error {
 // @Success 200 {array} model.AllUserGroupDetails
 // @Router /admin/all-user-group [get]
 func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
-        return middleware.Unauthorized(c)
-    }
-
-    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    b, err := cr.adminUserService.ExistsByAdminId(adminId)
     if err != nil {
         return err
     }
@@ -537,16 +533,16 @@ func (cr *AdminController) GetAllUserGroup(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/add-user-group [post]
 func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -593,16 +589,16 @@ func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
 // @Success 200 {object} model.UserGroupDetails
 // @Router /admin/user-group/{userGroupId} [get]
 func (cr *AdminController) GetUserGroup(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -635,16 +631,16 @@ func (cr *AdminController) GetUserGroup(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/update-user-group [post]
 func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -703,16 +699,16 @@ func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/delete-user-group/{userGroupId} [post]
 func (cr *AdminController) DeleteUserGroup(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -745,16 +741,12 @@ func (cr *AdminController) DeleteUserGroup(c fiber.Ctx) error {
 // @Success 200 {array} model.UserGroupModules
 // @Router /admin/group-modules [get]
 func (cr *AdminController) GetAllGroupModules(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
-        return middleware.Unauthorized(c)
-    }
-
-    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    b, err := cr.adminUserService.ExistsByAdminId(adminId)
     if err != nil {
         return err
     }
@@ -779,16 +771,12 @@ func (cr *AdminController) GetAllGroupModules(c fiber.Ctx) error {
 // @Success 200 {array} model.GroupModulePermission
 // @Router /admin/group-permission [get]
 func (cr *AdminController) GetAllGroupModulesPermission(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
-        return middleware.Unauthorized(c)
-    }
-
-    b, err := cr.adminUserService.ExistsByAdminId(user.AdminId.Int64)
+    b, err := cr.adminUserService.ExistsByAdminId(adminId)
     if err != nil {
         return err
     }
@@ -813,16 +801,12 @@ func (cr *AdminController) GetAllGroupModulesPermission(c fiber.Ctx) error {
 // @Success 200 {array} model.UserGroupModulePermission
 // @Router /admin/user-group-permission [get]
 func (cr *AdminController) GetUserGroupPermission(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    adminId, _, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
-        return middleware.Unauthorized(c)
-    }
-
-    lx, err := cr.userGroupModulePermissionService.FindByUserGroupIdOrderByModuleIdAsc(user.UserGroupId.Int64)
+    lx, err := cr.userGroupModulePermissionService.FindByUserGroupIdOrderByModuleIdAsc(adminId)
     if err != nil {
         return err
     }
@@ -835,7 +819,7 @@ func (cr *AdminController) GetUserGroupPermission(c fiber.Ctx) error {
 // @Tags Admin
 // @Produce json
 // @Security BearerAuth
-// @Param        userId           path        string  true  "userId"
+// @Param        userId           path        int  true  "userId"
 // @Success 200
 // @Router /admin/delete-user/{userId} [post]
 func (cr *AdminController) DeleteUser(c fiber.Ctx) error {
@@ -860,16 +844,16 @@ func (cr *AdminController) DeleteUser(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/link-user-prn [post]
 func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -918,16 +902,16 @@ func (cr *AdminController) LinkUserPrn(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/unlink-user-prn [post]
 func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -973,16 +957,16 @@ func (cr *AdminController) UnlinkUserPrn(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/set-master-profile [post]
 func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
-    if user.Role.String != constants.ROLE_SUPER_ADMIN && user.Role.String != constants.ROLE_ADMIN {
+    if admin.Role.String != constants.ROLE_SUPER_ADMIN && admin.Role.String != constants.ROLE_ADMIN {
         return middleware.Unauthorized(c)
     }
 
@@ -1498,12 +1482,12 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
 // @Success 200
 // @Router /admin/change-password [post]
 func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
-    _, user, err := middleware.ValidateAdminToken(c)
+    _, admin, err := middleware.ValidateAdminToken(c)
     if err != nil {
         return err
     }
 
-    if user == nil {
+    if admin == nil {
         return middleware.Unauthorized(c)
     }
 
@@ -1512,18 +1496,18 @@ func (cr *AdminController) ChangePassword(c fiber.Ctx) error {
         return err
     }
 
-    valid := cr.adminUserService.ValidateCredentials(user, data.OldPassword)
+    valid := cr.adminUserService.ValidateCredentials(admin, data.OldPassword)
     if !valid {
         return fiber.NewError(fiber.StatusBadRequest, "Old password is invalid")
     }
 
-    valid1 := cr.adminUserService.ValidateCredentials(user, data.NewPassword)
+    valid1 := cr.adminUserService.ValidateCredentials(admin, data.NewPassword)
     if valid1 {
         return fiber.NewError(fiber.StatusBadRequest, "New Password is not allowed to be the same with Old Password")
     }
 
-    user.Password = utils.NewNullString(data.NewPassword)
-    err = cr.adminUserService.SavePassword(user)
+    admin.Password = utils.NewNullString(data.NewPassword)
+    err = cr.adminUserService.SavePassword(admin)
     if err != nil {
         return err
     }
@@ -2047,7 +2031,7 @@ func (cr *AdminController) ChangeUserPassword(c fiber.Ctx) error {
 //
 // @Tags Admin
 // @Produce json
-// @Param        branchId           path        string  true  "BranchId"
+// @Param        branchId           path        int     true  "BranchId"
 // @Param        email              path        string  true  "Email"
 // @Success 200
 // @Router /admin/self-reset-password/{branchId}/{email} [post]

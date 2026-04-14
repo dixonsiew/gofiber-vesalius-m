@@ -23,9 +23,9 @@ func NewFutureOrderController() *FutureOrderController {
 // @Tags Future Order
 // @Produce json
 // @Security BearerAuth
-// @Param        prn               path        string  true  "prn"
-// @Param        _page             query       string  false  "_page"  default:"1"
-// @Param        _limit            query       string  false  "_limit" default:"10"
+// @Param        prn               path        string  true   "prn"
+// @Param        _page             query       int     false  "_page"  default:"1"
+// @Param        _limit            query       int     false  "_limit" default:"10"
 // @Success 200 {array} futureOrder.FutureOrder
 // @Router /future-order/all/{prn} [get]
 func (cr *FutureOrderController) GetAllFutureOrder(c fiber.Ctx) error {

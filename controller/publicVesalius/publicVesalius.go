@@ -113,8 +113,8 @@ func (cr *PublicVesaliusController) GetMakeAppointment(c fiber.Ctx) error {
 //
 // @Tags Public Vesalius
 // @Produce json
-// @Param        branchId     path       string                        true  "branchId"
-// @Param        webadmin     path       string                        true  "webadmin"
+// @Param        branchId     path       int       true  "branchId"
+// @Param        webadmin     path       int       true  "webadmin"
 // @Success 200 {array} model.NovaDoctor
 // @Router /getAllDoctorInformation/:branchId/:webadmin [get]
 func (cr *PublicVesaliusController) GetAllDoctorInformation(c fiber.Ctx) error {
@@ -135,7 +135,7 @@ func (cr *PublicVesaliusController) GetAllDoctorInformation(c fiber.Ctx) error {
 //
 // @Tags Public Vesalius
 // @Produce json
-// @Param        branchId     path       string                        true  "branchId"
+// @Param        branchId     path       int       true  "branchId"
 // @Success 200 {array} model.NovaDoctor
 // @Router /getAllHSDoctorInformation/:branchId [get]
 func (cr *PublicVesaliusController) GetAllHSDoctorInformation(c fiber.Ctx) error {
@@ -151,9 +151,9 @@ func (cr *PublicVesaliusController) GetAllHSDoctorInformation(c fiber.Ctx) error
 //
 // @Tags Public Vesalius
 // @Produce json
-// @Param        branchId          path        string                        true  "branchId"
-// @Param        _page             query       string                        false  "_page"  default:"1"
-// @Param        _limit            query       string                        false  "_limit" default:"10"
+// @Param        branchId          path        int                           true  "branchId"
+// @Param        _page             query       int                           false  "_page"  default:"1"
+// @Param        _limit            query       int                           false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto          false  "Search"
 // @Success 200 {array} model.NovaDoctor
 // @Router /getAllDoctorInformation/:branchId [post]
@@ -216,7 +216,7 @@ func (cr *PublicVesaliusController) GetSpecialtyLookup(c fiber.Ctx) error {
 //
 // @Tags Public Vesalius
 // @Produce json
-// @Param        size     path       string                        true  "size"
+// @Param        size     path       int       true  "size"
 // @Success 200
 // @Router /check-file-size/:size [get]
 func (cr *PublicVesaliusController) CheckFileSize(c fiber.Ctx) error {

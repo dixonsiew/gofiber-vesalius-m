@@ -65,7 +65,7 @@ func (cr *CommonController) GetAppVersion(c fiber.Ctx) error {
 // @Tags Common
 // @Accept json
 // @Produce json
-// @Param request body dto.AppVersionDto true "AppVersionDto"
+// @Param    request    body    dto.AppVersionDto    true    "AppVersionDto"
 // @Success 200
 // @Router /common/app/version [post]
 func (cr *CommonController) UpdateAppVersion(c fiber.Ctx) error {
@@ -108,7 +108,7 @@ func (cr *CommonController) GetReleaseVersion(c fiber.Ctx) error {
 // @Tags Common
 // @Accept json
 // @Produce json
-// @Param request body dto.ReleaseVersionDto true "ReleaseVersionDto"
+// @Param    request    body    dto.ReleaseVersionDto    true    "ReleaseVersionDto"
 // @Success 200
 // @Router /common/app/release/version [post]
 func (cr *CommonController) UpdateReleaseVersion(c fiber.Ctx) error {
@@ -145,7 +145,7 @@ func (cr *CommonController) UpdateReleaseVersion(c fiber.Ctx) error {
 // @Tags Common
 // @Accept json
 // @Produce json
-// @Param request body dto.DeleteAccountDto true "DeleteAccountDto"
+// @Param    request    body    dto.DeleteAccountDto    true    "DeleteAccountDto"
 // @Success 200
 // @Router /common/request-delete-account [post]
 func (cr *CommonController) RequestDeleteAccount(c fiber.Ctx) error {
@@ -253,7 +253,7 @@ func (cr *CommonController) GetNationalities(c fiber.Ctx) error {
 //
 // @Tags Common
 // @Produce json
-// @Param playerId path string true "playerId"
+// @Param    playerId    path    string    true    "playerId"
 // @Success 200
 // @Router /common/downloaded-app/{playerId} [post]
 func (cr *CommonController) UserDownloadedApp(c fiber.Ctx) error {
@@ -272,7 +272,7 @@ func (cr *CommonController) UserDownloadedApp(c fiber.Ctx) error {
 //
 // @Tags Common
 // @Produce json
-// @Param request body dto.AppDownloadedUserDto true "AppDownloadedUserDto"
+// @Param    request    body    dto.AppDownloadedUserDto    true    "AppDownloadedUserDto"
 // @Success 200
 // @Router /common/downloaded-app-v2 [post]
 func (cr *CommonController) UserDownloadedAppV2(c fiber.Ctx) error {

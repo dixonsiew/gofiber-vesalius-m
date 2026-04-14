@@ -85,8 +85,8 @@ func (cr *UserController) GetSearchExportMobileUser(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all [get]
 func (cr *UserController) GetAllUsers(c fiber.Ctx) error {
@@ -129,8 +129,8 @@ func (cr *UserController) GetOldAppUnseenNotificationCount(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Success 200 {array} model.OnesignalNotification
 // @Router /user/notification/list [get]
 func (cr *UserController) GetOldAppNotificationLists(c fiber.Ctx) error {
@@ -156,8 +156,8 @@ func (cr *UserController) GetOldAppNotificationLists(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page              query      string  false  "_page"  default:"1"
-// @Param        _limit             query      string  false  "_limit" default:"10"
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all/active [get]
 func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
@@ -178,7 +178,7 @@ func (cr *UserController) GetAllActiveUsers(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        userId              path      string  true  "userId"
+// @Param        userId              path      int  true  "userId"
 // @Success 200
 // @Router /user/active-user/{userId} [post]
 func (cr *UserController) SetActive(c fiber.Ctx) error {
@@ -199,7 +199,7 @@ func (cr *UserController) SetActive(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        userId              path      string  true  "userId"
+// @Param        userId              path      int  true  "userId"
 // @Success 200
 // @Router /user/inactive-user/{userId} [post]
 func (cr *UserController) SetInactive(c fiber.Ctx) error {
@@ -238,8 +238,8 @@ func (cr *UserController) SetInactive(c fiber.Ctx) error {
 // @Tags User
 // @Produce json
 // @Security BearerAuth
-// @Param        _page             query       string                false  "_page"  default:"1"
-// @Param        _limit            query       string                false  "_limit" default:"10"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
 // @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
 // @Success 200 {array} model.ApplicationUser
 // @Router /user/all [post]
