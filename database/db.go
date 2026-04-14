@@ -41,7 +41,7 @@ func ConnectDB() {
     if err != nil {
         utils.LogError(err)
     } else {
-        db.SetMaxOpenConns(10)
+        db.SetMaxOpenConns(20)
         db.SetMaxIdleConns(5)
         db.SetConnMaxLifetime(5 * time.Minute)
         db.SetConnMaxIdleTime(1 * time.Minute)
