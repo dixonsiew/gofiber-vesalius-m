@@ -473,7 +473,7 @@ func (cr *MaintenanceController) UpdateDynamicEmailSetting(c fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} model.StatisticAppointment
-// @Router /maintenance/statistic-appointment/all [get]
+// @Router /maintenance/statistic/appointment/all [get]
 func (cr *MaintenanceController) GetAllStatisticAppointments(c fiber.Ctx) error {
     lx, err := cr.maintenanceService.GetAllStatisticAppointments()
     if err != nil {

@@ -1082,13 +1082,15 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
         if isExistsByPrn {
             return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided PRN already exists. Please sign in to your existing account or contact our Customer Service for assistance at info@islandhospital.com")
         }
-        if appPatient.InactiveFlag.String == "N" {
-            if appPatient.SignInType.Int32 == 1 {
+        switch appPatient.InactiveFlag.String {
+        case "N":
+            switch appPatient.SignInType.Int32 {
+            case 1:
                 return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided mobile number already exists. Please sign in or use a different mobile number to register. Contact our Customer Service for assistance at info@islandhospital.com")
-            } else if appPatient.SignInType.Int32 == 2 {
+            case 2:
                 return fiber.NewError(fiber.StatusBadRequest, "Sorry, an account with the provided email address already exists. Please sign in or use a different mobile number to register. Contact our Customer Service for assistance at info@islandhospital.com")
             }
-        } else if appPatient.InactiveFlag.String == "Y" {
+        case "Y":
             vesPatient, ex, err := cr.vesaliusService.VesaliusGetPatientDataByPrn(data.UserPrn)
             if vesPatient == nil {
                 return fiber.NewError(fiber.StatusBadRequest, "Incorrect PRN: The Patient PRN Number provided does not exist. Please retry")
@@ -1178,7 +1180,8 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 return fiber.NewError(fiber.StatusBadRequest, "Incorrect DOB: The Date of Birth provided does not match our hospital records. Please retry")
             }
 
-            if data.SignInType == 1 {
+            switch data.SignInType {
+            case 1:
                 if data.UserMobileNo != "" {
                     isSameMobileNo := strings.EqualFold(strings.TrimSpace(data.UserMobileNo), strings.TrimSpace(appPatient.Username.String))
                     if !isSameMobileNo {
@@ -1193,7 +1196,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 } else {
                     return fiber.NewError(fiber.StatusBadRequest, "Mobile Number is required")
                 }
-            } else if data.SignInType == 2 {
+            case 2:
                 if data.UserEmail != "" {
                     isSameEmail := strings.EqualFold(strings.TrimSpace(data.UserEmail), strings.TrimSpace(appPatient.Username.String))
                     if !isSameEmail {
@@ -1208,7 +1211,7 @@ func (cr *AdminController) MobileSignUpUser(c fiber.Ctx) error {
                 } else {
                     return fiber.NewError(fiber.StatusBadRequest, "Email Address is required")
                 }
-            } else {
+            default:
                 return fiber.NewError(fiber.StatusBadRequest, "Invalid Sign In Method")
             }
 

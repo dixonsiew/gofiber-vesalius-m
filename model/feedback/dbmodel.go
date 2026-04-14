@@ -47,4 +47,6 @@ func (o *Feedback) Set() {
     } else {
         o.HasAttachment = false
     }
+
+    o.SubmittedDateTimeExcel = o.SubmittedDateTime
 }

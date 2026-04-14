@@ -1,31 +1,31 @@
 package guest
 
 import (
-	"strconv"
-	"strings"
-	"time"
-	"vesaliusm/config"
-	"vesaliusm/controller/clubs/shared"
-	"vesaliusm/dto"
-	model "vesaliusm/model/clubs"
+    "strconv"
+    "strings"
+    "time"
+    "vesaliusm/config"
+    "vesaliusm/controller/clubs/shared"
+    "vesaliusm/dto"
+    model "vesaliusm/model/clubs"
     mm "vesaliusm/model/mail"
-	upck "vesaliusm/model/userPackage"
-	"vesaliusm/service/clubs"
-	"vesaliusm/service/country"
-	"vesaliusm/service/guest"
-	"vesaliusm/service/hpackage"
-	"vesaliusm/service/mail"
-	"vesaliusm/service/novaDoctor"
-	"vesaliusm/service/novaDoctorPatientAppt"
-	"vesaliusm/service/patientPurchaseDetails"
-	"vesaliusm/service/payment"
-	"vesaliusm/service/vesalius"
-	"vesaliusm/service/wallex"
-	"vesaliusm/utils"
+    upck "vesaliusm/model/userPackage"
+    "vesaliusm/service/clubs"
+    "vesaliusm/service/country"
+    "vesaliusm/service/guest"
+    "vesaliusm/service/hpackage"
+    "vesaliusm/service/mail"
+    "vesaliusm/service/novaDoctor"
+    "vesaliusm/service/novaDoctorPatientAppt"
+    "vesaliusm/service/patientPurchaseDetails"
+    "vesaliusm/service/payment"
+    "vesaliusm/service/vesalius"
+    "vesaliusm/service/wallex"
+    "vesaliusm/utils"
     "vesaliusm/utils/constants"
 
-	"github.com/gofiber/fiber/v3"
-	"github.com/nleeper/goment"
+    "github.com/gofiber/fiber/v3"
+    "github.com/nleeper/goment"
 )
 
 type GuestController struct {
@@ -375,8 +375,26 @@ func (cr *GuestController) GetAllGuestNotificationLists(c fiber.Ctx) error {
 // @Param        notificationId    path        string  true  "notificationId"
 // @Param        playerId          path        string  true  "playerId"
 // @Success 200
-// @Router /guest/notification/seen/{notificationId}/{playerId} [get]
+// @Router /guest/notification/unseen/count/{playerId} [get]
 func (cr *GuestController) GetGuestUnseenNotificationCount(c fiber.Ctx) error {
+    playerId := c.Params("playerId")
+    n, err := cr.guestService.CountUnseenNotificationByGuestPlayerId(playerId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(n)
+}
+
+// SetGuestNotificationSeen
+//
+// @Tags Guest
+// @Produce json
+// @Param        notificationId    path        string  true  "notificationId"
+// @Param        playerId          path        string  true  "playerId"
+// @Success 200
+// @Router /guest/notification/seen/{notificationId}/{playerId} [get]
+func (cr *GuestController) SetGuestNotificationSeen(c fiber.Ctx) error {
     notificationId := c.Params("notificationId")
     playerId := c.Params("playerId")
     inotificationId, _ := strconv.ParseInt(notificationId, 10, 64)
@@ -479,37 +497,38 @@ func (cr *GuestController) CreateGuestLittleKidsMembership(c fiber.Ctx) error {
         data.GuardianDocNumber = strings.ReplaceAll(data.GuardianDocNumber, "-", "")
     }
 
-    var o model.LittleExplorersKidsMembership
     kidsMembershipNo, err := cr.clubService.GenerateKidsMembershipNo()
     if err != nil {
         return err
     }
 
-    o.KidsMembershipNumber = utils.NewNullString(kidsMembershipNo)
-    o.KidsName = utils.NewNullString(data.KidsName)
-    o.KidsDob = utils.NewNullString(data.KidsDob)
-    o.KidsDocType = utils.NewNullString(data.KidsDocType)
-    o.KidsDocNumber = utils.NewNullString(data.KidsDocNumber)
-    o.KidsGender = utils.NewNullString(data.KidsGender)
-    o.KidsNationality = utils.NewNullString(data.KidsNationality)
-    o.KidsEmail = utils.NewNullString(data.KidsEmail)
-    o.GuardianName = utils.NewNullString(data.GuardianName)
-    o.GuardianDob = utils.NewNullString(data.GuardianDob)
-    o.GuardianDocType = utils.NewNullString(data.GuardianDocType)
-    o.GuardianDocNumber = utils.NewNullString(data.GuardianDocNumber)
-    o.GuardianGender = utils.NewNullString(data.GuardianGender)
-    o.GuardianNationality = utils.NewNullString(data.GuardianNationality)
-    o.GuardianEmail = utils.NewNullString(data.GuardianEmail)
-    o.GuardianHomeContact = utils.NewNullString(data.GuardianHomeContact)
-    o.GuardianMobileContact = utils.NewNullString(data.GuardianMobileContact)
-    o.GuardianAddress1 = utils.NewNullString(data.GuardianAddress1)
-    o.GuardianAddress2 = utils.NewNullString(data.GuardianAddress2)
-    o.GuardianAddress3 = utils.NewNullString(data.GuardianAddress3)
-    o.GuardianPostCode = utils.NewNullString(data.GuardianPostCode)
-    o.GuardianState = utils.NewNullString(data.GuardianState)
-    o.GuardianCountryCode = utils.NewNullString(data.GuardianCountryCode)
-    o.Relationship = utils.NewNullString(data.Relationship)
-    o.PreferredLanguage = utils.NewNullString(data.PreferredLanguage)
+    o := model.LittleExplorersKidsMembership{
+        KidsMembershipNumber:  utils.NewNullString(kidsMembershipNo),
+        KidsName:              utils.NewNullString(data.KidsName),
+        KidsDob:               utils.NewNullString(data.KidsDob),
+        KidsDocType:           utils.NewNullString(data.KidsDocType),
+        KidsDocNumber:         utils.NewNullString(data.KidsDocNumber),
+        KidsGender:            utils.NewNullString(data.KidsGender),
+        KidsNationality:       utils.NewNullString(data.KidsNationality),
+        KidsEmail:             utils.NewNullString(data.KidsEmail),
+        GuardianName:          utils.NewNullString(data.GuardianName),
+        GuardianDob:           utils.NewNullString(data.GuardianDob),
+        GuardianDocType:       utils.NewNullString(data.GuardianDocType),
+        GuardianDocNumber:     utils.NewNullString(data.GuardianDocNumber),
+        GuardianGender:        utils.NewNullString(data.GuardianGender),
+        GuardianNationality:   utils.NewNullString(data.GuardianNationality),
+        GuardianEmail:         utils.NewNullString(data.GuardianEmail),
+        GuardianHomeContact:   utils.NewNullString(data.GuardianHomeContact),
+        GuardianMobileContact: utils.NewNullString(data.GuardianMobileContact),
+        GuardianAddress1:      utils.NewNullString(data.GuardianAddress1),
+        GuardianAddress2:      utils.NewNullString(data.GuardianAddress2),
+        GuardianAddress3:      utils.NewNullString(data.GuardianAddress3),
+        GuardianPostCode:      utils.NewNullString(data.GuardianPostCode),
+        GuardianState:         utils.NewNullString(data.GuardianState),
+        GuardianCountryCode:   utils.NewNullString(data.GuardianCountryCode),
+        Relationship:          utils.NewNullString(data.Relationship),
+        PreferredLanguage:     utils.NewNullString(data.PreferredLanguage),
+    }
 
     err = cr.clubService.SaveLittleKidsMembership(o)
     if err != nil {
@@ -727,37 +746,38 @@ func (cr *GuestController) CreateGuestGoldenPearlMembership(c fiber.Ctx) error {
         data.NokDocNumber = strings.ReplaceAll(data.NokDocNumber, "-", "")
     }
 
-    var o model.GoldenPearlMembership
     goldenMembershipNo, err := cr.clubService.GenerateGoldenMembershipNo()
     if err != nil {
         return err
     }
 
-    o.GoldenMembershipNumber = utils.NewNullString(goldenMembershipNo)
-    o.GoldenName = utils.NewNullString(data.GoldenName)
-    o.GoldenDob = utils.NewNullString(data.GoldenDob)
-    o.GoldenDocType = utils.NewNullString(data.GoldenDocType)
-    o.GoldenDocNumber = utils.NewNullString(data.GoldenDocNumber)
-    o.GoldenGender = utils.NewNullString(data.GoldenGender)
-    o.GoldenNationality = utils.NewNullString(data.GoldenNationality)
-    o.GoldenEmail = utils.NewNullString(data.GoldenEmail)
-    o.NokName = utils.NewNullString(data.NokName)
-    o.NokDob = utils.NewNullString(data.NokDob)
-    o.NokDocType = utils.NewNullString(data.NokDocType)
-    o.NokDocNumber = utils.NewNullString(data.NokDocNumber)
-    o.NokGender = utils.NewNullString(data.NokGender)
-    o.NokNationality = utils.NewNullString(data.NokNationality)
-    o.NokEmail = utils.NewNullString(data.NokEmail)
-    o.NokHomeContact = utils.NewNullString(data.NokHomeContact)
-    o.NokMobileContact = utils.NewNullString(data.NokMobileContact)
-    o.NokAddress1 = utils.NewNullString(data.NokAddress1)
-    o.NokAddress2 = utils.NewNullString(data.NokAddress2)
-    o.NokAddress3 = utils.NewNullString(data.NokAddress3)
-    o.NokPostCode = utils.NewNullString(data.NokPostCode)
-    o.NokState = utils.NewNullString(data.NokState)
-    o.NokCountryCode = utils.NewNullString(data.NokCountryCode)
-    o.Relationship = utils.NewNullString(data.Relationship)
-    o.PreferredLanguage = utils.NewNullString(data.PreferredLanguage)
+    o := model.GoldenPearlMembership{
+        GoldenMembershipNumber: utils.NewNullString(goldenMembershipNo),
+        GoldenName:             utils.NewNullString(data.GoldenName),
+        GoldenDob:              utils.NewNullString(data.GoldenDob),
+        GoldenDocType:          utils.NewNullString(data.GoldenDocType),
+        GoldenDocNumber:        utils.NewNullString(data.GoldenDocNumber),
+        GoldenGender:           utils.NewNullString(data.GoldenGender),
+        GoldenNationality:      utils.NewNullString(data.GoldenNationality),
+        GoldenEmail:            utils.NewNullString(data.GoldenEmail),
+        NokName:                utils.NewNullString(data.NokName),
+        NokDob:                 utils.NewNullString(data.NokDob),
+        NokDocType:             utils.NewNullString(data.NokDocType),
+        NokDocNumber:           utils.NewNullString(data.NokDocNumber),
+        NokGender:              utils.NewNullString(data.NokGender),
+        NokNationality:         utils.NewNullString(data.NokNationality),
+        NokEmail:               utils.NewNullString(data.NokEmail),
+        NokHomeContact:         utils.NewNullString(data.NokHomeContact),
+        NokMobileContact:       utils.NewNullString(data.NokMobileContact),
+        NokAddress1:            utils.NewNullString(data.NokAddress1),
+        NokAddress2:            utils.NewNullString(data.NokAddress2),
+        NokAddress3:            utils.NewNullString(data.NokAddress3),
+        NokPostCode:            utils.NewNullString(data.NokPostCode),
+        NokState:               utils.NewNullString(data.NokState),
+        NokCountryCode:         utils.NewNullString(data.NokCountryCode),
+        Relationship:           utils.NewNullString(data.Relationship),
+        PreferredLanguage:      utils.NewNullString(data.PreferredLanguage),
+    }
 
     err = cr.clubService.SaveGoldenPearlMembership(o)
     if err != nil {
@@ -1081,10 +1101,10 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
             return err
         }
 
-        return  c.JSON(fiber.Map{
+        return c.JSON(fiber.Map{
             "message": "Guest Purchase Details created",
             "wallexDetails": fiber.Map{
-                "expiredAt": wallexRes.ExpiredAt,
+                "expiredAt":  wallexRes.ExpiredAt,
                 "paymentUrl": wallexRes.PaymentUrl,
             },
         })

@@ -1,4 +1,4 @@
-package userbilling
+package userBilling
 
 import (
     "github.com/guregu/null/v6"

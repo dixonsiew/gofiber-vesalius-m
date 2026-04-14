@@ -30,6 +30,22 @@ func NewFeedbackController() *FeedbackController {
     }
 }
 
+// GetAllExportFeedbacks
+//
+// @Tags Feedback
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} feedback.Feedback
+// @Router /feedback/export [get]
+func (cr *FeedbackController) GetAllExportFeedbacks(c fiber.Ctx) error {
+    lx, err := cr.feedbackService.FindAllExport()
+    if err != nil {
+        return err
+    }
+    
+    return c.JSON(lx)
+}
+
 // GetAllFeedbacks
 //
 // @Tags Feedback

@@ -25,8 +25,6 @@ func (c *ClubsGoldenPearlController) registerRoutes(router fiber.Router) {
     api.Put("/membership/webadmin/:membershipId", c.UpdateGoldenPearlMembership)
     api.Get("/membership/:membershipId", c.GetGoldenPearlMembershipById)
     api.Get("/membership/all/mobile", c.GetAllAppGoldenPearlMemberships)
-    api.Get("/goldenpearl/membership/export/all", c.GetAllExportGoldenPearlMembership)
-    api.Post("/goldenpearl/membership/export/search", c.GetSearchExportGoldenPearlMembership)
     api.Get("/membership/export/all", c.GetAllExportGoldenPearlMembership)
     api.Post("/membership/export/search", c.GetSearchExportGoldenPearlMembership)
     api.Get("/membership/all", c.GetAllGoldenPearlMemberships)

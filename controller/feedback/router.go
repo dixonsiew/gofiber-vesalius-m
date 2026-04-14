@@ -16,6 +16,7 @@ func (c *FeedbackController) registerRoutes(router fiber.Router) {
     api.Post("/", c.CreateFeedback)
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
+    api.Get("/export", c.GetAllExportFeedbacks)
     api.Get("/all", c.GetAllFeedbacks)
     api.Get("/:feedbackId", c.GetFeedbackById)
     api.Get("/attachment/:feedbackId", c.GetFeedbackAttachmentById)

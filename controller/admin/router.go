@@ -13,11 +13,12 @@ func SetupRoutes(router fiber.Router) {
 
 func (c *AdminController) registerRoutes(router fiber.Router) {
 	api := router.Group("/admin")
-    api.Post("/reset-signup-email/user/:email", c.ResetSignUpUserByEmail)
-    api.Post("/self-reset-password/:branchId/:email", c.SelfResetPassword)
     api.Get("/user-group/list", c.GetUserGroupList)
+    api.Post("/reset-signup-email/user/:email", c.ResetSignUpUserByEmail)
+    api.Post("/reset-signup-mobile/user/:mobile", c.ResetSignUpUserByMobile)
     api.Post("/self-sign-up", c.SelfSignUpUser)
     api.Post("/self-sign-up/v2", middleware.TrimMiddleware, c.MobileSignUpUser)
+    api.Post("/self-reset-password/:branchId/:email", c.SelfResetPassword)
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Get("/", c.GetAdmin)
@@ -49,7 +50,6 @@ func (c *AdminController) registerRoutes(router fiber.Router) {
     api.Post("/edit-admin-user", c.EditAdminUser)
     api.Post("/delete-admin/:email", c.DeleteAdmin)
     api.Post("/adminportal/save-log", c.SaveAdminPortalLog)
-
     api.Post("/resend-user-signup-email/:email", c.ResendUserSignupEmail)
     api.Post("/change-signin-type", c.ChangeSignInType)
     api.Post("/change-user-password", c.ChangeUserPassword)

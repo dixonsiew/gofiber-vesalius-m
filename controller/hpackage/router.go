@@ -19,7 +19,7 @@ func (c *PackageController) registerRoutes(router fiber.Router) {
 
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Post("/all", c.SearchAllPackages)
-    api.Get("/status/:packageId", c.GetPackageStatusById)
+    api.Get("/packageStatus/:packageId", c.GetPackageStatusById)
     api.Get("/:packageId", c.GetPackageById)
     api.Post("/", c.CreatePackage)
     api.Put("/:packageId", c.UpdatePackage)

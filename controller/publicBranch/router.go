@@ -10,6 +10,6 @@ func SetupRoutes(router fiber.Router) {
 }
 
 func (c *PublicBranchController) registerRoutes(router fiber.Router) {
-    api := router.Group("/public")
+    api := router.Group("/public/branch")
     api.Get("/branch/list", c.GetList)
 }

@@ -31,6 +31,7 @@ func (c *ClubsLittleKidsController) registerRoutes(router fiber.Router) {
     api.Post("/membership/all", c.SearchAllLittleKidsMembership)
     api.Get("/my-activity/all", c.GetAllUserLittleKidsActivities)
     api.Post("/activity", c.CreateLittleKidsActivity)
+    api.Put("/activity/:activityId", c.UpdateLittleKidsActivity)
     api.Get("/activity/export/all", c.GetAllExportLittleKidsActivity)
     api.Post("/activity/export/search", c.GetSearchExportLittleKidsActivity)
     api.Post("/activity/all", c.SearchAllLittleKidsActivities)
@@ -39,7 +40,6 @@ func (c *ClubsLittleKidsController) registerRoutes(router fiber.Router) {
     api.Get("/activity/attendees/:activityId", c.GetLittleKidsActivityAttendeesById)
     api.Post("/activity/attendees/:activityId", c.SearchAllLittleKidsAttendees)
     api.Get("/activity/name/:activityId", c.GetLittleKidsActivityNameById)
-    api.Put("/activity/:activityId", c.UpdateLittleKidsActivity)
     api.Post("/about-us", c.CreateLittleKidsAboutUs)
     api.Put("/about-us/:kidsClubId", c.UpdateLittleKidsAboutUs)
 }

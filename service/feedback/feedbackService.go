@@ -10,6 +10,7 @@ import (
 	"vesaliusm/utils"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/nleeper/goment"
 	go_ora "github.com/sijms/go-ora/v2"
 )
 
@@ -101,6 +102,25 @@ func (s *FeedbackService) Count(conn *sqlx.DB) (int, error) {
         return 0, err
     }
     return count, nil
+}
+
+func (s *FeedbackService) FindAllExport() ([]feedback.Feedback, error) {
+    query := `SELECT * FROM PATIENT_FEEDBACK ORDER BY DATE_SUBMIT DESC`
+    query = strings.Replace(query, "*", utils.GetDbCols(feedback.Feedback{}, ""), 1)
+    list := make([]feedback.Feedback, 0)
+    err := s.db.SelectContext(s.ctx, &list, query)
+    if err != nil {
+        utils.LogError(err)
+        return nil, err
+    }
+    for i := range list {
+        list[i].Set()
+        if list[i].SubmittedDateTimeExcel.Valid {
+            g, _ := goment.New(list[i].SubmittedDateTimeExcel, "YYYY-MM-DD[T]HH:mm:ssZ")
+            list[i].SubmittedDateTimeExcel = utils.NewNullString(g.Format("DD/MM/YYYY HH:mm"))
+        }
+    }
+    return list, nil
 }
 
 func (s *FeedbackService) FindAll(offset int, limit int, conn *sqlx.DB) ([]feedback.Feedback, error) {
