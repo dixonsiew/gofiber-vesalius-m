@@ -201,9 +201,17 @@ func (s *ApplicationUserFamilyService) ListActiveByUserId(userId int64, includeS
 func (s *ApplicationUserFamilyService) CountActiveByUserId(userId int64, isForAppt bool, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
     var count int
-    query := `SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId) AND IS_ACTIVE = 'Y'`
+    query := `
+        SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY 
+        WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId) 
+        AND IS_ACTIVE = 'Y'
+    `
     if isForAppt {
-        query = `SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId) AND IS_PATIENT = 'Y' AND IS_ACTIVE = 'Y'`
+        query = `
+            SELECT COUNT(AUF_ID) AS COUNT FROM APPLICATION_USER_FAMILY 
+            WHERE PATIENT_PRN IN (SELECT MASTER_PRN FROM APPLICATION_USER WHERE USER_ID = :userId) 
+            AND IS_PATIENT = 'Y' 
+            AND IS_ACTIVE = 'Y'`
     }
 
     err := db.GetContext(s.ctx, &count, query, userId)

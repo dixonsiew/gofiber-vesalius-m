@@ -205,7 +205,7 @@ func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.Admin
         SELECT apal.*, au.EMAIL AS EVENT_ADMIN_EMAIL
          FROM ADMIN_PORTAL_AUDIT_LOG apal
          JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID
-         ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+        ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
     `
     query = strings.Replace(query, "apal.*", utils.GetDbColsWithReplace(model.AdminAuditLog{}, "apal.", m), 1)
     list := make([]model.AdminAuditLog, 0)
@@ -575,14 +575,16 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
 }
 
 func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) error {
-    _, err := s.db.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`, o.AdminId.Int64)
+    query := `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`
+    _, err := s.db.ExecContext(s.ctx, query, o.AdminId.Int64)
     if err != nil {
         utils.LogError(err)
         return err
     }
 
+    query = `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`
     for _, adminBranchId := range adminBranchIds {
-        _, err = s.db.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,
+        _, err = s.db.ExecContext(s.ctx, query,
             sql.Named("adminId", o.AdminId.Int64),
             sql.Named("branchId", adminBranchId),
         )
@@ -592,7 +594,13 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
         }
     }
 
-    _, err = s.db.ExecContext(s.ctx, `UPDATE ADMIN_USER SET FIRST_NAME = :first_name, LAST_NAME = :last_name,  "ROLE" = :role, USER_GROUP_ID = :user_group_id, USER_GROUP_NAME = :user_group_name WHERE ADMIN_ID = :admin_id`,
+    query = `
+        UPDATE ADMIN_USER SET 
+        FIRST_NAME = :first_name, LAST_NAME = :last_name,  "ROLE" = :role, USER_GROUP_ID = :user_group_id, 
+        USER_GROUP_NAME = :user_group_name 
+        WHERE ADMIN_ID = :admin_id
+    `
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("first_name", o.FirstName.String),
         sql.Named("last_name", o.LastName.String),
         sql.Named("role", o.Role.String),
@@ -609,13 +617,15 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
 }
 
 func (s *AdminUserService) Delete(adminId int64) error {
-    _, err := s.db.ExecContext(s.ctx, `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`, adminId)
+    query := `DELETE FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId`
+    _, err := s.db.ExecContext(s.ctx, query, adminId)
     if err != nil {
         utils.LogError(err)
         return err
     }
 
-    _, err = s.db.ExecContext(s.ctx, `DELETE FROM ADMIN_USER WHERE ADMIN_ID = :adminId`, adminId)
+    query = `DELETE FROM ADMIN_USER WHERE ADMIN_ID = :adminId`
+    _, err = s.db.ExecContext(s.ctx, query, adminId)
     if err != nil {
         utils.LogError(err)
         return err
@@ -631,7 +641,8 @@ func (s *AdminUserService) ChangeUserPassword(newPw string, adminId int64) error
         return err
     }
 
-    _, err = s.db.ExecContext(s.ctx, `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :adminId`,
+    query := `UPDATE APPLICATION_USER SET PASSWORD = :pw WHERE USER_ID = :adminId`
+    _, err = s.db.ExecContext(s.ctx, query,
         sql.Named("pw", string(hashedPwd)),
         sql.Named("adminId", adminId),
     )
