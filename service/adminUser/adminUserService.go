@@ -40,12 +40,12 @@ func NewAdminUserService(db *sqlx.DB, ctx context.Context) *AdminUserService {
 const saltRounds = 10
 
 func (s *AdminUserService) List(page string, limit string) (*model.PagedList, error) {
-    total, err := s.Count()
+    total, err := s.Count(s.db)
     if err != nil {
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAll(pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindAll(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -57,11 +57,12 @@ func (s *AdminUserService) List(page string, limit string) (*model.PagedList, er
     }, nil
 }
 
-func (s *AdminUserService) FindAll(offset int, limit int) ([]model.AdminUser, error) {
+func (s *AdminUserService) FindAll(offset int, limit int, conn *sqlx.DB) ([]model.AdminUser, error) {
+    db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM ADMIN_USER ORDER BY FIRST_NAME OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.AdminUser{}, ""), 1)
     list := make([]model.AdminUser, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
+    err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -69,10 +70,11 @@ func (s *AdminUserService) FindAll(offset int, limit int) ([]model.AdminUser, er
     return list, nil
 }
 
-func (s *AdminUserService) Count() (int, error) {
+func (s *AdminUserService) Count(conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(ADMIN_ID) AS COUNT FROM ADMIN_USER`
-    err := s.db.GetContext(s.ctx, &count, query)
+    err := db.GetContext(s.ctx, &count, query)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -81,12 +83,12 @@ func (s *AdminUserService) Count() (int, error) {
 }
 
 func (s *AdminUserService) ListMobileUserAuditLog(page string, limit string) (*model.PagedList, error) {
-    total, err := s.MobileUserAuditLogCount()
+    total, err := s.MobileUserAuditLogCount(s.db)
     if err != nil {
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllMobileUserAuditLog(pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindAllMobileUserAuditLog(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -98,10 +100,11 @@ func (s *AdminUserService) ListMobileUserAuditLog(page string, limit string) (*m
     }, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogCount() (int, error) {
+func (s *AdminUserService) MobileUserAuditLogCount(conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(AUDIT_ID) AS COUNT FROM AUDIT_MOBILE_USER WHERE ACTION = 'Delete Account'`
-    err := s.db.GetContext(s.ctx, &count, query)
+    err := db.GetContext(s.ctx, &count, query)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -109,7 +112,8 @@ func (s *AdminUserService) MobileUserAuditLogCount() (int, error) {
     return count, nil
 }
 
-func (s *AdminUserService) FindAllMobileUserAuditLog(offset int, limit int) ([]model.MobileUserAuditLog, error) {
+func (s *AdminUserService) FindAllMobileUserAuditLog(offset int, limit int, conn *sqlx.DB) ([]model.MobileUserAuditLog, error) {
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT amu.* FROM AUDIT_MOBILE_USER amu
          WHERE ACTION = 'Delete Account'
@@ -118,7 +122,7 @@ func (s *AdminUserService) FindAllMobileUserAuditLog(offset int, limit int) ([]m
     `
     query = strings.Replace(query, "amu.*", utils.GetDbCols(model.MobileUserAuditLog{}, "amu."), 1)
     list := make([]model.MobileUserAuditLog, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
+    err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -127,13 +131,13 @@ func (s *AdminUserService) FindAllMobileUserAuditLog(offset int, limit int) ([]m
 }
 
 func (s *AdminUserService) ListMobileUserAuditLogByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.MobileUserAuditLogCountByKeyword(keyword, keyword2)
+    total, err := s.MobileUserAuditLogCountByKeyword(keyword, keyword2, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.MobileUserAuditLogFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.MobileUserAuditLogFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -145,13 +149,14 @@ func (s *AdminUserService) ListMobileUserAuditLogByKeyword(keyword string, keywo
     }, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyword2 string) (int, error) {
+func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildKeywordConditions(keyword, keyword2)
     base := `SELECT COUNT(amu.AUDIT_ID) AS COUNT FROM AUDIT_MOBILE_USER amu`
     query := base + whereClause(conds)
 
     var count int
-    err := s.db.GetContext(s.ctx, &count, query, args...)
+    err := db.GetContext(s.ctx, &count, query, args...)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -159,7 +164,8 @@ func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyw
     return count, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keyword2 string, offset int, limit int) ([]model.MobileUserAuditLog, error) {
+func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.MobileUserAuditLog, error) {
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildKeywordConditions(keyword, keyword2)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
@@ -170,7 +176,7 @@ func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keywo
     query = strings.Replace(query, "amu.*", utils.GetDbCols(model.MobileUserAuditLog{}, "amu."), 1)
 
     list := make([]model.MobileUserAuditLog, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    err := db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -179,13 +185,13 @@ func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keywo
 }
 
 func (s *AdminUserService) ListAuditLog(page string, limit string) (*model.PagedList, error) {
-    total, err := s.AuditLogCount()
+    total, err := s.AuditLogCount(s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllAuditLog(pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindAllAuditLog(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -197,7 +203,8 @@ func (s *AdminUserService) ListAuditLog(page string, limit string) (*model.Paged
     }, nil
 }
 
-func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.AdminAuditLog, error) {
+func (s *AdminUserService) FindAllAuditLog(offset int, limit int, conn *sqlx.DB) ([]model.AdminAuditLog, error) {
+    db := database.GetFromCon(conn, s.db)
     m := map[string]string{
         "apal.EVENT_ADMIN_EMAIL": "",
     }
@@ -209,7 +216,7 @@ func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.Admin
     `
     query = strings.Replace(query, "apal.*", utils.GetDbColsWithReplace(model.AdminAuditLog{}, "apal.", m), 1)
     list := make([]model.AdminAuditLog, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, offset, limit)
+    err := db.SelectContext(s.ctx, &list, query, offset, limit)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -217,10 +224,11 @@ func (s *AdminUserService) FindAllAuditLog(offset int, limit int) ([]model.Admin
     return list, nil
 }
 
-func (s *AdminUserService) AuditLogCount() (int, error) {
+func (s *AdminUserService) AuditLogCount(conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `SELECT COUNT(EVENT_ID) AS COUNT FROM ADMIN_PORTAL_AUDIT_LOG`
-    err := s.db.GetContext(s.ctx, &count, query)
+    err := db.GetContext(s.ctx, &count, query)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -229,13 +237,13 @@ func (s *AdminUserService) AuditLogCount() (int, error) {
 }
 
 func (s *AdminUserService) ListAuditByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.AuditCountByKeyword(keyword, keyword2)
+    total, err := s.AuditCountByKeyword(keyword, keyword2, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.AuditFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.AuditFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -247,7 +255,8 @@ func (s *AdminUserService) ListAuditByKeyword(keyword string, keyword2 string, p
     }, nil
 }
 
-func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string) (int, error) {
+func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     conds, args := buildAdminAuditLogConditions(keyword, keyword2)
     base := `
         SELECT COUNT(apal.EVENT_ID) AS COUNT FROM ADMIN_PORTAL_AUDIT_LOG apal
@@ -255,7 +264,7 @@ func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string) 
     query := base + whereClause(conds)
 
     var count int
-    err := s.db.GetContext(s.ctx, &count, query, args...)
+    err := db.GetContext(s.ctx, &count, query, args...)
     if err != nil {
         utils.LogError(err)
         return 0, err
@@ -263,7 +272,8 @@ func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string) 
     return count, nil
 }
 
-func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, offset int, limit int) ([]model.AdminAuditLog, error) {
+func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.AdminAuditLog, error) {
+    db := database.GetFromCon(conn, s.db)
     conditions, args := buildAdminAuditLogConditions(keyword, keyword2)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
@@ -281,7 +291,7 @@ func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, o
         ` ORDER BY apal.EVENT_DATE_TIME DESC OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
 
     list := make([]model.AdminAuditLog, 0)
-    err := s.db.SelectContext(s.ctx, &list, query, args...)
+    err := db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -290,13 +300,13 @@ func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, o
 }
 
 func (s *AdminUserService) ListByKeyword(keyword string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword)
+    total, err := s.CountByKeyword(keyword, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -308,7 +318,8 @@ func (s *AdminUserService) ListByKeyword(keyword string, page string, limit stri
     }, nil
 }
 
-func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int) ([]model.AdminUser, error) {
+func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.AdminUser, error) {
+    db := database.GetFromCon(conn, s.db)
     query := `
         SELECT au.* FROM ADMIN_USER au
         WHERE LOWER(au.FIRST_NAME) LIKE :keyword OR LOWER(au.MIDDLE_NAME) LIKE :keyword OR LOWER(au.LAST_NAME) LIKE :keyword
@@ -317,7 +328,7 @@ func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int) 
     `
     query = strings.Replace(query, "au.*", utils.GetDbCols(model.AdminUser{}, "au."), 1)
     list := make([]model.AdminUser, 0)
-    err := s.db.SelectContext(s.ctx, &list, query,
+    err := db.SelectContext(s.ctx, &list, query,
         sql.Named("keyword", strings.ToLower(keyword)),
         sql.Named("offset", offset),
         sql.Named("limit", limit),
@@ -329,14 +340,15 @@ func (s *AdminUserService) FindByKeyword(keyword string, offset int, limit int) 
     return list, nil
 }
 
-func (s *AdminUserService) CountByKeyword(keyword string) (int, error) {
+func (s *AdminUserService) CountByKeyword(keyword string, conn *sqlx.DB) (int, error) {
+    db := database.GetFromCon(conn, s.db)
     var count int
     query := `
         SELECT COUNT(au.ADMIN_ID) AS COUNT FROM ADMIN_USER au
         WHERE LOWER(au.FIRST_NAME) LIKE :keyword OR LOWER(au.MIDDLE_NAME) LIKE :keyword OR LOWER(au.LAST_NAME) LIKE :keyword
         OR LOWER(au.EMAIL) LIKE :keyword
     `
-    err := s.db.GetContext(s.ctx, &count, query, sql.Named("keyword", strings.ToLower(keyword)))
+    err := db.GetContext(s.ctx, &count, query, sql.Named("keyword", strings.ToLower(keyword)))
     if err != nil {
         utils.LogError(err)
         return 0, err
