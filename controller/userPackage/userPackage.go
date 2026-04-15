@@ -45,7 +45,7 @@ func NewUserPackageController() *UserPackageController {
 // @Tags User Package
 // @Produce json
 // @Security BearerAuth
-// @Param request body dto.CheckPackageExpiryMaxpurchaseDto true "CheckPackageExpiryMaxpurchaseDto"
+// @Param    request    body    dto.CheckPackageExpiryMaxpurchaseDto    true    "CheckPackageExpiryMaxpurchaseDto"
 // @Success 200
 // @Router /user-package/check/expiry-maxpurchase [post]
 func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) error {
