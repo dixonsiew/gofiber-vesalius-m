@@ -136,9 +136,14 @@ func (cr *PackageController) SearchAllPackages(c fiber.Ctx) error {
         }
     }
 
+    x := dto.SearchKeyword3Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.packageService.ListByKeyword(key, key2, key3, page, limit)
+    m, err := cr.packageService.ListByKeyword(x, page, limit)
     if err != nil {
         return err
     }

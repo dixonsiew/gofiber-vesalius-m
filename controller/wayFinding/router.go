@@ -1,4 +1,4 @@
-package wayfinding
+package wayFinding
 
 import (
     "vesaliusm/middleware"
@@ -21,6 +21,12 @@ func (c *WayFindingController) registerRoutes(router fiber.Router) {
     api.Get("/locations", c.GetAllLocations)
     api.Post("/locations", c.SearchAllLocations)
     api.Get("/location-types", c.GetAllLocationTypes)
+    api.Get("/routes", c.GetAllRoutes)
+    api.Post("/routes", c.SearchAllRoutes)
+    api.Post("/location/:code", c.SearchAllLocationsByCode)
+    api.Get("/location/:code", c.GetAllLocationsByTypeCode)
+    api.Get("/route/:fromId/:toId", c.GetRoute)
+    api.Get("/location-qr/:locationId/:locationTypeId", c.GetLocationsByLocationIdAndLocationTypeId)
     
     api.Use(middleware.JWTProtected, middleware.ValidateUser)
     api.Post("/dropdown", c.GetDropdowns)
@@ -40,4 +46,8 @@ func (c *WayFindingController) registerRoutes(router fiber.Router) {
     api.Put("/location-types/update/:locationTypeCode", c.UpdateLocationType)
     api.Delete("/location-types/delete/:locationTypeCode", c.DeleteLocationTypesByLocationTypeCode)
     api.Get("/location-types/:locationTypeCode", c.GetLocationTypesByLocationTypeCode)
+    api.Post("/routes/create", c.CreateRoute)
+    api.Put("/routes/update/:routeId", c.UpdateRoute)
+    api.Delete("/routes/delete/:routeId", c.DeleteRoutesByRouteId)
+    api.Get("/routes/:routeId", c.GetRoutesByRouteId)
 }

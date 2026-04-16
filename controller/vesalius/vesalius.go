@@ -125,9 +125,14 @@ func (cr *VesaliusController) SearchAllAppointments(c fiber.Ctx) error {
         }
     }
 
+    x := dto.SearchKeyword3Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.novaDoctorPatientApptService.ListByKeyword(key, key2, key3, page, limit)
+    m, err := cr.novaDoctorPatientApptService.ListByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -516,7 +521,7 @@ func (cr *VesaliusController) GetVitalSignsHistory(c fiber.Ctx) error {
 // @Router /vesalius/patient-allergy/{prn} [get]
 func (cr *VesaliusController) GetPatientAllergy(c fiber.Ctx) error {
     prn := c.Params("prn")
-    lx, err := cr.healthCareService.GetPatientAllergy(prn);
+    lx, err := cr.healthCareService.GetPatientAllergy(prn)
     if err != nil {
         return nil
     }
@@ -700,7 +705,7 @@ func (cr *VesaliusController) SearchPatientData(c fiber.Ctx) error {
     if b1 {
         return fiber.NewError(fiber.StatusBadGateway, fmt.Sprintf("Existing mobile application user with email: [%s] already exist!", patient.ContactNumber.Email))
     }
-    
+
     return c.JSON(patient)
 }
 

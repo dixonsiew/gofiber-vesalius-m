@@ -6,6 +6,7 @@ import (
     "fmt"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/model/clubs"
     hp "vesaliusm/model/hpackage"
@@ -316,20 +317,20 @@ func (s *ExportExcelService) ExportAllMobileUserAuditLog() ([]model.MobileUserAu
     return list, nil
 }
 
-func (s *ExportExcelService) ExportMobileUserAuditLogByKeyword(keyword string, keyword2 string) ([]model.MobileUserAuditLog, error) {
+func (s *ExportExcelService) ExportMobileUserAuditLogByKeyword(x dto.SearchKeyword2Dto) ([]model.MobileUserAuditLog, error) {
     query := `SELECT amu.* FROM AUDIT_MOBILE_USER amu`
     query = strings.Replace(query, "amu.*", utils.GetDbCols(model.MobileUserAuditLog{}, "amu."), 1)
     lq := []string{query}
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `LOWER(amu.PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `LOWER(amu.PATIENT_NAME) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
     lc = append(lc, `amu.ACTION = :action`)
     args = append(args, sql.Named("action", "Delete Account"))
@@ -374,20 +375,20 @@ func (s *ExportExcelService) ExportAllLittleKidsMembership() ([]clubs.LittleExpl
     return list, nil
 }
 
-func (s *ExportExcelService) ExportLittleKidsMembershipByKeyword(keyword string, keyword2 string) ([]clubs.LittleExplorersKidsMembership, error) {
+func (s *ExportExcelService) ExportLittleKidsMembershipByKeyword(x dto.SearchKeyword2Dto) ([]clubs.LittleExplorersKidsMembership, error) {
     query := `SELECT * FROM KIDS_CLUB_MEMBERSHIP kcm`
     query = strings.Replace(query, "*", utils.GetDbCols(clubs.LittleExplorersKidsMembership{}, ""), 1)
     lq := []string{query}
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
 
     if len(lc) > 0 {
@@ -431,20 +432,20 @@ func (s *ExportExcelService) ExportAllGoldenPearlMembership() ([]clubs.GoldenPea
     return list, nil
 }
 
-func (s *ExportExcelService) ExportGoldenPearlMembershipByKeyword(keyword string, keyword2 string) ([]clubs.GoldenPearlMembership, error) {
+func (s *ExportExcelService) ExportGoldenPearlMembershipByKeyword(x dto.SearchKeyword2Dto) ([]clubs.GoldenPearlMembership, error) {
     query := `SELECT * FROM GOLDEN_CLUB_MEMBERSHIP kcm`
     query = strings.Replace(query, "*", utils.GetDbCols(clubs.GoldenPearlMembership{}, ""), 1)
     lq := []string{query}
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(kcm.GOLDEN_PRN) LIKE :keyword OR LOWER(kcm.GOLDEN_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `(LOWER(kcm.NOK_PRN) LIKE :keyword2 OR LOWER(kcm.NOK_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
 
     if len(lc) > 0 {
@@ -493,7 +494,7 @@ func (s *ExportExcelService) ExportAllLittleKidsActivity() ([]clubs.LittleExplor
     return list, nil
 }
 
-func (s *ExportExcelService) ExportLittleKidsActivityByKeyword(keyword string, keyword2 string, keyword3 string) ([]clubs.LittleExplorersKidsActivity, error) {
+func (s *ExportExcelService) ExportLittleKidsActivityByKeyword(x dto.SearchKeyword3Dto) ([]clubs.LittleExplorersKidsActivity, error) {
     m := map[string]string{
         "kca.ATTENDEES": "",
     }
@@ -508,17 +509,17 @@ func (s *ExportExcelService) ExportLittleKidsActivityByKeyword(keyword string, k
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(kca.KIDS_ACTIVITY_CODE) LIKE :keyword OR LOWER(kca.KIDS_ACTIVITY_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `TRUNC(kca.ACTIVITY_START_DATETIME) = TO_DATE(:keyword2, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword2", keyword2))
+        args = append(args, sql.Named("keyword2", x.Keyword2))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         lc = append(lc, `TRUNC(kca.ACTIVITY_END_DATETIME) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
 
     if len(lc) > 0 {
@@ -567,7 +568,7 @@ func (s *ExportExcelService) ExportAllGoldenPearlActivity() ([]clubs.GoldenPearl
     return list, nil
 }
 
-func (s *ExportExcelService) ExportGoldenPearlActivityByKeyword(keyword string, keyword2 string, keyword3 string) ([]clubs.GoldenPearlActivity, error) {
+func (s *ExportExcelService) ExportGoldenPearlActivityByKeyword(x dto.SearchKeyword3Dto) ([]clubs.GoldenPearlActivity, error) {
     m := map[string]string{
         "gca.ATTENDEES": "",
     }
@@ -582,17 +583,17 @@ func (s *ExportExcelService) ExportGoldenPearlActivityByKeyword(keyword string, 
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(gca.GOLDEN_ACTIVITY_CODE) LIKE :keyword OR LOWER(gca.GOLDEN_ACTIVITY_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `TRUNC(gca.ACTIVITY_START_DATETIME) = TO_DATE(:keyword2, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword2", keyword2))
+        args = append(args, sql.Named("keyword2", x.Keyword2))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         lc = append(lc, `TRUNC(gca.ACTIVITY_END_DATETIME) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
 
     if len(lc) > 0 {
@@ -641,7 +642,7 @@ func (s *ExportExcelService) ExportAllLittleKidsAttendees(kidsActivityId int64) 
     return list, nil
 }
 
-func (s *ExportExcelService) ExportLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string) ([]clubs.LittleExplorersKidsMembership, error) {
+func (s *ExportExcelService) ExportLittleKidsAttendeesByKeyword(kidsActivityId int64, x dto.SearchKeyword2Dto) ([]clubs.LittleExplorersKidsMembership, error) {
     m := map[string]string{
         "kcm.ACTIVITY_DATE_TIME": "",
     }
@@ -655,13 +656,13 @@ func (s *ExportExcelService) ExportLittleKidsAttendeesByKeyword(kidsActivityId i
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
     lc = append(lc, `kcap.KIDS_ACTIVITY_ID = :kidsActivityId`)
     args = append(args, sql.Named("kidsActivityId", kidsActivityId))

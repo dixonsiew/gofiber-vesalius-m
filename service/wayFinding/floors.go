@@ -1,4 +1,4 @@
-package wayfinding
+package wayFinding
 
 import (
     "database/sql"
@@ -51,7 +51,7 @@ func (s *WayFindingService) UpdateFloor(o *model.WayFindingFloors) error {
 }
 
 func (s *WayFindingService) ListFloors() ([]model.WayFindingFloors, error) {
-    return s.FindAllWayFindingFloors(s.db)
+    return s.FindAllFloors(s.db)
 }
 
 func (s *WayFindingService) ListFloorsWebAdmin(page string, limit string) (*model.PagedList, error) {
@@ -60,7 +60,7 @@ func (s *WayFindingService) ListFloorsWebAdmin(page string, limit string) (*mode
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingFloorsWebAdmin(pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllFloorsWebAdmin(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -84,7 +84,7 @@ func (s *WayFindingService) FloorsCount(conn *sqlx.DB) (int, error) {
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingFloors(conn *sqlx.DB) ([]model.WayFindingFloors, error) {
+func (s *WayFindingService) FindAllFloors(conn *sqlx.DB) ([]model.WayFindingFloors, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM WAY_FINDING_FLOORS ORDER BY FLOOR_DISPLAY_ORDER`
     query = strings.Replace(query, "*", utils.GetDbCols(model.WayFindingFloors{}, ""), 1)
@@ -97,7 +97,7 @@ func (s *WayFindingService) FindAllWayFindingFloors(conn *sqlx.DB) ([]model.WayF
     return list, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingFloorsWebAdmin(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
+func (s *WayFindingService) FindAllFloorsWebAdmin(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM WAY_FINDING_FLOORS ORDER BY FLOOR_DISPLAY_ORDER OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.WayFindingFloors{}, ""), 1)
@@ -116,7 +116,7 @@ func (s *WayFindingService) ListFloorsByKeyword(keyword string, page string, lim
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingFloorsByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllFloorsByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -134,7 +134,7 @@ func (s *WayFindingService) ListFloorsByKeywordWebAdmin(keyword string, page str
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingFloorsByKeywordWebAdmin(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllFloorsByKeywordWebAdmin(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -163,7 +163,7 @@ func (s *WayFindingService) FloorsCountByKeyword(keyword string, conn *sqlx.DB) 
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingFloorsByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
+func (s *WayFindingService) FindAllFloorsByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM WAY_FINDING_FLOORS
@@ -186,7 +186,7 @@ func (s *WayFindingService) FindAllWayFindingFloorsByKeyword(keyword string, off
     return list, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingFloorsByKeywordWebAdmin(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
+func (s *WayFindingService) FindAllFloorsByKeywordWebAdmin(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingFloors, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM WAY_FINDING_FLOORS

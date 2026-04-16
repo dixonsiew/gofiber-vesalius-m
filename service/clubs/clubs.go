@@ -5,6 +5,7 @@ import (
     "database/sql"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/model/clubs"
     "vesaliusm/service/applicationUser"
@@ -1301,9 +1302,9 @@ func (s *ClubService) FindAllUserGoldenPearlActivities(userId int64) ([]clubs.Go
 
 func (s *ClubService) FindAllAppLittleKidsMemberships(userId int64) ([]clubs.LittleExplorersKidsMembership, error) {
     /* patient, err := s.applicationUserService.FindByUserId(userId, s.db)
-    if err != nil {
-        return nil, err
-    } */
+       if err != nil {
+           return nil, err
+       } */
 
     return nil, nil
 }
@@ -1672,14 +1673,14 @@ func (s *ClubService) CountGoldenPearlActivityAttendees(goldenActivityId int64) 
     return count, nil
 }
 
-func (s *ClubService) ListLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountLittleKidsAttendeesByKeyword(kidsActivityId, keyword, keyword2)
+func (s *ClubService) ListLittleKidsAttendeesByKeyword(kidsActivityId int64, x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsAttendeesByKeyword(kidsActivityId, x)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindLittleKidsAttendeesByKeyword(kidsActivityId, keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindLittleKidsAttendeesByKeyword(kidsActivityId, x, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
@@ -1691,8 +1692,8 @@ func (s *ClubService) ListLittleKidsAttendeesByKeyword(kidsActivityId int64, key
     }, nil
 }
 
-func (s *ClubService) CountLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string) (int, error) {
-    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, keyword, keyword2)
+func (s *ClubService) CountLittleKidsAttendeesByKeyword(kidsActivityId int64, x dto.SearchKeyword2Dto) (int, error) {
+    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, x)
     base := `SELECT COUNT(kcap.KIDS_ACTV_PARTICIPATION_ID) AS COUNT
              FROM KIDS_CLUB_ACTV_PARTICIPATION kcap
              JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID`
@@ -1742,14 +1743,14 @@ func (s *ClubService) CountGoldenPearlAttendeesByKeyword(goldenActivityId int64,
     return count, nil
 }
 
-func (s *ClubService) ListLittleKidsMembershipByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountLittleKidsMembershipByKeyword(keyword, keyword2)
+func (s *ClubService) ListLittleKidsMembershipByKeyword(x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLittleKidsMembershipByKeyword(x)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindLittleKidsMembershipByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindLittleKidsMembershipByKeyword(x, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
@@ -1761,8 +1762,8 @@ func (s *ClubService) ListLittleKidsMembershipByKeyword(keyword string, keyword2
     }, nil
 }
 
-func (s *ClubService) CountLittleKidsMembershipByKeyword(keyword string, keyword2 string) (int, error) {
-    conditions, args := buildLittleKidsMembershipKeywordConditions(keyword, keyword2)
+func (s *ClubService) CountLittleKidsMembershipByKeyword(x dto.SearchKeyword2Dto) (int, error) {
+    conditions, args := buildLittleKidsMembershipKeywordConditions(x)
     base := `SELECT COUNT(kcm.KIDS_MEMBERSHIP_ID) AS COUNT FROM KIDS_CLUB_MEMBERSHIP kcm`
     query := base + whereClause(conditions)
 
@@ -1775,14 +1776,14 @@ func (s *ClubService) CountLittleKidsMembershipByKeyword(keyword string, keyword
     return count, nil
 }
 
-func (s *ClubService) ListGoldenPearlMembershipByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountGoldenPearlMembershipByKeyword(keyword, keyword2)
+func (s *ClubService) ListGoldenPearlMembershipByKeyword(x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountGoldenPearlMembershipByKeyword(x)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindGoldenPearlMembershipByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindGoldenPearlMembershipByKeyword(x, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
@@ -1794,8 +1795,8 @@ func (s *ClubService) ListGoldenPearlMembershipByKeyword(keyword string, keyword
     }, nil
 }
 
-func (s *ClubService) CountGoldenPearlMembershipByKeyword(keyword string, keyword2 string) (int, error) {
-    conditions, args := buildGoldenPearlMembershipKeywordConditions(keyword, keyword2)
+func (s *ClubService) CountGoldenPearlMembershipByKeyword(x dto.SearchKeyword2Dto) (int, error) {
+    conditions, args := buildGoldenPearlMembershipKeywordConditions(x)
     base := `SELECT COUNT(gcm.GOLDEN_MEMBERSHIP_ID) AS COUNT FROM GOLDEN_CLUB_MEMBERSHIP gcm`
     query := base + whereClause(conditions)
 
@@ -1908,11 +1909,11 @@ func (s *ClubService) FindAllGoldenPearlAttendeesForExcel(goldenActivityId int64
     return list, nil
 }
 
-func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, keyword string, keyword2 string, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
-    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, keyword, keyword2)
+func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, x dto.SearchKeyword2Dto, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
+    conditions, args := buildLittleKidsAttendeesKeywordConditions(kidsActivityId, x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
-    
+
     m := map[string]string{
         "kcm.ACTIVITY_DATE_TIME": "",
     }
@@ -1922,11 +1923,11 @@ func (s *ClubService) FindLittleKidsAttendeesByKeyword(kidsActivityId int64, key
         JOIN KIDS_CLUB_MEMBERSHIP kcm ON kcap.KIDS_MEMBERSHIP_ID = kcm.KIDS_MEMBERSHIP_ID
     `
     base = strings.Replace(base, "kcm.*", utils.GetDbColsWithReplace(clubs.LittleExplorersKidsMembership{}, "kcm.", m), 1)
-    
+
     query := base + whereClause(conditions) +
         ` ORDER BY kcm.KIDS_MEMBERSHIP_NUMBER DESC 
           OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
-    
+
     list := make([]clubs.LittleExplorersKidsMembership, 0)
     err := s.db.SelectContext(s.ctx, &list, query, args...)
     if err != nil {
@@ -1970,8 +1971,8 @@ func (s *ClubService) FindGoldenPearlAttendeesByKeyword(goldenActivityId int64, 
     return list, nil
 }
 
-func (s *ClubService) FindLittleKidsMembershipByKeyword(keyword string, keyword2 string, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
-    conditions, args := buildLittleKidsMembershipKeywordConditions(keyword, keyword2)
+func (s *ClubService) FindLittleKidsMembershipByKeyword(x dto.SearchKeyword2Dto, offset int, limit int) ([]clubs.LittleExplorersKidsMembership, error) {
+    conditions, args := buildLittleKidsMembershipKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -1993,8 +1994,8 @@ func (s *ClubService) FindLittleKidsMembershipByKeyword(keyword string, keyword2
     return list, nil
 }
 
-func (s *ClubService) FindGoldenPearlMembershipByKeyword(keyword string, keyword2 string, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
-    conditions, args := buildGoldenPearlMembershipKeywordConditions(keyword, keyword2)
+func (s *ClubService) FindGoldenPearlMembershipByKeyword(x dto.SearchKeyword2Dto, offset int, limit int) ([]clubs.GoldenPearlMembership, error) {
+    conditions, args := buildGoldenPearlMembershipKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -2335,19 +2336,19 @@ func buildGoldenPearlActivitiesKeywordConditions(keyword string, keyword2 string
     return conds, args
 }
 
-func buildLittleKidsAttendeesKeywordConditions(kidsActivityId int64, keyword string, keyword2 string) ([]string, []interface{}) {
+func buildLittleKidsAttendeesKeywordConditions(kidsActivityId int64, x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
     conds = append(conds, `kcap.KIDS_ACTIVITY_ID = :kidsActivityId`)
     args = append(args, sql.Named("kidsActivityId", kidsActivityId))
@@ -2373,36 +2374,36 @@ func buildGoldenPearlAttendeesKeywordConditions(goldenActivityId int64, keyword 
     return conds, args
 }
 
-func buildLittleKidsMembershipKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+func buildLittleKidsMembershipKeywordConditions(x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(kcm.KIDS_PRN) LIKE :keyword OR LOWER(kcm.KIDS_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `(LOWER(kcm.GUARDIAN_PRN) LIKE :keyword2 OR LOWER(kcm.GUARDIAN_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
     return conds, args
 }
 
-func buildGoldenPearlMembershipKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+func buildGoldenPearlMembershipKeywordConditions(x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(gcm.GOLDEN_PRN) LIKE :keyword OR LOWER(gcm.GOLDEN_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `(LOWER(gcm.NOK_PRN) LIKE :keyword2 OR LOWER(gcm.NOK_NAME) LIKE :keyword2)`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
     return conds, args
 }

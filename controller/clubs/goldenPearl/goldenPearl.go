@@ -479,7 +479,11 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlMembership(c fib
         key2 = "%" + key2 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportGoldenPearlMembershipByKeyword(key, key2)
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
+    lx, err := cr.exportExcelService.ExportGoldenPearlMembershipByKeyword(x)
     if err != nil {
         return err
     }
@@ -532,9 +536,13 @@ func (cr *ClubsGoldenPearlController) SearchAllGoldenPearlMembership(c fiber.Ctx
         key2 = "%" + key2 + "%"
     }
 
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.clubService.ListGoldenPearlMembershipByKeyword(key, key2, page, limit)
+    m, err := cr.clubService.ListGoldenPearlMembershipByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -762,7 +770,12 @@ func (cr *ClubsGoldenPearlController) GetSearchExportGoldenPearlActivity(c fiber
         }
     }
 
-    lx, err := cr.exportExcelService.ExportGoldenPearlActivityByKeyword(key, key2, key3)
+    x := dto.SearchKeyword3Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+    }
+    lx, err := cr.exportExcelService.ExportGoldenPearlActivityByKeyword(x)
     if err != nil {
         return err
     }

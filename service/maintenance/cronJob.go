@@ -5,6 +5,7 @@ import (
     "fmt"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/utils"
 
@@ -118,13 +119,13 @@ func (s *MaintenanceService) FindAllCronjobHistories(offset int, limit int, conn
     return list, nil
 }
 
-func (s *MaintenanceService) SearchAllCronjobHistoriesByKeyword(cronjobName string, keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountCronjobHistoriesByKeyword(cronjobName, keyword, keyword2, s.db)
+func (s *MaintenanceService) SearchAllCronjobHistoriesByKeyword(cronjobName string, x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountCronjobHistoriesByKeyword(cronjobName, x, s.db)
     if err != nil {
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindCronjobHistoriesByKeyword(cronjobName, keyword, keyword2, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindCronjobHistoriesByKeyword(cronjobName, x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -136,9 +137,9 @@ func (s *MaintenanceService) SearchAllCronjobHistoriesByKeyword(cronjobName stri
     }, nil
 }
 
-func (s *MaintenanceService) CountCronjobHistoriesByKeyword(cronjobName string, keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
+func (s *MaintenanceService) CountCronjobHistoriesByKeyword(cronjobName string, x dto.SearchKeyword2Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildCronJobConditions(cronjobName, keyword, keyword2)
+    conds, args := buildCronJobConditions(cronjobName, x)
     base := `SELECT COUNT(*) AS COUNT FROM CRONJOB_HISTORY ch`
     query := base + whereClause(conds)
 
@@ -151,9 +152,9 @@ func (s *MaintenanceService) CountCronjobHistoriesByKeyword(cronjobName string, 
     return count, nil
 }
 
-func (s *MaintenanceService) FindCronjobHistoriesByKeyword(cronjobName string, keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.CronjobHistory, error) {
+func (s *MaintenanceService) FindCronjobHistoriesByKeyword(cronjobName string, x dto.SearchKeyword2Dto, offset int, limit int, conn *sqlx.DB) ([]model.CronjobHistory, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildCronJobConditions(cronjobName, keyword, keyword2)
+    conditions, args := buildCronJobConditions(cronjobName, x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -179,7 +180,7 @@ func (s *MaintenanceService) FindCronjobHistoriesByKeyword(cronjobName string, k
     return list, nil
 }
 
-func buildCronJobConditions(cronjobName string, keyword string, keyword2 string) ([]string, []interface{}) {
+func buildCronJobConditions(cronjobName string, x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
@@ -190,14 +191,14 @@ func buildCronJobConditions(cronjobName string, keyword string, keyword2 string)
         args = append(args, sql.Named("cronjobName", cronjobName))
     }
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `TO_CHAR(ch.START_DATE, 'dd/mm/yyyy') = :keyword`)
-        args = append(args, sql.Named("keyword", keyword))
+        args = append(args, sql.Named("keyword", x.Keyword))
     }
 
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `TO_CHAR(ch.END_DATE, 'dd/mm/yyyy') = :keyword2`)
-        args = append(args, sql.Named("keyword2", keyword2))
+        args = append(args, sql.Named("keyword2", x.Keyword2))
     }
 
     return conds, args

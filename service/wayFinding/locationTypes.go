@@ -1,4 +1,4 @@
-package wayfinding
+package wayFinding
 
 import (
     "database/sql"
@@ -52,7 +52,7 @@ func (s *WayFindingService) ListLocationTypes(page string, limit string) (*model
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingLocationTypes(pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllLocationTypes(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -76,7 +76,7 @@ func (s *WayFindingService) LocationTypesCount(conn *sqlx.DB) (int, error) {
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingLocationTypes(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocationTypes, error) {
+func (s *WayFindingService) FindAllLocationTypes(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocationTypes, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM WAY_FINDING_LOCATION_TYPE ORDER BY LOCATION_TYPE_DISPLAY_ORDER OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.WayFindingLocationTypes{}, ""), 1)
@@ -95,7 +95,7 @@ func (s *WayFindingService) ListLocationTypesByKeyword(keyword string, page stri
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingLocationTypesByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllLocationTypesByKeyword(keyword, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -124,7 +124,7 @@ func (s *WayFindingService) LocationTypesCountByKeyword(keyword string, conn *sq
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingLocationTypesByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocationTypes, error) {
+func (s *WayFindingService) FindAllLocationTypesByKeyword(keyword string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocationTypes, error) {
     db := database.GetFromCon(conn, s.db)
     query := `
         SELECT * FROM WAY_FINDING_LOCATION_TYPE

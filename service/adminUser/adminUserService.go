@@ -130,14 +130,14 @@ func (s *AdminUserService) FindAllMobileUserAuditLog(offset int, limit int, conn
     return list, nil
 }
 
-func (s *AdminUserService) ListMobileUserAuditLogByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.MobileUserAuditLogCountByKeyword(keyword, keyword2, s.db)
+func (s *AdminUserService) ListMobileUserAuditLogByKeyword(x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.MobileUserAuditLogCountByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.MobileUserAuditLogFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.MobileUserAuditLogFindByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -149,9 +149,9 @@ func (s *AdminUserService) ListMobileUserAuditLogByKeyword(keyword string, keywo
     }, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
+func (s *AdminUserService) MobileUserAuditLogCountByKeyword(x dto.SearchKeyword2Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildKeywordConditions(keyword, keyword2)
+    conds, args := buildKeywordConditions(x)
     base := `SELECT COUNT(amu.AUDIT_ID) AS COUNT FROM AUDIT_MOBILE_USER amu`
     query := base + whereClause(conds)
 
@@ -164,9 +164,9 @@ func (s *AdminUserService) MobileUserAuditLogCountByKeyword(keyword string, keyw
     return count, nil
 }
 
-func (s *AdminUserService) MobileUserAuditLogFindByKeyword(keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.MobileUserAuditLog, error) {
+func (s *AdminUserService) MobileUserAuditLogFindByKeyword(x dto.SearchKeyword2Dto, offset int, limit int, conn *sqlx.DB) ([]model.MobileUserAuditLog, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildKeywordConditions(keyword, keyword2)
+    conditions, args := buildKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -236,14 +236,14 @@ func (s *AdminUserService) AuditLogCount(conn *sqlx.DB) (int, error) {
     return count, nil
 }
 
-func (s *AdminUserService) ListAuditByKeyword(keyword string, keyword2 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.AuditCountByKeyword(keyword, keyword2, s.db)
+func (s *AdminUserService) ListAuditByKeyword(x dto.SearchKeyword2Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.AuditCountByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.AuditFindByKeyword(keyword, keyword2, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.AuditFindByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -255,9 +255,9 @@ func (s *AdminUserService) ListAuditByKeyword(keyword string, keyword2 string, p
     }, nil
 }
 
-func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string, conn *sqlx.DB) (int, error) {
+func (s *AdminUserService) AuditCountByKeyword(x dto.SearchKeyword2Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildAdminAuditLogConditions(keyword, keyword2)
+    conds, args := buildAdminAuditLogConditions(x)
     base := `
         SELECT COUNT(apal.EVENT_ID) AS COUNT FROM ADMIN_PORTAL_AUDIT_LOG apal
         JOIN ADMIN_USER au ON apal.EVENT_ADMIN_ID = au.ADMIN_ID`
@@ -272,9 +272,9 @@ func (s *AdminUserService) AuditCountByKeyword(keyword string, keyword2 string, 
     return count, nil
 }
 
-func (s *AdminUserService) AuditFindByKeyword(keyword string, keyword2 string, offset int, limit int, conn *sqlx.DB) ([]model.AdminAuditLog, error) {
+func (s *AdminUserService) AuditFindByKeyword(x dto.SearchKeyword2Dto, offset int, limit int, conn *sqlx.DB) ([]model.AdminAuditLog, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildAdminAuditLogConditions(keyword, keyword2)
+    conditions, args := buildAdminAuditLogConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -747,19 +747,19 @@ func (s *AdminUserService) ValidateCredentials(user *model.AdminUser, password s
     return err == nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+func buildKeywordConditions(x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `LOWER(amu.PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `LOWER(amu.PATIENT_NAME) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
 
     conds = append(conds, `amu.ACTION = :action`)
@@ -768,19 +768,19 @@ func buildKeywordConditions(keyword string, keyword2 string) ([]string, []interf
     return conds, args
 }
 
-func buildAdminAuditLogConditions(keyword string, keyword2 string) ([]string, []interface{}) {
+func buildAdminAuditLogConditions(x dto.SearchKeyword2Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `LOWER(au.EMAIL) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `LOWER(apal.PATIENT_PRN) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
 
     return conds, args

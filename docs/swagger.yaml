@@ -312,6 +312,18 @@ definitions:
     - osPlatform
     - status
     type: object
+  dto.BuildingsDto:
+    properties:
+      buildingCode:
+        type: string
+      buildingDisplayOrder:
+        type: integer
+      buildingName:
+        type: string
+    required:
+    - buildingDisplayOrder
+    - buildingName
+    type: object
   dto.ChangeSignInTypeDto:
     properties:
       signInEmailAddress:
@@ -401,6 +413,11 @@ definitions:
     - fullname
     - prn
     type: object
+  dto.DropdownsDto:
+    properties:
+      buildingCode:
+        type: string
+    type: object
   dto.DynamicEmailMasterDto:
     properties:
       emailFor:
@@ -478,6 +495,21 @@ definitions:
     required:
     - filename
     - mimeType
+    type: object
+  dto.FloorsDto:
+    properties:
+      floorCode:
+        type: string
+      floorDisplayOrder:
+        type: integer
+      floorImageRaw:
+        type: string
+      floorName:
+        type: string
+    required:
+    - floorDisplayOrder
+    - floorImageRaw
+    - floorName
     type: object
   dto.GeneralNotificationDto:
     properties:
@@ -931,6 +963,37 @@ definitions:
     - kidsNationality
     - preferredLanguage
     - relationship
+    type: object
+  dto.LocationTypesDto:
+    properties:
+      locationTypeCode:
+        type: string
+      locationTypeDisplayOrder:
+        type: integer
+      locationTypeName:
+        type: string
+    required:
+    - locationTypeDisplayOrder
+    - locationTypeName
+    type: object
+  dto.LocationsDto:
+    properties:
+      locationBuildingCode:
+        type: string
+      locationCode:
+        type: string
+      locationFloorCode:
+        type: string
+      locationName:
+        type: string
+      locationTypeCode:
+        type: string
+    required:
+    - locationBuildingCode
+    - locationCode
+    - locationFloorCode
+    - locationName
+    - locationTypeCode
     type: object
   dto.LoginDto:
     properties:
@@ -1666,6 +1729,22 @@ definitions:
     required:
     - latestVersion
     - stackPlatform
+    type: object
+  dto.RoutesDto:
+    properties:
+      routeFromImageRaw:
+        type: string
+      routeFromLocationId:
+        type: integer
+      routeToImageRaw:
+        type: string
+      routeToLocationId:
+        type: integer
+    required:
+    - routeFromImageRaw
+    - routeFromLocationId
+    - routeToImageRaw
+    - routeToLocationId
     type: object
   dto.SearchKeyword2Dto:
     properties:
@@ -3564,6 +3643,103 @@ definitions:
       transferSystem:
         type: string
     type: object
+  model.WayFindingBuildings:
+    properties:
+      buildingCode:
+        type: string
+      buildingDisplayOrder:
+        type: integer
+      buildingName:
+        type: string
+    type: object
+  model.WayFindingFloors:
+    properties:
+      floorCode:
+        type: string
+      floorDisplayOrder:
+        type: integer
+      floorId:
+        type: integer
+      floorImageRaw:
+        type: string
+      floorName:
+        type: string
+    type: object
+  model.WayFindingLocationTypes:
+    properties:
+      locationTypeCode:
+        type: string
+      locationTypeDisplayOrder:
+        type: integer
+      locationTypeId:
+        type: integer
+      locationTypeName:
+        type: string
+    type: object
+  model.WayFindingLocations:
+    properties:
+      location_id:
+        type: integer
+      locationBuilding:
+        type: string
+      locationBuildingCode:
+        type: string
+      locationBuildingName:
+        type: string
+      locationCode:
+        type: string
+      locationFloorCode:
+        type: string
+      locationFloorName:
+        type: string
+      locationId:
+        type: integer
+      locationName:
+        type: string
+      locationTypeCode:
+        type: string
+      locationTypeName:
+        type: string
+    type: object
+  model.WayFindingRoutes:
+    properties:
+      fromCode:
+        type: string
+      fromFloorCode:
+        type: string
+      fromName:
+        type: string
+      fromTypeCode:
+        type: string
+      route_id:
+        type: integer
+      routeFromBuildingCode:
+        type: string
+      routeFromBuildingName:
+        type: string
+      routeFromImageRaw:
+        type: string
+      routeFromLocationId:
+        type: integer
+      routeId:
+        type: integer
+      routeToBuildingCode:
+        type: string
+      routeToBuildingName:
+        type: string
+      routeToImageRaw:
+        type: string
+      routeToLocationId:
+        type: integer
+      toCode:
+        type: string
+      toFloorCode:
+        type: string
+      toName:
+        type: string
+      toTypeCode:
+        type: string
+    type: object
   qms.QueueResult:
     properties:
       asAt:
@@ -3989,11 +4165,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4012,11 +4188,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -4077,11 +4253,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4100,11 +4276,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -4147,11 +4323,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4170,11 +4346,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -4303,7 +4479,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4486,7 +4662,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: Email
         in: path
         name: email
@@ -4644,7 +4820,7 @@ paths:
         in: path
         name: size
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4740,7 +4916,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: GoldenPearlActivityDto
         in: body
         name: request
@@ -4762,11 +4938,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4783,11 +4959,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -4812,16 +4988,16 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: isHome
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4840,15 +5016,15 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4868,15 +5044,15 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4897,7 +5073,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4918,7 +5094,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4975,7 +5151,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -4992,7 +5168,7 @@ paths:
       parameters:
       - description: GoldenPearlActvParticipationDto
         in: body
-        name: data
+        name: request
         required: true
         schema:
           $ref: '#/definitions/dto.GoldenPearlActvParticipationDto'
@@ -5054,11 +5230,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -5153,7 +5329,7 @@ paths:
         in: path
         name: membershipId
         required: true
-        type: string
+        type: integer
       - description: GoldenPearlMembershipDto
         in: body
         name: request
@@ -5223,7 +5399,7 @@ paths:
         in: path
         name: kidsClubId
         required: true
-        type: string
+        type: integer
       - description: LittleExplorersKidsAboutUsDto
         in: body
         name: request
@@ -5264,7 +5440,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5278,7 +5454,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: LittleExplorersKidsActivityDto
         in: body
         name: request
@@ -5300,11 +5476,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5321,11 +5497,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -5350,11 +5526,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: isHome
         in: path
         name: isHome
@@ -5378,7 +5554,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -5404,15 +5580,15 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5432,15 +5608,15 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -5466,7 +5642,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5523,7 +5699,7 @@ paths:
         in: path
         name: activityId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5576,7 +5752,7 @@ paths:
         in: path
         name: membershipId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5594,11 +5770,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5617,11 +5793,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -5716,7 +5892,7 @@ paths:
         in: path
         name: membershipId
         required: true
-        type: string
+        type: integer
       - description: LittleExplorersKidsMembershipDto
         in: body
         name: data
@@ -5963,7 +6139,7 @@ paths:
         in: path
         name: feedbackId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -5981,11 +6157,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6006,7 +6182,7 @@ paths:
         in: path
         name: attachmentId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6025,7 +6201,7 @@ paths:
         in: path
         name: feedbackId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6063,11 +6239,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6138,15 +6314,15 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -6170,12 +6346,12 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: webadmin
         in: path
         name: webadmin
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6194,7 +6370,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6232,7 +6408,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -6260,22 +6436,22 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       - description: month
         in: path
         name: month
         required: true
-        type: string
+        type: integer
       - description: year
         in: path
         name: year
         required: true
-        type: string
+        type: integer
       - description: needAppt
         in: path
         name: needAppt
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6290,7 +6466,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -6357,15 +6533,15 @@ paths:
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6446,15 +6622,15 @@ paths:
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6524,11 +6700,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6547,7 +6723,7 @@ paths:
         in: path
         name: notificationId
         required: true
-        type: string
+        type: integer
       - description: playerId
         in: path
         name: playerId
@@ -6567,7 +6743,7 @@ paths:
         in: path
         name: notificationId
         required: true
-        type: string
+        type: integer
       - description: playerId
         in: path
         name: playerId
@@ -6587,7 +6763,7 @@ paths:
         in: path
         name: packageId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6602,15 +6778,15 @@ paths:
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6641,7 +6817,7 @@ paths:
         in: path
         name: packageId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6656,7 +6832,7 @@ paths:
         in: path
         name: paymentMethod
         required: true
-        type: string
+        type: integer
       - description: request
         in: body
         name: request
@@ -6677,15 +6853,15 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6702,11 +6878,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -6780,7 +6956,7 @@ paths:
         in: path
         name: requestId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6798,11 +6974,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6821,11 +6997,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Keyword
         in: body
         name: request
@@ -6850,11 +7026,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -6977,7 +7153,7 @@ paths:
         in: path
         name: logisticSetupId
         required: true
-        type: string
+        type: integer
       - description: LogisticSetupDto
         in: body
         name: request
@@ -7067,11 +7243,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7096,11 +7272,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7125,11 +7301,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7185,11 +7361,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7251,11 +7427,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7275,11 +7451,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7322,11 +7498,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7346,11 +7522,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7393,11 +7569,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7417,11 +7593,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7577,19 +7753,19 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: _self
         in: query
         name: _self
-        type: string
+        type: integer
       - description: _isForAppt
         in: query
         name: _isForAppt
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7610,23 +7786,23 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: _self
         in: query
         name: _self
-        type: string
+        type: integer
       - description: _isForAppt
         in: query
         name: _isForAppt
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7647,7 +7823,7 @@ paths:
         in: path
         name: familyId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7849,7 +8025,7 @@ paths:
         in: path
         name: packageId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7882,11 +8058,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -7903,11 +8079,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -7933,15 +8109,15 @@ paths:
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8005,7 +8181,7 @@ paths:
         in: path
         name: packageId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8202,7 +8378,7 @@ paths:
         in: path
         name: billPaymentId
         required: true
-        type: string
+        type: integer
       - description: UserBillingPaymentStatusDto
         in: body
         name: request
@@ -8225,7 +8401,7 @@ paths:
         in: path
         name: purchaseId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8243,11 +8419,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8266,11 +8442,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Keyword
         in: body
         name: request
@@ -8295,11 +8471,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8378,7 +8554,7 @@ paths:
         in: path
         name: paymentMethod
         required: true
-        type: string
+        type: integer
       - description: CreateUserPackageDto
         in: body
         name: request
@@ -8418,7 +8594,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8452,11 +8628,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8475,11 +8651,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -8504,11 +8680,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8620,7 +8796,7 @@ paths:
         in: path
         name: userId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8636,11 +8812,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8798,7 +8974,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -8828,7 +9004,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -8858,7 +9034,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -8906,7 +9082,7 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8923,7 +9099,7 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8939,7 +9115,7 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -8955,7 +9131,7 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       - description: NovaDoctorDto
         in: body
         name: request
@@ -8977,11 +9153,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -9000,11 +9176,11 @@ paths:
       - description: _page
         in: query
         name: _page
-        type: string
+        type: integer
       - description: _limit
         in: query
         name: _limit
-        type: string
+        type: integer
       - description: Search
         in: body
         name: keyword
@@ -9030,7 +9206,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9056,22 +9232,22 @@ paths:
         in: path
         name: doctorId
         required: true
-        type: string
+        type: integer
       - description: month
         in: path
         name: month
         required: true
-        type: string
+        type: integer
       - description: year
         in: path
         name: year
         required: true
-        type: string
+        type: integer
       - description: needAppt
         in: path
         name: needAppt
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -9109,7 +9285,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9214,7 +9390,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9244,7 +9420,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9275,7 +9451,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9339,7 +9515,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9363,7 +9539,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9373,7 +9549,7 @@ paths:
         in: path
         name: isHome
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -9397,7 +9573,7 @@ paths:
         in: path
         name: pageId
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -9446,7 +9622,7 @@ paths:
         in: path
         name: branchId
         required: true
-        type: string
+        type: integer
       - description: prn
         in: path
         name: prn
@@ -9488,6 +9664,751 @@ paths:
           description: OK
       tags:
       - Wallex
+  /way-finding/buildings:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingBuildings'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/buildings/{buildingCode}:
+    get:
+      parameters:
+      - description: buildingCode
+        in: path
+        name: buildingCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/buildings/create:
+    post:
+      parameters:
+      - description: BuildingsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.BuildingsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/buildings/delete/{buildingCode}:
+    delete:
+      parameters:
+      - description: buildingCode
+        in: path
+        name: buildingCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/buildings/update/{buildingCode}:
+    put:
+      parameters:
+      - description: BuildingsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.BuildingsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/dropdown:
+    post:
+      parameters:
+      - description: DropdownsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DropdownsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/floors:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingFloors'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingFloors'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/floors/{floorCode}:
+    get:
+      parameters:
+      - description: floorCode
+        in: path
+        name: floorCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/floors/create:
+    post:
+      parameters:
+      - description: FloorsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FloorsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/floors/delete/{floorCode}:
+    delete:
+      parameters:
+      - description: floorCode
+        in: path
+        name: floorCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/floors/update/{floorCode}:
+    put:
+      parameters:
+      - description: floorCode
+        in: path
+        name: floorCode
+        required: true
+        type: string
+      - description: FloorsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FloorsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/floors/webadmin:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingFloors'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingFloors'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/location-qr/{locationId}/{locationTypeId}:
+    get:
+      parameters:
+      - description: locationId
+        in: path
+        name: locationId
+        required: true
+        type: integer
+      - description: locationTypeId
+        in: path
+        name: locationTypeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WayFindingLocations'
+      tags:
+      - Way Finding
+  /way-finding/location-types:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocationTypes'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocationTypes'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/location-types/{locationTypeCode}:
+    get:
+      parameters:
+      - description: locationTypeCode
+        in: path
+        name: locationTypeCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/location-types/create:
+    post:
+      parameters:
+      - description: LocationTypesDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LocationTypesDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/location-types/delete/{locationTypeCode}:
+    delete:
+      parameters:
+      - description: locationTypeCode
+        in: path
+        name: locationTypeCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/location-types/update/{locationTypeCode}:
+    put:
+      parameters:
+      - description: locationTypeCode
+        in: path
+        name: locationTypeCode
+        required: true
+        type: string
+      - description: LocationTypesDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LocationTypesDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/location/{code}:
+    get:
+      parameters:
+      - description: code
+        in: path
+        name: code
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocations'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: code
+        in: path
+        name: code
+        required: true
+        type: string
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Search
+        in: body
+        name: keyword
+        schema:
+          $ref: '#/definitions/dto.SearchKeywordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocations'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/locations:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocations'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword4Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingLocations'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/locations/{locationId}:
+    get:
+      parameters:
+      - description: locationId
+        in: path
+        name: locationId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/locations/create:
+    post:
+      parameters:
+      - description: LocationsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LocationsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/locations/delete/{locationId}:
+    delete:
+      parameters:
+      - description: locationId
+        in: path
+        name: locationId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/locations/update/{locationId}:
+    put:
+      parameters:
+      - description: locationId
+        in: path
+        name: locationId
+        required: true
+        type: integer
+      - description: LocationsDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LocationsDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/route/{fromId}/{toId}:
+    get:
+      parameters:
+      - description: fromId
+        in: path
+        name: fromId
+        required: true
+        type: integer
+      - description: toId
+        in: path
+        name: toId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WayFindingRoutes'
+      tags:
+      - Way Finding
+  /way-finding/routes:
+    get:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingRoutes'
+            type: array
+      tags:
+      - Way Finding
+    post:
+      parameters:
+      - description: _page
+        in: query
+        name: _page
+        type: integer
+      - description: _limit
+        in: query
+        name: _limit
+        type: integer
+      - description: Keyword
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.SearchKeyword4Dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WayFindingRoutes'
+            type: array
+      tags:
+      - Way Finding
+  /way-finding/routes/{routeId}:
+    get:
+      parameters:
+      - description: routeId
+        in: path
+        name: routeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WayFindingRoutes'
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/routes/create:
+    post:
+      parameters:
+      - description: RoutesDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoutesDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/routes/delete/{routeId}:
+    delete:
+      parameters:
+      - description: routeId
+        in: path
+        name: routeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
+  /way-finding/routes/update/{routeId}:
+    put:
+      parameters:
+      - description: routeId
+        in: path
+        name: routeId
+        required: true
+        type: integer
+      - description: RoutesDto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoutesDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      tags:
+      - Way Finding
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

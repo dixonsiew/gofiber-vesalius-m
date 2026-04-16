@@ -1,10 +1,11 @@
-package wayfinding
+package wayFinding
 
 import (
     "database/sql"
     "fmt"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/utils"
 
@@ -77,7 +78,7 @@ func (s *WayFindingService) ListLocations(page string, limit string) (*model.Pag
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingLocations(pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllLocations(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -101,7 +102,7 @@ func (s *WayFindingService) LocationsCount(conn *sqlx.DB) (int, error) {
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingLocations(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocations, error) {
+func (s *WayFindingService) FindAllLocations(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocations, error) {
     query := `
         SELECT
           wfloc.LOCATION_ID,
@@ -128,13 +129,13 @@ func (s *WayFindingService) FindAllWayFindingLocations(offset int, limit int, co
     return list, nil
 }
 
-func (s *WayFindingService) ListLocationsByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.LocationsCountByKeyword(keyword, keyword2, keyword3, keyword4, s.db)
+func (s *WayFindingService) ListLocationsByKeyword(x dto.SearchKeyword4Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.LocationsCountByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingLocationsByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllLocationsByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -146,9 +147,9 @@ func (s *WayFindingService) ListLocationsByKeyword(keyword string, keyword2 stri
     }, nil
 }
 
-func (s *WayFindingService) LocationsCountByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, conn *sqlx.DB) (int, error) {
+func (s *WayFindingService) LocationsCountByKeyword(x dto.SearchKeyword4Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildLocationsConditions(keyword, keyword2, keyword3, keyword4)
+    conds, args := buildLocationsConditions(x)
     base := `
         SELECT COUNT(*) AS COUNT
         FROM WAY_FINDING_LOCATIONS wfloc
@@ -167,9 +168,9 @@ func (s *WayFindingService) LocationsCountByKeyword(keyword string, keyword2 str
     return count, nil
 }
 
-func (s *WayFindingService) FindAllWayFindingLocationsByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocations, error) {
+func (s *WayFindingService) FindAllLocationsByKeyword(x dto.SearchKeyword4Dto, offset int, limit int, conn *sqlx.DB) ([]model.WayFindingLocations, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildLocationsConditions(keyword, keyword2, keyword3, keyword4)
+    conds, args := buildLocationsConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 

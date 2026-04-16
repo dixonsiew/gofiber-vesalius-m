@@ -485,7 +485,11 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsMembership(c fiber
         key2 = "%" + key2 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportLittleKidsMembershipByKeyword(key, key2)
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
+    lx, err := cr.exportExcelService.ExportLittleKidsMembershipByKeyword(x)
     if err != nil {
         return err
     }
@@ -540,9 +544,13 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsMembership(c fiber.Ctx) 
         key2 = "%" + key2 + "%"
     }
 
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.clubService.ListLittleKidsMembershipByKeyword(key, key2, page, limit)
+    m, err := cr.clubService.ListLittleKidsMembershipByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -768,7 +776,12 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsActivity(c fiber.C
         }
     }
 
-    lx, err := cr.exportExcelService.ExportLittleKidsActivityByKeyword(key, key2, key3)
+    x := dto.SearchKeyword3Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+    }
+    lx, err := cr.exportExcelService.ExportLittleKidsActivityByKeyword(x)
     if err != nil {
         return err
     }
@@ -880,7 +893,7 @@ func (cr *ClubsLittleKidsController) GetAllExportLittleKidsAttendees(c fiber.Ctx
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -911,11 +924,15 @@ func (cr *ClubsLittleKidsController) GetSearchExportLittleKidsAttendees(c fiber.
         key2 = "%" + key2 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportLittleKidsAttendeesByKeyword(iactivityId, key, key2)
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
+    lx, err := cr.exportExcelService.ExportLittleKidsAttendeesByKeyword(iactivityId, x)
     if err != nil {
         return err
     }
-    
+
     return c.JSON(lx)
 }
 
@@ -975,7 +992,11 @@ func (cr *ClubsLittleKidsController) SearchAllLittleKidsAttendees(c fiber.Ctx) e
         key2 = "%" + key2 + "%"
     }
 
-    m, err := cr.clubService.ListLittleKidsAttendeesByKeyword(iactivityId, key, key2, page, limit)
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
+    m, err := cr.clubService.ListLittleKidsAttendeesByKeyword(iactivityId, x, page, limit)
     if err != nil {
         return err
     }

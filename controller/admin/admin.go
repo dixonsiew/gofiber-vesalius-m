@@ -179,7 +179,11 @@ func (cr *AdminController) GetSearchExportAduitMobileUser(c fiber.Ctx) error {
         key2 = "%" + key2 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportMobileUserAuditLogByKeyword(key, key2)
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
+    lx, err := cr.exportExcelService.ExportMobileUserAuditLogByKeyword(x)
     if err != nil {
         return err
     }
@@ -234,9 +238,13 @@ func (cr *AdminController) SearchAllAuditMobileUser(c fiber.Ctx) error {
         key2 = "%" + key2 + "%"
     }
 
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.adminUserService.ListMobileUserAuditLogByKeyword(key, key2, page, limit)
+    m, err := cr.adminUserService.ListMobileUserAuditLogByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -293,9 +301,13 @@ func (cr *AdminController) SearchAllAuditLog(c fiber.Ctx) error {
         key2 = "%" + key2 + "%"
     }
 
+    x := dto.SearchKeyword2Dto{
+        Keyword: key,
+        Keyword2: key2,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.adminUserService.ListAuditByKeyword(key, key2, page, limit)
+    m, err := cr.adminUserService.ListAuditByKeyword(x, page, limit)
     if err != nil {
         return err
     }

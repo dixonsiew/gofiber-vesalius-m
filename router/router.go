@@ -23,6 +23,7 @@ import (
     "vesaliusm/controller/vesalius"
     "vesaliusm/controller/vesaliusGeo"
     "vesaliusm/controller/wallex"
+    "vesaliusm/controller/wayFinding"
 
     "github.com/gofiber/fiber/v3"
 )
@@ -51,4 +52,5 @@ func SetupRoutes(app *fiber.App, basePath string) {
     vesalius.SetupRoutes(api)
     vesaliusGeo.SetupRoutes(api)
     wallex.SetupRoutes(api)
+    wayFinding.SetupRoutes(api)
 }

@@ -1,13 +1,12 @@
-package wayfinding
+package wayFinding
 
 import (
     "fmt"
     "strconv"
     "vesaliusm/dto"
 
-    //"vesaliusm/middleware"
     "vesaliusm/model"
-    "vesaliusm/service/wayfinding"
+    "vesaliusm/service/wayFinding"
     "vesaliusm/utils"
     "vesaliusm/utils/constants"
 
@@ -15,12 +14,12 @@ import (
 )
 
 type WayFindingController struct {
-    wayFindingService *wayfinding.WayFindingService
+    wayFindingService *wayFinding.WayFindingService
 }
 
 func NewWayFindingController() *WayFindingController {
     return &WayFindingController{
-        wayFindingService: wayfinding.WayFindingSvc,
+        wayFindingService: wayFinding.WayFindingSvc,
     }
 }
 
@@ -499,9 +498,15 @@ func (cr *WayFindingController) SearchAllLocations(c fiber.Ctx) error {
         key4 = "%" + key4 + "%"
     }
 
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.wayFindingService.ListLocationsByKeyword(key, key2, key3, key4, page, limit)
+    m, err := cr.wayFindingService.ListLocationsByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -605,7 +610,7 @@ func (cr *WayFindingController) UpdateLocationType(c fiber.Ctx) error {
     }
 
     o := &model.WayFindingLocationTypes{
-        LocationTypeName: utils.NewNullString(data.LocationTypeName),
+        LocationTypeName:         utils.NewNullString(data.LocationTypeName),
         LocationTypeDisplayOrder: utils.NewInt32(int32(data.LocationTypeDisplayOrder)),
     }
     err := cr.wayFindingService.UpdateLocationType(o, locationTypeCode)
@@ -685,11 +690,11 @@ func (cr *WayFindingController) DeleteLocationTypesByLocationTypeCode(c fiber.Ct
     if err != nil {
         return err
     }
-    
+
     if b {
         return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("The Location Type Code: %s is linked to existing Location records. To delete, you must first delete or update the related Location records", locationTypeCode))
     }
-    
+
     err = cr.wayFindingService.DeleteLocationTypesByLocationTypeCode(locationTypeCode)
     if err != nil {
         return err
@@ -717,14 +722,296 @@ func (cr *WayFindingController) GetLocationTypesByLocationTypeCode(c fiber.Ctx) 
     return c.JSON(o)
 }
 
-func (cr *WayFindingController) xxx(c fiber.Ctx) error {
+// CreateRoute
+//
+// @Tags Way Finding
+// @Produce json
+// @Security BearerAuth
+// @Param    request       body    dto.RoutesDto    true    "RoutesDto"
+// @Success 200
+// @Router /way-finding/routes/create [post]
+func (cr *WayFindingController) CreateRoute(c fiber.Ctx) error {
+    data := new(dto.RoutesDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    o := &model.WayFindingRoutes{
+        RouteFromLocationId: utils.NewInt64(int64(data.RouteFromLocationId)),
+        RouteToLocationId:   utils.NewInt64(int64(data.RouteToLocationId)),
+        RouteFromImageRaw:   utils.NewNullString(data.RouteFromImageRaw),
+        RouteToImageRaw:     utils.NewNullString(data.RouteToImageRaw),
+    }
+    b, err := cr.wayFindingService.ExistsByRouteFromToLocationId(int64(data.RouteFromLocationId), int64(data.RouteToLocationId))
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, "This Route Setup already existed in our records")
+    }
+
+    err = cr.wayFindingService.SaveRoute(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Route created",
+    })
+}
+
+// UpdateRoute
+//
+// @Tags Way Finding
+// @Produce json
+// @Security BearerAuth
+// @Param    routeId       path    int              true    "routeId"
+// @Param    request       body    dto.RoutesDto    true    "RoutesDto"
+// @Success 200
+// @Router /way-finding/routes/update/{routeId} [put]
+func (cr *WayFindingController) UpdateRoute(c fiber.Ctx) error {
+    routeId := c.Params("routeId")
+    irouteId, _ := strconv.ParseInt(routeId, 10, 64)
+    data := new(dto.RoutesDto)
+    if err := utils.BindNValidate(c, data); err != nil {
+        return err
+    }
+
+    o := &model.WayFindingRoutes{
+        RouteId:             utils.NewInt64(irouteId),
+        RouteFromLocationId: utils.NewInt64(int64(data.RouteFromLocationId)),
+        RouteToLocationId:   utils.NewInt64(int64(data.RouteToLocationId)),
+        RouteFromImageRaw:   utils.NewNullString(data.RouteFromImageRaw),
+        RouteToImageRaw:     utils.NewNullString(data.RouteToImageRaw),
+    }
+    b, err := cr.wayFindingService.ExistsByRouteFromToLocationId(int64(data.RouteFromLocationId), int64(data.RouteToLocationId))
+    if err != nil {
+        return err
+    }
+
+    if b {
+        return fiber.NewError(fiber.StatusBadRequest, "This Route Setup already existed in our records")
+    }
+
+    err = cr.wayFindingService.UpdateRoute(o)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "Route updated",
+    })
+}
+
+// GetAllRoutes
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        _page              query      int  false  "_page"  default:"1"
+// @Param        _limit             query      int  false  "_limit" default:"10"
+// @Success 200 {array} model.WayFindingRoutes
+// @Router /way-finding/routes [get]
+func (cr *WayFindingController) GetAllRoutes(c fiber.Ctx) error {
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
+    m, err := cr.wayFindingService.ListRoutes(page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// SearchAllRoutes
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        _page             query       int                      false  "_page"  default:"1"
+// @Param        _limit            query       int                      false  "_limit" default:"10"
+// @Param        request           body        dto.SearchKeyword4Dto    false  "Keyword"
+// @Success 200 {array} model.WayFindingRoutes
+// @Router /way-finding/routes [post]
+func (cr *WayFindingController) SearchAllRoutes(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    key2 := data.GetString("keyword2")
+    key3 := data.GetString("keyword3")
+    key4 := data.GetString("keyword4")
+
+    if key != "" {
+        key = "%" + key + "%"
+    }
+    if key2 != "" {
+        key2 = "%" + key2 + "%"
+    }
+    if key3 != "" {
+        key3 = "%" + key3 + "%"
+    }
+    if key4 != "" {
+        key4 = "%" + key4 + "%"
+    }
+
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
+    m, err := cr.wayFindingService.ListRoutesByKeyword(x, page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
+}
+
+// DeleteRoutesByRouteId
+//
+// @Tags Way Finding
+// @Produce json
+// @Security BearerAuth
+// @Param    routeId       path    int              true    "routeId"
+// @Success 200
+// @Router /way-finding/routes/delete/{routeId} [delete]
+func (cr *WayFindingController) DeleteRoutesByRouteId(c fiber.Ctx) error {
+    routeId := c.Params("routeId")
+    irouteId, _ := strconv.ParseInt(routeId, 10, 64)
+    err := cr.wayFindingService.DeleteRoutesByRouteId(irouteId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(fiber.Map{
+        "message": 1,
+    })
+}
+
+// GetRoutesByRouteId
+//
+// @Tags Way Finding
+// @Produce json
+// @Security BearerAuth
+// @Param    routeId       path    int              true    "routeId"
+// @Success 200 {object} model.WayFindingRoutes
+// @Router /way-finding/routes/{routeId} [get]
+func (cr *WayFindingController) GetRoutesByRouteId(c fiber.Ctx) error {
+    routeId := c.Params("routeId")
+    irouteId, _ := strconv.ParseInt(routeId, 10, 64)
+    o, err := cr.wayFindingService.FindRoutesByRouteId(irouteId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
+}
+
+// SearchAllLocationsByCode
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        code              path        string                true   "code"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
+// @Param        keyword           body        dto.SearchKeywordDto  false  "Search"
+// @Success 200 {array} model.WayFindingLocations
+// @Router /way-finding/location/{code} [post]
+func (cr *WayFindingController) SearchAllLocationsByCode(c fiber.Ctx) error {
+    var data utils.Map
+    if err := c.Bind().Body(&data); err != nil {
+        return err
+    }
+
+    key := data.GetString("keyword")
+    if key != "" {
+        key = "%" + key + "%"
+    }
+
+    code := c.Params("code")
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
+    m, err := cr.wayFindingService.ListLocationByTypeCodeByKeyword(code, key, page, limit)
+    if err != nil {
+        return err
+    }
+
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
 
 }
 
-func (cr *WayFindingController) xxx(c fiber.Ctx) error {
+// GetAllLocationsByTypeCode
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        code              path        string                true   "code"
+// @Param        _page             query       int                   false  "_page"  default:"1"
+// @Param        _limit            query       int                   false  "_limit" default:"10"
+// @Success 200 {array} model.WayFindingLocations
+// @Router /way-finding/location/{code} [get]
+func (cr *WayFindingController) GetAllLocationsByTypeCode(c fiber.Ctx) error {
+    code := c.Params("code")
+    page := c.Query("_page", "1")
+    limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
+    m, err := cr.wayFindingService.ListLocationByTypeCode(code, page, limit)
+    if err != nil {
+        return err
+    }
 
+    c.Set(constants.X_TOTAL_COUNT, strconv.Itoa(m.Total))
+    c.Set(constants.X_TOTAL_PAGE, strconv.Itoa(m.TotalPages))
+    return c.JSON(m.List)
 }
 
-func (cr *WayFindingController) xxx(c fiber.Ctx) error {
+// GetRoute
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        fromId              path        int                true   "fromId"
+// @Param        toId                path        int                true   "toId"
+// @Success 200 {object} model.WayFindingRoutes
+// @Router /way-finding/route/{fromId}/{toId} [get]
+func (cr *WayFindingController) GetRoute(c fiber.Ctx) error {
+    fromId := c.Params("fromId")
+    toId := c.Params("toId")
+    ifromId, _ := strconv.ParseInt(fromId, 10, 64)
+    itoId, _ := strconv.ParseInt(toId, 10, 64)
+    o, err := cr.wayFindingService.FindRoutes(ifromId, itoId)
+    if err != nil {
+        return err
+    }
 
+    return c.JSON(o)
+}
+
+// GetLocationsByLocationIdAndLocationTypeId
+//
+// @Tags Way Finding
+// @Produce json
+// @Param        locationId              path        int                true   "locationId"
+// @Param        locationTypeId          path        int                true   "locationTypeId"
+// @Success 200 {object} model.WayFindingLocations
+// @Router /way-finding/location-qr/{locationId}/{locationTypeId} [get]
+func (cr *WayFindingController) GetLocationsByLocationIdAndLocationTypeId(c fiber.Ctx) error {
+    locationId := c.Params("locationId")
+    locationTypeId := c.Params("locationTypeId")
+    ilocationId, _ := strconv.ParseInt(locationId, 10, 64)
+    ilocationTypeId, _ := strconv.ParseInt(locationTypeId, 10, 64)
+    o, err := cr.wayFindingService.FindLocationByLocationIdAndLocationTypeId(ilocationId, ilocationTypeId)
+    if err != nil {
+        return err
+    }
+
+    return c.JSON(o)
 }

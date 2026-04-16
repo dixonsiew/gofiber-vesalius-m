@@ -6,6 +6,7 @@ import (
     "fmt"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/model/vesaliusGeo"
     sqx "vesaliusm/sql"
@@ -96,13 +97,13 @@ func (s *NovaDoctorPatientApptService) FindAllByDoctorId(doctorId int64, month i
     return list, lx, nil
 }
 
-func (s *NovaDoctorPatientApptService) ListByKeyword(keyword string, keyword2 string, keyword3 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword, keyword2, keyword3, s.db)
+func (s *NovaDoctorPatientApptService) ListByKeyword(x dto.SearchKeyword3Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindByKeyword(keyword, keyword2, keyword3, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -113,9 +114,9 @@ func (s *NovaDoctorPatientApptService) ListByKeyword(keyword string, keyword2 st
     }, nil
 }
 
-func (s *NovaDoctorPatientApptService) CountByKeyword(keyword string, keyword2 string, keyword3 string, conn *sqlx.DB) (int, error) {
+func (s *NovaDoctorPatientApptService) CountByKeyword(x dto.SearchKeyword3Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conds, args := buildKeywordConditions(keyword, keyword2, keyword3)
+    conds, args := buildKeywordConditions(x)
     base := `SELECT COUNT(*) AS COUNT FROM NOVA_DOCTOR_PATIENT_APPT ndpa`
     query := base + whereClause(conds)
 
@@ -128,9 +129,9 @@ func (s *NovaDoctorPatientApptService) CountByKeyword(keyword string, keyword2 s
     return count, nil
 }
 
-func (s *NovaDoctorPatientApptService) FindByKeyword(keyword string, keyword2 string, keyword3 string, offset int, limit int, conn *sqlx.DB) ([]model.DoctorPatientAppointment, error) {
+func (s *NovaDoctorPatientApptService) FindByKeyword(x dto.SearchKeyword3Dto, offset int, limit int, conn *sqlx.DB) ([]model.DoctorPatientAppointment, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
+    conditions, args := buildKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -334,23 +335,23 @@ func (s *NovaDoctorPatientApptService) getPatientName(conn *sqlx.DB, prn string)
     return patientName, nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string, keyword3 string) ([]string, []interface{}) {
+func buildKeywordConditions(x dto.SearchKeyword3Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(ndpa.PATIENT_NAME) LIKE :keyword OR ndpa.PATIENT_PRN LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `LOWER(ndpa.DOCTOR_NAME) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         conds = append(conds, `TRUNC(ndpa.DATE_APPT) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
 
     return conds, args

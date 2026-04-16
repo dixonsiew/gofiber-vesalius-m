@@ -5,14 +5,15 @@ import (
     "database/sql"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/model/hpackage"
     "vesaliusm/service/novaDoctor"
     "vesaliusm/service/patientPurchaseDetails"
     "vesaliusm/utils"
 
-    "github.com/jmoiron/sqlx"
     "github.com/gofiber/fiber/v3"
+    "github.com/jmoiron/sqlx"
 )
 
 var PackageSvc *PackageService = NewPackageService(database.GetDb(), database.GetCtx())
@@ -44,14 +45,14 @@ func (s *PackageService) ResizeAllPackageImage(image string, packageId int64) er
     return err
 }
 
-func (s *PackageService) ListByKeyword(keyword string, keyword2 string, keyword3 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword, keyword2, keyword3, s.db)
+func (s *PackageService) ListByKeyword(x dto.SearchKeyword3Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindByKeyword(keyword, keyword2, keyword3, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -63,9 +64,9 @@ func (s *PackageService) ListByKeyword(keyword string, keyword2 string, keyword3
     }, nil
 }
 
-func (s *PackageService) CountByKeyword(keyword string, keyword2 string, keyword3 string, conn *sqlx.DB) (int, error) {
+func (s *PackageService) CountByKeyword(x dto.SearchKeyword3Dto, conn *sqlx.DB) (int, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
+    conditions, args := buildKeywordConditions(x)
     base := `SELECT COUNT(hp.PACKAGE_ID) AS COUNT FROM HOSPITAL_PACKAGE hp`
     query := base + whereClause(conditions)
 
@@ -78,9 +79,9 @@ func (s *PackageService) CountByKeyword(keyword string, keyword2 string, keyword
     return count, nil
 }
 
-func (s *PackageService) FindByKeyword(keyword string, keyword2 string, keyword3 string, offset int, limit int, conn *sqlx.DB) ([]hpackage.Package, error) {
+func (s *PackageService) FindByKeyword(x dto.SearchKeyword3Dto, offset int, limit int, conn *sqlx.DB) ([]hpackage.Package, error) {
     db := database.GetFromCon(conn, s.db)
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3)
+    conditions, args := buildKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -126,7 +127,7 @@ func (s *PackageService) Save(o hpackage.Package, adminId int64) error {
         TO_DATE(:packageValidityDate, 'DD/MM/YYYY'), :packageTnc, :packagePrice, :packageMaxPurchase,
         :packageAssignedDoctor, :packageAllowAppt, :packageDisplayOrder, :packageExtLink, :adminId)
     `
-    
+
     _, err := s.db.ExecContext(s.ctx, query,
         sql.Named("packageCode", o.PackageCode.String),
         sql.Named("packageName", o.PackageName.String),
@@ -147,12 +148,12 @@ func (s *PackageService) Save(o hpackage.Package, adminId int64) error {
         sql.Named("packageExtLink", o.PackageExtLink.String),
         sql.Named("adminId", adminId),
     )
-    
+
     if err != nil {
         utils.LogError(err)
         return err
     }
-    
+
     return nil
 }
 
@@ -179,7 +180,7 @@ func (s *PackageService) Update(o hpackage.Package, adminId int64) error {
           USER_UPDATE = :adminId,
           DATE_UPDATE = CURRENT_TIMESTAMP
         WHERE PACKAGE_ID = :packageId`
-    
+
     _, err := s.db.Exec(query,
         sql.Named("packageCode", o.PackageCode.String),
         sql.Named("packageName", o.PackageName.String),
@@ -201,12 +202,12 @@ func (s *PackageService) Update(o hpackage.Package, adminId int64) error {
         sql.Named("adminId", adminId),
         sql.Named("packageId", o.PackageId.Int64),
     )
-    
+
     if err != nil {
         utils.LogError(err)
         return err
     }
-    
+
     return nil
 }
 
@@ -396,7 +397,7 @@ func (s *PackageService) FindPackageStatusByPackageId(packageId int64) (fiber.Ma
     } else {
         packageStatus["expired"] = 0
     }
-    
+
     soldout, err := s.patientPurchaseDetailsService.GetPackageSoldoutStatus(packageId)
     if err != nil {
         return packageStatus, err
@@ -417,7 +418,7 @@ func (s *PackageService) FindPackageStatusByPackageId(packageId int64) (fiber.Ma
         availableToPurchase := exceedPurchase.RecommendedQuantity.Int32
         packageStatus["availableToPurchase"] = availableToPurchase
     }
-    
+
     return packageStatus, nil
 }
 
@@ -439,23 +440,23 @@ func (s *PackageService) FindByPackageId(packageId int64) (*hpackage.Package, er
     return &o, nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string, keyword3 string) ([]string, []interface{}) {
+func buildKeywordConditions(x dto.SearchKeyword3Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(hp.PACKAGE_CODE) LIKE :keyword OR LOWER(hp.PACKAGE_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `TRUNC(hp.PACKAGE_START_DATETIME) = TO_DATE(:keyword2, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         conds = append(conds, `TRUNC(hp.PACKAGE_END_DATETIME) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", strings.ToLower(keyword3)))
+        args = append(args, sql.Named("keyword3", strings.ToLower(x.Keyword3)))
     }
     return conds, args
 }

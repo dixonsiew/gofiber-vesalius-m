@@ -1,4 +1,4 @@
-package wayfinding
+package wayFinding
 
 import (
     "database/sql"
@@ -53,7 +53,7 @@ func (s *WayFindingService) ListBuildings(page string, limit string) (*model.Pag
         return nil, err
     }
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindAllWayFindingBuildings(pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindAllBuildings(pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         utils.LogError(err)
         return nil, err
@@ -77,7 +77,7 @@ func (s *WayFindingService) BuildingsCount(conn *sqlx.DB) (int, error) {
     return count, err
 }
 
-func (s *WayFindingService) FindAllWayFindingBuildings(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingBuildings, error) {
+func (s *WayFindingService) FindAllBuildings(offset int, limit int, conn *sqlx.DB) ([]model.WayFindingBuildings, error) {
     db := database.GetFromCon(conn, s.db)
     query := `SELECT * FROM WAY_FINDING_BUILDINGS ORDER BY BUILDING_DISPLAY_ORDER OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY`
     query = strings.Replace(query, "*", utils.GetDbCols(model.WayFindingBuildings{}, ""), 1)

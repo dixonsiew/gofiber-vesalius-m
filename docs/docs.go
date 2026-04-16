@@ -105,13 +105,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -143,13 +143,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -253,13 +253,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -291,13 +291,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -370,13 +370,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -408,13 +408,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -633,7 +633,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "userId",
                         "name": "userId",
                         "in": "path",
@@ -938,7 +938,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "BranchId",
                         "name": "branchId",
                         "in": "path",
@@ -1204,7 +1204,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "size",
                         "name": "size",
                         "in": "path",
@@ -1334,13 +1334,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -1372,13 +1372,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -1415,19 +1415,19 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
@@ -1462,20 +1462,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -1507,20 +1507,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -1554,7 +1554,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -1589,7 +1589,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -1686,7 +1686,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -1714,7 +1714,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "GoldenPearlActvParticipationDto",
-                        "name": "data",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1769,7 +1769,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -1862,13 +1862,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2029,7 +2029,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "membershipId",
                         "name": "membershipId",
                         "in": "path",
@@ -2169,7 +2169,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "kidsClubId",
                         "name": "kidsClubId",
                         "in": "path",
@@ -2233,13 +2233,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2271,13 +2271,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2314,13 +2314,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2361,7 +2361,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -2404,20 +2404,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2449,20 +2449,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2504,7 +2504,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -2601,7 +2601,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -2654,7 +2654,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -2681,7 +2681,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "activityId",
                         "name": "activityId",
                         "in": "path",
@@ -2750,13 +2750,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2788,13 +2788,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -2955,7 +2955,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "membershipId",
                         "name": "membershipId",
                         "in": "path",
@@ -2993,7 +2993,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "membershipId",
                         "name": "membershipId",
                         "in": "path",
@@ -3387,13 +3387,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -3427,7 +3427,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "attachmentId",
                         "name": "attachmentId",
                         "in": "path",
@@ -3459,7 +3459,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "feedbackId",
                         "name": "feedbackId",
                         "in": "path",
@@ -3517,7 +3517,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "feedbackId",
                         "name": "feedbackId",
                         "in": "path",
@@ -3556,13 +3556,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -3669,20 +3669,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -3719,14 +3719,14 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "webadmin",
                         "name": "webadmin",
                         "in": "path",
@@ -3756,7 +3756,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -3816,7 +3816,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -3859,28 +3859,28 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "month",
                         "name": "month",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "year",
                         "name": "year",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "needAppt",
                         "name": "needAppt",
                         "in": "path",
@@ -3904,7 +3904,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -4012,20 +4012,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4154,20 +4154,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4279,13 +4279,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4314,7 +4314,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "notificationId",
                         "name": "notificationId",
                         "in": "path",
@@ -4345,7 +4345,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "notificationId",
                         "name": "notificationId",
                         "in": "path",
@@ -4376,20 +4376,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4438,7 +4438,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "packageId",
                         "name": "packageId",
                         "in": "path",
@@ -4462,7 +4462,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "packageId",
                         "name": "packageId",
                         "in": "path",
@@ -4486,7 +4486,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "paymentMethod",
                         "name": "paymentMethod",
                         "in": "path",
@@ -4519,20 +4519,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4559,13 +4559,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4690,13 +4690,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4728,13 +4728,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4776,13 +4776,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -4940,7 +4940,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "requestId",
                         "name": "requestId",
                         "in": "path",
@@ -5024,7 +5024,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "logisticSetupId",
                         "name": "logisticSetupId",
                         "in": "path",
@@ -5177,13 +5177,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5224,13 +5224,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5272,13 +5272,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5374,13 +5374,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5485,13 +5485,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5525,13 +5525,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5604,13 +5604,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5644,13 +5644,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5723,13 +5723,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -5763,13 +5763,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6034,25 +6034,25 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_self",
                         "name": "_self",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_isForAppt",
                         "name": "_isForAppt",
                         "in": "query"
@@ -6086,32 +6086,32 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "UserId",
                         "name": "userId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_self",
                         "name": "_self",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_isForAppt",
                         "name": "_isForAppt",
                         "in": "query"
@@ -6145,7 +6145,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "FamilyId",
                         "name": "familyId",
                         "in": "path",
@@ -6481,13 +6481,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6519,13 +6519,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6562,20 +6562,20 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -6686,7 +6686,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "packageId",
                         "name": "packageId",
                         "in": "path",
@@ -6744,7 +6744,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "packageId",
                         "name": "packageId",
                         "in": "path",
@@ -7070,7 +7070,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "billPaymentId",
                         "name": "billPaymentId",
                         "in": "path",
@@ -7108,13 +7108,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7146,13 +7146,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7194,13 +7194,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7333,7 +7333,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "paymentMethod",
                         "name": "paymentMethod",
                         "in": "path",
@@ -7400,7 +7400,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "purchaseId",
                         "name": "purchaseId",
                         "in": "path",
@@ -7432,7 +7432,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "userId",
                         "name": "userId",
                         "in": "path",
@@ -7492,13 +7492,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7530,13 +7530,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7578,13 +7578,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -7777,7 +7777,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "userId",
                         "name": "userId",
                         "in": "path",
@@ -7806,13 +7806,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -8073,7 +8073,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8121,7 +8121,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8169,7 +8169,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8248,7 +8248,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
@@ -8277,13 +8277,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -8315,13 +8315,13 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_page",
                         "name": "_page",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "_limit",
                         "name": "_limit",
                         "in": "query"
@@ -8363,7 +8363,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
@@ -8390,7 +8390,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
@@ -8426,7 +8426,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
@@ -8455,7 +8455,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8497,28 +8497,28 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "doctorId",
                         "name": "doctorId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "month",
                         "name": "month",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "year",
                         "name": "year",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "needAppt",
                         "name": "needAppt",
                         "in": "path",
@@ -8582,7 +8582,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8752,7 +8752,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8800,7 +8800,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8849,7 +8849,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8953,7 +8953,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -8987,7 +8987,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -9001,7 +9001,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "isHome",
                         "name": "isHome",
                         "in": "path",
@@ -9043,7 +9043,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "pageId",
                         "name": "pageId",
                         "in": "path",
@@ -9125,7 +9125,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "branchId",
                         "name": "branchId",
                         "in": "path",
@@ -9186,6 +9186,1227 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/buildings": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingBuildings"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/buildings/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "BuildingsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BuildingsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/buildings/delete/{buildingCode}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "buildingCode",
+                        "name": "buildingCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/buildings/update/{buildingCode}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "BuildingsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BuildingsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/buildings/{buildingCode}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "buildingCode",
+                        "name": "buildingCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/dropdown": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "DropdownsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DropdownsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/floors": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingFloors"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingFloors"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/floors/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "FloorsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FloorsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/floors/delete/{floorCode}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "floorCode",
+                        "name": "floorCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/floors/update/{floorCode}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "floorCode",
+                        "name": "floorCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FloorsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FloorsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/floors/webadmin": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingFloors"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingFloors"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/floors/{floorCode}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "floorCode",
+                        "name": "floorCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/location-qr/{locationId}/{locationTypeId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "locationId",
+                        "name": "locationId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "locationTypeId",
+                        "name": "locationTypeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.WayFindingLocations"
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/location-types": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocationTypes"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocationTypes"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/location-types/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "LocationTypesDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LocationTypesDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/location-types/delete/{locationTypeCode}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "locationTypeCode",
+                        "name": "locationTypeCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/location-types/update/{locationTypeCode}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "locationTypeCode",
+                        "name": "locationTypeCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LocationTypesDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LocationTypesDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/location-types/{locationTypeCode}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "locationTypeCode",
+                        "name": "locationTypeCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/location/{code}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocations"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Search",
+                        "name": "keyword",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeywordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocations"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/locations": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocations"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword4Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingLocations"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/locations/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "LocationsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LocationsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/locations/delete/{locationId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "locationId",
+                        "name": "locationId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/locations/update/{locationId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "locationId",
+                        "name": "locationId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LocationsDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LocationsDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/locations/{locationId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "locationId",
+                        "name": "locationId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/route/{fromId}/{toId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "fromId",
+                        "name": "fromId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "toId",
+                        "name": "toId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.WayFindingRoutes"
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/routes": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingRoutes"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "_page",
+                        "name": "_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "_limit",
+                        "name": "_limit",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Keyword",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SearchKeyword4Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.WayFindingRoutes"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/way-finding/routes/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "description": "RoutesDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RoutesDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/routes/delete/{routeId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "routeId",
+                        "name": "routeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/routes/update/{routeId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "routeId",
+                        "name": "routeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "RoutesDto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RoutesDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/way-finding/routes/{routeId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Way Finding"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "routeId",
+                        "name": "routeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.WayFindingRoutes"
+                        }
                     }
                 }
             }
@@ -9660,6 +10881,24 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.BuildingsDto": {
+            "type": "object",
+            "required": [
+                "buildingDisplayOrder",
+                "buildingName"
+            ],
+            "properties": {
+                "buildingCode": {
+                    "type": "string"
+                },
+                "buildingDisplayOrder": {
+                    "type": "integer"
+                },
+                "buildingName": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ChangeSignInTypeDto": {
             "type": "object",
             "required": [
@@ -9793,6 +11032,14 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DropdownsDto": {
+            "type": "object",
+            "properties": {
+                "buildingCode": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.DynamicEmailMasterDto": {
             "type": "object",
             "required": [
@@ -9899,6 +11146,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "mimeType": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FloorsDto": {
+            "type": "object",
+            "required": [
+                "floorDisplayOrder",
+                "floorImageRaw",
+                "floorName"
+            ],
+            "properties": {
+                "floorCode": {
+                    "type": "string"
+                },
+                "floorDisplayOrder": {
+                    "type": "integer"
+                },
+                "floorImageRaw": {
+                    "type": "string"
+                },
+                "floorName": {
                     "type": "string"
                 }
             }
@@ -10548,6 +11817,51 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "relationship": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LocationTypesDto": {
+            "type": "object",
+            "required": [
+                "locationTypeDisplayOrder",
+                "locationTypeName"
+            ],
+            "properties": {
+                "locationTypeCode": {
+                    "type": "string"
+                },
+                "locationTypeDisplayOrder": {
+                    "type": "integer"
+                },
+                "locationTypeName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LocationsDto": {
+            "type": "object",
+            "required": [
+                "locationBuildingCode",
+                "locationCode",
+                "locationFloorCode",
+                "locationName",
+                "locationTypeCode"
+            ],
+            "properties": {
+                "locationBuildingCode": {
+                    "type": "string"
+                },
+                "locationCode": {
+                    "type": "string"
+                },
+                "locationFloorCode": {
+                    "type": "string"
+                },
+                "locationName": {
+                    "type": "string"
+                },
+                "locationTypeCode": {
                     "type": "string"
                 }
             }
@@ -11602,6 +12916,29 @@ const docTemplate = `{
                 },
                 "stackPlatform": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.RoutesDto": {
+            "type": "object",
+            "required": [
+                "routeFromImageRaw",
+                "routeFromLocationId",
+                "routeToImageRaw",
+                "routeToLocationId"
+            ],
+            "properties": {
+                "routeFromImageRaw": {
+                    "type": "string"
+                },
+                "routeFromLocationId": {
+                    "type": "integer"
+                },
+                "routeToImageRaw": {
+                    "type": "string"
+                },
+                "routeToLocationId": {
+                    "type": "integer"
                 }
             }
         },
@@ -14474,6 +15811,154 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "transferSystem": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WayFindingBuildings": {
+            "type": "object",
+            "properties": {
+                "buildingCode": {
+                    "type": "string"
+                },
+                "buildingDisplayOrder": {
+                    "type": "integer"
+                },
+                "buildingName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WayFindingFloors": {
+            "type": "object",
+            "properties": {
+                "floorCode": {
+                    "type": "string"
+                },
+                "floorDisplayOrder": {
+                    "type": "integer"
+                },
+                "floorId": {
+                    "type": "integer"
+                },
+                "floorImageRaw": {
+                    "type": "string"
+                },
+                "floorName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WayFindingLocationTypes": {
+            "type": "object",
+            "properties": {
+                "locationTypeCode": {
+                    "type": "string"
+                },
+                "locationTypeDisplayOrder": {
+                    "type": "integer"
+                },
+                "locationTypeId": {
+                    "type": "integer"
+                },
+                "locationTypeName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.WayFindingLocations": {
+            "type": "object",
+            "properties": {
+                "locationBuilding": {
+                    "type": "string"
+                },
+                "locationBuildingCode": {
+                    "type": "string"
+                },
+                "locationBuildingName": {
+                    "type": "string"
+                },
+                "locationCode": {
+                    "type": "string"
+                },
+                "locationFloorCode": {
+                    "type": "string"
+                },
+                "locationFloorName": {
+                    "type": "string"
+                },
+                "locationId": {
+                    "type": "integer"
+                },
+                "locationName": {
+                    "type": "string"
+                },
+                "locationTypeCode": {
+                    "type": "string"
+                },
+                "locationTypeName": {
+                    "type": "string"
+                },
+                "location_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.WayFindingRoutes": {
+            "type": "object",
+            "properties": {
+                "fromCode": {
+                    "type": "string"
+                },
+                "fromFloorCode": {
+                    "type": "string"
+                },
+                "fromName": {
+                    "type": "string"
+                },
+                "fromTypeCode": {
+                    "type": "string"
+                },
+                "routeFromBuildingCode": {
+                    "type": "string"
+                },
+                "routeFromBuildingName": {
+                    "type": "string"
+                },
+                "routeFromImageRaw": {
+                    "type": "string"
+                },
+                "routeFromLocationId": {
+                    "type": "integer"
+                },
+                "routeId": {
+                    "type": "integer"
+                },
+                "routeToBuildingCode": {
+                    "type": "string"
+                },
+                "routeToBuildingName": {
+                    "type": "string"
+                },
+                "routeToImageRaw": {
+                    "type": "string"
+                },
+                "routeToLocationId": {
+                    "type": "integer"
+                },
+                "route_id": {
+                    "type": "integer"
+                },
+                "toCode": {
+                    "type": "string"
+                },
+                "toFloorCode": {
+                    "type": "string"
+                },
+                "toName": {
+                    "type": "string"
+                },
+                "toTypeCode": {
                     "type": "string"
                 }
             }

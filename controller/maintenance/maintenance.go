@@ -314,10 +314,14 @@ func (cr *MaintenanceController) SearchAllCronjobHistories(c fiber.Ctx) error {
         }
     }
 
+    x := dto.SearchKeyword2Dto{
+        Keyword:  key,
+        Keyword2: key2,
+    }
     cronjobName := c.Params("cronjobName")
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.maintenanceService.SearchAllCronjobHistoriesByKeyword(cronjobName, key, key2, page, limit)
+    m, err := cr.maintenanceService.SearchAllCronjobHistoriesByKeyword(cronjobName, x, page, limit)
     if err != nil {
         return err
     }
