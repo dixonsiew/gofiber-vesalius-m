@@ -356,9 +356,15 @@ func (cr *LogisticController) SearchAllLogisticRequests(c fiber.Ctx) error {
         key4 = "%" + key4 + "%"
     }
 
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.logisticService.ListLogisticRequestsByKeyword(key, key2, key3, key4, page, limit)
+    m, err := cr.logisticService.ListLogisticRequestsByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -417,7 +423,13 @@ func (cr *LogisticController) GetSearchExportLogisticRequest(c fiber.Ctx) error 
         key4 = "%" + key4 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportLogisticRequestByKeyword(key, key2, key3, key4)
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
+    lx, err := cr.exportExcelService.ExportLogisticRequestByKeyword(x)
     if err != nil {
         return err
     }

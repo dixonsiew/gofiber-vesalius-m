@@ -101,7 +101,7 @@ func (s *ExportExcelService) ExportAllHospitalPackage() ([]hp.Package, error) {
     return list, nil
 }
 
-func (s *ExportExcelService) ExportHospitalPackageByKeyword(keyword string, keyword2 string, keyword3 string) ([]hp.Package, error) {
+func (s *ExportExcelService) ExportHospitalPackageByKeyword(x dto.SearchKeyword3Dto) ([]hp.Package, error) {
     query := `
         SELECT hp.*, (SELECT NVL(COUNT(ppd.PACKAGE_ID), 0) 
         FROM PATIENT_PURCHASE_DETAILS ppd 
@@ -113,17 +113,17 @@ func (s *ExportExcelService) ExportHospitalPackageByKeyword(keyword string, keyw
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(hp.PACKAGE_CODE) LIKE :keyword OR LOWER(hp.PACKAGE_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `TRUNC(hp.PACKAGE_START_DATETIME) = TO_DATE(:keyword2, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword2", keyword2))
+        args = append(args, sql.Named("keyword2", x.Keyword2))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         lc = append(lc, `TRUNC(hp.PACKAGE_END_DATETIME) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
 
     if len(lc) > 0 {
@@ -176,7 +176,7 @@ func (s *ExportExcelService) ExportAllPurchaseHistory() ([]upck.UserPackage, err
     return list, nil
 }
 
-func (s *ExportExcelService) ExportPurchaseHistoryByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]upck.UserPackage, error) {
+func (s *ExportExcelService) ExportPurchaseHistoryByKeyword(x dto.SearchKeyword4Dto) ([]upck.UserPackage, error) {
     query := `
         SELECT ppd.*, hp.PACKAGE_NAME, ppd2.PAYMENT_REQUEST_NO,
         ppd2.PAYMENT_REQUEST_CURRENCY, ppd2.PAYMENT_AMOUNT, ppd2.PAYMENT_CURRENCY,
@@ -192,21 +192,21 @@ func (s *ExportExcelService) ExportPurchaseHistoryByKeyword(keyword string, keyw
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         lc = append(lc, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args = append(args, sql.Named("keyword3", strings.ToLower(keyword3)))
+        args = append(args, sql.Named("keyword3", strings.ToLower(x.Keyword3)))
     }
-    if keyword4 != "" && keyword4 != "All" {
+    if x.Keyword4 != "" && x.Keyword4 != "All" {
         lc = append(lc, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", strings.ToLower(keyword4)))
+        args = append(args, sql.Named("keyword4", strings.ToLower(x.Keyword4)))
     }
 
     if len(lc) > 0 {
@@ -250,7 +250,7 @@ func (s *ExportExcelService) ExportAllLogisticRequest() ([]lg.LogisticRequest, e
     return list, nil
 }
 
-func (s *ExportExcelService) ExportLogisticRequestByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]lg.LogisticRequest, error) {
+func (s *ExportExcelService) ExportLogisticRequestByKeyword(x dto.SearchKeyword4Dto) ([]lg.LogisticRequest, error) {
     query := `
         SELECT lar.* 
         FROM LOGISTIC_ARRANGEMENT_REQUESTER lar
@@ -260,21 +260,21 @@ func (s *ExportExcelService) ExportLogisticRequestByKeyword(keyword string, keyw
     lc := []string{}
     args := []any{}
 
-    if keyword != "" {
+    if x.Keyword != "" {
         lc = append(lc, `(LOWER(lar.REQUESTER_PRN) LIKE :keyword OR LOWER(lar.REQUESTER_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         lc = append(lc, `LOWER(lar.PRIMARY_DOCTOR) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         lc = append(lc, `TRUNC(lar.REQUESTED_PICKUP_DATE) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
-    if keyword4 != "" {
+    if x.Keyword4 != "" {
         lc = append(lc, `LOWER(lar.LOGISTIC_REQUEST_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", strings.ToLower(keyword4)))
+        args = append(args, sql.Named("keyword4", strings.ToLower(x.Keyword4)))
     }
 
     if len(lc) > 0 {

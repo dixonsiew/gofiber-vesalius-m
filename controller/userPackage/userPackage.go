@@ -222,7 +222,7 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
             },
         })
     } else {
-        userPackagePayment := &upck.PackagePaymentDetails{
+        userPackagePayment := upck.PackagePaymentDetails{
             PaymentGateway:         utils.NewInt32(int32(ipaymentMethod)),
             PaymentRequestNo:       utils.NewNullString(paymentRefNo),
             PaymentRequestCurrency: utils.NewNullString("MYR"),
@@ -246,7 +246,7 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
             BillingContactCode:     utils.NewNullString(pyt.BillingContactCode),
             BillingEmail:           utils.NewNullString(pyt.BillingEmail),
         }
-        err = cr.paymentService.SaveGuestIPay(*userPackagePayment, userPackage)
+        err = cr.paymentService.SaveGuestIPay(userPackagePayment, userPackage)
         if err != nil {
             return err
         }
@@ -338,9 +338,15 @@ func (cr *UserPackageController) SearchAllPurchaseHistory(c fiber.Ctx) error {
         key4 = "%" + key4 + "%"
     }
 
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
     page := c.Query("_page", "1")
     limit := c.Query("_limit", strconv.Itoa(constants.PAGE_SIZE))
-    m, err := cr.patientPurchaseDetailsService.ListByKeyword(key, key2, key3, key4, page, limit)
+    m, err := cr.patientPurchaseDetailsService.ListByKeyword(x, page, limit)
     if err != nil {
         return err
     }
@@ -479,7 +485,13 @@ func (cr *UserPackageController) GetSearchExportPurchaseHistory(c fiber.Ctx) err
         key4 = "%" + key4 + "%"
     }
 
-    lx, err := cr.exportExcelService.ExportPurchaseHistoryByKeyword(key, key2, key3, key4)
+    x := dto.SearchKeyword4Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+        Keyword4: key4,
+    }
+    lx, err := cr.exportExcelService.ExportPurchaseHistoryByKeyword(x)
     if err != nil {
         return err
     }

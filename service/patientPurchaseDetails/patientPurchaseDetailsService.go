@@ -6,6 +6,7 @@ import (
     "fmt"
     "strings"
     "vesaliusm/database"
+    "vesaliusm/dto"
     "vesaliusm/model"
     "vesaliusm/model/userPackage"
     "vesaliusm/service/applicationUser"
@@ -31,14 +32,14 @@ func NewPatientPurchaseDetailsService(db *sqlx.DB, ctx context.Context) *Patient
     }
 }
 
-func (s *PatientPurchaseDetailsService) ListByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountByKeyword(keyword, keyword2, keyword3, keyword4)
+func (s *PatientPurchaseDetailsService) ListByKeyword(x dto.SearchKeyword4Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountByKeyword(x)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize)
+    list, err := s.FindByKeyword(x, pager.GetLowerBound(), pager.PageSize)
     if err != nil {
         return nil, err
     }
@@ -50,8 +51,8 @@ func (s *PatientPurchaseDetailsService) ListByKeyword(keyword string, keyword2 s
     }, nil
 }
 
-func (s *PatientPurchaseDetailsService) CountByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string) (int, error) {
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
+func (s *PatientPurchaseDetailsService) CountByKeyword(x dto.SearchKeyword4Dto) (int, error) {
+    conditions, args := buildKeywordConditions(x)
     base := `SELECT COUNT(ppd.PATIENT_PURCHASE_ID) FROM PATIENT_PURCHASE_DETAILS ppd
              JOIN HOSPITAL_PACKAGE hp ON ppd.PACKAGE_ID = hp.PACKAGE_ID`
     query := base + whereClause(conditions)
@@ -125,8 +126,8 @@ func (s *PatientPurchaseDetailsService) Count() (int, error) {
     return count, nil
 }
 
-func (s *PatientPurchaseDetailsService) FindByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, offset int, limit int) ([]userPackage.UserPackage, error) {
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
+func (s *PatientPurchaseDetailsService) FindByKeyword(x dto.SearchKeyword4Dto, offset int, limit int) ([]userPackage.UserPackage, error) {
+    conditions, args := buildKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -582,27 +583,27 @@ func (s *PatientPurchaseDetailsService) CheckPackageExpiryMaxPurchase(packageId 
     return result, nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, []interface{}) {
+func buildKeywordConditions(x dto.SearchKeyword4Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `LOWER(ppd.PATIENT_PRN) LIKE :keyword`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `LOWER(ppd.PACKAGE_PURCHASE_NO) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         conds = append(conds, `LOWER(hp.PACKAGE_NAME) LIKE :keyword3`)
-        args = append(args, sql.Named("keyword3", strings.ToLower(keyword3)))
+        args = append(args, sql.Named("keyword3", strings.ToLower(x.Keyword3)))
     }
-    if keyword4 != "" && keyword4 != "All" {
+    if x.Keyword4 != "" && x.Keyword4 != "All" {
         conds = append(conds, `LOWER(ppd.PACKAGE_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", strings.ToLower(keyword4)))
+        args = append(args, sql.Named("keyword4", strings.ToLower(x.Keyword4)))
     }
     return conds, args
 }

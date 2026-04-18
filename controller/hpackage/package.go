@@ -350,7 +350,12 @@ func (cr *PackageController) GetSearchExportHospitalPackage(c fiber.Ctx) error {
         }
     }
 
-    lx, err := cr.exportExcelService.ExportHospitalPackageByKeyword(key, key2, key3)
+    x := dto.SearchKeyword3Dto{
+        Keyword:  key,
+        Keyword2: key2,
+        Keyword3: key3,
+    }
+    lx, err := cr.exportExcelService.ExportHospitalPackageByKeyword(x)
     if err != nil {
         return err
     }

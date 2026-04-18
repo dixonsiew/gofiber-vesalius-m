@@ -370,14 +370,14 @@ func (s *LogisticService) FindAllLogisticRequests(offset int, limit int, conn *s
     return list, nil
 }
 
-func (s *LogisticService) ListLogisticRequestsByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, page string, limit string) (*model.PagedList, error) {
-    total, err := s.CountLogisticRequestsByKeyword(keyword, keyword2, keyword3, keyword4, s.db)
+func (s *LogisticService) ListLogisticRequestsByKeyword(x dto.SearchKeyword4Dto, page string, limit string) (*model.PagedList, error) {
+    total, err := s.CountLogisticRequestsByKeyword(x, s.db)
     if err != nil {
         return nil, err
     }
 
     pager := model.GetPager(total, page, limit)
-    list, err := s.FindLogisticRequestsByKeyword(keyword, keyword2, keyword3, keyword4, pager.GetLowerBound(), pager.PageSize, s.db)
+    list, err := s.FindLogisticRequestsByKeyword(x, pager.GetLowerBound(), pager.PageSize, s.db)
     if err != nil {
         return nil, err
     }
@@ -389,8 +389,8 @@ func (s *LogisticService) ListLogisticRequestsByKeyword(keyword string, keyword2
     }, nil
 }
 
-func (s *LogisticService) CountLogisticRequestsByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, conn *sqlx.DB) (int, error) {
-    conds, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
+func (s *LogisticService) CountLogisticRequestsByKeyword(x dto.SearchKeyword4Dto, conn *sqlx.DB) (int, error) {
+    conds, args := buildKeywordConditions(x)
     base := `SELECT COUNT(lar.LOGISTIC_REQUEST_ID) AS COUNT FROM LOGISTIC_ARRANGEMENT_REQUESTER lar`
     query := base + whereClause(conds)
 
@@ -403,8 +403,8 @@ func (s *LogisticService) CountLogisticRequestsByKeyword(keyword string, keyword
     return count, nil
 }
 
-func (s *LogisticService) FindLogisticRequestsByKeyword(keyword string, keyword2 string, keyword3 string, keyword4 string, offset int, limit int, conn *sqlx.DB) ([]lg.LogisticRequest, error) {
-    conditions, args := buildKeywordConditions(keyword, keyword2, keyword3, keyword4)
+func (s *LogisticService) FindLogisticRequestsByKeyword(x dto.SearchKeyword4Dto, offset int, limit int, conn *sqlx.DB) ([]lg.LogisticRequest, error) {
+    conditions, args := buildKeywordConditions(x)
     args = append(args, sql.Named("offset", offset))
     args = append(args, sql.Named("limit", limit))
 
@@ -518,27 +518,27 @@ func (s *LogisticService) GenerateLogisticRequestNumber() (string, error) {
     return requestNumber, nil
 }
 
-func buildKeywordConditions(keyword string, keyword2 string, keyword3 string, keyword4 string) ([]string, []interface{}) {
+func buildKeywordConditions(x dto.SearchKeyword4Dto) ([]string, []interface{}) {
     var (
         conds []string
         args  []interface{}
     )
 
-    if keyword != "" {
+    if x.Keyword != "" {
         conds = append(conds, `(LOWER(lar.REQUESTER_PRN) LIKE :keyword OR LOWER(lar.REQUESTER_NAME) LIKE :keyword)`)
-        args = append(args, sql.Named("keyword", strings.ToLower(keyword)))
+        args = append(args, sql.Named("keyword", strings.ToLower(x.Keyword)))
     }
-    if keyword2 != "" {
+    if x.Keyword2 != "" {
         conds = append(conds, `LOWER(lar.PRIMARY_DOCTOR) LIKE :keyword2`)
-        args = append(args, sql.Named("keyword2", strings.ToLower(keyword2)))
+        args = append(args, sql.Named("keyword2", strings.ToLower(x.Keyword2)))
     }
-    if keyword3 != "" {
+    if x.Keyword3 != "" {
         conds = append(conds, `TRUNC(lar.REQUESTED_PICKUP_DATE) = TO_DATE(:keyword3, 'dd/mm/yyyy')`)
-        args = append(args, sql.Named("keyword3", keyword3))
+        args = append(args, sql.Named("keyword3", x.Keyword3))
     }
-    if keyword4 != "" {
+    if x.Keyword4 != "" {
         conds = append(conds, `LOWER(lar.LOGISTIC_REQUEST_STATUS) LIKE :keyword4`)
-        args = append(args, sql.Named("keyword4", strings.ToLower(keyword4)))
+        args = append(args, sql.Named("keyword4", strings.ToLower(x.Keyword4)))
     }
 
     return conds, args

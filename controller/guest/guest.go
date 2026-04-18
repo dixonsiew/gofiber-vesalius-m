@@ -1113,7 +1113,7 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
         if config.GetIpayTestEnv() == "Y" {
             paymentAmt = 1
         }
-        guestPackagePayment := &upck.PackagePaymentDetails{
+        guestPackagePayment := upck.PackagePaymentDetails{
             PaymentGateway:         utils.NewInt32(int32(ipaymentMethod)),
             PaymentRequestNo:       utils.NewNullString(paymentRefNo),
             PaymentRequestCurrency: utils.NewNullString("MYR"),
@@ -1137,7 +1137,7 @@ func (cr *GuestController) CreateGuestPurchaseDetails(c fiber.Ctx) error {
             BillingContactCode:     utils.NewNullString(pyt.BillingContactCode),
             BillingEmail:           utils.NewNullString(pyt.BillingEmail),
         }
-        err = cr.paymentService.SaveGuestIPay(*guestPackagePayment, guestPackage)
+        err = cr.paymentService.SaveGuestIPay(guestPackagePayment, guestPackage)
         if err != nil {
             return err
         }
