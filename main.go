@@ -57,6 +57,10 @@ func main() {
                 code = e.Code
             }
 
+            if code == fiber.StatusNoContent {
+                return c.SendStatus(code)
+            }
+
             ms := err.Error()
             if strings.Contains(ms,"no rows in result set") {
                 ms = "No record found"
