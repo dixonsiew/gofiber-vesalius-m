@@ -67,9 +67,8 @@ func (s *AssignBranchService) DeleteByUserIdNBranchIdNPRN(userId int64, branchId
     _, err := s.db.ExecContext(s.ctx, query, prn, userId, branchId)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *AssignBranchService) ExistsByPRNinAssignBranch(prn string) (bool, error) {

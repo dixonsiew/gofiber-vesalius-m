@@ -1,18 +1,18 @@
 package novaDoctor
 
 import (
-    "context"
-    "database/sql"
-    "fmt"
-    "strconv"
-    "strings"
-    "vesaliusm/config"
-    "vesaliusm/database"
-    "vesaliusm/model"
-    "vesaliusm/utils"
+	"context"
+	"database/sql"
+	"fmt"
+	"strconv"
+	"strings"
+	"vesaliusm/config"
+	"vesaliusm/database"
+	"vesaliusm/model"
+	"vesaliusm/utils"
 
-    "github.com/gofiber/fiber/v3"
-    "github.com/jmoiron/sqlx"
+	"github.com/gofiber/fiber/v3"
+	"github.com/jmoiron/sqlx"
 )
 
 var NovaDoctorSvc *NovaDoctorService = NewNovaDoctorService(database.GetDb(), database.GetCtx())
@@ -112,9 +112,8 @@ func (s *NovaDoctorService) ResizeAllDoctorImage(image string, doctorId int64) e
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *NovaDoctorService) Update(doctor *model.NovaDoctor) error {
@@ -249,9 +248,8 @@ func (s *NovaDoctorService) DeleteImageById(doctorId int64) error {
     _, err := s.db.ExecContext(s.ctx, `UPDATE NOVA_DOCTOR SET IMAGE = NULL WHERE DOCTOR_ID = :doctorId`, doctorId)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *NovaDoctorService) List(page string, limit string, isWebadmin bool) (*model.PagedList, error) {
@@ -308,7 +306,8 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
 
     // Collect IDs for child fetches
     ids := make([]string, 0)
-    for i, d := range doctors {
+    for i := range doctors {
+        d := doctors[i]
         ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
         // Set showMakeAppointmentButton based on config
         if config.GetIpayTestEnv() == "Y" && d.AllowAppointment.String == "Y" {
@@ -347,7 +346,8 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
     }
 
     // Assign child collections
-    for i, doc := range doctors {
+    for i := range doctors {
+        doc := doctors[i]
         if list, ok := m3[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialities = list
         }
@@ -361,7 +361,8 @@ func (s *NovaDoctorService) FindAll(offset int, limit int, isWebadmin bool) ([]m
             doctors[i].DoctorSpecialty = list
             // Check if any primary specialty exists; if not, disable appointment
             hasPrimary := false
-            for _, sp := range list {
+            for j := range list {
+                sp := list[j]
                 if sp.PrimarySpecialtyV.Int32 == 1 {
                     hasPrimary = true
                     break
@@ -443,7 +444,8 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
     }
 
     ids := make([]string, len(doctors))
-    for _, d := range doctors {
+    for i := range doctors {
+        d := doctors[i]
         ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
     }
 
@@ -469,7 +471,8 @@ func (s *NovaDoctorService) FindByKeyword(keyword string, offset, limit int) ([]
         return nil, err
     }
 
-    for i, doc := range doctors {
+    for i := range doctors {
+        doc := doctors[i]
         if list, ok := m3[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialities = list
         }
@@ -701,7 +704,8 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
     }
 
     ids := make([]string, 0)
-    for _, d := range doctors {
+    for i := range doctors {
+        d := doctors[i]
         ids = append(ids, strconv.FormatInt(d.DoctorId.Int64, 10))
     }
 
@@ -720,7 +724,8 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
     m6, _ := s.FindAllNovaDoctorContact(doctorIds, s.db)
     m7, _ := s.FindAllNovaDoctorSpecialtyPrimary(doctorIds, ms, s.db)
 
-    for i, doc := range doctors {
+    for i := range doctors {
+        doc := doctors[i]
         if list, ok := m1[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpokenLanguage = list
         }
@@ -742,7 +747,8 @@ func (s *NovaDoctorService) FindAllByMcr(mcr string) ([]model.NovaDoctor, error)
         if list, ok := m7[doc.DoctorId.Int64]; ok {
             doctors[i].DoctorSpecialty = list
             hasPrimary := false
-            for _, sp := range list {
+            for j := range list {
+                sp := list[j]
                 if sp.PrimarySpecialtyV.Int32 == 1 {
                     hasPrimary = true
                     break
@@ -954,7 +960,8 @@ func (s *NovaDoctorService) saveDoctorClinicHoursTx(tx *sqlx.Tx, doctor *model.N
             DAY_OF_THE_WEEK, DAY_START_TIME, DISPLAY_SEQUENCE, DOCTOR_ID
         ) VALUES (DR_CLINIC_HOURS_SEQ.NEXTVAL, :byAppt, :dayEndTime, :dayOfTheWeek, :dayStartTime, :displaySequence, :doctorId)
     `
-    for _, item := range doctor.DoctorClinicHours {
+    for i := range doctor.DoctorClinicHours {
+        item := doctor.DoctorClinicHours[i]
         byAppt := 0
         if item.ByAppointmentOnlyV.Int32 == 1 {
             byAppt = 1
@@ -981,7 +988,8 @@ func (s *NovaDoctorService) saveDoctorClinicLocationTx(tx *sqlx.Tx, doctor *mode
             CLINIC_LOCATION_ID, DOCTOR_ID, LOCATION, BUILDING
         ) VALUES (DR_CLINIC_LOCATION_SEQ.NEXTVAL, :doctorId, :location, :building)
     `
-    for _, item := range doctor.DoctorClinicLocation {
+    for i := range doctor.DoctorClinicLocation {
+        item := doctor.DoctorClinicLocation[i]
         _, err := tx.ExecContext(s.ctx, query,
             sql.Named("doctorId", doctor.DoctorId.Int64),
             sql.Named("location", item.Location.String),
@@ -1007,7 +1015,8 @@ func (s *NovaDoctorService) saveDoctorAppointmentTx(tx *sqlx.Tx, doctor *model.N
             SESSION_TYPE, START_TIME, END_TIME, MAX_SLOTS, DISPLAY_SEQUENCE
         ) VALUES (DR_APPT_SLOT_ID_SEQ.NEXTVAL, :doctorId, :dayOfWeek, :slotType, :sessionType, :startTime, :endTime, :maxSlots, :displaySequence)
     `
-    for _, item := range doctor.DoctorAppointment {
+    for i := range doctor.DoctorAppointment {
+        item := doctor.DoctorAppointment[i]
         var count int
         err := tx.GetContext(s.ctx, &count, checkQuery,
             sql.Named("doctorId", doctor.DoctorId.Int64),
@@ -1046,7 +1055,8 @@ func (s *NovaDoctorService) saveDoctorContactsTx(tx *sqlx.Tx, doctor *model.Nova
             CONTACT_ID, CONTACT_TYPE, CONTACT_VALUE, DISPLAY_SEQUENCE, DOCTOR_ID
         ) VALUES (DR_CONTACT_SEQ.NEXTVAL, :contactType, :contactValue, :displaySequence, :doctorId)
     `
-    for _, item := range doctor.DoctorContact {
+    for i := range doctor.DoctorContact {
+        item := doctor.DoctorContact[i]
         _, err := tx.ExecContext(s.ctx, query,
             sql.Named("contactType", item.ContactType.String),
             sql.Named("contactValue", item.ContactValue.String),
@@ -1067,7 +1077,8 @@ func (s *NovaDoctorService) saveDoctorQualificationsTx(tx *sqlx.Tx, doctor *mode
             QUALIFICATION_ID, DISPLAY_SEQUENCE, DOCTOR_ID, QUALIFICATION
         ) VALUES (DR_QUALIFICATIONS_SEQ.NEXTVAL, :displaySequence, :doctorId, :qualification)
     `
-    for _, item := range doctor.DoctorQualifications {
+    for i := range doctor.DoctorQualifications {
+        item := doctor.DoctorQualifications[i]
         _, err := tx.ExecContext(s.ctx, query,
             sql.Named("displaySequence", item.DisplaySequence.Int32),
             sql.Named("doctorId", doctor.DoctorId.Int64),
@@ -1087,7 +1098,8 @@ func (s *NovaDoctorService) saveDoctorSpecialitiesTx(tx *sqlx.Tx, doctor *model.
             SPECIALITIES_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPECIALITIES, SUBSPECIALTY
         ) VALUES (DOCTOR_SPECIALITIES_ID_SEQ.NEXTVAL, :displaySequence, :doctorId, :specialities, :subspecialty)
     `
-    for _, item := range doctor.DoctorSpecialities {
+    for i := range doctor.DoctorSpecialities {
+        item := doctor.DoctorSpecialities[i]
         _, err := tx.ExecContext(s.ctx, query,
             sql.Named("displaySequence", item.DisplaySequence.Int32),
             sql.Named("doctorId", doctor.DoctorId.Int64),
@@ -1108,7 +1120,8 @@ func (s *NovaDoctorService) saveDoctorSpecialtyTx(tx *sqlx.Tx, doctor *model.Nov
             DOCTOR_SPECIALTY_ID, DOCTOR_ID, PRIMARY_SPECIALTY, SPECIALTY_ID
         ) VALUES (DR_SPECIALTIES_SEQ.NEXTVAL, :doctorId, :primarySpecialty, :specialtyId)
     `
-    for _, item := range doctor.DoctorSpecialty {
+    for i := range doctor.DoctorSpecialty {
+        item := doctor.DoctorSpecialty[i]
         primary := 0
         if item.PrimarySpecialtyV.Int32 == 1 {
             primary = 1
@@ -1132,7 +1145,8 @@ func (s *NovaDoctorService) saveDoctorSpokenLanguageTx(tx *sqlx.Tx, doctor *mode
             SPOKEN_LANGUAGE_ID, DISPLAY_SEQUENCE, DOCTOR_ID, SPOKEN_LANGUAGE
         ) VALUES (DR_SPOKEN_LANGUAGE_SEQ.NEXTVAL, :displaySequence, :doctorId, :spokenLanguage)
     `
-    for _, item := range doctor.DoctorSpokenLanguage {
+    for i := range doctor.DoctorSpokenLanguage {
+        item := doctor.DoctorSpokenLanguage[i]
         _, err := tx.ExecContext(s.ctx, query,
             sql.Named("displaySequence", item.DisplaySequence.Int32),
             sql.Named("doctorId", doctor.DoctorId.Int64),

@@ -136,7 +136,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisits) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisits {
+        for i := range novaVisits {
+            novaVisit := novaVisits[i]
             novaVisitSummaries, err := s.novaVisitSummaryService.FindByAccountNoAndCategoryNotAndCategoryNot(novaVisit.AccountNo.String, "Investigation", "Medication", s.dbrs)
             if err != nil {
                 return nil, err
@@ -160,7 +161,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsPrescription) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsPrescription {
+        for i := range novaVisitsPrescription {
+            novaVisit := novaVisitsPrescription[i]
             novaVisitPatientRxList, err := s.novaPatientrxService.FindPatientRxByAccountNo(novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
@@ -184,7 +186,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsInvestigation) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsInvestigation {
+        for i := range novaVisitsInvestigation {
+            novaVisit := novaVisitsInvestigation[i]
             novaPatientInvestigationList, err := s.novaInvestigationService.FindNonPanelInvestiationByAccountNo(novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
@@ -232,7 +235,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                     }
 
                     if len(uniquePanelList) > 0 {
-                        for _, uniquePanelCode := range uniquePanelList {
+                        for i := range uniquePanelList {
+                            uniquePanelCode := uniquePanelList[i]
                             novaPatientPanelInvestigationList, err := s.novaInvestigationService.FindPanelInvestigationByAccountNoPanelCode(novaVisit.AccountNo.String, uniquePanelCode, s.dbrs)
                             if err != nil {
                                 return nil, err
@@ -240,13 +244,15 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                             if len(novaPatientPanelInvestigationList) > 0 {
                                 novaVisitInvestigationDetailDto := model.NovaVisitInvestigationDetail{}
                                 panelDetailList := make([]model.NovaVisitInvestigationPanelDetail, 0)
-                                for _, novaPatientInvestigation := range novaPatientPanelInvestigationList {
+                                for j := range novaPatientPanelInvestigationList {
+                                    novaPatientInvestigation := novaPatientPanelInvestigationList[j]
                                     novaPatientInvestigationDetailList, err := s.novaInvestigationDetailService.GetInvestigationRefNoAndCode(novaPatientInvestigation.InvestigationRefNo.String, novaPatientInvestigation.Code.String, s.db)
                                     if err != nil {
                                         return nil, err
                                     }
                                     if len(novaPatientInvestigationDetailList) > 0 {
-                                        for _, novaPatientInvestigationDetail := range novaPatientInvestigationDetailList {
+                                        for k := range novaPatientInvestigationDetailList {
+                                            novaPatientInvestigationDetail := novaPatientInvestigationDetailList[k]
                                             panelDetail := model.NovaVisitInvestigationPanelDetail{
                                                 Code:        novaPatientInvestigationDetail.Code.String,
                                                 Description: novaPatientInvestigation.Description.String,
@@ -289,7 +295,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsBill) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsBill {
+        for i := range novaVisitsBill {
+            novaVisit := novaVisitsBill[i]
             novaBills, err := s.novaBillService.GetNovaBillByPrnAndAccountNo(prn, novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
@@ -311,14 +318,16 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsVital) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsVital {
+        for i := range novaVisitsVital {
+            novaVisit := novaVisitsVital[i]
             novaPatientVitalSignsList, err := s.novaVitalSignsService.FindPatientVitalSignsByAccountNo(novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
             }
             novaVisitVitalSignsDetailList := make([]model.NovaVisitVitalSignsDetail, 0)
             if len(novaPatientVitalSignsList) > 0 {
-                for _, patientVitalSigns := range novaPatientVitalSignsList {
+                for j := range novaPatientVitalSignsList {
+                    patientVitalSigns := novaPatientVitalSignsList[j]
                     patientVitalSignsDetailList, err := s.novaVitalSignsDetailService.GetLocalPatientVitalSignsDetailsByRefNo(
                         patientVitalSigns.RefNo.String,
                         s.vitalCodeHeight,
@@ -332,7 +341,8 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
                         return nil, err
                     }
                     if len(patientVitalSignsDetailList) > 0 {
-                        for _, eachPatientVitalSignsDetail := range patientVitalSignsDetailList {
+                        for k := range patientVitalSignsDetailList {
+                            eachPatientVitalSignsDetail := patientVitalSignsDetailList[k]
                             visitVitalSignsDetail := model.NovaVisitVitalSignsDetail{
                                 Code:   eachPatientVitalSignsDetail.Code.String,
                                 Desc:   eachPatientVitalSignsDetail.Description.String,
@@ -360,14 +370,16 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsWithReferralLetterList) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsWithReferralLetterList {
+        for i := range novaVisitsWithReferralLetterList {
+            novaVisit := novaVisitsWithReferralLetterList[i]
             novaReferralLetterList, err := s.novaReferralLetterService.FindAllReferralLetterByPrnAndAccountNo(novaVisit.PRN.String, novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
             }
             novaVisitReferralLetterList := make([]model.NovaVisitReferralLetter, 0)
             if len(novaReferralLetterList) > 0 {
-                for _, novaExtReferralLetter := range novaReferralLetterList {
+                for j := range novaReferralLetterList {
+                    novaExtReferralLetter := novaReferralLetterList[j]
                     novaVisitReferralLetterDetail := model.NovaVisitReferralLetter{
                         ReferralRefNo:            novaExtReferralLetter.ReferralRefNo.String,
                         PRN:                      novaExtReferralLetter.PRN.String,
@@ -398,14 +410,16 @@ func (s *HealthCareService) GetPatientVisit(prn string, pageId string) ([]model.
         if len(novaVisitsWithHealthScreeningReportList) < 1 {
             return nil, fiber.NewError(fiber.StatusNoContent)
         }
-        for _, novaVisit := range novaVisitsWithHealthScreeningReportList {
+        for i := range novaVisitsWithHealthScreeningReportList {
+            novaVisit := novaVisitsWithHealthScreeningReportList[i]
             novaHealthScreeningRptList, err := s.novaHealthScreenRptService.FindHealthScreeningRptByPrnAndAccountNo(novaVisit.PRN.String, novaVisit.AccountNo.String, s.dbrs)
             if err != nil {
                 return nil, err
             }
             novaHealthScreeningRptDtoList := make([]model.NovaHealthScreeningRpt, 0)
             if len(novaHealthScreeningRptList) > 0 {
-                for _, novaHealthScreeningRpt := range novaHealthScreeningRptList {
+                for j := range novaHealthScreeningRptList {
+                    novaHealthScreeningRpt := novaHealthScreeningRptList[j]
                     novaHealthScreeningRptDetail := model.NovaHealthScreeningRpt{
                         HsrRefNo:   utils.NewNullString(novaHealthScreeningRpt.HsrRefNo.String),
                         AccountNo:  utils.NewNullString(novaHealthScreeningRpt.AccountNo.String),
@@ -453,7 +467,8 @@ func (s *HealthCareService) GetVitalSignsHistoryForDashboard(prn string) ([]mode
     patientVitalSignsDetailBPList := make([]model.NovaPatientVitalSignsDetailDto, 0)
     patientVitalSignsDetailPulseList := make([]model.NovaPatientVitalSignsDetailDto, 0)
 
-    for _, vitalSignsHistoryDetail := range patientVitalSignsHistoryList {
+    for i := range patientVitalSignsHistoryList {
+        vitalSignsHistoryDetail := patientVitalSignsHistoryList[i]
         if strings.EqualFold(vitalSignsHistoryDetail.Description.String, s.vitalCodeHeight) ||
             strings.EqualFold(vitalSignsHistoryDetail.Code.String, s.vitalCodeClinicaltemplateHeight) {
             patientVitalSignsDetailHeight := model.NovaPatientVitalSignsDetail{

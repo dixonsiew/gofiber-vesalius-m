@@ -572,7 +572,8 @@ func (s *AdminUserService) Save(o *model.AdminUser, adminBranchIds []int64) erro
     iadminId, _ := adminId.Int64()
     o.AdminId.Int64 = iadminId
 
-    for _, adminBranchId := range adminBranchIds {
+    for i := range adminBranchIds {
+        adminBranchId := adminBranchIds[i]
         _, err = tx.ExecContext(s.ctx, `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`,
             sql.Named("adminId", o.AdminId.Int64),
             sql.Named("branchId", adminBranchId),
@@ -595,7 +596,8 @@ func (s *AdminUserService) Update(o *model.AdminUser, adminBranchIds []int64) er
     }
 
     query = `INSERT INTO ASSIGN_BRANCH (ASSIGN_BRANCH_ID, ADMIN_ID, BRANCH_ID) VALUES(USER_BRANCH_SEQ.nextval, :adminId, :branchId)`
-    for _, adminBranchId := range adminBranchIds {
+    for i := range adminBranchIds {
+        adminBranchId := adminBranchIds[i]
         _, err = s.db.ExecContext(s.ctx, query,
             sql.Named("adminId", o.AdminId.Int64),
             sql.Named("branchId", adminBranchId),

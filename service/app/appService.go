@@ -88,9 +88,8 @@ func (s *AppService) UpdateReleaseVersion(latestVersion string, stackPlatform st
     _, err := s.db.ExecContext(s.ctx, query, latestVersion, stackPlatform)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *AppService) UpdateAppVersion(latestVersion string, osPlatform string, status int) error {
@@ -104,9 +103,8 @@ func (s *AppService) UpdateAppVersion(latestVersion string, osPlatform string, s
     _, err := s.db.ExecContext(s.ctx, query, latestVersion, status, osPlatform)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *AppService) FindAllGuestMode(conn *sqlx.DB) ([]model.AppServices, error) {

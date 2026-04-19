@@ -589,7 +589,6 @@ func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx
     actvParticipation := make([]model.GoldenPearlActvParticipation, 0)
     for i := range data.GoldenActvParticipation {
         participation := data.GoldenActvParticipation[i]
-
         var o model.GoldenPearlActvParticipation
         o.GoldenActivityId = participation.GoldenActivityId
         o.GoldenMembershipId = participation.GoldenMembershipId
@@ -601,7 +600,6 @@ func (cr *ClubsGoldenPearlController) ParticipateGoldenPearlActivity(c fiber.Ctx
         if err != nil {
             return err
         }
-
         goldenMember, err := cr.clubService.FindGoldenPearlMembershipById(int64(o.GoldenMembershipId))
         if err != nil {
             return err

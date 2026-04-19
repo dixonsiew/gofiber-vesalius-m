@@ -246,9 +246,8 @@ func (s *NovaDoctorPatientApptService) Save(prn string, apptSessionType string, 
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *NovaDoctorPatientApptService) UpdateToReschedule(prn string, apptSessionType string, o vesaliusGeo.AppointmentChangeConfirmation, tx *sqlx.Tx) error {
@@ -288,9 +287,8 @@ func (s *NovaDoctorPatientApptService) UpdateToReschedule(prn string, apptSessio
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *NovaDoctorPatientApptService) UpdateToCancel(prn string, o vesaliusGeo.AppointmentCancelConfirmation, tx *sqlx.Tx) error {
@@ -313,9 +311,8 @@ func (s *NovaDoctorPatientApptService) UpdateToCancel(prn string, o vesaliusGeo.
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *NovaDoctorPatientApptService) getPatientName(conn *sqlx.DB, prn string) (string, error) {

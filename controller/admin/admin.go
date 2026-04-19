@@ -576,7 +576,8 @@ func (cr *AdminController) AddUserGroup(c fiber.Ctx) error {
         UserGroupName:                       utils.NewNullString(data.UserGroupName),
         UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
     }
-    for _, x := range data.Permission {
+    for i := range data.Permission {
+        x := data.Permission[i]
         k := model.UserGroupModulePermission{
             ModuleId:     utils.NewInt64(int64(x.ModuleId)),
             PermissionId: utils.NewInt64(int64(x.PermissionId)),
@@ -684,7 +685,8 @@ func (cr *AdminController) UpdateUserGroup(c fiber.Ctx) error {
         UserGroupName:                       utils.NewNullString(data.UserGroupName),
         UserGroupModulePermissionStatesList: []model.UserGroupModulePermission{},
     }
-    for _, x := range data.Permission {
+    for i := range data.Permission {
+        x := data.Permission[i]
         k := model.UserGroupModulePermission{
             ModuleId:     utils.NewInt64(int64(x.ModuleId)),
             PermissionId: utils.NewInt64(int64(x.PermissionId)),
@@ -1018,7 +1020,8 @@ func (cr *AdminController) SetMasterPrn(c fiber.Ctx) error {
     fullAddress := fmt.Sprintf("%s, %s, %s, %s, %s, %s", h.Address1, h.Address2, h.Address3, h.PostalCode, h.CityState, h.Country)
     fullAddress = strings.TrimSpace(fullAddress)
     passport := ""
-    for _, doc := range patient.Documents {
+    for i := range patient.Documents {
+        doc := patient.Documents[i]
         if doc.Code == "PASSPORT" {
             passport = doc.Value
         }
@@ -1400,7 +1403,8 @@ func (cr *AdminController) SelfSignUpUser(c fiber.Ctx) error {
 
     patientDocIDValue := ""
     if len(patient.Documents) > 0 {
-        for _, doc := range patient.Documents {
+        for i := range patient.Documents {
+            doc := patient.Documents[i]
             if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
                 patientDocIDValue = strings.TrimSpace(doc.Code)
             }

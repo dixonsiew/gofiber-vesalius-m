@@ -19,7 +19,8 @@ func TrimMiddleware(c fiber.Ctx) error {
     route := c.Route()
 
     // For params (URL parameters)
-    for _, paramName := range route.Params {
+    for i := range route.Params {
+        paramName := route.Params[i]
         c.Params(paramName, TrimString(c.Params(paramName)))
     }
 

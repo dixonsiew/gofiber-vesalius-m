@@ -252,7 +252,8 @@ func (s *VesaliusService) getAllPatientFutureAppointments(familyMembers []model.
         }
 
         la := res.Appointments
-        for _, a := range la {
+        for j := range la {
+            a := la[j]
             lr = append(lr, a)
             m[a.AppointmentNumber] = f
         }
@@ -300,7 +301,8 @@ func (s *VesaliusService) VesaliusGetPatientFutureAppointments(prn string, isHom
     if len(lrx) > 0 && isHome {
         firstDate := lrx[0].Date
         la := make([]gm.Appointment, 0)
-        for _, x := range lrx {
+        for i := range lrx {
+            x := lrx[i]
             if x.Date == firstDate {
                 la = append(la, x)
             }

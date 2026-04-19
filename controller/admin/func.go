@@ -65,7 +65,8 @@ func (cr *AdminController) signUpPatient(c fiber.Ctx, data *dto.NewSignupUserDto
             checkDob := true
             b := false
 
-            for _, doc := range vesPatient.Documents {
+            for i := range vesPatient.Documents {
+                doc := vesPatient.Documents[i]
                 if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
                     if strings.TrimSpace(doc.Value) == data.UserPersonNumber {
                         b = true
@@ -90,7 +91,8 @@ func (cr *AdminController) signUpPatient(c fiber.Ctx, data *dto.NewSignupUserDto
         patientDocIDValue := ""
         if len(vesPatient.Documents) > 0 {
             b := false
-            for _, doc := range vesPatient.Documents {
+            for i := range vesPatient.Documents {
+                doc := vesPatient.Documents[i]
                 if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
                     patientDocIDValue = strings.TrimSpace(doc.Value)
                     if config.GetWSVesaliusConfig().NricWithDash == "N" {
@@ -266,7 +268,8 @@ func (cr *AdminController) signUpPrn(c fiber.Ctx, data *dto.NewSignupUserDto) er
         checkDob := true
         b := false
 
-        for _, doc := range vesPatient.Documents {
+        for i := range vesPatient.Documents {
+            doc := vesPatient.Documents[i]
             if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
                 if strings.TrimSpace(doc.Value) == data.UserPersonNumber {
                     b = true
@@ -291,7 +294,8 @@ func (cr *AdminController) signUpPrn(c fiber.Ctx, data *dto.NewSignupUserDto) er
     patientDocIDValue := ""
     if len(vesPatient.Documents) > 0 {
         b := false
-        for _, doc := range vesPatient.Documents {
+        for i := range vesPatient.Documents {
+            doc := vesPatient.Documents[i]
             if strings.EqualFold(doc.Code, config.GetPatientDocumentCode()) {
                 patientDocIDValue = strings.TrimSpace(doc.Value)
                 if config.GetWSVesaliusConfig().NricWithDash == "N" {

@@ -52,9 +52,8 @@ func (s *BillPaymentDetailsService) UpdateReceiptNoByRequestNo(conn *sqlx.DB, re
     _, err := db.ExecContext(s.ctx, query, receiptNo, requestNo)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *BillPaymentDetailsService) FindByRequestNo(requestNo string) (*model.BillingPayment, error) {
@@ -118,9 +117,8 @@ func (s *BillPaymentDetailsService) SetIPayBillPaymentStatusToPaid(tx *sqlx.Tx, 
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *BillPaymentDetailsService) PaymentFindByRequestId(conn *sqlx.DB, paymentRequestId string) ([]model.BillingPayment, error) {
@@ -169,9 +167,8 @@ func (s *BillPaymentDetailsService) SetWallexPaymentStatusToPaid(tx *sqlx.Tx, pa
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *BillPaymentDetailsService) SaveIPay(o model.BillingPayment, o2 model.UserBilling) error {

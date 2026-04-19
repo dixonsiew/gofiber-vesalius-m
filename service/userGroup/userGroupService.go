@@ -51,7 +51,8 @@ func (s *UserGroupService) Save(o model.UserGroup) error {
 	    INSERT INTO USR_GRP_MOD_PERMERSSION (USR_GRP_MOD_PERM_ID, MODULE_ID, PERMISSION_ID, USER_GROUP_ID) 
 		VALUES(USR_GRP_MOD_PERM_SEQ.nextval, :moduleId, :permId, :userGroupId)
 	`
-	for _, r := range o.UserGroupModulePermissionStatesList {
+	for i := range o.UserGroupModulePermissionStatesList {
+        r := o.UserGroupModulePermissionStatesList[i]
 		_, err = tx.ExecContext(s.ctx, q, 
 			sql.Named("moduleId", r.ModuleId.Int64), 
 			sql.Named("permId", r.PermissionId.Int64), 

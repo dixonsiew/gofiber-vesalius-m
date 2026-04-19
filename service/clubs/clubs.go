@@ -247,9 +247,8 @@ func (s *ClubService) SaveLittleKidsMembership(o clubs.LittleExplorersKidsMember
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) SaveLittleKidsMembershipViaWebportal(o clubs.LittleExplorersKidsMembership, adminId int64) error {
@@ -342,9 +341,8 @@ func (s *ClubService) SaveLittleKidsMembershipViaWebportal(o clubs.LittleExplore
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) UpdateLittleKidsMembershipViaWebportal(o clubs.LittleExplorersKidsMembership, adminId int64) error {
@@ -404,9 +402,8 @@ func (s *ClubService) UpdateLittleKidsMembershipViaWebportal(o clubs.LittleExplo
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) SaveGoldenPearlMembership(o clubs.GoldenPearlMembership) error {
@@ -498,9 +495,8 @@ func (s *ClubService) SaveGoldenPearlMembership(o clubs.GoldenPearlMembership) e
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) SaveGoldenPearlMembershipViaWebportal(o clubs.GoldenPearlMembership, adminId int64) error {
@@ -593,9 +589,8 @@ func (s *ClubService) SaveGoldenPearlMembershipViaWebportal(o clubs.GoldenPearlM
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) UpdateGoldenPearlMembershipViaWebportal(o clubs.GoldenPearlMembership, adminId int64) error {
@@ -855,9 +850,8 @@ func (s *ClubService) SaveLittleKidsActivity(o clubs.LittleExplorersKidsActivity
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) SaveGoldenPearlActivity(o clubs.GoldenPearlActivity, adminId int64) error {
@@ -887,9 +881,8 @@ func (s *ClubService) SaveGoldenPearlActivity(o clubs.GoldenPearlActivity, admin
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) UpdateLittleKidsActivity(o clubs.LittleExplorersKidsActivity, adminId int64) error {
@@ -923,9 +916,8 @@ func (s *ClubService) UpdateLittleKidsActivity(o clubs.LittleExplorersKidsActivi
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) UpdateGoldenPearlActivity(o clubs.GoldenPearlActivity, adminId int64) error {
@@ -959,9 +951,8 @@ func (s *ClubService) UpdateGoldenPearlActivity(o clubs.GoldenPearlActivity, adm
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) SaveLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs, adminId int64) (int64, error) {
@@ -1043,9 +1034,8 @@ func (s *ClubService) UpdateLittleKidsAboutUs(o clubs.LittleExplorersKidsAboutUs
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) UpdateGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, adminId int64) error {
@@ -1071,9 +1061,8 @@ func (s *ClubService) UpdateGoldenPearlAboutUs(o clubs.GoldenPearlAboutUs, admin
     )
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *ClubService) FindLittleKidsAboutUs() (*clubs.LittleExplorersKidsAboutUs, error) {

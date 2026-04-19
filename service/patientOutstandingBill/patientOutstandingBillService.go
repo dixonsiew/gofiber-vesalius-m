@@ -88,9 +88,8 @@ func (s *PatientOutstandingBillService) Save(billPaymentId int64, o ub.UserBilli
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *PatientOutstandingBillService) UpdatePaymentStatusByBillPaymentId(billPaymentId int64, status string, tx *sqlx.Tx) error {
@@ -103,7 +102,6 @@ func (s *PatientOutstandingBillService) UpdatePaymentStatusByBillPaymentId(billP
     }
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }

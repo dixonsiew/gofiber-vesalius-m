@@ -57,7 +57,8 @@ func (cr *UserPackageController) CheckPackageExpiryMaxpurchase(c fiber.Ctx) erro
     cartIsValid := true
     cartResult := make([]upck.PackageCheckResult, 0)
 
-    for _, pkg := range data.Package {
+    for i := range data.Package {
+        pkg := data.Package[i]
         r, err := cr.patientPurchaseDetailsService.CheckPackageExpiryMaxPurchase(pkg.PackageId, pkg.QuantityPurchased)
         if err != nil {
             return err
@@ -107,7 +108,8 @@ func (cr *UserPackageController) CreateUserPurchaseDetails(c fiber.Ctx) error {
         return err
     }
 
-    for _, pkg := range data.UserPackage {
+    for i := range data.UserPackage {
+        pkg := data.UserPackage[i]
         p := utils.Map{
             "name":        pkg.PackageName,
             "description": pkg.PackageName,

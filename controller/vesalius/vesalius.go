@@ -186,38 +186,45 @@ func (cr *VesaliusController) CreateDoctor(c fiber.Ctx) error {
     }
 
     o.DoctorClinicHours = make([]model.NovaDoctorClinicHours, len(data.DoctorClinicHours))
-    for i, v := range data.DoctorClinicHours {
+    for i := range data.DoctorClinicHours {
+        v := data.DoctorClinicHours[i]
         o.DoctorClinicHours[i] = v.ToDbModel()
         o.DoctorClinicHours[i].Set()
     }
 
     o.DoctorClinicLocation = make([]model.NovaDoctorClinicLocation, len(data.DoctorClinicLocation))
-    for i, v := range data.DoctorClinicLocation {
+    for i := range data.DoctorClinicLocation {
+        v := data.DoctorClinicLocation[i]
         o.DoctorClinicLocation[i] = v.ToDbModel()
     }
 
     o.DoctorAppointment = make([]model.NovaDoctorAppointment, len(data.DoctorAppointment))
-    for i, v := range data.DoctorAppointment {
+    for i := range data.DoctorAppointment {
+        v := data.DoctorAppointment[i]
         o.DoctorAppointment[i] = v.ToDbModel()
     }
 
     o.DoctorContact = make([]model.NovaDoctorContact, len(data.DoctorContact))
-    for i, v := range data.DoctorContact {
+    for i := range data.DoctorContact {
+        v := data.DoctorContact[i]
         o.DoctorContact[i] = v.ToDbModel()
     }
 
     o.DoctorQualifications = make([]model.NovaDoctorQualifications, len(data.DoctorQualifications))
-    for i, v := range data.DoctorQualifications {
+    for i := range data.DoctorQualifications {
+        v := data.DoctorQualifications[i]
         o.DoctorQualifications[i] = v.ToDbModel()
     }
 
     o.DoctorSpecialities = make([]model.NovaDoctorSpecialities, len(data.DoctorSpecialities))
-    for i, v := range data.DoctorSpecialities {
+    for i := range data.DoctorSpecialities {
+        v := data.DoctorSpecialities[i]
         o.DoctorSpecialities[i] = v.ToDbModel()
     }
 
     o.DoctorSpecialty = make([]model.NovaDoctorSpecialty, len(data.DoctorSpecialty))
-    for i, v := range data.DoctorSpecialty {
+    for i := range data.DoctorSpecialty {
+        v := data.DoctorSpecialty[i]
         o.DoctorSpecialty[i] = v.ToDbModel()
         o.DoctorSpecialty[i].Set()
     }
@@ -236,7 +243,8 @@ func (cr *VesaliusController) CreateDoctor(c fiber.Ctx) error {
     }
 
     o.DoctorSpokenLanguage = make([]model.NovaDoctorSpokenLanguage, len(data.DoctorSpokenLanguage))
-    for i, v := range data.DoctorSpokenLanguage {
+    for i := range data.DoctorSpokenLanguage {
+        v := data.DoctorSpokenLanguage[i]
         o.DoctorSpokenLanguage[i] = v.ToDbModel()
     }
 
@@ -317,38 +325,45 @@ func (cr *VesaliusController) UpdateDoctor(c fiber.Ctx) error {
     }
 
     o.DoctorClinicHours = make([]model.NovaDoctorClinicHours, len(data.DoctorClinicHours))
-    for i, v := range data.DoctorClinicHours {
+    for i := range data.DoctorClinicHours {
+        v := data.DoctorClinicHours[i]
         o.DoctorClinicHours[i] = v.ToDbModel()
         o.DoctorClinicHours[i].Set()
     }
 
     o.DoctorClinicLocation = make([]model.NovaDoctorClinicLocation, len(data.DoctorClinicLocation))
-    for i, v := range data.DoctorClinicLocation {
+    for i := range data.DoctorClinicLocation {
+        v := data.DoctorClinicLocation[i]
         o.DoctorClinicLocation[i] = v.ToDbModel()
     }
 
     o.DoctorAppointment = make([]model.NovaDoctorAppointment, len(data.DoctorAppointment))
-    for i, v := range data.DoctorAppointment {
+    for i := range data.DoctorAppointment {
+        v := data.DoctorAppointment[i]
         o.DoctorAppointment[i] = v.ToDbModel()
     }
 
     o.DoctorContact = make([]model.NovaDoctorContact, len(data.DoctorContact))
-    for i, v := range data.DoctorContact {
+    for i := range data.DoctorContact {
+        v := data.DoctorContact[i]
         o.DoctorContact[i] = v.ToDbModel()
     }
 
     o.DoctorQualifications = make([]model.NovaDoctorQualifications, len(data.DoctorQualifications))
-    for i, v := range data.DoctorQualifications {
+    for i := range data.DoctorQualifications {
+        v := data.DoctorQualifications[i]
         o.DoctorQualifications[i] = v.ToDbModel()
     }
 
     o.DoctorSpecialities = make([]model.NovaDoctorSpecialities, len(data.DoctorSpecialities))
-    for i, v := range data.DoctorSpecialities {
+    for i := range data.DoctorSpecialities {
+        v := data.DoctorSpecialities[i]
         o.DoctorSpecialities[i] = v.ToDbModel()
     }
 
     o.DoctorSpecialty = make([]model.NovaDoctorSpecialty, len(data.DoctorSpecialty))
-    for i, v := range data.DoctorSpecialty {
+    for i := range data.DoctorSpecialty {
+        v := data.DoctorSpecialty[i]
         o.DoctorSpecialty[i] = v.ToDbModel()
         o.DoctorSpecialty[i].Set()
     }
@@ -367,7 +382,8 @@ func (cr *VesaliusController) UpdateDoctor(c fiber.Ctx) error {
     }
 
     o.DoctorSpokenLanguage = make([]model.NovaDoctorSpokenLanguage, len(data.DoctorSpokenLanguage))
-    for i, v := range data.DoctorSpokenLanguage {
+    for i := range data.DoctorSpokenLanguage {
+        v := data.DoctorSpokenLanguage[i]
         o.DoctorSpokenLanguage[i] = v.ToDbModel()
     }
 

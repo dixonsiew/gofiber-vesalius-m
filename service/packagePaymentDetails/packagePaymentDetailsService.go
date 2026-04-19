@@ -392,9 +392,8 @@ func (s *PackagePaymentDetailsService) SetWallexPaymentStatusToPaid(tx *sqlx.Tx,
     _, err := tx.ExecContext(s.ctx, query, paymentAmount, packagePaymentId, paymentRequestId)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *PackagePaymentDetailsService) SetIPayPackagePaymentStatusToPaid(tx *sqlx.Tx, paymentAmount string, packagePaymentId int64, paymentRequestNo string) error {
@@ -409,9 +408,8 @@ func (s *PackagePaymentDetailsService) SetIPayPackagePaymentStatusToPaid(tx *sql
     _, err := tx.ExecContext(s.ctx, query, paymentAmount, packagePaymentId, paymentRequestNo)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *PackagePaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestId string) error {

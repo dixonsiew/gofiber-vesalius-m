@@ -97,9 +97,8 @@ func (s *GuestService) DeleteTempGuestInfo(prn string) error {
     _, err := s.db.ExecContext(s.ctx, qeury, prn)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *GuestService) UpdateSeenNotificationByPlayerId(playerId string, notificationId int64) error {
@@ -112,9 +111,8 @@ func (s *GuestService) UpdateSeenNotificationByPlayerId(playerId string, notific
     _, err := s.db.ExecContext(s.ctx, query, notificationId, playerId)
     if err != nil {
         utils.LogError(err)
-        return err
     }
-    return nil
+    return err
 }
 
 func (s *GuestService) CountUnseenNotificationByGuestPlayerId(playerId string) (int, error) {
