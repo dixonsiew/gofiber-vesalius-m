@@ -1,13 +1,13 @@
 package novaPatientDiagnosisInfo
 
 import (
-	"context"
-	"strings"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "context"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaPatientDiagnosisInfoSvc *NovaPatientDiagnosisInfoService = NewNovaPatientDiagnosisInfoService(database.GetDbrs(), database.GetCtx())

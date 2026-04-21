@@ -1,13 +1,13 @@
 package groupModulePermission
 
 import (
-	"context"
-	"strings"
+    "context"
+    "strings"
     "vesaliusm/database"
-	"vesaliusm/model"
-	"vesaliusm/utils"
+    "vesaliusm/model"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var GroupModulePermissionSvc *GroupModulePermissionService = NewGroupModulePermissionService(database.GetDb(), database.GetCtx())

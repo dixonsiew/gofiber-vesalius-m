@@ -1,13 +1,13 @@
 package novaInvestigation
 
 import (
-	"context"
-	"strings"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "context"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaInvestigationSvc *NovaInvestigationService = NewNovaInvestigationService(database.GetDbrs(), database.GetCtx())

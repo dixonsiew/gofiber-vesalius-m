@@ -1,10 +1,10 @@
 package notification
 
 import (
-	"context"
-	"vesaliusm/config"
+    "context"
+    "vesaliusm/config"
 
-	"github.com/OneSignal/onesignal-go-api"
+    "github.com/OneSignal/onesignal-go-api"
 )
 
 var NotificationSvc *NotificationService = NewNotificationService()

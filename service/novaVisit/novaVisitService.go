@@ -1,14 +1,14 @@
 package novaVisit
 
 import (
-	"context"
-	"database/sql"
-	"strings"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaVisitSvc *NovaVisitService = NewNovaVisitService(database.GetDbrs(), database.GetCtx())

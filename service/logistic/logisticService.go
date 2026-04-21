@@ -182,6 +182,7 @@ func (s *LogisticService) FindAllLogisticSlots() ([]lg.LogisticSlot, error) {
             WHEN DAY_OF_WEEK = 'Sunday' THEN 7
         END
     `
+    query = strings.Replace(query, "*", utils.GetDbCols(lg.LogisticSlot{}, ""), 1)
     list := make([]lg.LogisticSlot, 0)
     err := s.db.SelectContext(s.ctx, &list, query)
     if err != nil {

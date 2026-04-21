@@ -101,7 +101,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryBMI(prn string,
           AND vi.ACCOUNT_NO = v.ACCOUNT_NO 
           AND d.REF_NO IN (SELECT REF_NO FROM NOVA_PATIENT_VITALS WHERE STATUS <> 'VOID' 
           AND (PRN = :prn OR PRN IN (SELECT OLD_PRN FROM NOVA_PATIENT_MERGE_DETAIL WHERE NEW_PRN = :prn))) 
-		) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
+        ) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
     `
     list := make([]model.NovaPatientVitalSignsDetail, 0)
     err := db.SelectContext(s.ctx, &list, query, sql.Named("prn", prn), sql.Named("vitalSignsCode", vitalSignsCode))
@@ -124,7 +124,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryPulse(prn strin
           AND vi.ACCOUNT_NO = v.ACCOUNT_NO 
           AND d.REF_NO IN (SELECT REF_NO FROM NOVA_PATIENT_VITALS WHERE STATUS <> 'VOID' 
           AND (PRN = :prn OR PRN IN (SELECT OLD_PRN FROM NOVA_PATIENT_MERGE_DETAIL WHERE NEW_PRN = :prn))) 
-	    ) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
+        ) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
     `
     list := make([]model.NovaPatientVitalSignsDetail, 0)
     err := db.SelectContext(s.ctx, &list, query, sql.Named("prn", prn), sql.Named("vitalSignsCode", vitalSignsCode))
@@ -147,7 +147,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryBP(prn string, 
           AND vi.ACCOUNT_NO = v.ACCOUNT_NO 
           AND d.REF_NO IN (SELECT REF_NO FROM NOVA_PATIENT_VITALS WHERE STATUS <> 'VOID' 
           AND (PRN = :prn OR PRN IN (SELECT OLD_PRN FROM NOVA_PATIENT_MERGE_DETAIL WHERE NEW_PRN = :prn))) 
-		) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
+        ) ORDER BY 8 DESC FETCH FIRST 5 ROWS ONLY) ORDER BY TO_DATE(DATE_TIME, 'DD Mon YYYY') ASC
     `
     list := make([]model.NovaPatientVitalSignsDetail, 0)
     err := db.SelectContext(s.ctx, &list, query, sql.Named("prn", prn), sql.Named("vitalSignsCode", vitalSignsCode))
@@ -263,6 +263,7 @@ func (s *NovaVitalSignsDetailService) GetPatientVitalSignsHistoryForDashboard(
         ORDER BY date_time DESC FETCH FIRST 5 ROWS ONLY 
         )) ORDER BY CODE, TO_DATE(date_time, 'DD Mon YYYY') ASC
     `
+    query = strings.Replace(query, "*", utils.GetDbCols(model.NovaPatientVitalSignsDetail{}, ""), 1)
     list := make([]model.NovaPatientVitalSignsDetail, 0)
     err := db.SelectContext(s.ctx, &list, query, 
         sql.Named("prn", prn), 

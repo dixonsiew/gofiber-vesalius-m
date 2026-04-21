@@ -800,6 +800,7 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
              AND PRN = :prn 
             ORDER BY APPOINTMENT_DATE DESC
         `
+        q = strings.Replace(q, "*", utils.GetDbCols(model.PastAppointment{}, ""), 1)
         list := make([]model.PastAppointment, 0)
         err := s.db.SelectContext(s.ctx, &list, q, f.NokPrn.String)
         if err != nil {
@@ -869,6 +870,7 @@ func (s *HealthCareService) VesaliusGetPastAppointments(prn string) ([]gm.Patien
 
                 if appt.NormalStatus.String == "NOT AVAILABLE" {
                     q := `SELECT * FROM NOVA_DOCTOR_APPT_SLOT WHERE DOCTOR_ID = :doctorId`
+                    q = strings.Replace(q, "*", utils.GetDbCols(gm.NovaDoctorApptSlot{}, ""), 1)
                     ls := make([]gm.NovaDoctorApptSlot, 0)
                     err = s.db.SelectContext(s.ctx, &ls, q, doc.DoctorId.Int64)
                     if err != nil {

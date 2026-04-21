@@ -1,13 +1,14 @@
 package assignBranch
 
 import (
-	"context"
-	"vesaliusm/database"
-	"vesaliusm/model"
-	"vesaliusm/service/branch"
-	"vesaliusm/utils"
+    "context"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/service/branch"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var AssignBranchSvc *AssignBranchService = NewAssignBranchService(database.GetDb(), database.GetCtx(), branch.BranchSvc)
@@ -24,6 +25,7 @@ func NewAssignBranchService(db *sqlx.DB, ctx context.Context, branchService *bra
 
 func (s *AssignBranchService) FindAllPrimary(userId int64) ([]model.AssignBranch, error) {
     query := `SELECT * FROM ASSIGN_BRANCH WHERE USER_ID = :userId ORDER BY ASSIGN_BRANCH_ID ASC`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AssignBranch{}, ""), 1)
     list := make([]model.AssignBranch, 0)
     err := s.db.SelectContext(s.ctx, &list, query, userId)
     if err != nil {
@@ -53,6 +55,7 @@ func (s *AssignBranchService) FindAllByUserId(userId int64) ([]model.AssignBranc
 
 func (s *AssignBranchService) FindAllByAdminId(adminId int64) ([]model.AssignBranch, error) {
     query := `SELECT * FROM ASSIGN_BRANCH WHERE ADMIN_ID = :adminId ORDER BY ASSIGN_BRANCH_ID ASC`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AssignBranch{}, ""), 1)
     list := make([]model.AssignBranch, 0)
     err := s.db.SelectContext(s.ctx, &list, query, adminId)
     if err != nil {

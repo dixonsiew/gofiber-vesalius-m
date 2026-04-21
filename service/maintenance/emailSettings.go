@@ -107,6 +107,7 @@ func (s *MaintenanceService) FindDynamicEmailSettingsByKeyword(keyword string, o
 
 func (s *MaintenanceService) ViewDynamicEmailSettingByFunctionName(functionName string) (*model.DynamicEmailMaster, error) {
     query := `SELECT * FROM EMAIL_MASTER WHERE EMAIL_FUNCTION_NAME = :fname`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.DynamicEmailMaster{}, ""), 1)
     var o model.DynamicEmailMaster
     err := s.db.GetContext(s.ctx, &o, query, functionName)
     if err != nil {

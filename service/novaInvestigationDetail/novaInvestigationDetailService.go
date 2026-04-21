@@ -1,14 +1,14 @@
 package novaInvestigationDetail
 
 import (
-	"context"
+    "context"
     "database/sql"
-	"strings"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "strings"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaInvestigationDetailSvc *NovaInvestigationDetailService = NewNovaInvestigationDetailService(database.GetDbrs(), database.GetCtx())
@@ -66,19 +66,19 @@ func (s *NovaInvestigationDetailService) GetLabHistoryTrendingForDashboard(
           AND (d.RESULT_CLOB IS NULL OR NOT REGEXP_LIKE (TO_CHAR(d.RESULT_CLOB), '[<>]')) 
           AND (v.PRN = :prn OR m.NEW_PRN = :prn) 
           AND i.CODE IN (:labCodeHDL, :labCodeLDL, :labCodeGlucose, :labCodeHemoglobin) 
-			  ) 
-			  SELECT TO_CHAR(STATUS_DATE_TIME, 'DD Mon YYYY') as SYNC_DATE, 
-			  INVESTIGATION_REF_NO, 
-			  CODE, 
-			  RESULT_VALUE, 
-			  RESULT_UNIT, 
-			  REFERENCE_RANGE, 
-			  RANGE_TYPE, 
-			  RESULT_CLOB, 
-			  id 
-			  FROM ranked_results 
-			  WHERE rn <= 5 
-			  ORDER BY CODE, INVESTIGATION_REF_NO ASC
+              ) 
+              SELECT TO_CHAR(STATUS_DATE_TIME, 'DD Mon YYYY') as SYNC_DATE, 
+              INVESTIGATION_REF_NO, 
+              CODE, 
+              RESULT_VALUE, 
+              RESULT_UNIT, 
+              REFERENCE_RANGE, 
+              RANGE_TYPE, 
+              RESULT_CLOB, 
+              id 
+              FROM ranked_results 
+              WHERE rn <= 5 
+              ORDER BY CODE, INVESTIGATION_REF_NO ASC
     `
     list := make([]model.NovaPatientInvestigationDetail, 0)
     err := db.SelectContext(s.ctx, &list, query, 

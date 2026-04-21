@@ -2,11 +2,11 @@ package novaHealthScreenRptDetail
 
 import (
     "context"
-	"vesaliusm/database"
-	model "vesaliusm/model/healthCare"
-	"vesaliusm/utils"
+    "vesaliusm/database"
+    model "vesaliusm/model/healthCare"
+    "vesaliusm/utils"
 
-	"github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx"
 )
 
 var NovaHealthScreenRptDetailSvc *NovaHealthScreenRptDetailService = NewNovaHealthScreenRptDetailService(database.GetDbrs(), database.GetCtx())

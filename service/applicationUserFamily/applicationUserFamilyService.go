@@ -1,18 +1,18 @@
 package applicationUserFamily
 
 import (
-	"context"
-	"database/sql"
-	"strings"
-	"vesaliusm/database"
-	"vesaliusm/model"
-	"vesaliusm/service/applicationUser"
-	sqx "vesaliusm/sql"
-	"vesaliusm/utils"
+    "context"
+    "database/sql"
+    "strings"
+    "vesaliusm/database"
+    "vesaliusm/model"
+    "vesaliusm/service/applicationUser"
+    sqx "vesaliusm/sql"
+    "vesaliusm/utils"
 
-	"github.com/guregu/null/v6"
-	"github.com/jmoiron/sqlx"
-	"github.com/nleeper/goment"
+    "github.com/guregu/null/v6"
+    "github.com/jmoiron/sqlx"
+    "github.com/nleeper/goment"
 )
 
 var ApplicationUserFamilySvc *ApplicationUserFamilyService = NewApplicationUserFamilyService(database.GetDb(), database.GetCtx(), database.GetDbrs())

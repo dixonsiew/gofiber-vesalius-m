@@ -403,7 +403,7 @@ func (s *AdminUserService) FindByUsername(email string) (*model.AdminUser, error
 
 func (s *AdminUserService) FindByUserGroupId(userGroupId int64) ([]model.AdminUser, error) {
     query := `SELECT * FROM ADMIN_USER WHERE USER_GROUP_ID = :userGroupId`
-    query = strings.Replace(query, "*", utils.GetDbCols(model.AdminUser{}, ""), -1)
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AdminUser{}, ""), 1)
     list := make([]model.AdminUser, 0)
     err := s.db.SelectContext(s.ctx, &list, query, userGroupId)
     if err != nil {
@@ -455,6 +455,7 @@ func (s *AdminUserService) FindAssignBranchByAdminId(adminId int64, branchId int
 
 func (s *AdminUserService) FindAssignBranchByEmail(email string, branchId int64) (*model.AssignBranch, error) {
     query := `SELECT * FROM ASSIGN_BRANCH WHERE BRANCH_ID = :branchId AND ADMIN_ID IN (SELECT ADMIN_ID FROM ADMIN_USER WHERE EMAIL = :email)`
+    query = strings.Replace(query, "*", utils.GetDbCols(model.AssignBranch{}, ""), 1)
     var ab model.AssignBranch
     err := s.db.GetContext(s.ctx, &ab, query, branchId, email)
     if err != nil {
