@@ -21,8 +21,8 @@ import (
 var PackagePaymentDetailsSvc *PackagePaymentDetailsService = NewPackagePaymentDetailsService(database.GetDb(), database.GetCtx())
 
 type PackagePaymentDetailsService struct {
-    db  *sqlx.DB
-    ctx context.Context
+    db                            *sqlx.DB
+    ctx                           context.Context
     mailService                   *mail.MailService
     patientPurchaseDetailsService *patientPurchaseDetails.PatientPurchaseDetailsService
 }
@@ -141,7 +141,7 @@ func (s *PackagePaymentDetailsService) SaveIPay(o upck.PackagePaymentDetails, o2
     if err != nil {
         return err
     }
-    
+
     ipaymentId, _ := paymentId.Int64()
     for _, up := range o2 {
         err = s.patientPurchaseDetailsService.Save(ipaymentId, up, tx)
@@ -417,7 +417,7 @@ func (s *PackagePaymentDetailsService) UpdateWallexPaymentStatus(paymentRequestI
     if err != nil {
         return err
     }
-    
+
     if len(lx) < 1 {
         return nil
     }
@@ -461,11 +461,11 @@ func (s *PackagePaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo 
     if err != nil {
         return err
     }
-    
+
     if len(lx) < 1 {
         return nil
     }
-    
+
     tx, err := s.db.BeginTxx(s.ctx, nil)
     if err != nil {
         utils.LogError(err)
@@ -477,7 +477,7 @@ func (s *PackagePaymentDetailsService) UpdateIPayPaymentStatus(paymentRequestNo 
             tx.Rollback()
         }
     }()
-    
+
     r := lx[0]
     if r.PaymentRequestNo.String == paymentRequestNo && r.PaymentStatus.String == "unpaid" {
         err = s.SetIPayPackagePaymentStatusToPaid(tx, utils.GetAmount(r.PaymentAmount.Float64), r.PaymentId.Int64, r.PaymentRequestNo.String)
@@ -505,7 +505,7 @@ func (s *PackagePaymentDetailsService) sendPackagePayment(paymentId int64) error
     if err != nil {
         return err
     }
-    
+
     for _, r2 := range patientPaymentPurchaseRes {
         lsaddr := make([]string, 0)
         if r2.BillingAddress1.Valid {
@@ -526,7 +526,7 @@ func (s *PackagePaymentDetailsService) sendPackagePayment(paymentId int64) error
         if r2.BillingPostcode.Valid {
             lsaddr = append(lsaddr, r2.BillingPostcode.String)
         }
-        
+
         addr := strings.Join(lsaddr, ", ")
         subtotalPrice := r2.PackagePrice.Float64 * float64(r2.PackageQuantity.Int32)
 
@@ -540,20 +540,20 @@ func (s *PackagePaymentDetailsService) sendPackagePayment(paymentId int64) error
         if r2.BillingEmail.Valid {
             email = r2.BillingEmail.String
         }
-        
+
         emailPrm := mm.MailSuccessPackagePayment{
-            PatientName: r2.PatientName.String,
-            OrderNumber: r2.PaymentRequestNo.String,
-            DateOfPurchase: dateOfPurStr,
-            ProductName: r2.PackageName.String,
-            ProductQuantity: strconv.FormatInt(int64(r2.PackageQuantity.Int32), 10),
-            ProductPrice: utils.GetAmount(r2.PackagePrice.Float64),
-            SubtotalPrice: utils.GetAmount(subtotalPrice),
-            PaymentMethod: r2.PaymentGateway,
-            TotalPrice: utils.GetAmount(subtotalPrice),
+            PatientName:       r2.PatientName.String,
+            OrderNumber:       r2.PaymentRequestNo.String,
+            DateOfPurchase:    dateOfPurStr,
+            ProductName:       r2.PackageName.String,
+            ProductQuantity:   strconv.FormatInt(int64(r2.PackageQuantity.Int32), 10),
+            ProductPrice:      utils.GetAmount(r2.PackagePrice.Float64),
+            SubtotalPrice:     utils.GetAmount(subtotalPrice),
+            PaymentMethod:     r2.PaymentGateway,
+            TotalPrice:        utils.GetAmount(subtotalPrice),
             PackageExpiryDate: packageExpiryDateStr,
-            BillingAddress: addr,
-            Email: email,
+            BillingAddress:    addr,
+            Email:             email,
         }
         go func() {
             s.mailService.SendSuccessPackagePayment(emailPrm)

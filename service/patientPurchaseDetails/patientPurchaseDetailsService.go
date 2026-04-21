@@ -26,8 +26,8 @@ type PatientPurchaseDetailsService struct {
 
 func NewPatientPurchaseDetailsService(db *sqlx.DB, ctx context.Context) *PatientPurchaseDetailsService {
     return &PatientPurchaseDetailsService{
-        db: db, 
-        ctx: ctx, 
+        db:                     db,
+        ctx:                    ctx,
         applicationuserService: applicationUser.ApplicationUserSvc,
     }
 }
@@ -533,8 +533,8 @@ func (s *PatientPurchaseDetailsService) GetPackageExceedPurchaseStatus(conn *sql
           WHERE PACKAGE_ID = :packageId
          ) hp
     `
-    err := conn.GetContext(s.ctx, &result, query, 
-        sql.Named("quantityPurchased", quantityPurchased), 
+    err := conn.GetContext(s.ctx, &result, query,
+        sql.Named("quantityPurchased", quantityPurchased),
         sql.Named("packageId", packageId),
     )
     if err != nil {

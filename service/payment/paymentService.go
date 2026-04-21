@@ -5,8 +5,8 @@ import (
     "vesaliusm/database"
     ub "vesaliusm/model/userBilling"
     upck "vesaliusm/model/userPackage"
-    "vesaliusm/service/packagePaymentDetails"
     "vesaliusm/service/billPaymentDetails"
+    "vesaliusm/service/packagePaymentDetails"
     "vesaliusm/utils"
 
     "github.com/jmoiron/sqlx"
@@ -15,16 +15,16 @@ import (
 var PaymentSvc *PaymentService = NewPaymentService(database.GetDb(), database.GetCtx())
 
 type PaymentService struct {
-    db  *sqlx.DB
-    ctx context.Context
+    db                           *sqlx.DB
+    ctx                          context.Context
     packagePaymentDetailsService *packagePaymentDetails.PackagePaymentDetailsService
     billPaymentDetailsService    *billPaymentDetails.BillPaymentDetailsService
 }
 
 func NewPaymentService(db *sqlx.DB, ctx context.Context) *PaymentService {
     return &PaymentService{
-        db:                            db,
-        ctx:                           ctx,
+        db:                           db,
+        ctx:                          ctx,
         packagePaymentDetailsService: packagePaymentDetails.PackagePaymentDetailsSvc,
         billPaymentDetailsService:    billPaymentDetails.BillPaymentDetailsSvc,
     }
